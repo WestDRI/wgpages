@@ -177,9 +177,9 @@ savefig("serial.png")
 <!-- # complications: DArray of struct seems not possible in Julia, DArray of unbalanced partitions seems not possible in -->
 <!-- # Julia (local DArray blocks must all have the same size), A*U does not work right now in Julia if U is distributed -->
 
-Imagine that now we are dealing with a very large problem, as we are breaking it into pieces, with each piece being
-processed by one processor. Now $U$ and $F$ will be 1D distributed arrays split between processors; we'll implement them
-with distributed arrays.
+Imagine that now we are dealing with a very large problem, and we are breaking it into pieces, with each piece being
+processed by one worker. Now $U$ and $F$ will be 1D distributed arrays split between workers; we'll implement them with
+distributed arrays.
 
 Ideally, we would like to partition `domain` into subdomains with DistributedArrays.jl, and then on each processor use a
 combination of sparse and Boolean (coded explicitly with indices) matrices to solve the problem. However, at this point
