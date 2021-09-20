@@ -1,0 +1,31 @@
+baseurl = "/"
+title = ""
+
+languagecode = "en"
+defaultcontentlanguage = "en"
+
+paginate = 20
+canonifyurls = true
+
+[markup]
+  [markup.highlight]
+    codeFences = true
+    guessSyntax = true
+    style = "manni"   # Chroma Style Gallery https://xyproto.github.io/splash/docs/longer/all.html
+
+[params]
+ repourl = "https://github.com/WestGrid/wgtm21"
+ info = "Various courses"
+ wgavatar = "/img/wglogo.png"
+ favicon_32 = "/img/favicon.png"
+ footercontent = "Information"
+ dateformat = "January 2, 2006"
+ hideCredits = false
+ hideCopyright = false
+ since = 2021
+
+[languages]
+    [languages.en]
+        languagename = "English"
+
+        [languages.en.menu]

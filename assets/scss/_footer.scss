@@ -1,0 +1,29 @@
+.footer {
+  width: 100%;
+  text-align: center;
+  line-height: 2.0rem;
+  padding-bottom: 1.0rem;
+  font-size: 1.7rem;
+  color: #737373;
+  a {
+    color: $link-color;
+  }
+  .footcontent {
+    a, span {
+      display: inline;
+      font-size: 1.8rem;
+      font-family: $heading-font-family;
+      font-weight: 700;
+      line-height: 3.0rem;
+      // color: $link-color;
+      color: #3f3f40;
+    }
+    a {
+      &:hover,
+      &:focus {
+	// color: $link-color
+	color: #3f3f40;
+      }
+    }
+  }
+}

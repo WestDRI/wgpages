@@ -1,0 +1,10 @@
+#+title: Module 6 — Scientific visualization
+#+slug: scivis
+
+{{<cor>}}Tuesday, July 13{{</cor>}}\\
+{{<c link="/scivis_scivis" topic="3D scientific visualization with ParaView" >}}
+
+#+BEGIN_export html
+<br>
+<a href="https://www.eventbrite.ca/e/149983385343" target="_blank">Click here</a> to register for this module.
+#+END_export

@@ -1,0 +1,77 @@
+{{ define "title" }}
+{{ .Title }} · {{ .Site.Title }}
+{{ end }}
+{{ define "content" }}
+<section class="container post">
+  <article>
+
+    <br>
+    <center>
+      <a href="/scivis_scivis">
+	<i class="fas fa-level-up-alt fa-2x" style="color: #f17e1f"></i>
+      </a>
+      &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+      {{ with .NextInSection }}
+      <a href="{{ .RelPermalink }}">
+        <i class="fas fa-chevron-left fa-2x" style="color: #f17e1f"></i>
+      </a>
+      {{ else }}
+      &emsp;&nbsp;
+      {{ end }}
+      &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+      {{ with .PrevInSection }}
+      <a href="{{ .RelPermalink }}">
+	<i class="fas fa-chevron-right fa-2x" style="color: #f17e1f"></i>
+      </a>
+      {{ else }}
+      &emsp;&nbsp;
+      {{ end }}
+    </center>
+
+    <header>
+      <div class="post-title">
+        <h1 class="title">{{ .Title }}</h1>
+      </div>
+    </header>
+
+    <div>
+      {{ if .Params.featured_image }}
+      <img src='{{ .Params.featured_image }}' alt="Featured image"/>
+      {{ end }}
+      {{ .Content }}
+    </div>
+
+    <footer>
+      {{ partial "posts/series.html" . }}
+      <!-- {{ partial "posts/disqus.html" . }} -->
+      {{ partial "posts/commento.html" . }}
+      {{ partial "posts/utteranc.html" . }}
+    </footer>
+
+    <br>
+    <center>
+      <a href="/scivis_scivis">
+	<i class="fas fa-level-up-alt fa-2x" style="color: #f17e1f"></i>
+      </a>
+      &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+      {{ with .NextInSection }}
+      <a href="{{ .RelPermalink }}">
+        <i class="fas fa-chevron-left fa-2x" style="color: #f17e1f"></i>
+      </a>
+      {{ else }}
+      &emsp;&nbsp;
+      {{ end }}
+      &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+      {{ with .PrevInSection }}
+      <a href="{{ .RelPermalink }}">
+	<i class="fas fa-chevron-right fa-2x" style="color: #f17e1f"></i>
+      </a>
+      {{ else }}
+      &emsp;&nbsp;
+      {{ end }}
+    </center>
+  </article>
+
+    {{ partial "posts/math.html" . }}
+</section>
+{{ end }}
