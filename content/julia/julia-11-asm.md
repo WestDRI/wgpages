@@ -201,15 +201,15 @@ m$ ASM preconditioner $M^{-1}_\textrm{ASM}$. Each process computes its own dense
 distributed preconditioner matrix `pre`.
 
 Next, we start iterations. In `computeUpdate()` we compute $F-AU^n$ as a 1D distributed array `tmp`, and multiply the
-preconditioner `pre` by `tmp`. Since `pre` is a block-diagonal, this multiplication can be done separately in each
+preconditioner `pre` by `tmp`. Since `pre` is block-diagonal, this multiplication can be done separately in each
 process. Finally, we call `addUpdate()` to update the distributed solution `U`, again separately in each process.
 
 **Big assumptions**:
 
-1. All distributed arrays are partitioned in exactly the same way, i.e. the same range of indices are assigned to each
-   processor for 1D arrays `U`, `tmp`, `dU`, `F`.
-2. The 2D array `pre` is partitioned purely along the second dimension (columns), i.e. each processor get an $m_s\times
-   m_s$ array, and tha range of column indices on each processor is exactly the same as for the 1D arrays above.
+1. All distributed arrays are partitioned in exactly the same way, i.e. the same range of indices is assigned to each
+   worker for 1D arrays `U`, `tmp`, `dU`, `F`.
+2. The 2D array `pre` is partitioned purely along the second dimension (columns), i.e. each worker gets an $m_s\times
+   m_s$ array, and the range of column indices on each worker is exactly the same as for the 1D arrays above.
 
 You can force (2) by replacing the line
 
