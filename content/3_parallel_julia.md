@@ -3,14 +3,13 @@ title = "Parallel computing in Julia"
 slug = "parallel_julia"
 +++
 
-{{<cor>}}Tuesday, June 8{{</cor>}}\
-{{<cgr>}}9 am–5 pm Pacific Time{{</cgr>}}
+{{<cor>}}October 18-19, 2021{{</cor>}}
+<!-- {{<cgr>}}9 am–5 pm Pacific Time{{</cgr>}} -->
 
-This course will start at 9am Pacific Time and will run until 5pm Pacific Time. Its format will be a combination of
-several interactive Zoom sessions and the reading materials in-between the Zoom sessions. Course materials will be added
-here shortly before the start of the course.
-
----
+<!-- This course will start at 9am Pacific Time and will run until 5pm Pacific Time. Its format will be a combination of -->
+<!-- several interactive Zoom sessions and the reading materials in-between the Zoom sessions. Course materials will be added -->
+<!-- here shortly before the start of the course. -->
+<!-- --- -->
 
 Julia is a high-level programming language well suited for scientific computing and data science. Just-in-time
 compilation, among other things, makes Julia really fast yet interactive. For heavy computations, Julia supports
@@ -33,7 +32,7 @@ participate in the course exercises. On Windows we recommend
 usually pre-installed (try typing `ssh` in a terminal to make sure it is there). No need to install Julia on your
 computer.
 
-{{<cor>}}Zoom{{</cor>}} {{<s>}} {{<cgr>}}9:00am-12:00pm Pacific{{</cgr>}} \
+{{<cor>}}Zoom{{</cor>}} {{<s>}} {{<cgr>}}Day 1: Oct-18 4:00pm-7:00pm Paris time{{</cgr>}} \
 {{<linktitle url="../julia/julia-01-intro" text="Introduction to parallel Julia">}} \
 {{<linktitle url="../julia/julia-02-threads1" text="Base.Threads (part 1)">}} \
 {{<linktitle url="../julia/julia-03-slow-series" text="Slow series">}} \
@@ -46,7 +45,7 @@ with distributed arrays) and parallelizing the N-body code (I recommend to do th
 will guide you through the process and answer questions, but we will not share the final solutions with you today; the
 goal is to build your own!
 
-{{<cor>}}Zoom{{</cor>}} {{<s>}} {{<cgr>}}1:00pm-4:00pm Pacific{{</cgr>}} \
+{{<cor>}}Zoom{{</cor>}} {{<s>}} {{<cgr>}}Day 2: Oct-19 4:00pm-7:00pm Paris time{{</cgr>}} \
 {{<linktitle url="../julia/julia-07-distributed-arrays" text="DistributedArrays.jl">}} \
 {{<linktitle url="../julia/julia-08-julia-set" text="Parallelizing Julia set">}} \
 {{<linktitle url="../julia/julia-09-shared-arrays" text="SharedArrays.jl">}} \
