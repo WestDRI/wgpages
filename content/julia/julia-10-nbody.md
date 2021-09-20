@@ -138,7 +138,7 @@ Here is what I got on Cedar with **100 particles and $10^3$ steps**:
 
 ### Links
 
-- [``Julia at Scale''](https://discourse.julialang.org/c/domain/parallel) forum
+- ["Julia at Scale"](https://discourse.julialang.org/c/domain/parallel) forum
 - Baolai Ge's (SHARCNET) webinar ["Julia: Parallel computing revisited"](https://youtu.be/xTLFz-5a5Ec)
 - WestGrid's March 2021 webinar ["Parallel programming in Julia"](https://youtu.be/2SafLn0xJKY)
 - [Julia performance tips](https://docs.julialang.org/en/v1/manual/performance-tips)

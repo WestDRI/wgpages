@@ -231,9 +231,9 @@ Here is the entire parallel code:
 ```jl
 N = 3    # number of domains and processes
 m = 21   # total number of points; must be a multiple of N
-@assert m%N ==0 "m must be a multiple of N"
-ms = round(Int, m/N) # the size of each subdomain
-h = 1.0 / (m-1)
+@assert m%N == 0 "m must be a multiple of N"
+ms = round(Int, m/N)   # the size of each subdomain
+h = 1.0 / (m-1)        # grid spacing
 
 using Distributed
 addprocs(N)
