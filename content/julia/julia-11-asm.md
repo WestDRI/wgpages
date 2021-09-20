@@ -196,7 +196,7 @@ $R_i$ is Boolean. The matrix $R_iAR_i^T$ applies the domain restriction operator
 and the result is coded algebraically with the function `fillPre()`. It is then inverted locally in each process with
 `invertPre()`.
 
-$R_i^T\left(R_iAR_i^T\right)^{-1}R_i$ takes the result of this inversion and puts it as a dense block in the $m\times
+$R_i^T\left(R_iAR_i^T\right)^{-1}R_i$ takes the result of this inversion and puts it as a dense block into the $m\times
 m$ ASM preconditioner $M^{-1}_\textrm{ASM}$. Each process computes its own dense block and stores it locally inside the
 distributed preconditioner matrix `pre`.
 
