@@ -97,7 +97,7 @@ M = transpose(R1) * inv(R1*A*transpose(R1)) * R1;
 M += transpose(R2) * inv(R2*A*transpose(R2)) * R2;
 M += transpose(R3) * inv(R3*A*transpose(R3)) * R3;
 
-using LinearAlgebra   # only needed to compute norm()
+using LinearAlgebra: norm
 for iter in 1:50
     dU = M * (F-A*U)
     global U += dU
@@ -157,7 +157,7 @@ for i in 1:3
     global M += transpose(domain[i].R) * inv(domain[i].R*A*transpose(domain[i].R)) * domain[i].R;
 end
 
-using LinearAlgebra
+using LinearAlgebra: norm
 for iter in 1:50
     dU = M * (F-A*U)
     global U += dU
@@ -341,7 +341,7 @@ end
 @everywhere function addUpdate(U, dU)
     U.localpart += dU.localpart
 end
-@everywhere using LinearAlgebra   # if you want to compute norm()
+@everywhere using LinearAlgebra: norm
 
 for iter in 1:50
     @sync for (rank,w) in enumerate(workers())
