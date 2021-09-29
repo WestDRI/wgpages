@@ -22,6 +22,9 @@ tidal turbine. Both sessions will be presented in English, with a French version
 - Oct-04 (Day 1) - formal introduction to animation, scripting, and remote visualization
 - Oct-05 (Day 2) - animating a turbine dataset (keyframe, camera movement, time evolution)
 
+- Instructors: Alex Razoumov, Farhad Baratchi
+- Helpers: Jarno van der Kolk, Julie Faure-Lacroix, Marie-Hélène Burle, Tyson Whitehead
+
 ## Prerequisites
 
 We expect participants to be somewhat familiar with the basics of ParaView: loading local datasets, interacting with
@@ -42,10 +45,11 @@ with no prior experience in ParaView to watch the following videos before attend
 - [Reading CSV data (6 min)](https://youtu.be/1yrGH7w0rG4)
 - [Putting your visualization online with ParaView Glance (5 min)](https://youtu.be/TWL2CMKSRaU)
 
+Also, please install ParaView from https://www.paraview.org/download on your computer before the workshop.
+
 ## Workshop materials
 
-
-The slides for this course (`slides2.pdf`) are included into the [main ZIP file](https://bit.ly/paraviewzipp) (~21 MB),
-along with sample datasets and various scripts.
+The slides for this workshop (`slides2.pdf`) are included into the [main ZIP file](https://bit.ly/paraviewzipp) (~21
+MB), along with sample datasets and various scripts.
 
 <!-- In case of problems, check this [temporary mirror](https://transfer.sh/1KaBoJZ/paraviewzipp). -->
