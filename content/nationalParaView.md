@@ -48,7 +48,15 @@ with no prior experience in ParaView to watch the following videos before attend
 
 ## Workshop materials
 
-The slides for this workshop (`slides2.pdf`) are included into the [main ZIP file](https://bit.ly/paraviewzipp) (~21
-MB), along with sample datasets and various scripts.
+The slides for this workshop (`slides2.pdf`) are included into the [main ZIP file](https://bit.ly/paraviewzipp) (~22
+MB), along with sample datasets and various scripts. In case of problems, check this [temporary
+mirror](https://transfer.sh/N2jNIQ/paraview.zip).
 
-<!-- In case of problems, check this [temporary mirror](https://transfer.sh/1KaBoJZ/paraviewzipp). -->
+For remote visualization we will be using [guest accounts on
+Cedar](https://docs.google.com/document/d/15NEXFuUxhStKsB-MvTROTyKF3rmtxr7-636qUejnYIU) (this page will be made public
+on Monday) - please pick an account and add your name to the line in the Goodle Doc so that no one else uses it.
+
+We have two reservations on Cedar until 2021-10-05T23:59:00 (Pacific):
+
+- 10-node CPU reservation `--account=def-training-wa_cpu --reservation=paraview-wr_cpu`
+- 2-node GPU reservation `--account=def-training-wa_gpu --reservation=paraview-wr_gpu`
