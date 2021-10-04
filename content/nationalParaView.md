@@ -15,9 +15,10 @@ them with a variety of filters. ParaView supports both interactive (GUI) and scr
 visualization, and is an easy and fun tool to learn.
 
 The first session of this workshop will cover some intermediate and advanced topics in 3D scientific visualization with
-ParaView including scripting, animation, remote and distributed visualization. In the second session participants will
-apply their newly gained knowledge of making animations on different datasets including one from a CFD simulation of a
-tidal turbine. Both sessions will be presented in English, with a French version to follow in November.
+ParaView including (1) **scripting**, (2) **animation**, and (3) **remote and distributed visualization**. In the second
+session participants will apply their newly gained knowledge of making animations on different datasets including one
+from a CFD simulation of a tidal turbine. Both sessions will be presented in English, with a French version to follow in
+November.
 
 - Oct-04 (Day 1) - formal introduction to animation, scripting, and remote visualization
 - Oct-05 (Day 2) - animating a turbine dataset (keyframe, camera movement, time evolution)
