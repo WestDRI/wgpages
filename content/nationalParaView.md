@@ -68,6 +68,6 @@ We have two reservations on Cedar until 2021-10-05T23:59:00 (Pacific):
 ## Quick knowledge test
 
 Start ParaView on your computer, load the dataset `data/disk_out_ref.ex2` and try to visualize temperature with a Clip
-and the velocity field with streamlines and arrows as shown in this image below:
+and the velocity field with Stream Tracer With Custom Source and arrow Glyphs as shown in this image below:
 
 {{< figure src="/img/testImage.png" >}}
