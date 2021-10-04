@@ -48,15 +48,25 @@ with no prior experience in ParaView to watch the following videos before attend
 
 ## Workshop materials
 
-The slides for this workshop (`slides2.pdf`) are included into the [main ZIP file](https://bit.ly/paraviewzipp) (~22
+The slides for this workshop (`slides2.pdf`) are included into the [main ZIP file](https://bit.ly/paraviewzipp) (~23
 MB), along with sample datasets and various scripts. In case of problems, check this [temporary
-mirror](https://transfer.sh/N2jNIQ/paraview.zip).
+mirror](https://transfer.sh/I7NwUJ/paraview.zip).
 
-For remote visualization we will be using [guest accounts on
-Cedar](https://docs.google.com/document/d/15NEXFuUxhStKsB-MvTROTyKF3rmtxr7-636qUejnYIU) (this page will be made public
-on Monday) - please pick an account and add your name to the line in the Goodle Doc so that no one else uses it.
+For remote visualization, if you already have a CC account, you can use it today, and we have also prepared [guest
+accounts on Cedar](https://docs.google.com/document/d/15NEXFuUxhStKsB-MvTROTyKF3rmtxr7-636qUejnYIU) (this page will be
+made public on Monday) - please pick an account and add your name to the line in the Goodle Doc so that no one else uses
+it. If you already have a CC account, please add your username to the [same Google
+Doc](https://docs.google.com/document/d/15NEXFuUxhStKsB-MvTROTyKF3rmtxr7-636qUejnYIU) so that we could add you to the
+reservation.
 
 We have two reservations on Cedar until 2021-10-05T23:59:00 (Pacific):
 
 - 10-node CPU reservation `--account=def-training-wa_cpu --reservation=paraview-wr_cpu`
 - 2-node GPU reservation `--account=def-training-wa_gpu --reservation=paraview-wr_gpu`
+
+## Quick test
+
+Start ParaView on your computer, load the dataset `data/disk_out_ref.ex2` and try to visualize temperature with a Clip
+and the velocity field with streamlines and arrows as shown in this image below:
+
+{{< figure src="/img/testImage.png" >}}
