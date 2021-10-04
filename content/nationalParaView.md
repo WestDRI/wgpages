@@ -60,11 +60,10 @@ The slides for this workshop (`slides2.pdf`) are included into the [main ZIP fil
 MB), along with sample datasets and various scripts. In case of problems, check this [temporary
 mirror](https://transfer.sh/I7NwUJ/paraview.zip).
 
-For remote visualization, if you already have a CC account, you can use it today, and we have also prepared [guest
-accounts on Cedar](https://docs.google.com/document/d/15NEXFuUxhStKsB-MvTROTyKF3rmtxr7-636qUejnYIU) - please pick an
+For remote visualization, if you already have a CC account, you can use it today, and we have also prepared guest
+accounts on Cedar - please pick an
 account and add your name to the line in the Goodle Doc so that no one else uses it. If you already have a CC account,
-please add your username to the [same Google
-Doc](https://docs.google.com/document/d/15NEXFuUxhStKsB-MvTROTyKF3rmtxr7-636qUejnYIU) so that we could add you to the
+please add your username to the same Google Doc so that we could add you to the
 reservation.
 
 We have two reservations on Cedar until 2021-10-05T23:59:00 (Pacific):
