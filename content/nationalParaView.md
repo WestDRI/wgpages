@@ -70,3 +70,13 @@ We have two reservations on Cedar until 2021-10-05T23:59:00 (Pacific):
 
 - 10-node CPU reservation `--account=def-training-wa_cpu --reservation=paraview-wr_cpu`
 - 2-node GPU reservation `--account=def-training-wa_gpu --reservation=paraview-wr_gpu`
+
+## Steps for partitioning the unstructured dataset for Tuesday
+
+1. Load all `m114f105_AL_2d_tsr_5_*.vtu` files located in `/project/6052247/fbaratchi/paraview_training/ustructured`
+   folder on Cedar
+1. Apply Cell Data to Point Data.
+1. Apply D3 filter.
+1. Save data as `A_NAME.PVTU` "decomposed", write all timesteps as series, use fast compression.
+
+NOTE: Resulting partitioned data are located in `/project/6052247/fbaratchi/paraview_training/partitioned` on Cedar.
