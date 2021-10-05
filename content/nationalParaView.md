@@ -74,7 +74,7 @@ We have two reservations on Cedar until 2021-10-05T23:59:00 (Pacific):
 
 ## Steps for partitioning the unstructured dataset for Tuesday
 
-1. Load all `m114f105_AL_2d_tsr_5_*.vtu` files located in `/project/6052247/fbaratchi/paraview_training/ustructured`
+1. Load all `m114f105_AL_2d_tsr_5_*.vtu` files located in `/project/6052247/fbaratchi/paraview_training/unstructured`
    folder on Cedar
 1. Apply Cell Data to Point Data.
 1. Apply D3 filter.
