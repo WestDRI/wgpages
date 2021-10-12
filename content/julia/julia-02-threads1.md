@@ -20,9 +20,9 @@ nthreads()           # now we have access to 4 threads
 ```
 
 When launched from this interface, these four threads will run on two CPU cores on the login node -- more of a
-concurrent (than parallel) run, especially considering the number of people logged into Cassiopeia's login node right
-now. Soon, when doing benchmarking, we'll switch to running Julia inside Slurm jobs on compute nodes, but for now let's
-continue on the login node.
+concurrent (than parallel) run, especially considering the number of people logged into Uu's login node right now. Soon,
+when doing benchmarking, we'll switch to running Julia inside Slurm jobs on compute nodes, but for now let's continue on
+the login node.
 
 Let's run our first multi-threaded code:
 
@@ -69,10 +69,10 @@ and then fill it with values using a single thread, and time this operation:
 end
 ```
 
-On Cassiopeia I get 14.38s, 14.18s, 14.98s with one thread.
+On Uu I get 14.38s, 14.18s, 14.98s with one thread.
 
-> **Note:** There is also `@btime` from BenchmarkTools package that many people would suggest you should use
-> instead. Here `@time` is perfectly good for our purposes.
+> **Note:** There is also `@btime` from BenchmarkTools package that has several advantages over `@time`. We will switch
+> to it soon.
 
 Let's now time parallel execution with 4 threads on 2 CPU cores:
 
@@ -83,7 +83,7 @@ using Base.Threads
 end
 ```
 
-On Cassiopeia I get 6.57s, 6.19s, 6.10s -- this is ~2X speedup, as expected.
+On Uu I get 6.57s, 6.19s, 6.10s -- this is ~2X speedup, as expected.
 
 ### Let's add reduction
 
@@ -121,48 +121,58 @@ really designed for this type of usage ... Let's do some benchmarking!
 
 ### Benchmarking in Julia
 
-We already know that we can use `@time` macro for timing our code. Let's do summation of integers from 1 to
-`Int64(1e8)` using a serial code:
+We already know that we can use `@time` macro for timing our code. Let's do summation of integers from 1 to `Int64(1e8)`
+using a serial code:
 
 ```julia
 n = Int64(1e8)
 total = Int128(0)   # 128-bit for the result!
 @time for i in 1:n
-	total += i
+	global total += i
 end
 println("total = ", total)
 ```
 
-In Cassiopeia I get 10.87s, 10.36s, 11.07s. Here `@time` also includes JIT compilation time (marginal here).
+On Uu I get 10.87s, 10.36s, 11.07s. Here `@time` also includes JIT compilation time (marginal here). Let's switch to
+`@btime` from BenchmarkTools: it runs the code several times, reports the shortest time, and prints the result only
+once. Therefore, with `@btime` you don't need to precompile the code.
+
+```julia
+using BenchmarkTools
+n = Int64(1e8)
+total = Int128(0)   # 128-bit for the result!
+@btime for i in 1:n
+	global total += i
+end
+println("total = ", total)
+```
+```sh
+10.865 s
+```
 
 Next we'll package this code into a function:
 
 ```julia
 function quick(n)
     total = Int128(0)   # 128-bit for the result!
-    @time for i in 1:n
+    for i in 1:n
         total += i
     end
     return(total)
 end
 ```
-
-The first time you run a function, Julia will compile it, but the 2nd time it'll use the already-compiled machine
-code. Let's use this function:
-
 ```julia
-quick(10)     # first time Julia will compile the function; reports 0.000000 seconds
-println("total = ", quick(Int64(1e8)))    # correct result, 0.000000s runtime
-println("total = ", quick(Int64(1e9)))    # correct result, 0.000000s runtime
-println("total = ", quick(Int64(1e15)))   # correct result, 0.000000s runtime
+@btime quick(Int64(1e8))    # correct result, 1.826 ns runtime
+@btime quick(Int64(1e9))    # correct result, 1.825 ns runtime
+@btime quick(Int64(1e15))   # correct result, 1.827 ns runtime
 ```
 
-In all these cases we see $0\mu$s running time -- this can't be correct! What is going on here? It turns out that Julia
+In all these cases we see under 2 ns running time -- this can't be correct! What is going on here? It turns out that Julia
 is replacing the summation with the exact formula $n(n+1)/2$!
 
 We want to:
-1. enforce computation $~\Rightarrow~$ we'll compute something more complex than simple integer summation (that can be
-   replaced with a formula)
+1. force computation $~\Rightarrow~$ we'll compute something more complex than simple integer summation, so that it
+   cannot be replaced with a formula
 1. exclude compilation time $~\Rightarrow~$ we'll package the code into a function + precompile it
 1. make use of optimizations for type stability $~\Rightarrow~$ package into a function + precompile it
 1. time only the CPU-intensive loops

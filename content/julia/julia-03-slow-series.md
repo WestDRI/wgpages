@@ -52,12 +52,12 @@ Let's now do the timing of our serial summation code with 1e9 terms:
 ```julia
 function slow(n::Int64, digits::Int)
     total = Float64(0)    # this time 64-bit is sufficient!
-    @time for i in 1:n
+    for i in 1:n
         if !digitsin(digits, i)
             total += 1.0 / i
-        end end
-    println("total = ", total)
+        end
+	end
+    return total
 end
-slow(10, 9)   # precompile the functions `slow()` and `digitsin()`
-slow(Int64(1e9), 9)   # total = 14.2419130103833, runtime 38.23s 38.13s 38.18s
+@btime slow(Int64(1e8), 9)   # total = 13.277605949858103, runtime 2.986 s
 ```

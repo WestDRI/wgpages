@@ -486,7 +486,7 @@ savefig("parallel.png")
 
 <!-- ### Results -->
 
-<!-- Finally, here are my timings on Cassiopeia: -->
+<!-- Finally, here are my timings on Uu: -->
 
 <!-- | Code | Time  | -->
 <!-- | ------------- | ----- | -->

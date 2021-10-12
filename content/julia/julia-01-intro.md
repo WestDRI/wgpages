@@ -60,16 +60,55 @@ We will **not** be covering the following topics today (although we hope to cove
 ## Running Julia in REPL
 
 If you have Julia installed on your own computer, you can run it there. We have Julia on our training cluster
-*cassiopeia.c3.ca*. In [our introductory Julia course](../../programming_julia) we were using Julia inside a Jupyter
-notebook. Today we will be running multiple threads and processes, with the eventual goal of running our workflows on an
-HPC cluster, so we'll be using Julia from the command line.
+*uu.c3.ca*. In [our introductory Julia course](../../programming_julia) we were using Julia inside a Jupyter
+notebook. Today we will be running multiple threads and processes, with the eventual goal of running our workflows as
+batch jobs on an HPC cluster, so we'll be using Julia from the command line.
 
-> **Pause**: We will now distribute accounts and passwords to connect to the cluster. We also have a backup cluster
->   *uu.c3.ca* with a similar setup.
+> **Pause**: We will now distribute accounts and passwords to connect to the cluster.
 
-Assuming we have all connected to *cassiopeia.c3.ca* via ssh, let's try to log in and start Julia REPL:
+#### Julia packages on the training cluster
+
+Normally, you would install a Julia package by typing `] add packageName` in REPL and then waiting for it to install. A
+typical package installation takes few hundred MBs and a fraction of a minute and usually requires a lot of small file
+writes. Our training cluster runs on top of virtualized hardware with a shared filesystem. If several dozen workshop
+participants start installing packages at the same time, this will hammer the filesystem and will make it slow for all
+participants for quite a while.
+
+To avoid this, we created a special environment, with all packages installed into a shared directory
+`/project/def-sponsor00/shared/julia`. To load this environment, run the command
 
 ```sh
-module load StdEnv/2020 julia/1.6.0
-julia
+source /project/def-sponsor00/shared/julia/config/loadJulia.sh
 ```
+
+This script will load the Julia module and set a couple of environment variables, to point to our central environment
+while keeping your setup and Julia history separate from other users. You can still install packages the usual way (`]
+add packageName`), and they will go into your own `~/.julia` directory. Feel free to check the content of this script,
+if you are interested.
+
+Try opening the Julia REPL and running a couple of commands:
+
+```sh
+$ julia 
+               _
+   _       _ _(_)_     |  Documentation: https://docs.julialang.org
+  (_)     | (_) (_)    |
+   _ _   _| |_  __ _   |  Type "?" for help, "]?" for Pkg help.
+  | | | | | | |/ _` |  |
+  | | |_| | | | (_| |  |  Version 1.6.2 (2021-07-14)
+ _/ |\__'_|_|_|\__'_|  |  
+|__/                   |
+
+julia> using BenchmarkTools
+
+julia> @btime sqrt(2)
+  1.825 ns (0 allocations: 0 bytes)
+1.4142135623730951
+```
+
+<!-- Assuming we have all connected to *uu.c3.ca* via ssh, let's try to log in and start Julia REPL: -->
+
+<!-- ```sh -->
+<!-- module load StdEnv/2020 julia/1.6.2 -->
+<!-- julia -->
+<!-- ``` -->

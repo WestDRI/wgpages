@@ -34,50 +34,49 @@ Below is the serial code `juliaSetSerial.jl`. First, you need to install the req
 Next, let's study the code:
 
 ```julia
-using ProgressMeter, NetCDF
+using BenchmarkTools, NetCDF
 
-function pixel(i, j, width, height, c, zoomOut)
-    z = (2*(j-0.5)/width-1)+(2*(i-0.5)/height-1)im   # rescale to -1:1 in the complex plane
-    z *= zoomOut
+function pixel(z, c)
     for i = 1:255
         z = z^2 + c
-        if abs(z) >= 4
+        if abs2(z) >= 16.0
             return i
         end
     end
     return 255
 end
 
-n = Int(8e3)             # plot size
-height, width = n, n
-c, zoomOut = 0.355 + 0.355im, 1.2
-
-println("Computing Julia set ...")
-data = zeros(Float32, height, width);   # local array
-@showprogress for i in 1:height, j in 1:width
-    data[i,j] = pixel(i, j, width, height, c, zoomOut)
+function juliaSet(data, c, zoomOut)
+    height, width = size(data)
+    for i in 1:height
+        y = (2*(i-0.5)/height - 1)*zoomOut      # rescale to -zoomOut:zoomOut in the complex plane
+        for j in 1:width
+            x = (2*(j-0.5)/width - 1)*zoomOut   # rescale to -zoomOut:zoomOut in the complex plane
+            @inbounds data[i,j] = pixel(x+im*y, c)
+        end
+    end
 end
 
-# println("Very slow plotting ...")
-# using Plots
-# gr()    # initialize the gr backend
-# file_name = "$(height)x$(width)_$(c.re)_$(c.im)"
-# png(heatmap(data, size=(width,height), color=:gist_ncar), file_name)   # save to PNG
+c, zoomOut = 0.355 + 0.355im, 1.2
+height = width = 1000
+data = Array{Float32,2}(undef, height, width);
 
-# println("On-screen b/w plotting ... slow too")
-# using ImageView
-# imshow(data)
+println("Computing Julia set ...")
+@btime juliaSet(data, c, zoomOut)
+
+# println("Very slow on-screen plotting ...")
+# using Plots
+# plot(heatmap(data, size=(width,height), color=:Spectral))
 
 println("Writing NetCDF ...")
 filename = "test.nc"
-isfile(filename) && rm(filename)        # compact if statement
-nccreate(filename, "stability", "x", collect(1:height), "y",
-         collect(1:width), t=NC_FLOAT, mode=NC_NETCDF4, compress=9);
+isfile(filename) && rm(filename)   # compact if statement
+nccreate(filename, "stability", "x", collect(1:height), "y", collect(1:width), t=NC_FLOAT, mode=NC_NETCDF4, compress=9);
 ncwrite(data, filename, "stability");
 ```
 
-Let's run this code. It'll produce the file `test.nc` that you can download to your computer and visualize with ParaView
-or other visualization tool.
+Let's run this code with `julia juliaSetSerial.jl`. It'll produce the file `test.nc` that you can download to your
+computer and visualize with ParaView or other visualization tool.
 
 > ## Exercise 11
 > 1. Compare the expected and actual file sizes.
@@ -99,31 +98,42 @@ parallel. Here are the steps:
 
 1. Some functions (packages) should be defined (loaded) on all processes.
 1. `data` array should be distributed.
-1. You need `fillLocalBlock(data, width, height, c, zoomOut)` to compute local pieces of `data` in parallel. If you
-   don't know where to start in this project, begin with looking at the complete example with `fillLocalBlock()` from
-   the previous section.
+```jl
+data = dzeros(Float32, height, width);   # distributed 2D array of 0's
+```
+1. You need to replace `juliaSet(data, c, zoomOut)` with `fillLocalBlock(data, c, zoomOut)` to compute local pieces of
+   `data` on each worker in parallel. If you don't know where to start in this project, begin with checking the complete
+   example with `fillLocalBlock()` from the previous section.
 1. You can replace
 ```julia
-@showprogress for i in 1:height, j in 1:width
-    data[i,j] = pixel(i, j, width, height, c, zoomOut)
+@btime juliaSet(data, c, zoomOut)
 ```
 with
-```julia
-data = dzeros(Float32, height, width);   # distributed 2D array of 0's
-@time @sync for i in workers()
-    @spawnat i fillLocalBlock(data, width, height, c, zoomOut)
+```jl
+@btime @sync for i in workers()
+    @spawnat i fillLocalBlock(data, c, zoomOut)
+end
 ```
 5. Why do we need `@sync` in the previous `for` block?
 6. To the best of my knowledge, NetCDF's `ncwrite()` is serial in Julia. Is there a parallel version of NetCDF for
    Julia? If not, then unfortunately we will have to use serial NetCDF. How do we do this with distributed `data`?
-7. Time only the `for` loop in computing the array. Is your parallel code faster?
+7. Is your parallel code faster?
 
-### Results
+### Results for 1000^2
 
-Finally, here are my timings on Cassiopeia:
+Finally, here are my timings on Uu:
 
-| Code | Time  |
-| ------------- | ----- |
-| `julia juliaSetSerial.jl` (serial runtime) | 43.1s &nbsp;&nbsp;&nbsp; 41.4s &nbsp;&nbsp; 41.4s  |
-| `julia -p 1 juliaSetDistributedArrays.jl` (on 1 worker) | 29.6s &nbsp;&nbsp; 29.6s &nbsp;&nbsp; 29.2s |
-| `julia -p 2 juliaSetDistributedArrays.jl` (on 2 workers) | 15.4s &nbsp;&nbsp; 15.6s &nbsp;&nbsp; 15.2s |
+| Code | Time on login node (p-flavour vCPUs) | Time on compute node (c-flavour vCPUs) |
+| ------------- | ----- | ----- |
+| `julia juliaSetSerial.jl` (serial runtime) | 147.214 ms | 123.195 ms |
+| `julia -p 1 juliaSetDistributedArrays.jl` (on 1 worker) | 157.043 ms | 128.601 ms |
+| `julia -p 2 juliaSetDistributedArrays.jl` (on 2 workers) | 80.198 ms | 66.449 ms |
+| `julia -p 4 juliaSetDistributedArrays.jl` (on 4 workers) | 42.965 ms | 66.849 ms |
+| `julia -p 8 juliaSetDistributedArrays.jl` (on 8 workers) | 36.067 ms | 67.644 ms |
+
+<!-- | `julia -p 2 juliaSetDistributedArrays.jl` (on 2 workers) | 15.4s &nbsp;&nbsp; 15.6s &nbsp;&nbsp; 15.2s | -->
+
+Lots of things here to discuss!
+
+One could modify our parallel code to offload some computation to the control process (not just compute on workers as we
+do now), so that you would see speedup when running on 2 CPUs (control process + 1 worker).

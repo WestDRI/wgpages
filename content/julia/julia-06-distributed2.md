@@ -37,7 +37,7 @@ With two workers and two CPU cores, we should get times very similar to the last
 much larger number of cores!
 
 > ## Exercise 7
-> Now submit a Slurm job asking for four processes, and run the same code on two full Cassiopeia nodes (4 CPU
+> Now submit a Slurm job asking for four processes, and run the same code on two full Uu nodes (4 CPU
 > cores). Did your timing change?
 
 ### Solution 2: parallel `for` loop with summation reduction
@@ -77,7 +77,7 @@ slow(Int64(1e9), 9)   # total = 14.241913010399013
 This will produce the single time for the entire parallel loop (19.03s in my case).
 
 > ## Exercise 8
-> Repeat on two full Cassiopeia nodes (4 CPU cores). Did your timing change?
+> Repeat on two full Uu nodes (4 CPU cores). Did your timing change?
 
 I tested this code (`parallelFor.jl`) on Cedar with v1.5.2:
 

@@ -65,7 +65,7 @@ Let's restart Julia with `julia` (single control process).
 
 ```julia
 using Distributed
-addprocs(4)   # add 4 worker processes; this might take a while on Cassiopeia
+addprocs(4)   # add 4 worker processes; this might take a while on Uu
 println("number of cores = ", nprocs())       # 5 cores
 println("number of workers = ", nworkers())   # 4 workers
 workers()                                     # list worker IDs
@@ -204,7 +204,7 @@ slow(10, 9)
 slow(Int64(1e9), 9)     # serial run: total = 14.2419130103833
 ```
 
-For me this serial run takes 41.70s, 41.66s, 41.46s on Cassiopeia's login node. Next, let's run it on 3 (control + 2
+For me this serial run takes 41.70s, 41.66s, 41.46s on Uu's login node. Next, let's run it on 3 (control + 2
 workers) cores simultaneously:
 
 ```julia

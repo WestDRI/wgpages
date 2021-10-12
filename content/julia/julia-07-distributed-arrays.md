@@ -123,7 +123,7 @@ showDistribution(de)
 ```
 
 > ## Exercise 9
-> Using either `top` or `htop` command on Cassiopeia, study memory usage with DistributedArrays. Are these arrays really
+> Using either `top` or `htop` command on Uu, study memory usage with DistributedArrays. Are these arrays really
 > distributed across processes? Use a _largish_ array for this: large enough to spot memory usage, but not too large not
 > to exceed physical memory and not to block other participants (especially if you do this on the login node).
 
