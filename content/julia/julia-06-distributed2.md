@@ -70,25 +70,27 @@ added together.
 Now let's measure the times:
 
 ```julia
-slow(10, 9)
-slow(Int64(1e9), 9)   # total = 14.241913010399013
+# slow(10, 9)
+precompile(slow, (Int, Int))
+slow(Int64(1e8), 9)   # total = 13.277605949855722
 ```
 
-This will produce the single time for the entire parallel loop (19.03s in my case).
+This will produce the single time for the entire parallel loop (1.43s in my case).
 
 > ## Exercise 8
 > Repeat on two full Uu nodes (4 CPU cores). Did your timing change?
 
-I tested this code (`parallelFor.jl`) on Cedar with v1.5.2:
+I tested this code (`parallelFor.jl`) on Cedar with v1.5.2 and `n=Int64(1e9)`:
 
 ```sh
+#!/bin/bash
 #SBATCH --ntasks=...   # number of MPI tasks
 #SBATCH --cpus-per-task=1
 #SBATCH --nodes=1-1   # change process distribution across nodes
 #SBATCH --mem-per-cpu=3600M
 #SBATCH --time=0:5:0
 #SBATCH --account=...
-module load julia/1.5.2
+module load julia
 echo $SLURM_NODELIST
 # comment out addprocs() in the code
 julia -p $SLURM_NTASKS parallelFor.jl
@@ -110,11 +112,9 @@ Let's write `mappingArguments.jl` with a new version of `slow()` that will compu
 ```julia
 @everywhere function slow((n, digits, taskid, ntasks))   # the argument is now a tuple
     println("running on worker ", myid())
-    total = 0.0
-    for i in taskid:ntasks:n   # partial sum
-        if !digitsin(digits, i)
-            total += 1.0 / i
-        end
+	total = 0.0
+	@time for i in taskid:ntasks:n   # partial sum with a stride `ntasks`
+        !digitsin(digits, i) && (total += 1.0 / i)   # compact if statement
     end
     return(total)
 end
@@ -125,7 +125,7 @@ and launch the function on each worker:
 ```julia
 slow((10, 9, 1, 1))   # package arguments in a tuple
 nw = nworkers()
-args = [(Int64(1e9),9,j,nw) for j in 1:nw]   # array of tuples to be mapped to workers
+args = [(Int64(1e8),9,j,nw) for j in 1:nw]   # array of tuples to be mapped to workers
 println("total = ", sum(pmap(slow, args)))   # launch the function on each worker and sum the results
 ```
 
@@ -134,6 +134,20 @@ These two syntaxes are equivalent:
 ```julia
 sum(pmap(slow, args))
 sum(pmap(x->slow(x), args))
+```
+
+We see the following times from individual processes:
+
+```sh
+From worker 2:	running on worker 2
+From worker 3:	running on worker 3
+From worker 4:	running on worker 4
+From worker 5:	running on worker 5
+From worker 2:	  0.617099 seconds
+From worker 3:	  0.619604 seconds
+From worker 4:	  0.656923 seconds
+From worker 5:	  0.675806 seconds
+total = 13.277605949854518
 ```
 
 ### Optional integration with Slurm

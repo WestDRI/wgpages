@@ -37,8 +37,8 @@ computer.
 {{<linktitle url="../julia/julia-02-threads1" text="Base.Threads (part 1)">}} \
 {{<linktitle url="../julia/julia-03-slow-series" text="Slow series">}} \
 {{<linktitle url="../julia/julia-04-threads2" text="Base.Threads (part 2)">}} \
-{{<linktitle url="../julia/julia-05-distributed1" text="Distributed.jl (part 1)">}} \
-{{<linktitle url="../julia/julia-06-distributed2" text="Distributed.jl (part 2)">}}
+{{<linktitle url="../julia/julia-05-distributed1" text="Distributed.jl (part 1: basics)">}} \
+{{<linktitle url="../julia/julia-06-distributed2" text="Distributed.jl (part 2: three scalable versions of parallel slow series)">}}
 
 In the afternoon Zoom session you'll be working on one of two projects: parallelizing Julia set (I recommend to do this
 with distributed arrays) and parallelizing the N-body code (I recommend to do this with shared arrays). **Note:** we

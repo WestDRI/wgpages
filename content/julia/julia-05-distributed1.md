@@ -40,6 +40,7 @@ julia -p 8 code.jl     # run the code with Julia control process + 8 worker proc
 #SBATCH --cpus-per-task=1
 #SBATCH --mem-per-cpu=3600M
 #SBATCH --time=00:10:00
+#SBATCH --account=def-someuser
 srun hostname -s > hostfile   # parallel I/O
 sleep 5
 module load julia/1.6.0
@@ -48,7 +49,7 @@ julia --machine-file ./hostfile ./code.jl
 
 3. from the control process, after starting Julia as usual with `julia`:
 
-```julia
+```jl
 using Distributed
 addprocs(8)
 ```
@@ -63,7 +64,7 @@ machine file.
 
 Let's restart Julia with `julia` (single control process).
 
-```julia
+```jl
 using Distributed
 addprocs(4)   # add 4 worker processes; this might take a while on Uu
 println("number of cores = ", nprocs())       # 5 cores
@@ -73,14 +74,14 @@ workers()                                     # list worker IDs
 
 You can easily remove selected workers from the pool:
 
-```julia
+```jl
 rmprocs(2, 3, waitfor=0)   # remove processes 2 and 3 immediately
 workers()
 ```
 
 or you can remove all of them:
 
-```julia
+```jl
 for i in workers()     # cycle through all workers
     t = rmprocs(i, waitfor=0)
     wait(t)            # wait for this operation to finish
@@ -95,14 +96,14 @@ workers()
 
 Let's restart Julia with `julia` (single control process).
 
-```julia
+```jl
 using Distributed
 addprocs(4)       # add 4 worker processes
 ```
 
 Let's define a function on the control process and all workers and run it:
 
-```julia
+```jl
 @everywhere function showid()   # define the function everywhere
     println("my id = ", myid())
 end
@@ -113,20 +114,20 @@ showid()                        # run the function on the control process
 `@everywhere` does not capture any local variables (unlike `@spawnat` that we'll study below), so on workers we don't
 see any variables from the control process:
 
-```julia
+```jl
 x = 5     # local (control process only)
 @everywhere println(x)    # get errors: x is not defined elsewhere
 ```
 
 However, you can still obtain the value of `x` from the control process by using this syntax:
 
-```julia
+```jl
 @everywhere println($x)   # use the value of `x` from the control process
 ```
 
 The macro that we'll use a lot today is `@spawnat`. If we type:
 
-```julia
+```jl
 a = 12
 @spawnat 2 println(a)     # will print 12 from worker 2
 ```
@@ -140,14 +141,14 @@ it will do the following:
 
 Now let's modify our code slightly:
 
-```julia
+```jl
 a = 12
 @spawnat 2 a+10          # Future returned but no visible calculation
 ```
 
 There is no visible calculation happening; we need to fetch the result from the remote function before we can print it:
 
-```julia
+```jl
 r = @spawnat 2 a+10
 typeof(r)
 fetch(r)                 # get the result from the remote function; this will pause
@@ -156,14 +157,14 @@ fetch(r)                 # get the result from the remote function; this will pa
 
 You can combine both `@spawnat` and `fetch()` in one line:
 
-```julia
+```jl
 fetch(@spawnat 2 a+10)   # combine both in one line; the control process will pause
 @fetchfrom 2 a+10        # shorter notation; exactly the same as the previous command
 ```
 
 You can also spawn computation on any available worker:
 
-```julia
+```jl
 r = @spawnat :any log10(a)   # start running on one of the workers
 fetch(r)
 ```
@@ -173,8 +174,9 @@ fetch(r)
 Let's restart Julia with `julia -p 2` (control process + 2 workers). We'll start with our serial code (below), and let's
 save it as `serialDistributed.jl` and run it.
 
-```julia
+```jl
 using Distributed
+using BenchmarkTools
 
 @everywhere function digitsin(digits::Int, num)
     base = 10
@@ -192,45 +194,55 @@ end
 
 @everywhere function slow(n::Int64, digits::Int)
     total = Int64(0)
-    @time for i in 1:n
+    for i in 1:n
         if !digitsin(digits, i)
             total += 1.0 / i
         end
     end
-    println("total = ", total)
+    return total
 end
 
-slow(10, 9)
-slow(Int64(1e9), 9)     # serial run: total = 14.2419130103833
+@btime slow(Int64(1e8), 9)     # serial run: total = 13.277605949858103
 ```
 
-For me this serial run takes 41.70s, 41.66s, 41.46s on Uu's login node. Next, let's run it on 3 (control + 2
-workers) cores simultaneously:
+For me this serial run takes 2.997 s on Uu's login node. Next, let's run it on 3 (control + 2 workers) cores
+simultaneously:
 
-```julia
-@everywhere slow(Int64(1e9), 9)   # runs on 3 (control + 2 workers) cores simultaneously, 32.9s+32.6s+32.7s,
+```jl
+@everywhere using BenchmarkTools
+@everywhere @btime slow(Int64(1e8), 9)   # runs on 3 (control + 2 workers) cores simultaneously
 ```
 
 Here we are being silly: this code is serial, so each core performs the same calculation ... I see the following times
-printed on my screen: 59.67s + 56.87s + 57.00s -- each is from a separate process. Overall, it took ~57s of wallclock
-time to run the last command.
+printed on my screen: 3.097 s, 2.759 s, 3.014 s -- each is from a separate process running the code in serial.
 
-> ## Exercise 5
-> Why does it take longer than on a single core? On a related question, anyone can guess how long the following
-> computation will take:
-```julia
-addprocs(2)   # for the total of 4 workers
->>> redefine digitsin() and slow() everywhere
-@everywhere slow(Int64(1e9), 9)
-```
+<!-- When I try to run this code on my laptop (2 CPU cores), and I switch to timing with `@time` (resulting in only one run -->
+<!-- per process): -->
 
-More importantly, how do we make this code parallel?
+<!-- ```jl -->
+<!-- @everywhere @time slow(Int64(1e8), 9)   # runs on 3 (control + 2 workers) cores simultaneously -->
+<!-- ``` -->
+
+<!-- Overall, it took ~57s of wallclock -->
+<!-- time to run the last command. -->
+
+<!-- > ## Exercise 5 -->
+<!-- > Why does it take longer than on a single core? On a related question, anyone can guess how long the following -->
+<!-- > computation will take: -->
+<!-- ```jl -->
+<!-- addprocs(2)   # for the total of 4 workers -->
+<!-- >>> redefine digitsin() and slow() everywhere -->
+<!-- @everywhere using BenchmarkTools -->
+<!-- @everywhere slow(Int64(1e9), 9) -->
+<!-- ``` -->
+
+How do we make this code parallel and make it run faster?
 
 ### Parallelizing our slow series: non-scalable version
 
 Let's restart Julia with `julia` (single control process) and add 2 worker processes:
 
-```julia
+```jl
 using Distributed
 addprocs(2)
 workers()
@@ -238,7 +250,7 @@ workers()
 
 We need to redefine `digitsin()` everywhere, and then let's modify `slow()` to compute a partial sum:
 
-```julia
+```jl
 @everywhere function slow(n::Int, digits::Int, taskid, ntasks)   # two additional arguments
     println("running on worker ", myid())
     total = 0.
@@ -253,15 +265,16 @@ end
 
 Now we can actually use it:
 
-```julia
-slow(Int64(10), 9, 1, 2)   # precompile the code
-a = @spawnat :any slow(Int64(1e9), 9, 1, 2)
-b = @spawnat :any slow(Int64(1e9), 9, 2, 2)
-print("total = ", fetch(a) + fetch(b))   # 14.241913010372754
+```jl
+# slow(Int64(10), 9, 1, 2)   # precompile the code
+precompile(slow, (Int, Int, Int, Int))
+a = @spawnat :any slow(Int64(1e8), 9, 1, 2)
+b = @spawnat :any slow(Int64(1e8), 9, 2, 2)
+print("total = ", fetch(a) + fetch(b))   # 13.277605949852546
 ```
 
-For timing I got 16.42s+19.44s, which is a 2X speedup compared to the serial run -- this is great result! Notice that we
-received a slightly different numerical result, due to a different order of summation.
+For timing I got 1.26s and 1.31s, running concurrently, which is a 2X speedup compared to the serial run -- this is
+great result! Notice that we received a slightly different numerical result, due to a different order of summation.
 
 However, our code is **not scalable**: it's only limited to a small number of sums each spawned with its own Future
 reference. If we want to scale it to 100 workers, we'll have a problem.
