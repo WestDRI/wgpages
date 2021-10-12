@@ -66,6 +66,11 @@ batch jobs on an HPC cluster, so we'll be using Julia from the command line.
 
 > **Pause**: We will now distribute accounts and passwords to connect to the cluster.
 
+Our training cluster has:
+
+1. one login node with 16 *"persistent"* cores and 32GB memory, and
+1. 16 compute nodes with 2 *"compute"* cores and 7.5GB memory each.
+
 #### Julia packages on the training cluster
 
 Normally, you would install a Julia package by typing `] add packageName` in REPL and then waiting for it to install. A

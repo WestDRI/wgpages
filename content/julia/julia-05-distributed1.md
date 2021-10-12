@@ -15,8 +15,8 @@ higher-level operations like calls to user functions on a remote process.
 - a **remote call** is a request by one processor to call a function on another processor; returns a **remote/future
   reference**
 - the processor that made the call proceeds to its next operation while the remote call is computing, i.e. the call is
-  non-blocking
-- you can obtain the remote result with `fetch()`
+  **non-blocking**
+- you can obtain the remote result with `fetch()` or make the calling processor block with `wait()`
 
 In this workflow you have a single control process + multiple worker processes. Processes pass information via messages
 underneath, not via variables in shared memory
@@ -92,6 +92,12 @@ addprocs(4)   # add 4 new worker processes (notice the new IDs!)
 workers()
 ```
 
+> ## Discussion
+> If from the control process we start $N=8$ workers, where will these processes run? Consider the following cases:
+> 1. a laptop with 2 CPU cores,
+> 1. a cluster login node with 16 CPU cores,
+> 1. a cluster Slurm job with 4 CPU cores.
+
 ### Remote calls
 
 Let's restart Julia with `julia` (single control process).
@@ -162,7 +168,19 @@ fetch(@spawnat 2 a+10)   # combine both in one line; the control process will pa
 @fetchfrom 2 a+10        # shorter notation; exactly the same as the previous command
 ```
 
-You can also spawn computation on any available worker:
+> ## Exercise "Distributed.1"
+> Try to define and run a function on one of the workers, e.g.
+> ```julia
+> function cube(x)
+>     return x*x*x
+> end
+> ```
+
+> ## Exercise "Distributed.2"
+> Now run the same function on all workers, but not on the control process. **Hint**: use `workers()` to cycle through
+> all worker processes.
+
+You can also spawn computation on *any* available worker:
 
 ```jl
 r = @spawnat :any log10(a)   # start running on one of the workers

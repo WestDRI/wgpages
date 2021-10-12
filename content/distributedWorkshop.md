@@ -1,6 +1,7 @@
 +++
 title = "Multi-processing in Julia"
 slug = "distributed"
+katex = true
 +++
 
 {{<cor>}}Thursday, October 14, 2021{{</cor>}}\
@@ -47,6 +48,11 @@ notebook. Today we will be running multiple threads and processes, with the even
 batch jobs on an HPC cluster, so we'll be using Julia from the command line.
 
 > **Pause**: We will now distribute accounts and passwords to connect to the cluster.
+
+Our training cluster has:
+
+1. one login node with 16 *"persistent"* cores and 32GB memory, and
+1. 16 compute nodes with 2 *"compute"* cores and 7.5GB memory each.
 
 #### Julia packages on the training cluster
 
@@ -214,8 +220,8 @@ higher-level operations like calls to user functions on a remote process.
 - a **remote call** is a request by one processor to call a function on another processor; returns a **remote/future
   reference**
 - the processor that made the call proceeds to its next operation while the remote call is computing, i.e. the call is
-  non-blocking
-- you can obtain the remote result with `fetch()`
+  **non-blocking**
+- you can obtain the remote result with `fetch()` or make the calling processor block with `wait()`
 
 In this workflow you have a single control process + multiple worker processes. Processes pass information via messages
 underneath, not via variables in shared memory
@@ -291,6 +297,12 @@ addprocs(4)   # add 4 new worker processes (notice the new IDs!)
 workers()
 ```
 
+> ## Discussion
+> If from the control process we start $N=8$ workers, where will these processes run? Consider the following cases:
+> 1. a laptop with 2 CPU cores,
+> 1. a cluster login node with 16 CPU cores,
+> 1. a cluster Slurm job with 4 CPU cores.
+
 ## Remote calls
 
 Let's restart Julia with `julia` (single control process).
@@ -361,7 +373,19 @@ fetch(@spawnat 2 a+10)   # combine both in one line; the control process will pa
 @fetchfrom 2 a+10        # shorter notation; exactly the same as the previous command
 ```
 
-You can also spawn computation on any available worker:
+> ## Exercise "Distributed.1"
+> Try to define and run a function on one of the workers, e.g.
+> ```julia
+> function cube(x)
+>     return x*x*x
+> end
+> ```
+
+> ## Exercise "Distributed.2"
+> Now run the same function on all workers, but not on the control process. **Hint**: use `workers()` to cycle through
+> all worker processes.
+
+You can also spawn computation on *any* available worker:
 
 ```jl
 r = @spawnat :any log10(a)   # start running on one of the workers
@@ -466,8 +490,8 @@ We could create an array (using *array comprehension*) of Future references and 
 results. An array comprehension is similar to Python's list comprehension:
 
 ```julia
-a = [i for i in 1:5];
-typeof(a)   # 1D array of Int64
+a = [i for i in 1:5];   # array comprehension in Julia
+typeof(a)               # 1D array of Int64
 ```
 We can cycle through all available workers:
 
@@ -476,14 +500,15 @@ We can cycle through all available workers:
 [(i,w) for (i,w) in enumerate(workers())]   # array of tuples (counter, worker ID)
 ```
 
-> ## Exercise 6
+> ## Exercise "Distributed.3"
 > Using this syntax, construct an array `r` of Futures, and then get their results and sum them up with
 > ```julia
 > print("total = ", sum([fetch(r[i]) for i in 1:nworkers()]))
 > ```
+> You can do this exercise using either the array comprehension from above, or the good old `for` loops.
 
 <!-- ```julia -->
-<!-- r = [@spawnat p slow(Int64(1e9), 9, i, nworkers()) for (i,p) in enumerate(workers())] -->
+<!-- r = [@spawnat w slow(Int64(1e8), 9, i, nworkers()) for (i,w) in enumerate(workers())] -->
 <!-- print("total = ", sum([fetch(r[i]) for i in 1:nworkers()])) -->
 <!-- # runtime with 2 simultaneous processes: 10.26+12.11s -->
 <!-- ``` -->
@@ -491,9 +516,9 @@ We can cycle through all available workers:
 With two workers and two CPU cores, we should get times very similar to the last run. However, now our code can scale to
 much larger number of cores!
 
-> ## Exercise 7
-> Now submit a Slurm job asking for four processes, and run the same code on two full Uu nodes (4 CPU
-> cores). Did your timing change?
+> ## Exercise "Distributed.4"
+> If you did the previous exercise on the login node, now submit a Slurm job running the same code on two full Uu nodes
+> (4 CPU cores). If you did the previous exercise with Slurm, now change the number of workers. Did your timing change?
 
 ## Solution 2: parallel `for` loop with summation reduction
 
@@ -530,10 +555,17 @@ precompile(slow, (Int, Int))
 slow(Int64(1e8), 9)   # total = 13.277605949855722
 ```
 
-This will produce the single time for the entire parallel loop (1.43s in my case).
+> ## Exercise "Distributed.5"
+> Switch from using `@time` to using `@btime` in this code. What changes did you have to make?
 
-> ## Exercise 8
-> Repeat on two full Uu nodes (4 CPU cores). Did your timing change?
+<!-- 1. remove `@time` from inside `slow()` definition, add `@btime` when calling the function -->
+<!-- 1. replace printing `total` with `return total` -->
+<!-- 1. now don't have to precompile the function -->
+
+This will produce the single time for the entire parallel loop (1.498s in my case).
+
+> ## Exercise "Distributed.6"
+> Repeat on four full Uu nodes (8 CPU cores). Did your timing improve?
 
 I tested this code (`parallelFor.jl`) on Cedar with v1.5.2 and `n=Int64(1e9)`:
 
