@@ -41,7 +41,7 @@ https://www.backblaze.com/blog/whats-the-diff-programs-processes-and-threads")
 
 In Julia you can parallelize your code with multiple threads, or with multiple processes, or both (hybrid parallelization).
 
-> ## Discussion
+> ### Discussion
 > What are the benefits of each: threads vs. processes? Consider (1) context switching, e.g. starting and terminating or
 > concurrent execution, (2) communication, (3) scaling up.
 

@@ -25,7 +25,7 @@ end
 @btime slow(Int64(1e8), 9)
 ```
 
-> ## Exercise "Threads.1"
+> ### Exercise "Threads.1"
 > Put this version of `slow()` along with `digitsin()` into a file `atomicThreads.jl` and run it from the bash terminal
 > (or from from REPL). First, time this code with 1e8 terms using one thread (serial run `julia
 > atomicThreads.jl`). Next, time it with four threads (parallel run `julia -t 4 atomicThreads.jl`). Did you get any
@@ -36,7 +36,7 @@ makes sense: with one thread there is no waiting for the variable to be released
 
 With four threads on the login node I measured 5.261 s -- let's discuss! Is this what we expected?
 
-> ## Exercise "Threads.2"
+> ### Exercise "Threads.2"
 > Let's run using four threads on a compute node. Do you get similar or different numbers compared to the login node?
 >
 
@@ -63,7 +63,7 @@ end
 @btime slow(Int64(1e8), 9)
 ```
 
-> ## Exercise "Threads.3"
+> ### Exercise "Threads.3"
 > Save this code as `separateSums.jl` (along with other necessary bits) and run it on four threads from the command line
 > `julia -t 4 separateSums.jl`. What is your new code's timing?
 
@@ -98,7 +98,7 @@ end
 
 Let's time this version together with `heavyThreads.jl`: 984.076 ms -- is this the fastest version?
 
-> ## Exercise "Threads.4"
+> ### Exercise "Threads.4"
 > Would the runtime be different if we use 2 threads instead of 4?
 
 Finally, below are the timings on Cedar with `heavyThreads.jl`. Note that the times reported here were measured with

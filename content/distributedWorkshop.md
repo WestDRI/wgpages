@@ -20,8 +20,6 @@ on your computer (although you can via https://julialang.org/downloads). To acce
 install an SSH client on your computer such as the free MobaXterm Home Edition from
 https://mobaxterm.mobatek.net/download.html.
 
-# Workshop materials
-
 ## Processes vs. threads
 
 In Unix a **process** is the smallest independent unit of processing, with its own memory space -- think of an instance
@@ -46,7 +44,7 @@ https://www.backblaze.com/blog/whats-the-diff-programs-processes-and-threads")
 
 In Julia you can parallelize your code with multiple threads, or with multiple processes, or both (hybrid parallelization).
 
-> ## Discussion
+> ### Discussion
 > What are the benefits of each: threads vs. processes? Consider (1) context switching, e.g. starting and terminating or
 > concurrent execution, (2) communication, (3) scaling up.
 
@@ -307,7 +305,7 @@ addprocs(4)   # add 4 new worker processes (notice the new IDs!)
 workers()
 ```
 
-> ## Discussion
+> ### Discussion
 > If from the control process we start $N=8$ workers, where will these processes run? Consider the following cases:
 > 1. a laptop with 2 CPU cores,
 > 1. a cluster login node with 16 CPU cores,
@@ -383,7 +381,7 @@ fetch(@spawnat 2 a+10)   # combine both in one line; the control process will pa
 @fetchfrom 2 a+10        # shorter notation; exactly the same as the previous command
 ```
 
-> ## Exercise "Distributed.1"
+> ### Exercise "Distributed.1"
 > Try to define and run a function on one of the workers, e.g.
 > ```julia
 > function cube(x)
@@ -391,7 +389,7 @@ fetch(@spawnat 2 a+10)   # combine both in one line; the control process will pa
 > end
 > ```
 
-> ## Exercise "Distributed.2"
+> ### Exercise "Distributed.2"
 > Now run the same function on all workers, but not on the control process. **Hint**: use `workers()` to cycle through
 > all worker processes.
 
@@ -510,7 +508,7 @@ We can cycle through all available workers:
 [(i,w) for (i,w) in enumerate(workers())]   # array of tuples (counter, worker ID)
 ```
 
-> ## Exercise "Distributed.3"
+> ### Exercise "Distributed.3"
 > Using this syntax, construct an array `r` of Futures, and then get their results and sum them up with
 > ```julia
 > print("total = ", sum([fetch(r[i]) for i in 1:nworkers()]))
@@ -526,7 +524,7 @@ We can cycle through all available workers:
 With two workers and two CPU cores, we should get times very similar to the last run. However, now our code can scale to
 much larger number of cores!
 
-> ## Exercise "Distributed.4"
+> ### Exercise "Distributed.4"
 > If you did the previous exercise on the login node, now submit a Slurm job running the same code on two full Uu nodes
 > (4 CPU cores). If you did the previous exercise with Slurm, now change the number of workers. Did your timing change?
 
@@ -565,7 +563,7 @@ precompile(slow, (Int, Int))
 slow(Int64(1e8), 9)   # total = 13.277605949855722
 ```
 
-> ## Exercise "Distributed.5"
+> ### Exercise "Distributed.5"
 > Switch from using `@time` to using `@btime` in this code. What changes did you have to make?
 
 <!-- 1. remove `@time` from inside `slow()` definition, add `@btime` when calling the function -->
@@ -574,7 +572,7 @@ slow(Int64(1e8), 9)   # total = 13.277605949855722
 
 This will produce the single time for the entire parallel loop (1.498s in my case).
 
-> ## Exercise "Distributed.6"
+> ### Exercise "Distributed.6"
 > Repeat on four full Uu nodes (8 CPU cores). Did your timing improve?
 
 I tested this code (`parallelFor.jl`) on Cedar with v1.5.2 and `n=Int64(1e9)`:

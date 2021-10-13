@@ -92,7 +92,7 @@ addprocs(4)   # add 4 new worker processes (notice the new IDs!)
 workers()
 ```
 
-> ## Discussion
+> ### Discussion
 > If from the control process we start $N=8$ workers, where will these processes run? Consider the following cases:
 > 1. a laptop with 2 CPU cores,
 > 1. a cluster login node with 16 CPU cores,
@@ -168,7 +168,7 @@ fetch(@spawnat 2 a+10)   # combine both in one line; the control process will pa
 @fetchfrom 2 a+10        # shorter notation; exactly the same as the previous command
 ```
 
-> ## Exercise "Distributed.1"
+> ### Exercise "Distributed.1"
 > Try to define and run a function on one of the workers, e.g.
 > ```julia
 > function cube(x)
@@ -176,7 +176,7 @@ fetch(@spawnat 2 a+10)   # combine both in one line; the control process will pa
 > end
 > ```
 
-> ## Exercise "Distributed.2"
+> ### Exercise "Distributed.2"
 > Now run the same function on all workers, but not on the control process. **Hint**: use `workers()` to cycle through
 > all worker processes.
 
@@ -244,7 +244,7 @@ printed on my screen: 3.097 s, 2.759 s, 3.014 s -- each is from a separate proce
 <!-- Overall, it took ~57s of wallclock -->
 <!-- time to run the last command. -->
 
-<!-- > ## Exercise 5 -->
+<!-- > ### Exercise 5 -->
 <!-- > Why does it take longer than on a single core? On a related question, anyone can guess how long the following -->
 <!-- > computation will take: -->
 <!-- ```jl -->

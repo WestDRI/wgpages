@@ -445,7 +445,7 @@ savefig("parallel.png")
 <!-- Let's run this code. It'll produce the file `test.nc` that you can download to your computer and visualize with ParaView -->
 <!-- or other visualization tool. -->
 
-<!-- > ## Exercise 11 -->
+<!-- > ### Exercise 11 -->
 <!-- > 1. Compare the expected and actual file sizes. -->
 <!-- > 1. Try other parameter values: -->
 <!-- > ```julia -->

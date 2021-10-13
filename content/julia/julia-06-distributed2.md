@@ -21,7 +21,7 @@ We can cycle through all available workers:
 [(i,w) for (i,w) in enumerate(workers())]   # array of tuples (counter, worker ID)
 ```
 
-> ## Exercise "Distributed.3"
+> ### Exercise "Distributed.3"
 > Using this syntax, construct an array `r` of Futures, and then get their results and sum them up with
 > ```julia
 > print("total = ", sum([fetch(r[i]) for i in 1:nworkers()]))
@@ -37,7 +37,7 @@ We can cycle through all available workers:
 With two workers and two CPU cores, we should get times very similar to the last run. However, now our code can scale to
 much larger number of cores!
 
-> ## Exercise "Distributed.4"
+> ### Exercise "Distributed.4"
 > If you did the previous exercise on the login node, now submit a Slurm job running the same code on two full Uu nodes
 > (4 CPU cores). If you did the previous exercise with Slurm, now change the number of workers. Did your timing change?
 
@@ -76,7 +76,7 @@ precompile(slow, (Int, Int))
 slow(Int64(1e8), 9)   # total = 13.277605949855722
 ```
 
-> ## Exercise "Distributed.5"
+> ### Exercise "Distributed.5"
 > Switch from using `@time` to using `@btime` in this code. What changes did you have to make?
 
 <!-- 1. remove `@time` from inside `slow()` definition, add `@btime` when calling the function -->
@@ -85,7 +85,7 @@ slow(Int64(1e8), 9)   # total = 13.277605949855722
 
 This will produce the single time for the entire parallel loop (1.498s in my case).
 
-> ## Exercise "Distributed.6"
+> ### Exercise "Distributed.6"
 > Repeat on four full Uu nodes (8 CPU cores). Did your timing improve?
 
 I tested this code (`parallelFor.jl`) on Cedar with v1.5.2 and `n=Int64(1e9)`:
