@@ -13,32 +13,42 @@ external packages. Today we will spend more time on Julia multiprocessing with D
 through a series of hands-on exercises where you launch processes either on the same multi-core machine or on a
 multi-node HPC cluster.
 
-# Prerequisites
-
-We expect participants to be somewhat familiar with basic Julia syntax and with running Julia codes interactively --
-this material was covered in our introductory webinar https://bit.ly/2Y8LJbZ. For all participants, we will provide
-access (with guest accounts) to a remote cluster with Julia installed, so you don't need to install Julia on your
-computer (although you can via https://julialang.org/downloads). To access our remote system, you will need to install
-an SSH client on your computer such as the free MobaXterm Home Edition from https://mobaxterm.mobatek.net/download.html.
+**Prerequisites**: We expect participants to be somewhat familiar with basic Julia syntax and with running Julia codes
+interactively -- this material was covered in our introductory webinar https://bit.ly/2Y8LJbZ. For all participants, we
+will provide access (with guest accounts) to a remote cluster with Julia installed, so you don't need to install Julia
+on your computer (although you can via https://julialang.org/downloads). To access our remote system, you will need to
+install an SSH client on your computer such as the free MobaXterm Home Edition from
+https://mobaxterm.mobatek.net/download.html.
 
 # Workshop materials
 
 ## Processes vs. threads
 
-In Unix a process is the smallest independent unit of processing, with its own memory space -- think of a running
-application. A process can contain multiple threads, each running on its own CPU core (parallel execution), or sharing
-CPU cores if there are too few CPU cores relative to the number of threads (parallel + concurrent execution). All
-threads in a Unix process share the virtual memory address space of that process, e.g. several threads can update the
-same variable, whether it is safe to do so or not (we'll talk about thread-safe programming in this course).
+In Unix a **process** is the smallest independent unit of processing, with its own memory space -- think of an instance
+of a running application. The operating system tries its best to isolate processes so that a problem with one process
+doesn’t corrupt or cause havoc with another process. Context switching between processes is relatively expensive.
 
-In Julia you can parallelize a code with multiple threads, or with multiple processes, or both (hybrid parallelization).
+A process can contain multiple **threads**, each running on its own CPU core (parallel execution), or sharing CPU cores
+if there are too few CPU cores relative to the number of threads (parallel + concurrent execution). All threads in a
+Unix process share the virtual memory address space of that process, e.g. several threads can update the same variable,
+whether it is safe to do so or not (we'll talk about thread-safe programming in this course). Context switching between
+threads of the same process is less expensive.
+
+![Alt text here](/img/threads.png "Image copied from
+https://www.backblaze.com/blog/whats-the-diff-programs-processes-and-threads")
 
 - Threads within a process communicate via shared memory, so multi-threading is always limited to shared memory within
   one node.
-- Processes communicate via messages (over the cluster interconnect or shared memory); multi-processing can be in shared
-  memory (one node, multiple CPU cores) or distributed memory (multiple cluster nodes). With multi-processing there is
-  no scaling limitation, but traditionally it has been more difficult to write code for distributed-memory
+- Processes communicate via messages (over the cluster interconnect or via shared memory). Multi-processing can be in
+  shared memory (one node, multiple CPU cores) or distributed memory (multiple cluster nodes). With multi-processing
+  there is no scaling limitation, but traditionally it has been more difficult to write code for distributed-memory
   systems. Julia tries to simplify it with high-level abstractions.
+
+In Julia you can parallelize your code with multiple threads, or with multiple processes, or both (hybrid parallelization).
+
+> ## Discussion
+> What are the benefits of each: threads vs. processes? Consider (1) context switching, e.g. starting and terminating or
+> concurrent execution, (2) communication, (3) scaling up.
 
 ## Running Julia in REPL
 

@@ -78,7 +78,7 @@ ncwrite(data, filename, "stability");
 Let's run this code with `julia juliaSetSerial.jl`. It'll produce the file `test.nc` that you can download to your
 computer and visualize with ParaView or other visualization tool.
 
-> ## Exercise 11
+> ## Exercise "Fractal.1"
 > 1. Compare the expected and actual file sizes.
 > 1. Try other parameter values:
 > ```julia

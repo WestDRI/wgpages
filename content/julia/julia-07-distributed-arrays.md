@@ -122,7 +122,7 @@ de = distribute(e)       # distribute `e` across all workers
 showDistribution(de)
 ```
 
-> ## Exercise 9
+> ## Exercise "DArrays.1"
 > Using either `top` or `htop` command on Uu, study memory usage with DistributedArrays. Are these arrays really
 > distributed across processes? Use a _largish_ array for this: large enough to spot memory usage, but not too large not
 > to exceed physical memory and not to block other participants (especially if you do this on the login node).
@@ -185,7 +185,7 @@ d = DArray(reshape([d11 d12 d21 d22],(2,2)))   # create a distributed 8x8 matrix
 d
 ```
 
-> ## Exercise 10
+> ## Exercise "DArrays.2"
 > At this point, if you redefine `showDistribution()` (need to do this only on the control process!), most likely you
 > will see no output if you run `showDistribution(d)`. Any idea why?
 
