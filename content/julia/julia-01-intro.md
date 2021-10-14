@@ -21,7 +21,7 @@ weight = 1
 
 In Unix a **process** is the smallest independent unit of processing, with its own memory space -- think of an instance
 of a running application. The operating system tries its best to isolate processes so that a problem with one process
-doesn’t corrupt or cause havoc with another process. Context switching between processes is relatively expensive.
+doesn't corrupt or cause havoc with another process. Context switching between processes is relatively expensive.
 
 A process can contain multiple **threads**, each running on its own CPU core (parallel execution), or sharing CPU cores
 if there are too few CPU cores relative to the number of threads (parallel + concurrent execution). All threads in a
@@ -32,10 +32,10 @@ threads of the same process is less expensive.
 ![Alt text here](/img/threads.png "Image copied from
 https://www.backblaze.com/blog/whats-the-diff-programs-processes-and-threads")
 
-- Threads within a process communicate via shared memory, so multi-threading is always limited to shared memory within
-  one node.
-- Processes communicate via messages (over the cluster interconnect or via shared memory). Multi-processing can be in
-  shared memory (one node, multiple CPU cores) or distributed memory (multiple cluster nodes). With multi-processing
+- Threads within a process communicate via shared memory, so **multi-threading** is always limited to shared memory
+  within one node.
+- Processes communicate via messages (over the cluster interconnect or via shared memory). **Multi-processing** can be
+  in shared memory (one node, multiple CPU cores) or distributed memory (multiple cluster nodes). With multi-processing
   there is no scaling limitation, but traditionally it has been more difficult to write code for distributed-memory
   systems. Julia tries to simplify it with high-level abstractions.
 
