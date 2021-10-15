@@ -29,8 +29,7 @@ doesn't corrupt or cause havoc with another process. Context switching between p
 A process can contain multiple **threads**, each running on its own CPU core (parallel execution), or sharing CPU cores
 if there are too few CPU cores relative to the number of threads (parallel + concurrent execution). All threads in a
 Unix process share the virtual memory address space of that process, e.g. several threads can update the same variable,
-whether it is safe to do so or not (we'll talk about thread-safe programming in this course). Context switching between
-threads of the same process is less expensive.
+whether it is safe to do so or not. Context switching between threads of the same process is less expensive.
 
 ![Alt text here](/img/threads.png "Image copied from
 https://www.backblaze.com/blog/whats-the-diff-programs-processes-and-threads")

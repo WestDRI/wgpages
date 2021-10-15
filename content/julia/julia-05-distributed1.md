@@ -175,10 +175,29 @@ fetch(@spawnat 2 a+10)   # combine both in one line; the control process will pa
 >     return x*x*x
 > end
 > ```
+> **Hint**: Use `@everywhere` to define the function on all workers. Julia may not have a high-level mechanism to define
+> a function on a specific worker, short of loading that function as a module from a file. Something like this
+> ```jl
+> @fetchfrom 2 function cube(x)
+>     return x*x*x
+> end
+> ```
+> does not seem to work.
 
 > ### Exercise "Distributed.2"
 > Now run the same function on all workers, but not on the control process. **Hint**: use `workers()` to cycle through
-> all worker processes.
+> all worker processes and `println()` to print from each worker.
+
+<!-- ```jl -->
+<!-- using Distributed -->
+<!-- addprocs(4) -->
+<!-- @everywhere function cube(x) -->
+<!--     return x*x*x -->
+<!-- end -->
+<!-- for w in workers() -->
+<!--     @spawnat w println(cube(w)) -->
+<!-- end -->
+<!-- ``` -->
 
 You can also spawn computation on *any* available worker:
 
