@@ -200,14 +200,13 @@ function slow(n::Int64, digits::Int, a::Int64, b::Int64, numsubs=16)
 end
 
 n = Int64(1e8)
-@btime slow(n, 9, 1, n, 1)    # run the code in serial (one interval, one thread)
+@btime slow(n, 9, 1, n, 1)    # run the code in serial (one interval, use one thread)
 @btime slow(n, 9, 1, n, 4)    # 4 intervals, each scheduled to run on 1 of the threads
 @btime slow(n, 9, 1, n, 16)   # 16 intervals, each scheduled to run on 1 of the threads
 ```
 
 With four threads and `numsubs=4`, in one of my tests the runtime went down from 2.986 s (serial) to 726.044
-ms. However, depending on the number of subintervals, the operating system might decide not to use all four threads!
-Consider this:
+ms. However, depending on the number of subintervals, Julia might decide not to use all four threads!  Consider this:
 
 ```sh
 julia> nthreads()
@@ -216,7 +215,7 @@ julia> nthreads()
 julia> n = Int64(1e9)
 1000000000
 
-julia> @btime slow(n, 9, 1, n, 1)    # serial run (one interval, one thread)
+julia> @btime slow(n, 9, 1, n, 1)    # serial run (one interval, use one thread)
 computing on thread 1
 computing on thread 1
 computing on thread 1
