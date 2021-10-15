@@ -182,7 +182,7 @@ fetch(@spawnat 2 a+10)   # combine both in one line; the control process will pa
 >     return x*x*x
 > end
 > ```
-> does not seem to work.
+> does not seem to have any effect.
 
 > ### Exercise "Distributed.2"
 > Now run the same function on all workers, but not on the control process. **Hint**: use `workers()` to cycle through
@@ -194,8 +194,13 @@ fetch(@spawnat 2 a+10)   # combine both in one line; the control process will pa
 <!-- @everywhere function cube(x) -->
 <!--     return x*x*x -->
 <!-- end -->
+<!-- # one solution -->
 <!-- for w in workers() -->
 <!--     @spawnat w println(cube(w)) -->
+<!-- end -->
+<!-- # another solution -->
+<!-- for w in workers() -->
+<!--     println(@fetchfrom w cube(w)) -->
 <!-- end -->
 <!-- ``` -->
 

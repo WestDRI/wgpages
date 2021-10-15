@@ -121,11 +121,11 @@ julia -t $SLURM_CPUS_PER_TASK heavyThreads.jl
 |__Code__| serial | 2 cores | 4 cores | 8 cores | 16 cores |
 |__Time__| 7.910 s | 4.269 s | 2.443 s | 1.845 s | 1.097 s |
 
-### Task parallelism with Base.Threads
+### Task parallelism with Base.Threads: building a dynamic scheduler
 
 In addition to `@threads` (automatically parallelize a loop with multiple threads), Base.Threads includes
-`Threads.@spawn` that spawns another thread to run an expression / function and then immediately returns to the main
-thread.
+`Threads.@spawn` that runs a task (an expression / function) on any available thread and then immediately returns to the
+main thread.
 
 Consider this:
 
@@ -155,26 +155,42 @@ classical **task parallelism**, unlike `@threads` which is **data parallelism**.
 With `@spawn` it is up to you to write an algorithm to subdivide your computation into multiple threads. With a large
 loop, one possibility is to divide the loop into two pieces, offload the first piece to another thread and run the other
 one locally, and then recursively subdivide these pieces into smaller chunks. With `N` subdivisions you will have `2^N`
-threads, and only one of them will not be scheduled with `@spawn`.
+tasks running on a fixed number of threads, and only one of these tasks will not be scheduled with `@spawn`.
 
 ```jl
 using Base.Threads
 import Base.Threads.@spawn   # no idea why this syntax
 using BenchmarkTools
 
+function digitsin(digits::Int, num)
+    base = 10
+    while (digits ÷ base > 0)
+        base *= 10
+    end
+    while num > 0
+        if (num % base) == digits
+            return true
+        end
+        num ÷= 10
+    end
+    return false
+end
+
 @doc """
 a, b are the left and right edges of the current interval;
-npieces will be rounded up to the next power of 2,
-i.e. setting npieces=5 will effectively use npieces=8
+numsubs is the number of subintervals, each will be assigned to a thread;
+numsubs will be rounded up to the next power of 2,
+i.e. setting numsubs=5 will effectively use numsubs=8
 """ ->
-function slow(n::Int64, digits::Int, a::Int64, b::Int64, npieces=16)
-    if b-a > n/npieces
+function slow(n::Int64, digits::Int, a::Int64, b::Int64, numsubs=16)
+    if b-a > n/numsubs
         mid = (a+b)>>>1   # shift by 1 bit to the right
-        finish = @spawn slow(n, digits, a, mid, npieces)
-        t2 = slow(n, digits, mid+1, b, npieces)
+        finish = @spawn slow(n, digits, a, mid, numsubs)
+        t2 = slow(n, digits, mid+1, b, numsubs)
         return fetch(finish) + t2
     end
     t = Float64(0)
+	println("computing on thread ", threadid())
     for i in a:b
         if !digitsin(digits, i)
             t += 1.0 / i
@@ -184,7 +200,43 @@ function slow(n::Int64, digits::Int, a::Int64, b::Int64, npieces=16)
 end
 
 n = Int64(1e8)
-@btime slow(n, 9, 1, n, 10)
+@btime slow(n, 9, 1, n, 1)    # run the code in serial (one interval, one thread)
+@btime slow(n, 9, 1, n, 4)    # 4 intervals, each scheduled to run on 1 of the threads
+@btime slow(n, 9, 1, n, 16)   # 16 intervals, each scheduled to run on 1 of the threads
 ```
 
-With four threads, my runtime is 726.044 ms, down from 2.986 s for the serial code.
+With four threads and `numsubs=4`, in one of my tests the runtime went down from 2.986 s (serial) to 726.044
+ms. However, depending on the number of subintervals, the operating system might decide not to use all four threads!
+Consider this:
+
+```sh
+julia> nthreads()
+4
+
+julia> n = Int64(1e9)
+1000000000
+
+julia> @btime slow(n, 9, 1, n, 1)    # serial run (one interval, one thread)
+computing on thread 1
+computing on thread 1
+computing on thread 1
+computing on thread 1
+  29.096 s (12 allocations: 320 bytes)
+14.2419130103833
+
+julia> @btime slow(n, 9, 1, n, 4)    # 4 intervals
+computing on thread 1 - this line was printed 4 times
+computing on thread 2 - this line was printed 5 times
+computing on thread 3 - this line was printed 6 times
+computing on thread 4 - this line was printed once
+  14.582 s (77 allocations: 3.00 KiB)
+14.2419130103818
+
+julia> @btime slow(n, 9, 1, n, 128)    # 128 intervals
+computing on thread 1 - this line was printed 132 times
+computing on thread 2 - this line was printed 130 times
+computing on thread 3 - this line was printed 131 times
+computing on thread 4 - this line was printed 119 times
+  11.260 s (2514 allocations: 111.03 KiB)
+14.24191301038047
+```
