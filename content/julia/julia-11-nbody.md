@@ -1,7 +1,7 @@
 +++
 title = "Parallelizing N-body"
-slug = "julia-10-nbody"
-weight = 10
+slug = "julia-11-nbody"
+weight = 11
 katex = true
 +++
 

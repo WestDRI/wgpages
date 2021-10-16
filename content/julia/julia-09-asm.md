@@ -1,7 +1,7 @@
 +++
 title = "Parallelizing iterative additive Schwarz method"
-slug = "julia-11-asm"
-weight = 11
+slug = "julia-09-asm"
+weight = 9
 katex = true
 +++
 

@@ -53,12 +53,12 @@ multi-core PCs and distributed-memory clusters. We will cover the following topi
 - multi-threading with Base.Threads
 - multi-processing with Distributed.jl
 - ClusterManagers.jl (very briefly)
-- DistributedArrays.jl
-- SharedArrays.jl
+- DistributedArrays.jl - distributing large arrays across multiple processes
+- SharedArrays.jl - shared-memory access to large arrays from multiple processes
+- Dagger.jl (briefly) - a task graph scheduler heavily inspired by Python's Dask
 
 We will **not** be covering the following topics today (although we hope to cover them in our future webinars!):
 
-- Dagger.jl - a task graph scheduler heavily inspired by Python's Dask
 - Concurrent function calls ("lightweight threads" for suspending/resuming computations)
 - MPI.jl - a port of the standard MPI library to Julia
 - MPIArrays.jl
@@ -66,14 +66,17 @@ We will **not** be covering the following topics today (although we hope to cove
 - FLoops.jl
 - ThreadsX.jl
 - Transducers.jl
+- DistributedData.jl
 - GPU-related packages
 
 ## Running Julia in REPL
 
-If you have Julia installed on your own computer, you can run it there. We have Julia on our training cluster
-*uu.c3.ca*. In [our introductory Julia course](../../programming_julia) we were using Julia inside a Jupyter
-notebook. Today we will be running multiple threads and processes, with the eventual goal of running our workflows as
-batch jobs on an HPC cluster, so we'll be using Julia from the command line.
+If you have Julia installed on your own computer, you can run it there. On a multi-core laptop/desktop you can launch
+multiple threads and processes and run them in parallel.
+
+We have Julia on our training cluster *uu.c3.ca*. Typically, in our introductory Julia course we would use Julia inside
+a Jupyter notebook. Today we will be starting multiple threads and processes, with the eventual goal of running our
+workflows as batch jobs on an HPC cluster, so we'll be using Julia from the command line.
 
 > **Pause**: We will now distribute accounts and passwords to connect to the cluster.
 

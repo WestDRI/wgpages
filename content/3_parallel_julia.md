@@ -40,14 +40,14 @@ computer.
 {{<linktitle url="../julia/julia-05-distributed1" text="Distributed.jl (part 1: basics)">}} \
 {{<linktitle url="../julia/julia-06-distributed2" text="Distributed.jl (part 2: three scalable versions of parallel slow series)">}}
 
-In the afternoon Zoom session you'll be working on one of two projects: parallelizing Julia set (I recommend to do this
-with distributed arrays) and parallelizing the N-body code (I recommend to do this with shared arrays). **Note:** we
-will guide you through the process and answer questions, but we will not share the final solutions with you today; the
-goal is to build your own!
+<!-- In the afternoon Zoom session you'll be working on one of two projects: parallelizing Julia set (I recommend to do this -->
+<!-- with distributed arrays) and parallelizing the N-body code (I recommend to do this with shared arrays). **Note:** we -->
+<!-- will guide you through the process and answer questions, but we will not share the final solutions with you today; the -->
+<!-- goal is to build your own! -->
 
 {{<cor>}}Zoom{{</cor>}} {{<s>}} {{<cgr>}}Day 2: Oct-19 4:00pm-7:00pm Paris time{{</cgr>}} \
 {{<linktitle url="../julia/julia-07-distributed-arrays" text="DistributedArrays.jl">}} \
 {{<linktitle url="../julia/julia-08-julia-set" text="Parallelizing Julia set">}} \
-{{<linktitle url="../julia/julia-09-shared-arrays" text="SharedArrays.jl">}} \
-{{<linktitle url="../julia/julia-10-nbody" text="Parallelizing N-body">}} \
-{{<linktitle url="../julia/julia-11-asm" text="Parallelizing additive Schwarz method">}}
+{{<linktitle url="../julia/julia-09-asm" text="Parallelizing additive Schwarz method">}} \
+{{<linktitle url="../julia/julia-10-shared-arrays" text="SharedArrays.jl">}} \
+{{<linktitle url="../julia/julia-11-nbody" text="Parallelizing N-body">}}

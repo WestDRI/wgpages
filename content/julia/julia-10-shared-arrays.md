@@ -1,7 +1,7 @@
 +++
 title = "SharedArrays.jl"
-slug = "julia-09-shared-arrays"
-weight = 9
+slug = "julia-10-shared-arrays"
+weight = 10
 +++
 
 Unlike distributed **DArray** from **DistributedArrays.jl**, a **SharedArray** object is stored in full on the control
@@ -15,7 +15,7 @@ package is part of Julia's Standard Library (comes with the language).
 There are certain downsides to **SharedArray** (compared to **DistributedArrays.jl**):
 1. The ability to write into the same array elements from multiple processes creates the potential for a race condition
   and indeterministic outcome with a poorly written code!
-1. You are limited to a set of workers on the same node (not sure where this limitation comes from).
+1. You are limited to a set of workers on the same node (from SharedArray implementation).
 1. You will have very skewed (non-uniform across processes) memory usage.
 
 Let's start with serial Julia (`julia`) and initialize a 1D shared array:
