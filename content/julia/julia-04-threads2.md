@@ -63,6 +63,86 @@ end
 @btime slow(Int64(1e8), 9)
 ```
 
+
+
+
+
+**Update**: Yesterday after the workshop Pierre Fortin brought to our attention the *false sharing* effect. It arises
+when several threads are both writing into variables placed close enough to end up in the same cache line. Cache lines
+are the chunks of memory handled by the cache, and they are typically ~32-128 bytes. If any two threads are updating
+variables (such as two neighbouring elements in `total` array) that end up in the same cache line, the cache line will
+have to migrate between the two threads' caches.
+
+Pierre suggested a solution implemented in the function `space()` below. In general, you want to align shared global
+data (thread partitions in the array `total`) to cache line boundaries, and not store thread-specific data in an array
+indexed by the thread id or rank. A quick solution in our case would be to introduce some spacing between array
+elements, so that data from different threads do not end up in the same cache line. Consider this:
+
+```jl
+using Base.Threads
+using BenchmarkTools
+
+function digitsin(digits::Int, num)   # decimal representation of `digits` has N digits
+    base = 10
+    while (digits ÷ base > 0)   # `digits ÷ base` is same as `floor(Int, digits/base)`
+        base *= 10
+    end
+    # `base` is now the first Int power of 10 above `digits`, used to pick last N digits from `num`
+    while num > 0
+        if (num % base) == digits     # last N digits in `num` == digits
+            return true
+        end
+        num ÷= 10                     # remove the last digit from `num`
+    end
+    return false
+end
+
+function slow(n::Int64, digits::Int)
+    total = zeros(Float64, nthreads())
+    @threads for i in 1:n
+        if !digitsin(digits, i)
+            total[threadid()] += 1.0 / i
+        end
+    end
+    return sum(total)
+end
+
+function space(n::Int64, digits::Int)
+    space = 8 # assume a 64-byte cache line, hence 8 Float64 elements per cache line
+    total = zeros(Float64, nthreads()*space)
+    @threads for i in 1:n
+        if !digitsin(digits, i)
+            total[threadid()*space] += 1.0 / i
+        end
+    end
+    return sum(total)
+end
+
+@btime slow(Int64(1e8), 9)
+@btime space(Int64(1e8), 9)
+
+```
+Here are the timings from two successive calls to `slow()` and `space()` on *uu.c3.ca* login node:
+
+```sh
+[user149@login1:~/tmp]$ julia separateSums.jl 
+  2.836 s (7 allocations: 656 bytes)
+  2.882 s (7 allocations: 704 bytes)
+[user149@login1:~/tmp]$ julia -t 4 separateSums.jl 
+  935.609 ms (23 allocations: 2.02 KiB)
+  687.972 ms (23 allocations: 2.23 KiB)
+[user149@login1:~/tmp]$ julia -t 10 separateSums.jl
+  608.226 ms (53 allocations: 4.73 KiB)
+  275.662 ms (54 allocations: 5.33 KiB)
+```
+
+
+
+
+
+
+
+
 > ### Exercise "Threads.3"
 > Save this code as `separateSums.jl` (along with other necessary bits) and run it on four threads from the command line
 > `julia -t 4 separateSums.jl`. What is your new code's timing?

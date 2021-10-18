@@ -82,8 +82,9 @@ workflows as batch jobs on an HPC cluster, so we'll be using Julia from the comm
 
 Our training cluster has:
 
-1. one login node with 16 *"persistent"* cores and 32GB memory, and
-1. 16 compute nodes with 2 *"compute"* cores and 7.5GB memory each.
+1. one login node with 16 *"persistent"* cores and 32GB memory,
+1. 16 compute nodes with 2 *"compute"* cores and 7.5GB memory, and
+1. one GPU node with 4 *"compute"* cores, 1 vGPU (8GB) and 22GB memory.
 
 #### Julia packages on the training cluster
 
