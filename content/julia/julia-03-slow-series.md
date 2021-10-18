@@ -47,7 +47,7 @@ if !digitsin(9, i)
 end
 ```
 
-Let's now do the timing of our serial summation code with 1e9 terms:
+Let's now do the timing of our serial summation code with 1e8 terms:
 
 ```julia
 function slow(n::Int64, digits::Int)

@@ -21,10 +21,11 @@ Julia set, and an N-body solver. We will run examples on a multi-core laptop and
 
 **Instructor**: Alex Razoumov (WestGrid)
 
-**Prerequisites:** working knowledge of serial Julia (covered in [our Julia course](../programming_julia)) and
-familiarity with Compute Canada's HPC cluster environment, in particular, with the Slurm scheduler (covered in
-[our HPC course](../basics_hpc)).
+**Prerequisites:** working knowledge of serial Julia.
 
+<!-- **Prerequisites:** working knowledge of serial Julia (covered in [our Julia course](../programming_julia)) and -->
+<!-- familiarity with Compute Canada's HPC cluster environment, in particular, with the Slurm scheduler (covered in -->
+<!-- [our HPC course](../basics_hpc)). -->
 
 **Software**: All attendees will need a remote secure shell (SSH) client installed on their computer in order to
 participate in the course exercises. On Windows we recommend

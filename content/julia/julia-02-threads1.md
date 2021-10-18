@@ -177,4 +177,4 @@ We want to:
 1. make use of optimizations for type stability $~\Rightarrow~$ package into a function + precompile it
 1. time only the CPU-intensive loops
 
-> **Note:** for shorter runs (ms) you may want to use `@btime` from BenchmarkTools.
+<!-- > **Note:** for shorter runs (ms) you may want to use `@btime` from BenchmarkTools. -->
