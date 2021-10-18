@@ -88,7 +88,7 @@ computer and visualize with ParaView or other visualization tool.
 > c, zoomOut = 1.34 - 0.45im, 1.8     # beans
 > c, zoomOut = 0.34 -0.05im, 1.2      # connected spiral boots
 > ```
-> 3. You can also try increasing problem sizes up from $8000^2$. Will you have enough physical memory for $16000^2$?
+> 3. You can also try increasing problem sizes up from $1000^2$. Will you have enough physical memory for $8000^2$?
 >    How does this affect the runtime?
 
 ### Parallelizing
@@ -97,7 +97,7 @@ How would we parallelize this problem? We have a large array, so we can use Dist
 parallel. Here are the steps:
 
 1. Some functions (packages) should be defined (loaded) on all processes.
-1. `data` array should be distributed.
+1. `data` array should be distributed:
 ```jl
 data = dzeros(Float32, height, width);   # distributed 2D array of 0's
 ```
