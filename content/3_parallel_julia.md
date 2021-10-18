@@ -27,11 +27,10 @@ Julia set, and an N-body solver. We will run examples on a multi-core laptop and
 <!-- familiarity with Compute Canada's HPC cluster environment, in particular, with the Slurm scheduler (covered in -->
 <!-- [our HPC course](../basics_hpc)). -->
 
-**Software**: All attendees will need a remote secure shell (SSH) client installed on their computer in order to
-participate in the course exercises. On Windows we recommend
-[the free Home Edition of MobaXterm](https://mobaxterm.mobatek.net/download.html). On Mac and Linux computers SSH is
-usually pre-installed (try typing `ssh` in a terminal to make sure it is there). No need to install Julia on your
-computer.
+**Software**: If you have Julia on your computer, you are all set. If you want to access our training cluster and run
+Julia there, you will need a remote secure shell (SSH) client installed on your computer. On Windows we recommend [the
+free Home Edition of MobaXterm](https://mobaxterm.mobatek.net/download.html). On Mac and Linux computers SSH is usually
+pre-installed (try typing `ssh` in a terminal to make sure it is there).
 
 {{<cor>}}Zoom{{</cor>}} {{<s>}} {{<cgr>}}Day 1: Oct-18 4:00pm-7:00pm Paris time{{</cgr>}} \
 {{<linktitle url="../julia/julia-01-intro" text="Introduction to parallel Julia">}} \

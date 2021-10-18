@@ -15,7 +15,7 @@ weight = 1
   [our introductory Julia course](../../programming_julia)
 - **Support for parallel and distributed computing** via its Standard Library and many 3rd party packages
   - being added along the way, e.g. @threads were first introduced in v0.5
-  - currently under very active development, both in features and performance
+  - currently under active development, both in features and performance
 
 ## Processes vs. threads
 

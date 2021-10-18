@@ -19,10 +19,10 @@ using Base.Threads
 nthreads()           # now we have access to 4 threads
 ```
 
-When launched from this interface, these four threads will run on two CPU cores on the login node -- more of a
-concurrent (than parallel) run, especially considering the number of people logged into Uu's login node right now. Soon,
-when doing benchmarking, we'll switch to running Julia inside Slurm jobs on compute nodes, but for now let's continue on
-the login node.
+When launched from this interface, these four threads will run on several CPU cores on the login node -- likely a
+combination of concurrent and parallel execution, especially considering the number of people who might be logged into
+Uu's login node right now. Soon, when doing benchmarking, we can switch to running Julia inside Slurm jobs on compute
+nodes, but for now let's continue on the login node.
 
 Let's run our first multi-threaded code:
 
