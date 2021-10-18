@@ -67,16 +67,14 @@ end
 
 
 
-**Update**: Yesterday after the workshop Pierre Fortin brought to our attention the *false sharing* effect. It arises
-when several threads are both writing into variables placed close enough to end up in the same cache line. Cache lines
-are the chunks of memory handled by the cache, and they are typically ~32-128 bytes. If any two threads are updating
-variables (such as two neighbouring elements in `total` array) that end up in the same cache line, the cache line will
-have to migrate between the two threads' caches.
+***Update**: After the workshop Pierre Fortin brought to our attention the [false sharing](http://www.nic.uoregon.edu/~khuck/ts/acumem-report/manual_html/ch06s07.html) effect. It arises
+when several threads are writing into variables placed close enough to each other to end up in the same cache line. Cache lines (typically ~32-128 bytes in size) are chunks of memory handled by the cache. If any two threads are updating
+variables (such as two neighbouring elements in our `total` array here) that end up in the same cache line, the cache line will
+have to migrate between the two threads' caches.*
 
-Pierre suggested a solution implemented in the function `space()` below. In general, you want to align shared global
-data (thread partitions in the array `total`) to cache line boundaries, and not store thread-specific data in an array
-indexed by the thread id or rank. A quick solution in our case would be to introduce some spacing between array
-elements, so that data from different threads do not end up in the same cache line. Consider this:
+*In general, you want to align shared global data (thread partitions in the array `total` in our case) to cache line boundaries and not store thread-specific data in an array
+indexed by the thread id or rank. Pierre suggested a solution using the function `space()` which introduces some spacing between array
+elements so that data from different threads do not end up in the same cache line:*
 
 ```jl
 using Base.Threads
@@ -136,7 +134,7 @@ Here are the timings from two successive calls to `slow()` and `space()` on *uu.
   275.662 ms (54 allocations: 5.33 KiB)
 ```
 
-
+The speedup is substantial! Thank you Pierre!
 
 
 
