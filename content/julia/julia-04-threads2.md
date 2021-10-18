@@ -95,6 +95,7 @@ function digitsin(digits::Int, num)   # decimal representation of `digits` has N
     return false
 end
 
+# Our initial function:
 function slow(n::Int64, digits::Int)
     total = zeros(Float64, nthreads())
     @threads for i in 1:n
@@ -105,6 +106,7 @@ function slow(n::Int64, digits::Int)
     return sum(total)
 end
 
+# Function optimized to prevent false sharing:
 function space(n::Int64, digits::Int)
     space = 8 # assume a 64-byte cache line, hence 8 Float64 elements per cache line
     total = zeros(Float64, nthreads()*space)
