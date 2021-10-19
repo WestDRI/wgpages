@@ -151,9 +151,9 @@ initiate them:
 ```julia
 @everywhere function tridiagonal(n)
     la = zeros(n,n)
-    la[diagind(la,0)] .= 2.   # diagind(la,k) provides indices of the kth diagonal of a matrix
-    la[diagind(la,1)] .= -1.
-    la[diagind(la,-1)] .= -1.
+    la[diagind(la,0)] .= 2.     # diagind(la,k) provides indices of the kth diagonal of a matrix
+    la[diagind(la,1)] .= -1.    # below the main diagonal
+    la[diagind(la,-1)] .= -1.   # above the main diagonal
     return la
 end
 ```
@@ -178,15 +178,14 @@ grid:
 
 ```julia
 d11 = @spawnat 2 tridiagonal(4)
-d12 = @spawnat 3 lowerLeft(4)
-d21 = @spawnat 4 upperRight(4)
+d21 = @spawnat 3 lowerLeft(4)
+d12 = @spawnat 4 upperRight(4)
 d22 = @spawnat 5 tridiagonal(4)
-d = DArray(reshape([d11 d12 d21 d22],(2,2)))   # create a distributed 8x8 matrix on a 2x2 process grid
+d = DArray(reshape([d11 d21 d12 d22],(2,2)))   # create a distributed 8x8 matrix on a 2x2 process grid
 d
 ```
 
 > ### Exercise "DArrays.2"
-> At this point, if you redefine `showDistribution()` (need to do this only on the control process!), most likely you
-> will see no output if you run `showDistribution(d)`. Any idea why?
+> Redefine `showDistribution()` on the control process and run `showDistribution(d)`.
 
 <!-- Solution: need to run `using DistributedArrays` on all workers. -->

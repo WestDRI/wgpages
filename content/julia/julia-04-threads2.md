@@ -142,8 +142,12 @@ Here are the timings from two successive calls to `slow()` and `space()` on *uu.
 
 The speedup is substantial! Thank you Pierre!
 
-We see similar speedup with `space = 4`, but not quite with `space = 2`, so we are dealing with 32-byte cache lines on
-our system.
+We see similar speedup with `space = 4`, but not quite with `space = 2`, suggesting that we are dealing with 32-byte
+cache lines on our system.
+
+
+
+
 
 
 
