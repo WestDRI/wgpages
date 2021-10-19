@@ -129,13 +129,13 @@ end
 Here are the timings from two successive calls to `slow()` and `space()` on *uu.c3.ca* login node:
 
 ```sh
-[user149@login1:~/tmp]$ julia separateSums.jl 
+[login1:~/tmp]$ julia separateSums.jl 
   2.836 s (7 allocations: 656 bytes)
   2.882 s (7 allocations: 704 bytes)
-[user149@login1:~/tmp]$ julia -t 4 separateSums.jl 
+[login1:~/tmp]$ julia -t 4 separateSums.jl 
   935.609 ms (23 allocations: 2.02 KiB)
   687.972 ms (23 allocations: 2.23 KiB)
-[user149@login1:~/tmp]$ julia -t 10 separateSums.jl
+[login1:~/tmp]$ julia -t 10 separateSums.jl
   608.226 ms (53 allocations: 4.73 KiB)
   275.662 ms (54 allocations: 5.33 KiB)
 ```

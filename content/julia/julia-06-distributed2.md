@@ -158,6 +158,41 @@ From worker 5:	  0.675806 seconds
 total = 13.277605949854518
 ```
 
+### Hybrid parallelism
+
+Here is a simple example of a hybrid multi-threaded / multi-processing code contributed by Xavier Vasseur following the
+October 2021 workshop:
+
+```jl
+using Distributed
+@everywhere using Base.Threads
+
+@everywhere function greetings_from_task(())
+    @threads for i=1:nthreads()
+	println("Hello from thread $(threadid()) on proc $(myid())")
+    end
+end
+
+args_pmap  = [() for j in workers()];
+pmap(x->greetings_from_task(x), args_pmap)
+
+```
+
+Save this code as `hybrid.jl` and then run it specifying the number of workers with `-p` and the number of threads per
+worker with `-t` flags:
+
+```sh
+[login1:~/tmp]$ julia -p 4 -t 2 hybrid.jl 
+      From worker 5:	Hello, I am thread 2 on proc 5
+      From worker 5:	Hello, I am thread 1 on proc 5
+      From worker 2:	Hello, I am thread 1 on proc 2
+      From worker 2:	Hello, I am thread 2 on proc 2
+      From worker 3:	Hello, I am thread 1 on proc 3
+      From worker 3:	Hello, I am thread 2 on proc 3
+      From worker 4:	Hello, I am thread 1 on proc 4
+      From worker 4:	Hello, I am thread 2 on proc 4
+```
+
 ### Optional integration with Slurm
 
 [ClusterManagers.jl](https://github.com/JuliaParallel/ClusterManagers.jl) package lets you submit Slurm jobs from your
