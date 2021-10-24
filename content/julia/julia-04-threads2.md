@@ -222,10 +222,10 @@ Consider this:
 
 ```jl
 using Base.Threads
-import Base.Threads.@spawn # no idea why this syntax
-nthreads()                 # make sure you have access to multiple threads
-threadid()                 # always shows 1 = local thread
-fetch(@spawn threadid())   # run this function on another available thread and get the result
+import Base.Threads: @spawn # has to be explicitly imported to avoid potential conflict with Distributed.@spawn
+nthreads()                  # make sure you have access to multiple threads
+threadid()                  # always shows 1 = local thread
+fetch(@spawn threadid())    # run this function on another available thread and get the result
 ```
 
 Every time you run this, you will get a semi-random reponse, e.g.
@@ -250,7 +250,7 @@ tasks running on a fixed number of threads, and only one of these tasks will not
 
 ```jl
 using Base.Threads
-import Base.Threads.@spawn   # no idea why this syntax
+import Base.Threads: @spawn
 using BenchmarkTools
 
 function digitsin(digits::Int, num)
