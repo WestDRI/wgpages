@@ -142,3 +142,5 @@ Here is what I got on Cedar with **100 particles and $10^3$ steps**:
 - Baolai Ge's (SHARCNET) webinar ["Julia: Parallel computing revisited"](https://youtu.be/xTLFz-5a5Ec)
 - WestGrid's March 2021 webinar ["Parallel programming in Julia"](https://youtu.be/2SafLn0xJKY)
 - [Julia performance tips](https://docs.julialang.org/en/v1/manual/performance-tips)
+- ["Think Julia: How to Think Like a Computer Scientist"](https://benlauwens.github.io/ThinkJulia.jl/latest/book.html)
+  by Ben Lauwens and Allen Downey is a good introduction to basic Julia for beginners
