@@ -96,15 +96,17 @@ computer and visualize with ParaView or other visualization tool.
 How would we parallelize this problem? We have a large array, so we can use DistributedArrays and compute it in
 parallel. Here are the steps:
 
-1. Some functions (packages) should be defined (loaded) on all processes.
 1. `data` array should be distributed:
 ```jl
-data = dzeros(Float32, height, width);   # distributed 2D array of 0's
+data = dzeros(Float32, height, width);   # distributed 2D array of 0's`
 ```
-1. You need to replace `juliaSet(data, c, zoomOut)` with `fillLocalBlock(data, c, zoomOut)` to compute local pieces of
+2. You need to replace `juliaSet(data, c, zoomOut)` with `fillLocalBlock(data, c, zoomOut)` to compute local pieces of
    `data` on each worker in parallel. If you don't know where to start in this project, begin with checking the complete
    example with `fillLocalBlock()` from the previous section.
-1. You can replace
+2. Functions `pixel()` and `fillLocalBlock()` should be defined on all processes.
+2. Load `Distributed` on the control process.
+2. Load `DistributedArrays` on all processes.
+2. Replace
 ```julia
 @btime juliaSet(data, c, zoomOut)
 ```
@@ -115,9 +117,9 @@ with
 end
 ```
 5. Why do we need `@sync` in the previous `for` block?
-6. To the best of my knowledge, NetCDF's `ncwrite()` is serial in Julia. Is there a parallel version of NetCDF for
+5. To the best of my knowledge, NetCDF's `ncwrite()` is serial in Julia. Is there a parallel version of NetCDF for
    Julia? If not, then unfortunately we will have to use serial NetCDF. How do we do this with distributed `data`?
-7. Is your parallel code faster?
+5. Is your parallel code faster?
 
 ### Results for 1000^2
 
