@@ -100,7 +100,7 @@ force = SharedArray{Float32}(npart,3);
 When updating shared arrays, you have a choice: either update `array[localindices(array)]` on each worker, or use a
 parallel `for` loop with reduction. I suggest the latter. What do you want to reduce? **Hint:** what else do you compute
 besides the force in that loop? For code syntax, check `parallelFor.jl` code in
-[this earlier section](../../julia/julia-06-distributed2).
+[this earlier section](../../julia202110/julia-06-distributed2).
 
 
 <!-- <     for i = 1:npart -->
