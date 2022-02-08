@@ -129,7 +129,7 @@ showDistribution(de)
 
 ### Building a distributed array from local pieces [^1]
 
-[^1]: This example was adapted from Baolai Ge's (SHARCNET) presentation.
+[^1]: This example was adapted from Ge Baolai's (Western University/SHARCNET) presentation.
 
 Let's restart Julia with `julia` (single control process) and load the packages:
 
