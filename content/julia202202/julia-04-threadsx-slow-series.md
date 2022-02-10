@@ -104,35 +104,69 @@ using BenchmarkTools, ThreadsX
    # with 8 threads: 906.420 ms, prints 14.241913010381973
 ```
 
-```jl
-```
+> ### Exercise "ThreadsX.2"
+> The expression `[i for i in 1:10 if i%2==1]` produces an array of odd integers between 1
+> and 10. Using this syntax, remove zero terms from the last generator, i.e. write a parallel code for summing the slow
+> series with a generator that contains only non-zero terms.
+
+<!-- ```jl -->
+<!-- @btime ThreadsX.sum(1.0/i for i in 1:1_000_000_000 if !digitsin(9, i)) -->
+<!-- ``` -->
+
+Finally, let's rewrite our code applying a function to all integers in a range:
 
 ```jl
+function numericTerm(i)
+    !digitsin(9, i) ? 1.0/i : 0
+end
+@btime ThreadsX.sum(numericTerm, 1:Int64(1e9))            # 890.466 ms, same result
 ```
 
-```jl
-```
+> ### Exercise "ThreadsX.3"
+> Rewrite the last code replacing `sum` with `mapreduce`. **Hint**: look up help for `mapreduce()`.
+
+<!-- ```jl -->
+<!-- @btime ThreadsX.(numericTerm, +, 1:Int64(1e9))   # 912.552 ms, same result -->
+<!-- ``` -->
+
+## Other parallel functions
+
+ThreadsX provides various parallel functions for sorting. Sorting is intrinsically hard to parallelize, so do not expect
+100% parallel efficiency. Let's take a look at `sort!()`:
 
 ```jl
+n = Int64(1e8)
+r = rand(Float32, (n));
+r[1:10]      # first 20 elements, same as first(r,10)
+last(r,10)   # last 10 elements
+
+?sort              # underneath uses QuickSort (for numeric arrays) or MergeSort
+@btime sort!(r);   # 1.391 s, serial sorting
+
+r = rand(Float32, (n));
+@btime ThreadsX.sort!(r);   # 586.541 ms, parallel sorting with 8 threads
+?ThreadsX.sort!             # there is actually a good manual page
+
+# similar speedup for integers
+r = rand(Int32, (n));
+@btime sort!(r);   # 889.817 ms
+
+r = rand(Int32, (n));
+@btime ThreadsX.sort!(r);   # 390.082 ms with 8 threads
 ```
 
-```jl
-```
+Searching for extrema is much more parallel-friendly:
 
 ```jl
+n = Int64(1e9)
+r = rand(Int32, (n));        # make sure we have enough memory
+@btime maximum(r)            # 288.200 ms
+@btime ThreadsX.maximum(r)   # 31.879 ms with 8 threads
 ```
 
-```jl
-```
+Finally, another useful function is `ThreadsX.map()` without reduction -- we will take a closer look at it in one of the
+following sections.
 
-```jl
-```
-
-```jl
-```
-
-```jl
-```
-
-```jl
-```
+To sum up this section, ThreadsX.jl provides a super easy way to parallelize some of the Base library functions. It
+includes multi-threaded reduction and shows very impressive parallel performance. To list the supported functions, use
+`ThreadsX.<TAB>`, and don't forget to use the built-in help pages.
