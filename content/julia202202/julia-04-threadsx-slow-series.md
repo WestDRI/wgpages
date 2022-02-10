@@ -126,7 +126,7 @@ end
 > Rewrite the last code replacing `sum` with `mapreduce`. **Hint**: look up help for `mapreduce()`.
 
 <!-- ```jl -->
-<!-- @btime ThreadsX.(numericTerm, +, 1:Int64(1e9))   # 912.552 ms, same result -->
+<!-- @btime ThreadsX.mapreduce(numericTerm, +, 1:Int64(1e9))   # 912.552 ms, same result -->
 <!-- ``` -->
 
 ## Other parallel functions
