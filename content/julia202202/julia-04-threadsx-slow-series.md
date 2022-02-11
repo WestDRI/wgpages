@@ -107,7 +107,8 @@ using BenchmarkTools, ThreadsX
 > ### Exercise "ThreadsX.2"
 > The expression `[i for i in 1:10 if i%2==1]` produces an array of odd integers between 1
 > and 10. Using this syntax, remove zero terms from the last generator, i.e. write a parallel code for summing the slow
-> series with a generator that contains only non-zero terms.
+> series with a generator that contains only non-zero terms. It should run slightly faster than the code with the
+> original generator.
 
 <!-- ```jl -->
 <!-- @btime ThreadsX.sum(1.0/i for i in 1:1_000_000_000 if !digitsin(9, i)) -->

@@ -54,8 +54,7 @@ function pixel(z)
     return 255
 end
 
-n = 2_000
-height, width = n, n
+height, width = repeat([2_000],2)   # 2000^2 image
 
 println("Computing Julia set ...")
 stability = zeros(Int32, height, width);
@@ -95,6 +94,15 @@ visualization tool.
 > 1. Try other values of the parameter $c$ (see above).
 > 1. You can also try increasing problem sizes up from $1000^2$. Will you have enough physical memory for $8000^2$?
 >    How does this affect the runtime?
+
+**Related notes**:
+1. If computing takes forever, recall that `@btime` runs the code multiple times. `@time` does it only once.
+1. Using
+```jl
+using ProgressMeter
+@showprogress <for loop>
+```
+will give you a nice progress bar inside the terminal.
 
 ## Parallelizing
 
