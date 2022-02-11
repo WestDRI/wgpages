@@ -56,25 +56,3 @@ julia -t $SLURM_CPUS_PER_TASK juliaSetThreadsX.jl
 
 Running the last example on Cedar cluster with julia/1.7.0, `@btime` reported 2.467 s (serial) and 180.003 ms (16 cores)
 -- 13.7X speedup.
-
-## Installing Julia packages on a production cluster
-
-By default, all Julia packages you install from REPL will go into `$HOME/.julia`. If you want to put packages into
-another location, you will need to (1) install inside your Julia session with:
-
-```jl
-empty!(DEPOT_PATH)
-push!(DEPOT_PATH,"/scratch/path/to/julia/packages") 
-] add BenchmarkTools
-```
-
-and (2) before running Julia modify two variables:
-
-```sh
-module load julia
-export JULIA_DEPOT_PATH=/home/\$USER/.julia:/scratch/path/to/julia/packages
-export JULIA_LOAD_PATH=@:@v#.#:@stdlib:/scratch/path/to/julia/packages
-```
-
-Don't do this on the training cluster! We already have everything installed in a central location for all guest
-accounts.

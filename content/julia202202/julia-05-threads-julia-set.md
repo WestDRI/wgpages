@@ -65,7 +65,8 @@ stability = zeros(Int32, height, width);
 end
 
 println("Plotting to PNG ...")
-gr()    # initialize the gr backend
+gr()                       # initialize the gr backend
+ENV["GKSwstype"] = "100"   # operate in headless mode
 fname = "$(height)x$(width)"
 png(heatmap(stability, size=(width,height), color=:gist_ncar), fname)
 ```
