@@ -57,8 +57,8 @@ if you are interested.
 Try opening the Julia REPL and running a couple of commands:
 
 ```sh
-$ julia 
-               _
+$ julia
+_
    _       _ _(_)_     |  Documentation: https://docs.julialang.org
   (_)     | (_) (_)    |
    _ _   _| |_  __ _   |  Type "?" for help, "]?" for Pkg help.
@@ -114,7 +114,15 @@ accounts.
 
 ## Serial Julia features worth noting in 10 mins
 
+describe the training cluster specs, and how this will translate in our usage this week
+
 ```sh
 source /project/def-sponsor00/shared/julia/config/loadJulia.sh
 salloc --mem-per-cpu=3600M --time=01:00:00
 ```
+
+- JIT
+- running in REPL vs. running scripts
+- diff REPL modes
+- macros
+- unicode?
