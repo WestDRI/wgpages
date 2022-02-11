@@ -22,6 +22,39 @@ body {
   }
 }
 
+#TableOfContents {
+  font-size: 1.5rem;
+  line-height: 2.5rem;
+  padding: 1.0rem 10.0rem 1.0rem 8.0rem;
+  font-family: $heading-font-family;
+  ul {
+    padding-left: 3.0rem;
+    li {
+      list-style-type: none;
+    }
+  }
+}
+
+.toggle {
+  cursor: pointer;
+  text-align: center;
+  color: #404040;
+  // padding: 0.1em 0.3em;
+  font-size: 95%;
+  transition: 0.1s;
+}
+
+.panel {
+  margin: auto;
+  width: max-content;
+  margin-top: 2.0rem;
+  background-color: #f6f6f6;
+  border-radius: 5px;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.2s ease-out;
+}
+
 a {
   font-weight: 400;
   color: $link-color;
