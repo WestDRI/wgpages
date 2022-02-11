@@ -183,7 +183,7 @@ We want to:
 
 We could replace integer summation $~~\sum_{i=1}^\infty i~~$ with the harmonic series, however, the traditional harmonic
 series $~~\sum\limits_{k=1}^\infty{1\over k}~~$ diverges. It turns out that if we omit the terms whose denominators in
-decimal notation contain any _digit_ or _string of digits_, it converges, albeit very slowly (Schmelzer & Baillie 2008),
+decimal notation contain any *digit* or *string of digits*, it converges, albeit very slowly (Schmelzer & Baillie 2008),
 e.g.
 
 {{< figure src="/img/slow.png" >}}

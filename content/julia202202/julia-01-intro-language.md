@@ -57,8 +57,8 @@ if you are interested.
 Try opening the Julia REPL and running a couple of commands:
 
 ```sh
-$ julia 
-               _
+$ julia
+_
    _       _ _(_)_     |  Documentation: https://docs.julialang.org
   (_)     | (_) (_)    |
    _ _   _| |_  __ _   |  Type "?" for help, "]?" for Pkg help.
@@ -81,4 +81,62 @@ julia> @btime sqrt(2)
 <!-- julia -->
 <!-- ``` -->
 
+<a name="production"></a>
+## Installing Julia packages on a production cluster (Alex)
+
+By default, all Julia packages you install from REPL will go into `$HOME/.julia`. If you want to put packages into
+another location, you will need to (1) install inside your Julia session with:
+
+```jl
+empty!(DEPOT_PATH)
+push!(DEPOT_PATH,"/scratch/path/to/julia/packages") 
+] add BenchmarkTools
+```
+
+and (2) before running Julia modify two variables:
+
+```sh
+module load julia
+export JULIA_DEPOT_PATH=/home/\$USER/.julia:/scratch/path/to/julia/packages
+export JULIA_LOAD_PATH=@:@v#.#:@stdlib:/scratch/path/to/julia/packages
+```
+
+Don't do this on the training cluster! We already have everything installed in a central location for all guest
+accounts.
+
+**Note**: Some Julia packages rely on precompiled bits that developers think would work on all architectures, but they
+  don't. For example, `Plots` package comes with several precompiled libraries, it installs without problem on Compute
+  Canada clusters, but then at runtime you will see an error about "GLIBC_2.18 not found". The proper solution would be
+  to recompile the package on the cluster, but it is not done correctly in Julia packaging, and the error persists even
+  after "recompilation". There is a solution for this, and you can always contact us at support@computecanada.ca and ask
+  for help. Another example if Julia's `NetCDF` package: it installs fine on Apple Silicon Macs, but it actually comes
+  with a precompiled C package that was compiled only for Intel Macs and does not work on M1.
+
 ## Serial Julia features worth noting in 10 mins
+
+describe the training cluster specs, and how this will translate in our usage this week
+- do not run on the login node
+
+for serial work
+```sh
+source /project/def-sponsor00/shared/julia/config/loadJulia.sh
+salloc --mem-per-cpu=3600M --time=01:00:00
+julia
+```
+
+- JIT
+- running in REPL vs. running scripts
+- diff REPL modes
+- macros
+- unicode?
+
+for multi-threaded work
+```sh
+source /project/def-sponsor00/shared/julia/config/loadJulia.sh
+salloc --mem-per-cpu=3600M --cpus-per-task=4 --time=01:00:00
+julia -t 4
+```
+
+if we don't have enough resources, we should switch to sbatch
+
+this should go into an earlier session?

@@ -18,8 +18,8 @@ memory arrays distributed across multiple processes either on the same or differ
 workshop, we will start with a detailed look at multi-threaded programming in Julia, with many hands-on examples. We
 will next study multi-processing with the Distributed standard library and its large array of tools. Finally, we will
 work with large data structures on multiple processes using DistributedArrays and SharedArrays libraries. We will demo
-parallelization using several problem solvers: a slowly converging series; a Julia set; a linear algebra solver; and, an
-N-body solver. We will run examples on a multi-core laptop and an HPC cluster.
+parallelization using several problem solvers: a slowly converging series, a Julia set, and -- if time allows -- a
+linear algebra solver and an N-body solver. We will run examples on a multi-core laptop and an HPC cluster.
 
 **Instructors**: Alex Razoumov (WestGrid), Marie-Hélène Burle (WestGrid), Baolai Ge (SHARCNET)
 
@@ -38,23 +38,42 @@ usually pre-installed (try typing `ssh` in a terminal to make sure it is there).
 participants.
 
 {{<cor>}}Zoom{{</cor>}} {{<s>}} {{<cgr>}}Day 1: Feb-14 9:30am-12:30pm Pacific time{{</cgr>}}\
-{{<linktitle url="../julia202202/julia-01-intro-language" text="Introduction to Julia language">}} - Marie\
-{{<linktitle url="../julia202202/julia-02-intro-parallel" text="Intro to parallelism">}} - Marie\
-{{<linktitle url="../julia202202/julia-03-threads-slow-series" text="Multi-threading with Base.Threads (slow series)">}} - Marie\
-{{<linktitle url="../julia202202/julia-04-threadsx-slow-series" text="Multi-threading with ThreadsX (slow series)">}} - Alex
+{{<nolinktitle>}}Introduction to Julia language{{</nolinktitle>}} - Marie\
+{{<nolinktitle>}}Intro to parallelism{{</nolinktitle>}} - Marie\
+{{<nolinktitle>}}Multi-threading with Base.Threads (slow series){{</nolinktitle>}} - Marie\
+{{<nolinktitle>}}Multi-threading with ThreadsX (slow series){{</nolinktitle>}} - Alex
 
 {{<cor>}}Zoom{{</cor>}} {{<s>}} {{<cgr>}}Day 2: Feb-16 9:30am-12:30pm Pacific time{{</cgr>}}\
-{{<linktitle url="../julia202202/julia-05-threads-julia-set" text="Parallelizing the Julia set with Base.Threads">}} - Alex\
-{{<linktitle url="../julia202202/julia-06-threadsx-julia-set" text="Parallelizing the Julia set with ThreadsX">}} - Alex\
-{{<linktitle url="../julia202202/julia-07-distributed1" text="Distributed.jl: basics">}} - Alex\
-{{<linktitle url="../julia202202/julia-08-distributed2" text="Distributed.jl: three scalable versions of the slow series">}} - Alex
+{{<nolinktitle>}}Parallelizing the Julia set with Base.Threads{{</nolinktitle>}} - Alex\
+{{<nolinktitle>}}Parallelizing the Julia set with ThreadsX{{</nolinktitle>}} - Alex\
+{{<nolinktitle>}}Distributed.jl: basics{{</nolinktitle>}} - Alex\
+{{<nolinktitle>}}Distributed.jl: three scalable versions of the slow series{{</nolinktitle>}} - Alex
 
 {{<cor>}}Zoom{{</cor>}} {{<s>}} {{<cgr>}}Day 3: Feb-18 9:30am-12:30pm Pacific time{{</cgr>}} \
-{{<linktitle url="../julia202202/julia-09-distributed-arrays" text="DistributedArrays.jl: concepts, tridiagonal matrix, memory usage">}} - Baolai\
-{{<linktitle url="../julia202202/julia-10-distributed-julia-set" text="Parallelizing the Julia set with DistributedArrays">}} - Alex\
-{{<linktitle url="../julia202202/julia-11-shared-arrays" text="SharedArrays.jl: concepts, 1D heat equation">}} - Baolai\
-{{<linktitle url="../julia202202/julia-12-nbody" text="Parallelizing the N-body problem">}} - Alex (supplemental material)\
-{{<linktitle url="../julia202202/julia-13-asm" text="Parallelizing the additive Schwarz method">}} - Alex (supplemental material)
+{{<nolinktitle>}}DistributedArrays.jl: concepts, tridiagonal matrix, memory usage{{</nolinktitle>}} - Baolai\
+{{<nolinktitle>}}Parallelizing the Julia set with DistributedArrays{{</nolinktitle>}} - Alex\
+{{<nolinktitle>}}SharedArrays.jl: concepts, 1D heat equation{{</nolinktitle>}} - Baolai\
+{{<nolinktitle>}}Parallelizing the N-body problem{{</nolinktitle>}} - Alex (supplemental material)\
+{{<nolinktitle>}}Parallelizing the additive Schwarz method{{</nolinktitle>}} - Alex (supplemental material)
+
+<!-- {{<cor>}}Zoom{{</cor>}} {{<s>}} {{<cgr>}}Day 1: Feb-14 9:30am-12:30pm Pacific time{{</cgr>}}\ -->
+<!-- {{<linktitle url="../julia202202/julia-01-intro-language" text="Introduction to Julia language">}} - Marie\ -->
+<!-- {{<linktitle url="../julia202202/julia-02-intro-parallel" text="Intro to parallelism">}} - Marie\ -->
+<!-- {{<linktitle url="../julia202202/julia-03-threads-slow-series" text="Multi-threading with Base.Threads (slow series)">}} - Marie\ -->
+<!-- {{<linktitle url="../julia202202/julia-04-threadsx-slow-series" text="Multi-threading with ThreadsX (slow series)">}} - Alex -->
+
+<!-- {{<cor>}}Zoom{{</cor>}} {{<s>}} {{<cgr>}}Day 2: Feb-16 9:30am-12:30pm Pacific time{{</cgr>}}\ -->
+<!-- {{<linktitle url="../julia202202/julia-05-threads-julia-set" text="Parallelizing the Julia set with Base.Threads">}} - Alex\ -->
+<!-- {{<linktitle url="../julia202202/julia-06-threadsx-julia-set" text="Parallelizing the Julia set with ThreadsX">}} - Alex\ -->
+<!-- {{<linktitle url="../julia202202/julia-07-distributed1" text="Distributed.jl: basics">}} - Alex\ -->
+<!-- {{<linktitle url="../julia202202/julia-08-distributed2" text="Distributed.jl: three scalable versions of the slow series">}} - Alex -->
+
+<!-- {{<cor>}}Zoom{{</cor>}} {{<s>}} {{<cgr>}}Day 3: Feb-18 9:30am-12:30pm Pacific time{{</cgr>}} \ -->
+<!-- {{<linktitle url="../julia202202/julia-09-distributed-arrays" text="DistributedArrays.jl: concepts, tridiagonal matrix, memory usage">}} - Baolai\ -->
+<!-- {{<linktitle url="../julia202202/julia-10-distributed-julia-set" text="Parallelizing the Julia set with DistributedArrays">}} - Alex\ -->
+<!-- {{<linktitle url="../julia202202/julia-11-shared-arrays" text="SharedArrays.jl: concepts, 1D heat equation">}} - Baolai\ -->
+<!-- {{<linktitle url="../julia202202/julia-12-nbody" text="Parallelizing the N-body problem">}} - Alex (supplemental material)\ -->
+<!-- {{<linktitle url="../julia202202/julia-13-asm" text="Parallelizing the additive Schwarz method">}} - Alex (supplemental material) -->
 
 <!-- In the afternoon Zoom session you'll be working on one of two projects: parallelizing Julia set (I recommend to do this -->
 <!-- with distributed arrays) and parallelizing the N-body code (I recommend to do this with shared arrays). **Note:** we -->
