@@ -100,10 +100,10 @@ visualization tool.
 1. Load Base.Threads.
 1. Add `@threads` before the outer loop, and time this parallel loop.
 
-On my laptop with 8 threads the timing is 249.924 ms (4.6X speedup) which is not great ... In terms of row-major
-vs. column-major loop order, we are doing the faster one here. The likely culprit here is the false sharing effect
-(cache issues with multiple threads writing into adjacent array elements), but since we are writing into a large array,
-it is more difficult to fix it with spacing (like we did before).
+On my laptop with 8 threads the timing is 249.924 ms (4.6X speedup) which is good but not great ... In terms of
+row-major vs. column-major loop order, we are doing the faster one here. The likely culprit here is the false sharing
+effect (cache issues with multiple threads writing into adjacent array elements), but since we are writing into a large
+array, it is more difficult to fix it with spacing (like we did before).
 
 > ### (Longer) Exercise "Fractal.2"
 > How would you fix this issue?
