@@ -4,7 +4,7 @@ slug = "julia-01-intro-language"
 weight = 1
 +++
 
-## Julia language
+## The Julia programming language
 
 - High-performance, dynamically typed programming language for scientific computing
 - Uses just-in-time (JIT) compiler to compile all code, includes an interactive command line (REPL = read–eval–print
@@ -17,9 +17,9 @@ weight = 1
   - being added along the way, e.g. @threads were first introduced in v0.5
   - currently under active development, both in features and performance
 
-## Setup
+## Local installation
 
-### Linux for Windows Users
+### Windows users
 
 For Windows users, it is a huge advantage of having Windows Subsystem for Linux (WSL), provided by Microsoft. With a WSL running a flavour of Linux, one can access a full version of Linux on Windows.
 
@@ -68,7 +68,7 @@ Now Debian will appear on your Desktop as a terminal as follows. Note the userna
 
 Note, if you follow the link on Microsoft site, DO NOT proceed with “Update to WSL 2” if you are not an advanced Windows user developer. This will require you to install Windows updates and jump to the latest development build. It may take forever to finish.
 
-### Accessing Windows File Systems from WSL
+#### Accessing Windows File Systems from WSL
 
 The Linux you just installed is “caged” inside Windows. In the newly installed Debian Linux terminal, if you type command ls to list files and folders, you will find nothing. You don’t have access to your files on Windows yet.
 
@@ -86,7 +86,9 @@ replacing _you_ above with your user name for Windows’s account.
 
 Now you have the shortcuts Documents and Downloads created inside your Debina Linux, you can now access your Windows files.
 
-### Installing Julia on Linux
+You can then follow the instructions for Linux users since you are now using Linux!
+
+### Linux users
 
 The official Julia site strongly recommends that the official generic binaries from the downloads page be used to install Julia on Linux
 
@@ -110,7 +112,7 @@ Note <tt>/opt</tt> should exist for most Linux distros. If not, do <tt>sudo mkdi
 
 Now you should be able to run Julia by typing <tt>julia</tt> inside a terminal.
 
-### Advanced Installation of Packages and Julia on Linux
+#### Advanced Installation of Packages and Julia on Linux
 
 If you are an advanced Linux user and you want to use the Linux package manager to do a systematic installation, you can pursue the following.
 
@@ -147,7 +149,7 @@ sudo apt install julia
 
 Now Julia should be ready to go. You may just type julia at the command line, you will get into the julia environment (called REPL).
 
-### Using Julia on Mac OS X
+### Mac OS X users
 
 For those using Mac OS X, if you can’t find julia installed, you might need to do the following to install or update Julia on MacOS
 
@@ -161,7 +163,7 @@ julia -v
 julia version 1.5.0
 ```
 
-### Using Julia on Clusters
+## Using Julia on Compute Canada Clusters
 
 Julia is among hundreds of software packages installed on the systems. To use Julia, load the following modules first
 
