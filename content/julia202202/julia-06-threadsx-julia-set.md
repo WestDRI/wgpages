@@ -54,5 +54,8 @@ module load julia
 julia -t $SLURM_CPUS_PER_TASK juliaSetThreadsX.jl
 ```
 
+There may be some other lines after loading the Julia module, e.g. setting some variables, if you have installed
+packages into a non-standard location (see [our introduction](../julia-01-intro-language)).
+
 Running the last example on Cedar cluster with julia/1.7.0, `@btime` reported 2.467 s (serial) and 180.003 ms (16 cores)
 -- 13.7X speedup.

@@ -81,7 +81,8 @@ julia> @btime sqrt(2)
 <!-- julia -->
 <!-- ``` -->
 
-## Installing Julia packages on a production cluster
+<a name="production"></a>
+## Installing Julia packages on a production cluster (Alex)
 
 By default, all Julia packages you install from REPL will go into `$HOME/.julia`. If you want to put packages into
 another location, you will need to (1) install inside your Julia session with:
@@ -112,3 +113,8 @@ accounts.
   with a precompiled C package that was compiled only for Intel Macs and does not work on M1.
 
 ## Serial Julia features worth noting in 10 mins
+
+```sh
+source /project/def-sponsor00/shared/julia/config/loadJulia.sh
+salloc --mem-per-cpu=3600M --time=01:00:00
+```
