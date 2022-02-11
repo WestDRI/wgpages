@@ -115,10 +115,13 @@ accounts.
 ## Serial Julia features worth noting in 10 mins
 
 describe the training cluster specs, and how this will translate in our usage this week
+- do not run on the login node
 
+for serial work
 ```sh
 source /project/def-sponsor00/shared/julia/config/loadJulia.sh
 salloc --mem-per-cpu=3600M --time=01:00:00
+julia
 ```
 
 - JIT
@@ -126,3 +129,14 @@ salloc --mem-per-cpu=3600M --time=01:00:00
 - diff REPL modes
 - macros
 - unicode?
+
+for multi-threaded work
+```sh
+source /project/def-sponsor00/shared/julia/config/loadJulia.sh
+salloc --mem-per-cpu=3600M --cpus-per-task=4 --time=01:00:00
+julia -t 4
+```
+
+if we don't have enough resources, we should switch to sbatch
+
+this should go into an earlier session?
