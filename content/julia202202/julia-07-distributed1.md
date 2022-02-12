@@ -43,7 +43,7 @@ julia -p 8 code.jl     # run the code with Julia control process + 8 worker proc
 #SBATCH --account=def-someuser
 srun hostname -s > hostfile   # parallel I/O
 sleep 5
-module load julia/1.6.0
+module load julia/1.7.0
 julia --machine-file ./hostfile ./code.jl
 ```
 
