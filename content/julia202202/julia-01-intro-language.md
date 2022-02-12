@@ -174,11 +174,19 @@ C-s		forward search
 ```
 
 ## Serial Julia features worth noting in 10 mins
+### REPL for parallel work
 
+Remember our workflow to launch a Julia REPL:
 
-for serial work
 ```sh
+# Run our script to load the Julia module
+# and set our special environment with pre-installed packages
 source /project/def-sponsor00/shared/julia/config/loadJulia.sh
+
+# Launch an interactive job on a compute node for one hour
+salloc --mem-per-cpu=3600M --time=01:00:00
+
+# Launch the Julia REPL
 julia
 ```
 
@@ -186,11 +194,15 @@ julia
 - running in REPL vs. running scripts
 - macros
 - unicode?
+This is great to run serial work.
 
-for multi-threaded work
+When we will run parallel work however, we will want to use multiple CPUs per task in order to see a speedup.
+
+So instead, you will run:
+
 ```sh
 source /project/def-sponsor00/shared/julia/config/loadJulia.sh
-salloc --mem-per-cpu=3600M --cpus-per-task=4 --time=01:00:00
+salloc --mem-per-cpu=3600M --cpus-per-task=2 --time=01:00:00
 julia -t 4
 ```
 
