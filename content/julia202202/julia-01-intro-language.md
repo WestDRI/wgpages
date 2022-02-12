@@ -242,15 +242,21 @@ $ sbatch job_script.sh
 
 ## Serial Julia features worth noting in 10 mins
 
-
 ### JIT compilation
 
 Julia uses {{<a "https://en.wikipedia.org/wiki/Just-in-time_compilation" "just-in-time compilation">}} or JIT based on {{<a "https://en.wikipedia.org/wiki/LLVM" "LLVM">}}: the source code is compiled at run time. This combines the flexibility of interpretation with the speed of compilation, bringing speed to an interactive language. It also allows for dynamic recompilation, continuous weighing of gains and costs of the compilation of parts of the code, and other on the fly optimizations.
 
 Of course, there are costs here too. They come in the form of overhead time to compile code the first time it is run and increased memory usage.
 
-- JIT
-- macros
+### Macros
+
+In the tradition of Lisp, Julia has {{<a "https://en.wikibooks.org/wiki/Introducing_Julia/Metaprogramming#Macros" "strong metaprogramming capabilities">}}, in particular in the form of macros.
+
+Macros are parsed and evaluated first, then their output gets evaluated like a classic expression. This allows the language to modify itself in a {{<a "https://en.wikipedia.org/wiki/Reflective_programming" "reflective">}} manner.
+
+Macros have a `@` prefix and are defined with a syntax similar to that of functions.
+
+`@time` for instance is a macro that executes an expression and prints the execution time and other information.
 
 ### Fun fact
 
