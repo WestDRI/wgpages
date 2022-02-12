@@ -245,11 +245,10 @@ $ sbatch job_script.sh
 
 - JIT
 - macros
-- unicode?
 
 ### Fun fact
 
-Julia support unicode. In a Julia REPL, type the following, followed by the TAB key:
+Julia supports unicode. In a Julia REPL, type the following, followed by the TAB key:
 
 ```{jl}
 \:snail:
@@ -261,3 +260,11 @@ And you will get:
 🐌
 ```
 
+### Additional basic information
+
+{{<a "https://wgtm21.netlify.app/programming_julia/" "Our introduction to Julia course">}} has, amongst others, sections on:
+- {{<a "https://westgrid-julia.netlify.app/2021_modules/04_jl_doc/" "how to access help/documentation and links to a lot of resources">}}
+- {{<a "https://westgrid-julia.netlify.app/2021_modules/06_jl_pkg/" "packages">}}
+- {{<a "https://westgrid-julia.netlify.app/2021_modules/09_jl_collections/" "collections">}}
+- {{<a "https://westgrid-julia.netlify.app/2021_modules/10_jl_functions/" "basic functions">}}
+- {{<a "https://westgrid-julia.netlify.app/2021_modules/11_jl_control_flow/" "control flow">}}
