@@ -247,3 +247,17 @@ $ sbatch job_script.sh
 - macros
 - unicode?
 
+### Fun fact
+
+Julia support unicode. In a Julia REPL, type the following, followed by the TAB key:
+
+```{jl}
+\:snail:
+```
+
+And you will get:
+
+```jl
+🐌
+```
+
