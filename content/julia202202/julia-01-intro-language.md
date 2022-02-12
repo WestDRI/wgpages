@@ -17,7 +17,7 @@ weight = 1
   - being added along the way, e.g. @threads were first introduced in v0.5
   - currently under active development, both in features and performance
 
-## Running Julia
+## Running Julia locally
 
 If you have Julia installed on your own computer, you can run it there: on a multi-core laptop/desktop you can launch multiple threads and processes and run them in parallel.
 
@@ -197,8 +197,12 @@ So instead, you will run:
 
 ```sh
 source /project/def-sponsor00/shared/julia/config/loadJulia.sh
+
+# Request 2 CPUs per task from Slurm
 salloc --mem-per-cpu=3600M --cpus-per-task=2 --time=01:00:00
-julia -t 4
+
+# Launch Julia on 2 threads
+julia -t 2
 ```
 
 ## Running scripts
@@ -209,9 +213,9 @@ This is not an efficient approach. This is equally true on production clusters: 
 
 A much better approach in this case is to put our Julia code in a Julia script and run it through a batch job by using the Slurm function `sbatch`.
 
-You can run a Julia script with `julia script.jl`.
+You can run a Julia script with `julia julia_script.jl`.
 
-So all we need to do is to submit a shell script to `sbatch` that contains information for the cluster and the code to run (`julia script.jl`).
+So all we need to do is to submit a shell script to `sbatch` that contains information for Slurm and the code to run (`julia julia_script.jl`).
 
 {{<note>}}
 Example:
