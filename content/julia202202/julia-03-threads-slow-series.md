@@ -5,6 +5,9 @@ weight = 3
 katex = true
 +++
 
+**Important**: Today we are working on a compute node inside an interactive job scheduled with `salloc`. Do not run
+  Julia on the login node!
+
 Let's start Julia by typing `julia` in bash:
 
 ```julia
@@ -19,10 +22,8 @@ using Base.Threads
 nthreads()           # now we have access to 4 threads
 ```
 
-When launched from this interface, these four threads will run on several CPU cores on the login node -- likely a
-combination of concurrent and parallel execution, especially considering the number of people who might be logged into
-Uu's login node right now. Soon, when doing benchmarking, we can switch to running Julia inside Slurm jobs on compute
-nodes, but for now let's continue on the login node.
+When launched from this interface, these four threads will run on several CPU cores on a compute node -- likely a
+combination of concurrent and parallel execution, especially considering the restrictions from your `salloc` job.
 
 Let's run our first multi-threaded code:
 
@@ -167,8 +168,8 @@ end
 @btime quick(Int64(1e15))   # correct result, 1.827 ns runtime
 ```
 
-In all these cases we see under 2 ns running time -- this can't be correct! What is going on here? It turns out that Julia
-is replacing the summation with the exact formula $n(n+1)/2$!
+In all these cases we see ~2 ns running time -- this can't be correct! What is going on here? It turns out that Julia is
+replacing the summation with the exact formula $n(n+1)/2$!
 
 We want to:
 1. force computation $~\Rightarrow~$ we'll compute something more complex than simple integer summation, so that it
@@ -262,20 +263,19 @@ end
 > ### Exercise "Threads.1"
 > Put this version of `slow()` along with `digitsin()` into a file `atomicThreads.jl` and run it from the bash terminal
 > (or from from REPL). First, time this code with 1e8 terms using one thread (serial run `julia
-> atomicThreads.jl`). Next, time it with four threads (parallel run `julia -t 4 atomicThreads.jl`). Did you get any
-> speedup?  Do this exercise on the login node. Make sure you obtain the correct numerical result.
+> atomicThreads.jl`). Next, time it with 2 or 4 threads (parallel run `julia -t 2 atomicThreads.jl`). Did you get any
+> speedup? Make sure you obtain the correct numerical result.
 
 With one thread I measured 2.838 s. The runtime stayed essentially the same (now we are using `atomic_add()`) which
 makes sense: with one thread there is no waiting for the variable to be released.
 
-With four threads on the login node I measured 5.261 s -- let's discuss! Is this what we expected?
+With four threads, I measured 5.261 s -- let's discuss! Is this what we expected?
 
 > ### Exercise "Threads.2"
-> Let's run using four threads on a compute node. Do you get similar or different numbers compared to the login node?
->
+> Let's run the previous exercise as a batch job with `sbatch`.
 
-> Hint: you will need to submit a multi-core job with `sbatch shared.sh`. Consult your notes from
-> [Introduction to HPC](../../basics_hpc), or look up the script in [the Chapel course](../../parallel_chapel).
+> Hint: you will need to go to the login node and submit a multi-core job with `sbatch shared.sh`. When finished, do not
+> forget to go back to (or restart) your interactive job.
 
 ## 2nd version: alternative thread-safe implementation
 
@@ -356,16 +356,16 @@ end
 @btime space(Int64(1e8), 9)
 
 ```
-Here are the timings from two successive calls to `slow()` and `space()` on *uu.c3.ca* login node:
+Here are the timings from two successive calls to `slow()` and `space()` on *uu.c3.ca*:
 
 ```sh
-[login1:~/tmp]$ julia separateSums.jl 
+[~/tmp]$ julia separateSums.jl 
   2.836 s (7 allocations: 656 bytes)
   2.882 s (7 allocations: 704 bytes)
-[login1:~/tmp]$ julia -t 4 separateSums.jl 
+[~/tmp]$ julia -t 4 separateSums.jl 
   935.609 ms (23 allocations: 2.02 KiB)
   687.972 ms (23 allocations: 2.23 KiB)
-[login1:~/tmp]$ julia -t 10 separateSums.jl
+[~/tmp]$ julia -t 10 separateSums.jl
   608.226 ms (53 allocations: 4.73 KiB)
   275.662 ms (54 allocations: 5.33 KiB)
 ```
