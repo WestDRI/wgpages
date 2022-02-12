@@ -38,16 +38,12 @@ module load julia
 By default, all Julia packages you install from REPL will go into `$HOME/.julia`. If you want to put packages into
 another location, you will need to (1) install inside your Julia session with:
 
-Our training cluster has:
 ```jl
 empty!(DEPOT_PATH)
 push!(DEPOT_PATH,"/scratch/path/to/julia/packages") 
 ] add BenchmarkTools
 ```
 
-1. one login node with 16 *"persistent"* cores and 32GB of memory,
-1. 17 compute nodes with 16 *"compute"* cores and 60GB of memory, and
-1. one GPU node with 4 *"compute"* cores, 1 vGPU (8GB) and 22GB of memory.
 and (2) before running Julia modify two variables:
 
 ```sh
@@ -71,7 +67,13 @@ accounts.
 
 We have Julia on our training cluster *uu.c3.ca*.
 
+{{<note>}}
+Our training cluster has: <br><br>
 
+- one login node with 16 *"persistent"* cores and 32GB of memory, <br>
+- 17 compute nodes with 16 *"compute"* cores and 60GB of memory, and <br>
+- one GPU node with 4 *"compute"* cores, 1 vGPU (8GB) and 22GB of memory.
+{{</note>}}
 
 In our introductory Julia course we use Julia inside a Jupyter notebook. Today we will be starting multiple threads and processes, with the eventual goal of running our
 workflows as batch jobs on an HPC cluster, so we'll be using Julia from the command line.
