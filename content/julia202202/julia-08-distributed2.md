@@ -38,8 +38,8 @@ With two workers and two CPU cores, we should get times very similar to the last
 much larger number of cores!
 
 > ### Exercise "Distributed.4"
-> If you did the previous exercise on the login node, now submit a Slurm job running the same code on two full Uu nodes
-> (4 CPU cores). If you did the previous exercise with Slurm, now change the number of workers. Did your timing change?
+> If you did the previous exercise with an interactive job, now submit a Slurm batch job running the same code on 4 CPU
+> cores. Next, try 8 cores. Did your timing change?
 
 ### Solution 2: parallel `for` loop with summation reduction
 
@@ -86,7 +86,7 @@ slow(Int64(1e8), 9)   # total = 13.277605949855722
 This will produce the single time for the entire parallel loop (1.498s in my case).
 
 > ### Exercise "Distributed.6"
-> Repeat on four full Uu nodes (8 CPU cores). Did your timing improve?
+> Repeat on 8 CPU cores. Did your timing improve?
 
 I tested this code (`parallelFor.jl`) on Cedar with v1.5.2 and `n=Int64(1e9)`:
 
@@ -182,7 +182,7 @@ Save this code as `hybrid.jl` and then run it specifying the number of workers w
 worker with `-t` flags:
 
 ```sh
-[login1:~/tmp]$ julia -p 4 -t 2 hybrid.jl 
+[~/tmp]$ julia -p 4 -t 2 hybrid.jl 
       From worker 5:	Hello, I am thread 2 on proc 5
       From worker 5:	Hello, I am thread 1 on proc 5
       From worker 2:	Hello, I am thread 1 on proc 2
