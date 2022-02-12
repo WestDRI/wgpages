@@ -23,47 +23,77 @@ If you have Julia installed on your own computer, you can run it there: on a mul
 
 If you would like to install Julia later on, you can find some information {{<a "/julia-installation" "here">}}.
 
-## Using Julia on Compute Canada Clusters
+## Using Julia on supercomputers
 
-Julia is among hundreds of software packages installed on the CC clusters. To use Julia on one of them, load the following module:
+### Julia on Compute Canada production clusters
+
+Julia is among hundreds of software packages installed on the CC clusters. To use Julia on one of them, you would load the following module:
 
 ```bash
 module load julia
 ```
 
-We have Julia on our training cluster *uu.c3.ca*. Typically, in our introductory Julia course we would use Julia inside
-a Jupyter notebook. Today we will be starting multiple threads and processes, with the eventual goal of running our
-workflows as batch jobs on an HPC cluster, so we'll be using Julia from the command line.
+#### Installing Julia packages on a production cluster
 
-> **Pause**: We will now distribute accounts and passwords to connect to the cluster.
+By default, all Julia packages you install from REPL will go into `$HOME/.julia`. If you want to put packages into
+another location, you will need to (1) install inside your Julia session with:
 
 Our training cluster has:
+```jl
+empty!(DEPOT_PATH)
+push!(DEPOT_PATH,"/scratch/path/to/julia/packages") 
+] add BenchmarkTools
+```
 
 1. one login node with 16 *"persistent"* cores and 32GB of memory,
 1. 17 compute nodes with 16 *"compute"* cores and 60GB of memory, and
 1. one GPU node with 4 *"compute"* cores, 1 vGPU (8GB) and 22GB of memory.
+and (2) before running Julia modify two variables:
 
-## Julia packages on the training cluster
+```sh
+module load julia
+export JULIA_DEPOT_PATH=/home/\$USER/.julia:/scratch/path/to/julia/packages
+export JULIA_LOAD_PATH=@:@v#.#:@stdlib:/scratch/path/to/julia/packages
+```
 
-Normally, you would install a Julia package by typing `] add packageName` in REPL and then waiting for it to install. A
-typical package installation takes few hundred MBs and a fraction of a minute and usually requires a lot of small file
-writes. Our training cluster runs on top of virtualized hardware with a shared filesystem. If several dozen workshop
+Don't do this on the training cluster! We already have everything installed in a central location for all guest
+accounts.
+
+**Note**: Some Julia packages rely on precompiled bits that developers think would work on all architectures, but they
+  don't. For example, `Plots` package comes with several precompiled libraries, it installs without problem on Compute
+  Canada clusters, but then at runtime you will see an error about "GLIBC_2.18 not found". The proper solution would be
+  to recompile the package on the cluster, but it is not done correctly in Julia packaging, and the error persists even
+  after "recompilation". There is a solution for this, and you can always contact us at support@computecanada.ca and ask
+  for help. Another example if Julia's `NetCDF` package: it installs fine on Apple Silicon Macs, but it actually comes
+  with a precompiled C package that was compiled only for Intel Macs and does not work on M1.
+
+### Julia on the training cluster for this workshop
+
+We have Julia on our training cluster *uu.c3.ca*.
+
+
+
+In our introductory Julia course we use Julia inside a Jupyter notebook. Today we will be starting multiple threads and processes, with the eventual goal of running our
+workflows as batch jobs on an HPC cluster, so we'll be using Julia from the command line.
+
+> **Pause**: We will now distribute accounts and passwords to connect to the cluster.
+
+Normally, you would install Julia packages yourself. A typical package installation however takes several hundred MBs of RAM, a fairly long time, and creates many small files. Our training cluster runs on top of virtualized hardware with a shared filesystem. If several dozen workshop
 participants start installing packages at the same time, this will hammer the filesystem and will make it slow for all
 participants for quite a while.
 
-To avoid this, we created a special environment, with all packages installed into a shared directory
-`/project/def-sponsor00/shared/julia`. To load this environment, run the command
+Instead, for this workshop, you will run:
 
 ```sh
 source /project/def-sponsor00/shared/julia/config/loadJulia.sh
 ```
 
-This script will load the Julia module and set a couple of environment variables, to point to our central environment
-while keeping your setup and Julia history separate from other users. You can still install packages the usual way (`]
-add packageName`), and they will go into your own `~/.julia` directory. Feel free to check the content of this script,
-if you are interested.
+This script loads the Julia module and sets environment variables to point to a central environment in which we have pre-installed all the packages for this workshop.
 
-Try opening the Julia REPL and running a couple of commands:
+{{<note>}}
+Note that you can still install additional packages if you want. These will install in your own environment at ~/.julia.
+{{</note>}}
+
 
 ```sh
 $ julia
@@ -83,43 +113,15 @@ julia> @btime sqrt(2)
 1.4142135623730951
 ```
 
-<!-- Assuming we have all connected to *uu.c3.ca* via ssh, let's try to log in and start Julia REPL: -->
 
-<!-- ```sh -->
-<!-- module load StdEnv/2020 julia/1.6.2 -->
-<!-- julia -->
-<!-- ``` -->
 
-<a name="production"></a>
-## Installing Julia packages on a production cluster (Alex)
 
-By default, all Julia packages you install from REPL will go into `$HOME/.julia`. If you want to put packages into
-another location, you will need to (1) install inside your Julia session with:
 
-```jl
-empty!(DEPOT_PATH)
-push!(DEPOT_PATH,"/scratch/path/to/julia/packages") 
-] add BenchmarkTools
+
+
 ```
 
-and (2) before running Julia modify two variables:
 
-```sh
-module load julia
-export JULIA_DEPOT_PATH=/home/\$USER/.julia:/scratch/path/to/julia/packages
-export JULIA_LOAD_PATH=@:@v#.#:@stdlib:/scratch/path/to/julia/packages
-```
-
-Don't do this on the training cluster! We already have everything installed in a central location for all guest
-accounts.
-
-**Note**: Some Julia packages rely on precompiled bits that developers think would work on all architectures, but they
-  don't. For example, `Plots` package comes with several precompiled libraries, it installs without problem on Compute
-  Canada clusters, but then at runtime you will see an error about "GLIBC_2.18 not found". The proper solution would be
-  to recompile the package on the cluster, but it is not done correctly in Julia packaging, and the error persists even
-  after "recompilation". There is a solution for this, and you can always contact us at support@computecanada.ca and ask
-  for help. Another example if Julia's `NetCDF` package: it installs fine on Apple Silicon Macs, but it actually comes
-  with a precompiled C package that was compiled only for Intel Macs and does not work on M1.
 
 ## Serial Julia features worth noting in 10 mins
 
