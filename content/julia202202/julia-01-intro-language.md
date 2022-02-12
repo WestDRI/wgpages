@@ -97,6 +97,22 @@ Note that you can still install additional packages if you want. These will inst
 {{</note>}}
 
 
+## Running Julia in the REPL
+
+### Where to run the REPL
+
+You could now technically launch a Julia REPL (Read-Eval-Print-Loop). However, this would launch it on the login node and if everybody does this at the same time, we would probably stall our training cluster.
+
+Instead, you will first launch an interactive job by running the Slurm command `salloc`:
+
+```sh
+salloc --mem-per-cpu=3600M --time=01:00:00
+```
+
+This puts you on a compute node for up to one hour.
+
+Now you can launch the Julia REPL and try to run a couple of commands:
+
 ```sh
 $ julia
 _
@@ -115,31 +131,59 @@ julia> @btime sqrt(2)
 1.4142135623730951
 ```
 
+### REPL modes
 
+The Julia REPL has 4 modes:
 
+{{<figure src="/img/julia_repl_modes.png">}}
 
+(`env` is the name of your current project environment.)
 
+### REPL keybindings
 
+In the REPL, you can use standard command line (Emacs) keybindings:
 
 ```
+C-c		cancel
+C-d		quit
+C-l		clear console
 
+C-u		kill from the start of line
+C-k		kill until the end of line
 
+C-a		go to start of line
+C-e		go to end of line
+
+C-f		move forward one character
+C-b		move backward one character
+
+M-f		move forward one word
+M-b		move backward one word
+
+C-d		delete forward one character
+C-h		delete backward one character
+
+M-d		delete forward one word
+M-Backspace	delete backward one word
+
+C-p		previous command
+C-n		next command
+
+C-r		backward search
+C-s		forward search
+```
 
 ## Serial Julia features worth noting in 10 mins
 
-describe the training cluster specs, and how this will translate in our usage this week
-- do not run on the login node
 
 for serial work
 ```sh
 source /project/def-sponsor00/shared/julia/config/loadJulia.sh
-salloc --mem-per-cpu=3600M --time=01:00:00
 julia
 ```
 
 - JIT
 - running in REPL vs. running scripts
-- diff REPL modes
 - macros
 - unicode?
 
