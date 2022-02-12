@@ -206,6 +206,38 @@ salloc --mem-per-cpu=3600M --cpus-per-task=2 --time=01:00:00
 julia -t 4
 ```
 
-if we don't have enough resources, we should switch to sbatch
+## Running scripts
 
-this should go into an earlier session?
+Now, if we want to get an even bigger speedup, we could use even more CPUs per task. The problem is that our cluster only has around 300 CPUs. So some of us would be left waiting for Slurm while the others can play with 4 or more CPUs for an hour.
+
+This is not an efficient approach. This is equally true on production clusters: if you want to run an interactive job using a lot of resources, you might have to wait for a long time.
+
+A much better approach in this case is to put our Julia code in a Julia script and run it through a batch job by using the Slurm function `sbatch`.
+
+You can run a Julia script with `julia script.jl`.
+
+So all we need to do is to submit a shell script to `sbatch` that contains information for the cluster and the code to run (`julia script.jl`).
+
+{{<note>}}
+Example:
+{{</note>}}
+
+We can save into `job_script.sh`:
+
+```sh
+#!/bin/bash
+#SBATCH --ntasks=8
+#SBATCH --cpus-per-task=1
+#SBATCH --mem-per-cpu=3600M
+#SBATCH --time=00:10:00
+#SBATCH --account=def-someuser
+
+julia julia_script.jl
+```
+
+Then we run our job script:
+
+```sh
+$ sbatch job_script.sh
+```
+
