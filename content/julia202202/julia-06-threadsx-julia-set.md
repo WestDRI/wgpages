@@ -38,10 +38,9 @@ Running this new, vectorized version of the serial code, `@btime` reports 963.06
 
 With 8 threads on my laptop, the runtime went down to 175.994 ms -- 5.5X speedup.
 
-## Running multi-threaded Julia codes on a cluster
+## Running multi-threaded Julia codes on a production cluster
 
-Before we jump to multi-processing in Julia, let us show you how you can run multi-threaded Julia codes on an HPC
-cluster.
+Before we jump to multi-processing in Julia, let us remind you how to run multi-threaded Julia codes on an HPC cluster.
 
 ```sh
 #!/bin/bash

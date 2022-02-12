@@ -90,19 +90,18 @@ This code will produce the file `test.nc` that you can download to your computer
 visualization tool.
 
 > ### Exercise "Fractal.1"
+> Try one of these:
 > 1. With NetCDF output, compare the expected and actual file sizes.
 > 1. Try other values of the parameter $c$ (see above).
-> 1. You can also try increasing problem sizes up from $1000^2$. Will you have enough physical memory for $8000^2$?
+> 1. Increase the problem size from the default $2000^2$. Will you have enough physical memory for $8000^2$?
 >    How does this affect the runtime?
-
-**Related notes**:
-1. If computing takes forever, recall that `@btime` runs the code multiple times. `@time` does it only once.
-1. Using
-```jl
-using ProgressMeter
-@showprogress <for loop>
-```
-will give you a nice progress bar inside the terminal.
+>
+> If computing takes forever, recall that `@btime` runs the code multiple times, while `@time` does it only once. Also,
+> you might like a progress bar inside the terminal:
+> ```jl
+> using ProgressMeter
+> @showprogress <for loop>
+> ```
 
 ## Parallelizing
 
