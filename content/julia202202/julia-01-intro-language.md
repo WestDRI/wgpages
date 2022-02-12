@@ -30,13 +30,13 @@ If you would like to install Julia later on, you can find some information {{<a 
 Julia is among hundreds of software packages installed on the CC clusters. To use Julia on one of them, you would load the following module:
 
 ```bash
-module load julia
+$ module load julia
 ```
 
 #### Installing Julia packages on a production cluster
 
 By default, all Julia packages you install from REPL will go into `$HOME/.julia`. If you want to put packages into
-another location, you will need to (1) install inside your Julia session with:
+another location, you will need to (1) install inside your Julia session with (from within Julia):
 
 ```jl
 empty!(DEPOT_PATH)
@@ -44,12 +44,12 @@ push!(DEPOT_PATH,"/scratch/path/to/julia/packages")
 ] add BenchmarkTools
 ```
 
-and (2) before running Julia modify two variables:
+and (2) before running Julia modify two variables (from the command line):
 
 ```sh
-module load julia
-export JULIA_DEPOT_PATH=/home/\$USER/.julia:/scratch/path/to/julia/packages
-export JULIA_LOAD_PATH=@:@v#.#:@stdlib:/scratch/path/to/julia/packages
+$ module load julia
+$ export JULIA_DEPOT_PATH=/home/\$USER/.julia:/scratch/path/to/julia/packages
+$ export JULIA_LOAD_PATH=@:@v#.#:@stdlib:/scratch/path/to/julia/packages
 ```
 
 Don't do this on the training cluster! We already have everything installed in a central location for all guest
@@ -87,7 +87,7 @@ participants for quite a while.
 Instead, for this workshop, you will run:
 
 ```sh
-source /project/def-sponsor00/shared/julia/config/loadJulia.sh
+$ source /project/def-sponsor00/shared/julia/config/loadJulia.sh
 ```
 
 This script loads the Julia module and sets environment variables to point to a central environment in which we have pre-installed all the packages for this workshop.
@@ -106,7 +106,7 @@ You could now technically launch a Julia REPL (Read-Eval-Print-Loop). However, t
 Instead, you will first launch an interactive job by running the Slurm command `salloc`:
 
 ```sh
-salloc --mem-per-cpu=3600M --time=01:00:00
+$ salloc --mem-per-cpu=3600M --time=01:00:00
 ```
 
 This puts you on a compute node for up to one hour.
@@ -180,13 +180,13 @@ Remember our workflow to launch a Julia REPL:
 ```sh
 # Run our script to load the Julia module
 # and set our special environment with pre-installed packages
-source /project/def-sponsor00/shared/julia/config/loadJulia.sh
+$ source /project/def-sponsor00/shared/julia/config/loadJulia.sh
 
 # Launch an interactive job on a compute node for one hour
-salloc --mem-per-cpu=3600M --time=01:00:00
+$ salloc --mem-per-cpu=3600M --time=01:00:00
 
 # Launch the Julia REPL
-julia
+$ julia
 ```
 
 This is great to run serial work.
@@ -196,13 +196,13 @@ When we will run parallel work however, we will want to use multiple CPUs per ta
 So instead, you will run:
 
 ```sh
-source /project/def-sponsor00/shared/julia/config/loadJulia.sh
+$ source /project/def-sponsor00/shared/julia/config/loadJulia.sh
 
 # Request 2 CPUs per task from Slurm
-salloc --mem-per-cpu=3600M --cpus-per-task=2 --time=01:00:00
+$ salloc --mem-per-cpu=3600M --cpus-per-task=2 --time=01:00:00
 
 # Launch Julia on 2 threads
-julia -t 2
+$ julia -t 2
 ```
 
 ## Running scripts
