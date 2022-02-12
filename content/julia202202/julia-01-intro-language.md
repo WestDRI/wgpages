@@ -207,7 +207,7 @@ $ julia -t 2
 
 ## Running scripts
 
-Now, if we want to get an even bigger speedup, we could use even more CPUs per task. The problem is that our cluster only has around 300 CPUs. So some of us would be left waiting for Slurm while the others can play with 4 or more CPUs for an hour.
+Now, if we want to get an even bigger speedup, we could use even more CPUs per task. The problem is that our cluster only has around 300 CPUs. So some of us would be left waiting for Slurm while the others can play with a bunch of CPUs for an hour.
 
 This is not an efficient approach. This is equally true on production clusters: if you want to run an interactive job using a lot of resources, you might have to wait for a long time.
 
@@ -231,7 +231,7 @@ We can save into `job_script.sh`:
 #SBATCH --time=00:10:00
 #SBATCH --account=def-someuser
 
-julia julia_script.jl
+julia -t 8 julia_script.jl
 ```
 
 Then we run our job script:
