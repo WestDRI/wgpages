@@ -25,19 +25,11 @@ If you would like to install Julia later on, you can find some information {{<a 
 
 ## Using Julia on Compute Canada Clusters
 
-Julia is among hundreds of software packages installed on the systems. To use Julia, load the following modules first
+Julia is among hundreds of software packages installed on the CC clusters. To use Julia on one of them, load the following module:
 
 ```bash
-module load gcc/9.3.0
-module load julia/1.7.0
+module load julia
 ```
-
-You may now type julia at the command line and enter the REPL environment.
-
-## Running Julia in REPL
-
-If you have Julia installed on your own computer, you can run it there. On a multi-core laptop/desktop you can launch
-multiple threads and processes and run them in parallel.
 
 We have Julia on our training cluster *uu.c3.ca*. Typically, in our introductory Julia course we would use Julia inside
 a Jupyter notebook. Today we will be starting multiple threads and processes, with the eventual goal of running our
@@ -47,9 +39,9 @@ workflows as batch jobs on an HPC cluster, so we'll be using Julia from the comm
 
 Our training cluster has:
 
-1. one login node with 16 *"persistent"* cores and 32GB memory,
-1. 16 compute nodes with 2 *"compute"* cores and 7.5GB memory, and
-1. one GPU node with 4 *"compute"* cores, 1 vGPU (8GB) and 22GB memory.
+1. one login node with 16 *"persistent"* cores and 32GB of memory,
+1. 17 compute nodes with 16 *"compute"* cores and 60GB of memory, and
+1. one GPU node with 4 *"compute"* cores, 1 vGPU (8GB) and 22GB of memory.
 
 ## Julia packages on the training cluster
 
