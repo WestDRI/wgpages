@@ -52,7 +52,7 @@ $ export JULIA_DEPOT_PATH=/home/\$USER/.julia:/scratch/path/to/julia/packages
 $ export JULIA_LOAD_PATH=@:@v#.#:@stdlib:/scratch/path/to/julia/packages
 ```
 
-Don't do this on the training cluster! We already have everything installed in a central location for all guest
+**Don't do this on the training cluster!** We already have everything installed in a central location for all guest
 accounts.
 
 **Note**: Some Julia packages rely on precompiled bits that developers think would work on all architectures, but they
@@ -71,7 +71,7 @@ We have Julia on our training cluster *uu.c3.ca*.
 Our training cluster has: <br><br>
 
 - one login node with 16 *"persistent"* cores and 32GB of memory, <br>
-- 17 compute nodes with 16 *"compute"* cores and 60GB of memory, and <br>
+- 17 compute nodes with 16 *"compute"* cores and 60GB of memory (272 cores in total), and <br>
 - one GPU node with 4 *"compute"* cores, 1 vGPU (8GB) and 22GB of memory.
 {{</note>}}
 

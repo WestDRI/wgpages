@@ -38,7 +38,7 @@ In Julia you can parallelize your code with multiple threads, or with multiple p
 The main goal of this course is to teach you the basic tools for parallel programming in Julia, targeting both
 multi-core PCs and distributed-memory clusters. We will cover the following topics:
 
-- multi-threading with Base.Threads
+- multi-threading with Base.Threads and ThreadsX.jl
 - multi-processing with Distributed.jl
 - ClusterManagers.jl (very briefly)
 - DistributedArrays.jl - distributing large arrays across multiple processes
