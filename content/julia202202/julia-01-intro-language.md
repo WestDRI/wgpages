@@ -173,7 +173,6 @@ C-r		backward search
 C-s		forward search
 ```
 
-## Serial Julia features worth noting in 10 mins
 ### REPL for parallel work
 
 Remember our workflow to launch a Julia REPL:
@@ -190,10 +189,6 @@ salloc --mem-per-cpu=3600M --time=01:00:00
 julia
 ```
 
-- JIT
-- running in REPL vs. running scripts
-- macros
-- unicode?
 This is great to run serial work.
 
 When we will run parallel work however, we will want to use multiple CPUs per task in order to see a speedup.
@@ -240,4 +235,11 @@ Then we run our job script:
 ```sh
 $ sbatch job_script.sh
 ```
+
+## Serial Julia features worth noting in 10 mins
+
+
+- JIT
+- macros
+- unicode?
 
