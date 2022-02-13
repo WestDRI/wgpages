@@ -140,7 +140,7 @@ using DistributedArrays       # important to load this after addprocs()
 @everywhere using LinearAlgebra
 ```
 
-We will define an 8x8 matrix with the main diagonal and two off-diagonals (*tridiagonal* matrix). The lines show our
+We will define an $8 \times 8$ matrix with the main diagonal and two off-diagonals (*tridiagonal* matrix). The lines show our
 matrix distribution across workers:
 
 {{< figure src="/img/matrix.png" >}}

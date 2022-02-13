@@ -84,3 +84,49 @@ a                           # available on all workers
 a[1:10,1:10]                # on the control process
 @fetchfrom 2 a[1:10,1:10]   # on worker 2
 ```
+
+### 1D heat equation
+
+Consider a (simplified) physics problem: A rod of length $[-L,L]$ heated at the middle, then the heat source is removed. The temperature distribution $T(x,t)$ across the rod over time can be simulated by the following equation
+
+\\[
+T(x,t+\Delta t) = \frac{1}{2}T(x-\Delta x,t) + \frac{1}{2}T(x+\Delta x,t)
+\\]
+
+on a set of evenly spaced points apart by $\Delta x$. The initial condition is shown in the diagram below. At $t=0$, $T(x,0) = T_0$ for $-h \leq x \leq h$ and $T(x,0) = 0$ elsewhere.
+
+{{< figure src="/img/grid_coords.png" width=650px >}}
+
+At both ends, we impose the boundary conditions $T(-L,t)=0$ and $T(L,t)=0$.
+
+This example is seen in many of our training courses, for example, MPI, Fortran and Python courses for advanced research computing. A more "accurate" formula involving three spatial points $x_i - \Delta x$, $x_i$ and $x_i + \Delta x$ for computing the temperature at the next time step $t_n+\Delta t$ for interior points $i=1,\ldots,N$ is given below
+
+\\[
+T(x_i,t_n+\Delta t) = (1-2k)T(x_i,t_n) + k((T(x_{i-1},t_n)+T(x_{i+1},t_n))
+\\]
+
+where $k$ is a parameter that shall be chosen properly in order for the numerical procedure to be stable.
+
+Note in the formula, $T(x_i,t_n+\Delta t)$ depends on the values of $T$ at three points at current time step $t_n$, which are all known. This allows us to compute $T$ at $t_n+\Delta t$ independent of each other, hence this can be done in parallel.
+
+Let $U_i^n$ denote the value of $T(x_i,t_n)$ at grid points $x_i$, $i=1,\ldots,N$, we use the short notation
+
+\\[
+U_i^{n+1} = (1-2k)U_i^n + k(U_{i-1}^n + U_{i+1}^n).
+\\]
+
+for $i=1,\ldots,N$. This can be translated into the following code with one dimensional two arrays `unew[1:N]` and `u[1:N]` holding values at the $N$ grid points at $t_{n+1}$ and $t_n$ respectively
+
+```julia
+for i=1:N
+    unew[i] = (1-2*k)u[i] + k*(u[i-1] + u[i+1])
+end
+```
+
+This in fact can be replaced by the following one line of code using a single array `u`
+
+```julia
+u[2:N-1] = (1-2k)*u[2:N-1] + k*(u[1:N-2) + u[3:N])
+```
+
+In this case, vectorized operations on the right hand side take place first before the individual elements on the left hand side are updated.
