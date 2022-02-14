@@ -183,6 +183,116 @@ a[1:10,1:10]                # on the control process
 @fetchfrom 2 a[1:10,1:10]   # on worker 2
 ```
 
+### Pitfall of using shared objects
+
+Let's have a look at the following example, restart Julia with `julia -p 4`
+
+```julia
+using SharedArrays
+a = SharedArray{Float64}(5_000_000);
+varinfo()
+```
+
+We will see the output looks like this
+
+```bash
+  name                    size summary                              
+  –––––––––––––––– ––––––––––– –––––––––––––––––––––––––––––––––––––
+  A                 38.148 MiB 5000000-element SharedVector{Float64}
+  Base                         Module                               
+  Core                         Module                               
+  Distributed       39.861 MiB Module                               
+  InteractiveUtils 253.909 KiB Module                               
+  Main                         Module                               
+  ans               38.148 MiB 5000000-element SharedVector{Float64}
+```
+
+If we run `varinfo()` on a worker process, say, 3
+
+```julia
+@everywhere using InteractiveUtils
+@fetchfrom 3 varinfo()
+```
+
+we get
+
+```bash
+  name              size summary
+  ––––––––––– –––––––––– –––––––
+  Base                   Module 
+  Core                   Module 
+  Distributed 39.155 MiB Module 
+  Main                   Module 
+```
+
+We do not see the variable `A` per se. But we do see the same amount of data 39.861 MiB claimed by `Distributed` as on the control process.
+
+If we try to set the values in `A` on worker 3 to its worker ID with the following code
+
+```julia
+@everywhere using SharedArrays
+@everywhere function set_to_myid()
+    idx = localindices(A);
+    A[idx] .= myid();
+end
+@fetchfrom 3 set_to_myid()
+```
+
+we will get the following error
+
+```julia
+ERROR: On worker 3:
+UndefVarError: A not defined
+```
+
+This suggests that, the data is shared across all processes, but the name space of the variable itself is not.
+
+We now modify the function `set_to_myid` a bit as follows
+
+```julia
+@everywhere function set_to_myid(a)
+    idx = localindices(a);
+    a[idx] .= myid();
+end
+remotecall_fetch(set_to_myid,3,A)
+```
+
+This time it should not give any error. The portion of `A` is properly set. If we check the output of `varinfo()` again, wee
+
+```julia
+@fetchfrom 3 varinfo()
+  name              size summary                                      
+  ––––––––––– –––––––––– –––––––––––––––––––––––––––––––––––––––––––––
+  Base                   Module                                       
+  Core                   Module                                       
+  Distributed 39.159 MiB Module                                       
+  Main                   Module                                       
+  set_to_myid    0 bytes set_to_myid (generic function with 2 methods)
+```
+
+Still, `A` is not present. But the assignment of worker ID to `A` on worker 3 has worked.
+
+If we run the following command
+
+```julia
+@fetchfrom 3 A[localindices(A)] .= myid()
+```
+
+it works, but it has a different meaning. It copies `A` to worker 3 and performs the operation of assignments there. This becomes evident when we see the output of `varinfo` on worker 3
+
+```bash
+  name              size summary                                      
+  ––––––––––– –––––––––– –––––––––––––––––––––––––––––––––––––––––––––
+  A           38.147 MiB 5000000-element SharedVector{Float64}        
+  Base                   Module                                       
+  Core                   Module                                       
+  Distributed 39.161 MiB Module                                       
+  Main                   Module                                       
+  set_to_myid    0 bytes set_to_myid (generic function with 2 methods)
+```
+
+The conclusion so far is, use `remotecall` to execute the code on workers. Use macros `@fetch` etc carefully.
+
 ### 1D heat equation
 
 Consider a (simplified) physics problem: A rod of length $[-L,L]$ heated in the middle, then the heat source is removed. The temperature distribution $T(x,t)$ across the rod over time can be simulated by the following equation
