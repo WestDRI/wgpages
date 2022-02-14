@@ -225,11 +225,10 @@ We can save into `job_script.sh`:
 
 ```sh
 #!/bin/bash
-#SBATCH --ntasks=8
-#SBATCH --cpus-per-task=1
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=8
 #SBATCH --mem-per-cpu=3600M
 #SBATCH --time=00:10:00
-#SBATCH --account=def-someuser
 
 julia -t 8 julia_script.jl
 ```
