@@ -37,11 +37,17 @@ remote secure shell (SSH) client installed on your computer. On Windows we recom
 usually pre-installed (try typing `ssh` in a terminal to make sure it is there). We will provide guest accounts to all
 participants.
 
+<!-- {{<cor>}}Zoom{{</cor>}} {{<s>}} {{<cgr>}}Day 1: Feb-14 9:30am-12:30pm Pacific time{{</cgr>}}\ -->
+<!-- {{<nolinktitle>}}Introduction to Julia language{{</nolinktitle>}} - Marie\ -->
+<!-- {{<nolinktitle>}}Intro to parallelism{{</nolinktitle>}} - Marie\ -->
+<!-- {{<nolinktitle>}}Multi-threading with Base.Threads (slow series){{</nolinktitle>}} - Marie\ -->
+<!-- {{<nolinktitle>}}Multi-threading with ThreadsX (slow series){{</nolinktitle>}} - Alex -->
+
 {{<cor>}}Zoom{{</cor>}} {{<s>}} {{<cgr>}}Day 1: Feb-14 9:30am-12:30pm Pacific time{{</cgr>}}\
-{{<nolinktitle>}}Introduction to Julia language{{</nolinktitle>}} - Marie\
-{{<nolinktitle>}}Intro to parallelism{{</nolinktitle>}} - Marie\
-{{<nolinktitle>}}Multi-threading with Base.Threads (slow series){{</nolinktitle>}} - Marie\
-{{<nolinktitle>}}Multi-threading with ThreadsX (slow series){{</nolinktitle>}} - Alex
+{{<linktitle url="../julia202202/julia-01-intro-language" text="Introduction to Julia language">}} - Marie\
+{{<linktitle url="../julia202202/julia-02-intro-parallel" text="Intro to parallelism">}} - Marie\
+{{<linktitle url="../julia202202/julia-03-threads-slow-series" text="Multi-threading with Base.Threads (slow series)">}} - Marie\
+{{<linktitle url="../julia202202/julia-04-threadsx-slow-series" text="Multi-threading with ThreadsX (slow series)">}} - Alex
 
 {{<cor>}}Zoom{{</cor>}} {{<s>}} {{<cgr>}}Day 2: Feb-16 9:30am-12:30pm Pacific time{{</cgr>}}\
 {{<nolinktitle>}}Parallelizing the Julia set with Base.Threads{{</nolinktitle>}} - Alex\
@@ -55,12 +61,6 @@ participants.
 {{<nolinktitle>}}SharedArrays.jl: concepts, 1D heat equation{{</nolinktitle>}} - Baolai\
 {{<nolinktitle>}}Parallelizing the N-body problem{{</nolinktitle>}} - Alex (supplemental material)\
 {{<nolinktitle>}}Parallelizing the additive Schwarz method{{</nolinktitle>}} - Alex (supplemental material)
-
-<!-- {{<cor>}}Zoom{{</cor>}} {{<s>}} {{<cgr>}}Day 1: Feb-14 9:30am-12:30pm Pacific time{{</cgr>}}\ -->
-<!-- {{<linktitle url="../julia202202/julia-01-intro-language" text="Introduction to Julia language">}} - Marie\ -->
-<!-- {{<linktitle url="../julia202202/julia-02-intro-parallel" text="Intro to parallelism">}} - Marie\ -->
-<!-- {{<linktitle url="../julia202202/julia-03-threads-slow-series" text="Multi-threading with Base.Threads (slow series)">}} - Marie\ -->
-<!-- {{<linktitle url="../julia202202/julia-04-threadsx-slow-series" text="Multi-threading with ThreadsX (slow series)">}} - Alex -->
 
 <!-- {{<cor>}}Zoom{{</cor>}} {{<s>}} {{<cgr>}}Day 2: Feb-16 9:30am-12:30pm Pacific time{{</cgr>}}\ -->
 <!-- {{<linktitle url="../julia202202/julia-05-threads-julia-set" text="Parallelizing the Julia set with Base.Threads">}} - Alex\ -->
