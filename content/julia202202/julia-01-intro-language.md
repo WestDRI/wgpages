@@ -252,7 +252,7 @@ Compiled languages use compilers: programs that translate your code into machine
 
 Julia uses {{<a "https://en.wikipedia.org/wiki/Just-in-time_compilation" "just-in-time compilation">}} or JIT based on {{<a "https://en.wikipedia.org/wiki/LLVM" "LLVM">}}: the source code is compiled at run time. This combines the flexibility of interpretation with the speed of compilation, bringing speed to an interactive language. It also allows for dynamic recompilation, continuous weighing of gains and costs of the compilation of parts of the code, and other on the fly optimizations.
 
-Of course, there are costs here too. They come in the form of overhead time to compile code the first time it is run and increased memory usage.
+{{<a "https://carolchen.me/blog/technical/jits-intro/" "Here">}} is a great blog post covering this topic if you want to dive deeper into the functioning of JIT compilers.
 
 ### Macros
 
