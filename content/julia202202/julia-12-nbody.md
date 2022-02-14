@@ -5,8 +5,7 @@ weight = 12
 katex = true
 +++
 
-In this section I will describe the second project that you can work on this afternoon. The project is the **direct
-N-body solver**.
+In this section I will describe a project that you can work on this afternoon: the **direct N-body solver**.
 
 Imagine that you place $N$ identical particles randomly into a unit cube, with zero initial velocities. Then you turn on
 gravity, so that the particles start attracting each other. There are no boundary conditions: these are the only
