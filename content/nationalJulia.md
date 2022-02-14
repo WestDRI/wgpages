@@ -46,10 +46,10 @@ participants.
 {{<cor>}}Zoom{{</cor>}} {{<s>}} {{<cgr>}}Day 1: Feb-14 9:30am-12:30pm Pacific time{{</cgr>}}\
 {{<linktitle url="../julia202202/julia-01-intro-language" text="Introduction to Julia language">}} - Marie\
 {{<linktitle url="../julia202202/julia-02-intro-parallel" text="Intro to parallelism">}} - Marie\
-{{<linktitle url="../julia202202/julia-03-threads-slow-series" text="Multi-threading with Base.Threads (slow series)">}} - Alex\
-{{<linktitle url="../julia202202/julia-04-threadsx-slow-series" text="Multi-threading with ThreadsX (slow series)">}} - Alex
+{{<linktitle url="../julia202202/julia-03-threads-slow-series" text="Multi-threading with Base.Threads (slow series)">}} - Alex
 
 {{<cor>}}Zoom{{</cor>}} {{<s>}} {{<cgr>}}Day 2: Feb-16 9:30am-12:30pm Pacific time{{</cgr>}}\
+{{<linktitle url="../julia202202/julia-04-threadsx-slow-series" text="Multi-threading with ThreadsX (slow series)">}} - Alex \
 {{<nolinktitle>}}Parallelizing the Julia set with Base.Threads{{</nolinktitle>}} - Alex\
 {{<nolinktitle>}}Parallelizing the Julia set with ThreadsX{{</nolinktitle>}} - Alex\
 {{<nolinktitle>}}Distributed.jl: basics{{</nolinktitle>}} - Alex\
