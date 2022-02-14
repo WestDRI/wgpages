@@ -266,10 +266,22 @@ Julia supports unicode. In a Julia REPL, type the following, followed by the TAB
 \:snail:
 ```
 
-And you will get:
+and you get:
 
-```jl
+```{jl}
 🐌
+```
+
+While assigning values to a "snail variable" might not be all that useful, a wide access to—for instance—Greek letters, makes Julia's code look nicely similar to the equations it represents. For instance, if you type TAB after each variable name, the following:
+
+```{jl}
+\pgamma = ((\alpha \pi + \beta) / \delta) + \upepsilon
+```
+
+looks like:
+
+```{jl}
+ɣ = ((α π + β) / δ) + ε
 ```
 
 ### Additional basic information
