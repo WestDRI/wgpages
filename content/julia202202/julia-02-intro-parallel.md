@@ -52,7 +52,6 @@ We will **not** be covering the following topics today (although we hope to cove
 - MPIArrays.jl
 - LoopVectorization.jl
 - FLoops.jl
-- ThreadsX.jl - deterministic thread parallelism
 - Transducers.jl
 - DistributedData.jl
 - GPU-related packages
