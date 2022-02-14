@@ -244,9 +244,15 @@ $ sbatch job_script.sh
 
 ### JIT compilation
 
+Programming languages are either interpreted or compiled.
+
+Interpreted languages use interpreters: programs that execute your code directly (Python, for instance, uses the interpreter CPython, written in C). Interpreted languages are very convenient since you can run sections of your code as soon as you write them. However, they are slow.
+
+Compiled languages use compilers: programs that translate your code into machine code. Machine code is extremely efficient, but of course, having to compile your code before being able to run it makes for less convenient workflows when it comes to writing or debugging code.
+
 Julia uses {{<a "https://en.wikipedia.org/wiki/Just-in-time_compilation" "just-in-time compilation">}} or JIT based on {{<a "https://en.wikipedia.org/wiki/LLVM" "LLVM">}}: the source code is compiled at run time. This combines the flexibility of interpretation with the speed of compilation, bringing speed to an interactive language. It also allows for dynamic recompilation, continuous weighing of gains and costs of the compilation of parts of the code, and other on the fly optimizations.
 
-Of course, there are costs here too. They come in the form of overhead time to compile code the first time it is run and increased memory usage.
+{{<a "https://carolchen.me/blog/technical/jits-intro/" "Here">}} is a great blog post covering this topic if you want to dive deeper into the functioning of JIT compilers.
 
 ### Macros
 
@@ -260,16 +266,28 @@ Macros have a `@` prefix and are defined with a syntax similar to that of functi
 
 ### Fun fact
 
-Julia supports unicode. In a Julia REPL, type the following, followed by the TAB key:
+{{<a "https://docs.julialang.org/en/v1/manual/unicode-input/" "Julia supports unicode">}}. In a Julia REPL, type the following, followed by the TAB key:
 
 ```{jl}
 \:snail:
 ```
 
-And you will get:
+and you get:
 
-```jl
+```{jl}
 🐌
+```
+
+While assigning values to a "snail variable" might not be all that useful, a wide access to—for instance—Greek letters, makes Julia's code look nicely similar to the equations it represents. For instance, if you type TAB after each variable name, the following:
+
+```{jl}
+\pgamma = ((\alpha \pi + \beta) / \delta) + \upepsilon
+```
+
+looks like:
+
+```{jl}
+ɣ = ((α π + β) / δ) + ε
 ```
 
 ### Additional basic information

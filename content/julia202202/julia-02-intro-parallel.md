@@ -41,18 +41,17 @@ multi-core PCs and distributed-memory clusters. We will cover the following topi
 - multi-threading with Base.Threads and ThreadsX.jl
 - multi-processing with Distributed.jl
 - ClusterManagers.jl (very briefly)
-- DistributedArrays.jl - distributing large arrays across multiple processes
-- SharedArrays.jl - shared-memory access to large arrays from multiple processes
-- Dagger.jl (briefly) - a task graph scheduler heavily inspired by Python's Dask
+- DistributedArrays.jl—distributing large arrays across multiple processes
+- SharedArrays.jl—shared-memory access to large arrays from multiple processes
 
 We will **not** be covering the following topics today (although we hope to cover them in our future webinars!):
 
 - Concurrent function calls ("lightweight threads" for suspending/resuming computations)
-- MPI.jl - a port of the standard MPI library to Julia
+- MPI.jl—a port of the standard MPI library to Julia
 - MPIArrays.jl
 - LoopVectorization.jl
 - FLoops.jl
-- ThreadsX.jl - deterministic thread parallelism
 - Transducers.jl
+- Dagger.jl—a task graph scheduler heavily inspired by Python's Dask
 - DistributedData.jl
 - GPU-related packages

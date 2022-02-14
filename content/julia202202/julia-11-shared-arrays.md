@@ -4,6 +4,73 @@ slug = "julia-11-shared-arrays"
 weight = 11
 +++
 
+### Local vs shared arrays in Julia
+
+Let's reiterate this concept in Julia. Any variables created in the control process are only accessible on the control process. In order to make the content stored in a variable accessible by another process, we either need to copy it to the other process or use a shared variable.
+
+In the following example
+```julia
+n = 10
+a = zeros(n)
+@distributed for i=1:n
+    a[i] = i
+end
+```
+
+we attempt to assign values to array `a` concurrently by distributing the task in the loop to workers randomly (determined by Julia). But this is not going to happen. One will see, just by typing `a`, that `a` still contains zeros afterwards. This is because, the distributed assignments took place on workers, not on the control process. Let's see what's on workers
+
+```julia
+@everywhere function show()
+    println(a)
+end
+for p in workers()
+    remotecall_fetch(show,p)
+end
+```
+
+The output might surprise us
+
+```bash
+      From worker 2:	[1.0, 2.0, 3.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      From worker 3:	[0.0, 0.0, 0.0, 4.0, 5.0, 6.0, 0.0, 0.0, 0.0, 0.0]
+      From worker 4:	[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 7.0, 8.0, 0.0, 0.0]
+      From worker 5:	[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 9.0, 10.0]
+```
+
+This shows, each worker does only a portion of the work, thanks to the rule of `@distributed`. As a result, workers have different "images" of the variable `a` afterwards.
+
+With package `SharedArrays`, a shared array of type `SharedArray` will have a universal view across all process. The following example illustrates the effect of using shared arrays
+
+```julia
+using SharedArrays
+n = 10
+a = SharedArray{Float64}(n)
+@distributed for i=1:n
+    a[i] = i
+end
+
+@everywhere SharedArrays
+@everywhere showa()
+    println(a)
+end
+for p in workers()
+    remotecall_call(showa,p)
+end
+```
+
+This is the output
+
+```bash
+      From worker 2:	[1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0]
+      From worker 3:	[1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0]
+      From worker 4:	[1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0]
+      From worker 5:	[1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0]
+```
+
+Every worker has the same content.
+
+### Shared arrays
+
 Unlike distributed **DArray** from **DistributedArrays.jl**, a **SharedArray** object is stored in full on the control
 process, but it is shared across all workers on the same node, with a significant cache on each worker. **SharedArrays**
 package is part of Julia's Standard Library (comes with the language).
@@ -50,17 +117,48 @@ Let's fill each element with its corresponding myd() value:
 c = SharedArray{Int64}((20), init = x -> x .= myid())   # indeterminate outcome! each time a new result
 ```
 
-Each worker updates every element, but the order in which they do this varies from one run to another, producing
-indeterminate outcome.
+Each worker updates every element, but the order in which they do this varies from one run to another, producing indeterminate outcome. Let's see how to avoid such unexpected outcomes.
+
+### Partition of shared arrays
+
+Julia defines a "virtual boundary" around the portion of a shared array mapped to a worker. Let's take a look at the following example. We create a shared array `u` of length 17.
 
 ```julia
-@everywhere using SharedArrays   # otherwise `localindices` won't be found on workers
-for i in workers()
-    @spawnat i println(localindices(c))   # this block is assigned for processing on worker `i`
+N = 17
+u = SharedArray{Float64}(n)
+```
+
+Then we use function `localindices` to see the start and end indices of the partitions of the array object `u`. First we run this on the control process
+
+```julia
+localindices(u)
+```
+
+The output might be a little surprise
+```bash
+1:0
+```
+
+Next we run `localindices(u)` on each worker
+
+```julia
+@everywhere using SharedArrays
+for p in workers()
+    @fetchfrom p println(localindices(u))
 end
 ```
 
-What we really want is each worker should fill only its assigned block (parallel init, same result every time):
+Now the output is what we expected
+```bash
+      From worker 2:	1:4
+      From worker 3:	5:8
+      From worker 4:	9:12
+      From worker 5:	13:17
+```
+
+```julia
+
+Now come back to the task we want to accomplish while we hit the unexpected outcomes. What we really want is each worker should fill only its assigned block (parallel init, same result every time. This can be achieved as follows
 
 ```julia
 c = SharedArray{Int64}((20), init = x -> x[localindices(x)] .= myid())
@@ -84,6 +182,116 @@ a                           # available on all workers
 a[1:10,1:10]                # on the control process
 @fetchfrom 2 a[1:10,1:10]   # on worker 2
 ```
+
+### Pitfall of using shared objects
+
+Let's have a look at the following example, restart Julia with `julia -p 4`
+
+```julia
+using SharedArrays
+a = SharedArray{Float64}(5_000_000);
+varinfo()
+```
+
+We will see the output looks like this
+
+```bash
+  name                    size summary                              
+  –––––––––––––––– ––––––––––– –––––––––––––––––––––––––––––––––––––
+  A                 38.148 MiB 5000000-element SharedVector{Float64}
+  Base                         Module                               
+  Core                         Module                               
+  Distributed       39.861 MiB Module                               
+  InteractiveUtils 253.909 KiB Module                               
+  Main                         Module                               
+  ans               38.148 MiB 5000000-element SharedVector{Float64}
+```
+
+If we run `varinfo()` on a worker process, say, 3
+
+```julia
+@everywhere using InteractiveUtils
+@fetchfrom 3 varinfo()
+```
+
+we get
+
+```bash
+  name              size summary
+  ––––––––––– –––––––––– –––––––
+  Base                   Module 
+  Core                   Module 
+  Distributed 39.155 MiB Module 
+  Main                   Module 
+```
+
+We do not see the variable `A` per se. But we do see the same amount of data 39.861 MiB claimed by `Distributed` as on the control process.
+
+If we try to set the values in `A` on worker 3 to its worker ID with the following code
+
+```julia
+@everywhere using SharedArrays
+@everywhere function set_to_myid()
+    idx = localindices(A);
+    A[idx] .= myid();
+end
+@fetchfrom 3 set_to_myid()
+```
+
+we will get the following error
+
+```julia
+ERROR: On worker 3:
+UndefVarError: A not defined
+```
+
+This suggests that, the data is shared across all processes, but the name space of the variable itself is not.
+
+We now modify the function `set_to_myid` a bit as follows
+
+```julia
+@everywhere function set_to_myid(a)
+    idx = localindices(a);
+    a[idx] .= myid();
+end
+remotecall_fetch(set_to_myid,3,A)
+```
+
+This time it should not give any error. The portion of `A` is properly set. If we check the output of `varinfo()` again, wee
+
+```julia
+@fetchfrom 3 varinfo()
+  name              size summary                                      
+  ––––––––––– –––––––––– –––––––––––––––––––––––––––––––––––––––––––––
+  Base                   Module                                       
+  Core                   Module                                       
+  Distributed 39.159 MiB Module                                       
+  Main                   Module                                       
+  set_to_myid    0 bytes set_to_myid (generic function with 2 methods)
+```
+
+Still, `A` is not present. But the assignment of worker ID to `A` on worker 3 has worked.
+
+If we run the following command
+
+```julia
+@fetchfrom 3 A[localindices(A)] .= myid()
+```
+
+it works, but it has a different meaning. It copies `A` to worker 3 and performs the operation of assignments there. This becomes evident when we see the output of `varinfo` on worker 3
+
+```bash
+  name              size summary                                      
+  ––––––––––– –––––––––– –––––––––––––––––––––––––––––––––––––––––––––
+  A           38.147 MiB 5000000-element SharedVector{Float64}        
+  Base                   Module                                       
+  Core                   Module                                       
+  Distributed 39.161 MiB Module                                       
+  Main                   Module                                       
+  set_to_myid    0 bytes set_to_myid (generic function with 2 methods)
+```
+
+The conclusion so far is, use `remotecall` to execute the code on workers. Use macros `@fetch` etc carefully.
 
 ### 1D heat equation
 
@@ -123,11 +331,10 @@ for $i=1,\ldots,N$. This can be translated into the following code with one dime
 
 ```julia
 for i=1:N
-    unew[i] = (1-2*k)u[i] + k*(u[i-1] + u[i+1])
+    unew[i] = (1-2k)u[i] + k*(u[i-1] + u[i+1])
 end
 ```
-
-This in fact can be replaced by the following one line of code using a single array `u[1:N]`
+Notice the `2k` is not a typo, it is a legal Julia expression, meaning `2*k`.  This loop in fact can be replaced by the following one line of code using a single array `u[1:N]`
 
 ```julia
 u[2:N-1] = (1-2k)*u[2:N-1] + k*(u[1:N-2) + u[3:N])
@@ -135,7 +342,7 @@ u[2:N-1] = (1-2k)*u[2:N-1] + k*(u[1:N-2) + u[3:N])
 
 In this case, vectorized operations on the right hand side take place first before the individual elements on the left hand side are updated.
 
-__Serial code__. A serial code is given below
+__Serial code__. A serial code is given below. The time evolution loop is at the end of the code.
 
 ```julia
 using Plots, Base
@@ -170,16 +377,16 @@ ix = findall(x->(heat_range[1] .< x .&& x .< heat_range[2]),x);
 @. u[ix] = heat_temp;
 
 # Display plot (it could be really slow on some systems to launch)
-display(plot(x,u[1:n],lw=3,ylim=(0,1),lable=("u")))
+display(plot(x,u[1:n],lw=3,ylim=(0,1),label=("u")))
 
 # Compute the solution over time
 for j=1:num_steps
     # Compute the solution for the next time step
-    u[2:n-1] = (1.0-2.0*k)*u[2:n-1] + k*(u[1:n-2]+u[3:n])
+    u[2:n-1] = (1.0-2.0k)*u[2:n-1] + k*(u[1:n-2]+u[3:n])
   
     # Display the solution (comment it out for pro
     if (j % output_freq == 0)
-        display(plot(x,u[1:n],lw=3,ylim=(0,1),lable=("u")))
+        display(plot(x,u[1:n],lw=3,ylim=(0,1),label=("u")))
     end		   
 end
 ```
@@ -210,7 +417,7 @@ for p = workers() # Assume we have created 4 workers
     @fetchfrom p println(localindices(u))
 end
 ```
-The output looks like the following
+The output of the start and end indices of each subset on each of the workers looks like the following
 
 ```bash
       From worker 2:	1:4
@@ -223,9 +430,9 @@ The calculation of
 ```julia
 u[2:N-1] = (1-2k)*u[2:N-1] + k*(u[1:N-2) + u[3:N])
 ```
-is now will done on each subset of the grid points, as shown in the diagram below
+is now done on each subset of the grid points, as shown in the diagram below
 
-{{< figure src="/img/grid_part_no_overlap.png" width=650px >}}
+{{< figure src="/img/grid_part_no_overlap.png" width=600px >}}
 
 We need to replace the start and end indices with the local ones `l1` and `lN`
 
@@ -235,22 +442,22 @@ u[l1:lN] = (1-2k)*u[l1:lN] + k*(u[l1-1:lN-1) + u[l1+1:lN+1])
 
 Note for the left most subset, we need to skip the very first one, as it is the boundary point, no need to compute the solution for. So is for the right most one, we need to skip the very last one.
 
-We define a function `update` that computes the solution only for the portion that the worker owns it. For demo purpose, we have it compute the local start and end indices
+We define a function `update` that computes the solution only for the portion that the worker owns it. For demo purpose, we have it compute the local start and end indices as well, which could be set in a different way.
 
 ```julia
 @everywhere function update(u,me)
     # Determine the start and end indices
-    i1 = np*(me - 1) + 1;
-    in = i1 + np + n % num_workers - 1;
+    l1 = np*(me - 1) + 1;
+    ln = l1 + np + n % num_workers - 1;
 
     # Skip the left most and right most end points
     if (me == 1) 
-        i1 = 2;
+        l1 = 2;
     end
     if (me == num_workers)
-        in = n - 1;
+        ln = n - 1;
     end 
-    u[i1:in] = (1.0-2*k)*u[i1:in] + k*(u[i1-1:in-1]+u[i1+1:in+1])
+    u[l1:ln] = (1.0-2k)*u[l1:ln] + k*(u[l1-1:ln-1]+u[l1+1:ln+1])
 end
 ```
 
@@ -268,5 +475,103 @@ for j=1:num_steps
 end
 ```
 
-The time evolution for loop in one the control process. Inside the loop, it calls the function `update` on workers at each time step (in a fork-join fashion). The display is executed on the control process
+The time evolution for loop is on the control process. Inside the loop, it calls the function `update` on workers at each time step (in a fork-join fashion). The workers are synchronized after they complete their own computation before moving ahead to the time step. The display is executed on the control process
 
+> ### Exercise 1D heat equation using shared arrays
+> 1. Use the serial code as the base. Write a skeleton of the parallel code
+> 
+```julia
+using Base, Distributed, SharedArrays
+using Plots
+
+# Input parameters
+... ...
+
+# Set the k value
+... ...
+
+# Set x-coordinates for plot
+... ...
+
+# For demo purpose, set number of workers to 4
+num_workers = nworkers() # Number of workder processes
+np = div(n,nprocs())	# Number of points local to the process
+
+# Allocate spaces
+u = SharedArray{Float64}(n);
+u .= 0;
+
+# Set initial condition
+ix = findall(x->(heat_range[1] .< x .&& x .< heat_range[2]),x);
+@. u[ix] = heat_temp;
+
+# Broadcast parameters to all
+@everywhere k=$k
+@everywhere n=$n
+@everywhere np=$np
+@everywhere num_workers=$num_workers
+@everywhere l1=1
+@everywhere ln=1
+
+# Define the function update on all processes
+@everywhere using SharedArrays
+@everywhere function get_partition(me)
+    # Determine the start and end indices l1, ln (they are global)
+    l1 = ... 
+    ln = ...
+
+    # Skip the left most and right most end points
+    if (me == 1) 
+        l1 = 2;
+    end
+    if (me == num_workers)
+        ln = n - 1;
+    end 
+end
+display(plot(x,u,lw=3,ylim=(0,1),label=("u")))
+
+# Get partition info
+for p in workers()
+    @async remotecall_fetch(get_partition,p,p-1)
+end
+
+# Update u in time on workders
+@time begin
+for j=1:num_steps 
+    @sync begin
+        for p in workers()
+            @async remotecall(update,p,u);
+        end
+    end           
+    if (j % output_freq == 0)
+        display(plot(x,u,lw=3,ylim=(0,1),label=("u")))
+    end
+end
+end
+
+sleep(10)
+```
+> 2. Complete the function `get_partition`
+```julia
+@everywhere function get_partition(me)
+    # Determine the start and end indices
+    l1 = ... 
+    ln = ...
+
+    # Skip the left most and right most end points
+    if (me == 1) 
+        l1 = 2;
+    end
+    if (me == num_workers)
+        ln = n - 1;
+    end 
+end
+```
+> 3. Write a function `update` as follows
+> 
+```julia
+@everywhere function update(u)
+    u[l1:ln] = (1.0-2k)*u[l1:ln] + k*(u[l1-1:ln-1]+u[l1+1:ln+1])
+end
+```
+> 4. Complete the parallel code and see if you can get the same output (graphical display) as the serial code.
