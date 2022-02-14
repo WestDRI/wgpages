@@ -43,7 +43,6 @@ multi-core PCs and distributed-memory clusters. We will cover the following topi
 - ClusterManagers.jl (very briefly)
 - DistributedArrays.jl - distributing large arrays across multiple processes
 - SharedArrays.jl - shared-memory access to large arrays from multiple processes
-- Dagger.jl (briefly) - a task graph scheduler heavily inspired by Python's Dask
 
 We will **not** be covering the following topics today (although we hope to cover them in our future webinars!):
 
@@ -53,5 +52,6 @@ We will **not** be covering the following topics today (although we hope to cove
 - LoopVectorization.jl
 - FLoops.jl
 - Transducers.jl
+- Dagger.jl - a task graph scheduler heavily inspired by Python's Dask
 - DistributedData.jl
 - GPU-related packages
