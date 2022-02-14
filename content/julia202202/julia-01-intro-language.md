@@ -260,7 +260,7 @@ Macros have a `@` prefix and are defined with a syntax similar to that of functi
 
 ### Fun fact
 
-Julia supports unicode. In a Julia REPL, type the following, followed by the TAB key:
+{{<a "https://docs.julialang.org/en/v1/manual/unicode-input/" "Julia supports unicode">}}. In a Julia REPL, type the following, followed by the TAB key:
 
 ```{jl}
 \:snail:
