@@ -37,7 +37,7 @@ The output might surprise us
       From worker 5:	[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 9.0, 10.0]
 ```
 
-This shows, each worker does only a portion of the work, thanks to the rule of `@distributed`. As a result, workers have different "images" of the variable `a` afterwards.
+Two things worth noting here. First, `a` gets copied on the workers, otherwise, the workers will have nothing to work on as they don't have access to variables defined on the control process. Second, the result shows, each worker does only a portion of the work, thanks to the rule of `@distributed`. As a result, workers have different "images" of the variable `a` afterwards.
 
 With package `SharedArrays`, a shared array of type `SharedArray` will have a universal view across all process. The following example illustrates the effect of using shared arrays
 
@@ -67,7 +67,7 @@ This is the output
       From worker 5:	[1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0]
 ```
 
-Every worker has the same content.
+Every worker has the same content. Note in the above we used `remotecall` rather than the macro `@fetchfrom`, as seen elsewhere. We will explain why in the section of pitfalls.
 
 ### Shared arrays
 
@@ -293,7 +293,7 @@ it works, but it has a different meaning. It copies `A` to worker 3 and performs
 
 The conclusion so far is, use `remotecall` to execute the code on workers. Use macros `@fetch` etc carefully.
 
-### 1D heat equation
+### Solving 1D heat equation using shared array
 
 Consider a (simplified) physics problem: A rod of length $[-L,L]$ heated in the middle, then the heat source is removed. The temperature distribution $T(x,t)$ across the rod over time can be simulated by the following equation
 
@@ -319,7 +319,7 @@ T(x_i,t_n+\Delta t) = (1-2k)T(x_i,t_n) + k((T(x_{i-1},t_n)+T(x_{i+1},t_n))
 
 where $k$ is a parameter that shall be chosen properly in order for the numerical procedure to be stable.
 
-Note in the formula, the temperature $T(x_i,t_n+\Delta t)$ to be computed at the next time step $t_{n+1} = t_n +\Delta t$ depends on the values of $T$ at three points at current time step $t_n$, which are all known. This allows us to compute all grid values of $T$ at time $t_n+\Delta t$ independent of each other, hence to achieve parallelism.
+Note in the formula, the temperature $T(x_i,t_n+\Delta t)$ at the next time step $t_{n+1} = t_n +\Delta t$ can be computed explicitly using the values of $T$ at three points at current time step $t_n$, which are all known. This allows us to compute all grid values of $T$ at time $t_n+\Delta t$ independent of each other, hence to achieve parallelism.
 
 Let $U_i^n$ denote the value of $T(x_i,t_n)$ at grid points $x_i$, $i=1,\ldots,N$ at time $t_n$, we use the short notation
 
@@ -327,14 +327,16 @@ Let $U_i^n$ denote the value of $T(x_i,t_n)$ at grid points $x_i$, $i=1,\ldots,N
 U_i^{n+1} = (1-2k)U_i^n + k(U_{i-1}^n + U_{i+1}^n).
 \\]
 
-for $i=1,\ldots,N$. This can be translated into the following code with one dimensional two arrays `unew[1:N]` and `u[1:N]` holding values at the $N$ grid points at $t_{n+1}$ and $t_n$ respectively
+for $i=1,\ldots,N$. This can be translated into the following code with one dimensional two arrays `unew[1:N]` and `u[1:N]` holding values at the $N$ grid points at $t_{n+1}$ and $t_n$ respectively[^1]
 
 ```julia
 for i=1:N
     unew[i] = (1-2k)u[i] + k*(u[i-1] + u[i+1])
 end
 ```
-Notice the `2k` is not a typo, it is a legal Julia expression, meaning `2*k`.  This loop in fact can be replaced by the following one line of code using a single array `u[1:N]`
+[^1]: Note that `2k` is not a typo, it is a legal Julia expression, meaning `2*k`.  
+
+This loop in fact can be replaced by the following one line of code using a single array `u[1:N]`
 
 ```julia
 u[2:N-1] = (1-2k)*u[2:N-1] + k*(u[1:N-2) + u[3:N])
