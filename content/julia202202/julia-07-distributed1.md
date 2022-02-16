@@ -9,7 +9,7 @@ katex = true
 
 Julia's **Distributed** package provides multiprocessing environment to allow programs to run on multiple processors in
 shared or distributed memory. On each CPU core you start a separate Unix / MPI process, and these processes communicate
-via messages. Unlike traditionally in MPI, Julia's implementation of message passing is **one-sided**, typically with
+via messages. Unlike in MPI, Julia's implementation of message passing is **one-sided**, typically with
 higher-level operations like calls to user functions on a remote process.
 
 - a **remote call** is a request by one processor to call a function on another processor; returns a **remote/future
@@ -19,7 +19,7 @@ higher-level operations like calls to user functions on a remote process.
 - you can obtain the remote result with `fetch()` or make the calling processor block with `wait()`
 
 In this workflow you have a single control process + multiple worker processes. Processes pass information via messages
-underneath, not via variables in shared memory
+underneath, not via variables in shared memory.
 
 ### Launching worker processes
 
@@ -57,7 +57,7 @@ addprocs(8)
 > **Note:** All three methods launch workers, so combining them will result in 16 (or 24!) workers (probably not the
 > best idea). Select one method and use it.
 
-In Slurm methods (1) and (3) work very well, so - when working on a CC cluster - usually there is no need to construct a
+With Slurm, methods (1) and (3) work very well, so—when working on a CC cluster—usually there is no need to construct a
 machine file.
 
 ### Process control
@@ -73,7 +73,7 @@ Inside this job, start Julia with `julia` (single control process).
 
 ```jl
 using Distributed
-addprocs(4)   # add 4 worker processes; this might take a while on Uu
+addprocs(4)   # add 4 worker processes; this might take a while on uu
 println("number of cores = ", nprocs())       # 5 cores
 println("number of workers = ", nworkers())   # 4 workers
 workers()                                     # list worker IDs
@@ -150,7 +150,7 @@ it will do the following:
 1. pass the namespace of local variables to worker 2
 1. spawn function execution on worker 2
 1. return a Future handle (referencing this running instance) to the control process
-1. return REPL to the control process (while the function is running on worker 2), so we can continue running commands
+1. return the REPL to the control process (while the function is running on worker 2), so we can continue running commands
 
 Now let's modify our code slightly:
 
@@ -220,8 +220,7 @@ fetch(r)
 
 ### Back to the slow series: serial code
 
-Let's restart Julia with `julia -p 2` (control process + 2 workers). We'll start with our serial code (below), and let's
-save it as `serialDistributed.jl` and run it.
+Let's restart Julia with `julia -p 2` (control process + 2 workers). We'll start with our serial code (below), save it as `serialDistributed.jl`, and run it.
 
 ```jl
 using Distributed
@@ -254,7 +253,7 @@ end
 @btime slow(Int64(1e8), 9)     # serial run: total = 13.277605949858103
 ```
 
-For me this serial run takes 3.192 s on Uu. Next, let's run it on 3 (control + 2 workers) cores simultaneously:
+For me this serial run takes 3.192 s on uu. Next, let's run it on 3 (control + 2 workers) cores simultaneously:
 
 ```jl
 @everywhere using BenchmarkTools
@@ -262,7 +261,7 @@ For me this serial run takes 3.192 s on Uu. Next, let's run it on 3 (control + 2
 ```
 
 Here we are being silly: this code is serial, so each core performs the same calculation ... I see the following times
-printed on my screen: 3.220 s, 2.927 s, 3.211 s -- each is from a separate process running the code in serial.
+printed on my screen: 3.220 s, 2.927 s, 3.211 s—each is from a separate process running the code in a serial fashion.
 
 <!-- When I try to run this code on my laptop (2 CPU cores), and I switch to timing with `@time` (resulting in only one run -->
 <!-- per process): -->
@@ -284,7 +283,7 @@ printed on my screen: 3.220 s, 2.927 s, 3.211 s -- each is from a separate proce
 <!-- @everywhere slow(Int64(1e9), 9) -->
 <!-- ``` -->
 
-How do we make this code parallel and make it run faster?
+How can we make this code parallel and faster?
 
 ### Parallelizing our slow series: non-scalable version
 
@@ -301,10 +300,10 @@ We need to redefine `digitsin()` everywhere, and then let's modify `slow()` to c
 ```jl
 @everywhere function slow(n::Int, digits::Int, taskid, ntasks)   # two additional arguments
     println("running on worker ", myid())
-    total = 0.
+    total = 0.0
     @time for i in taskid:ntasks:n   # partial sum with a stride `ntasks`
         if !digitsin(digits, i)
-            total += 1. / i
+            total += 1.0 / i
         end
     end
     return(total)
@@ -321,10 +320,10 @@ b = @spawnat :any slow(Int64(1e8), 9, 2, 2)
 print("total = ", fetch(a) + fetch(b))   # 13.277605949852546
 ```
 
-For timing I got 1.30 s and 1.66 s, running concurrently, which is a 2X speedup compared to the serial run -- this is
-great result! Notice that we received a slightly different numerical result, due to a different order of summation.
+For timing I got 1.30 s and 1.66 s, running concurrently, which is a 2X speedup compared to the serial run—this is
+great! Notice that we received a slightly different numerical result, due to a different order of summation.
 
-However, our code is **not scalable**: it's only limited to a small number of sums each spawned with its own Future
+However, our code is **not scalable**: it is limited to a small number of sums each spawned with its own Future
 reference. If we want to scale it to 100 workers, we'll have a problem.
 
-How do we solve this problem -- any ideas before I show the solution in the next section?
+How do we solve this problem—any idea before I show the solution in the next section?
