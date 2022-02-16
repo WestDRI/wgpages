@@ -36,7 +36,7 @@ Running this new, vectorized version of the serial code, `@btime` reports 963.06
 1. Load ThreadsX library.
 1. Replace `map()` with `ThreadsX.map()`.
 
-With 8 threads on my laptop, the runtime went down to 175.994 ms -- 5.5X speedup.
+With 8 threads on my laptop, the runtime went down to 175.994 ms -- 5.5X speedup. On 8 cores on Uu I see 6.6X speedup.
 
 ## Running multi-threaded Julia codes on a production cluster
 

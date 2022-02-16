@@ -109,9 +109,11 @@ visualization tool.
 1. Add `@threads` before the outer loop, and time this parallel loop.
 
 On my laptop with 8 threads the timing is 249.924 ms (4.6X speedup) which is good but not great ... In terms of
-row-major vs. column-major loop order, we are doing the faster one here. The likely culprit here is the false sharing
-effect (cache issues with multiple threads writing into adjacent array elements), but since we are writing into a large
-array, it is more difficult to fix it with spacing (like we did before).
+row-major vs. column-major loop order, we are doing the faster one here. On Uu the serial runtime was 2.844 s, and with
+8 threads it went down to 1.030 s (2.8X speedup). The likely culprit here is the false sharing effect (cache issues with
+multiple threads writing into adjacent array elements), but since we are writing into a large array, it is more
+difficult to fix it with spacing (like we did before).
 
-> ### (Longer) Exercise "Fractal.2"
-> How would you fix this issue?
+> ### Take-home exercise "Fractal.2"
+> How would you fix this issue? If you manage to get a speedup closer to 8X with Base.Threads on 8 cores, we would love
+> to hear your solution!

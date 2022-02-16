@@ -254,8 +254,7 @@ end
 @btime slow(Int64(1e8), 9)     # serial run: total = 13.277605949858103
 ```
 
-For me this serial run takes 2.997 s on Uu's login node. Next, let's run it on 3 (control + 2 workers) cores
-simultaneously:
+For me this serial run takes 3.192 s on Uu. Next, let's run it on 3 (control + 2 workers) cores simultaneously:
 
 ```jl
 @everywhere using BenchmarkTools
@@ -263,7 +262,7 @@ simultaneously:
 ```
 
 Here we are being silly: this code is serial, so each core performs the same calculation ... I see the following times
-printed on my screen: 3.097 s, 2.759 s, 3.014 s -- each is from a separate process running the code in serial.
+printed on my screen: 3.220 s, 2.927 s, 3.211 s -- each is from a separate process running the code in serial.
 
 <!-- When I try to run this code on my laptop (2 CPU cores), and I switch to timing with `@time` (resulting in only one run -->
 <!-- per process): -->
@@ -322,7 +321,7 @@ b = @spawnat :any slow(Int64(1e8), 9, 2, 2)
 print("total = ", fetch(a) + fetch(b))   # 13.277605949852546
 ```
 
-For timing I got 1.26s and 1.31s, running concurrently, which is a 2X speedup compared to the serial run -- this is
+For timing I got 1.30 s and 1.66 s, running concurrently, which is a 2X speedup compared to the serial run -- this is
 great result! Notice that we received a slightly different numerical result, due to a different order of summation.
 
 However, our code is **not scalable**: it's only limited to a small number of sums each spawned with its own Future
