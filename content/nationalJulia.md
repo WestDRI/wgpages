@@ -55,6 +55,7 @@ participants.
 {{<linktitle url="../julia202202/julia-08-distributed2" text="Distributed.jl: three scalable versions of the slow series">}} - Marie
 
 {{<cor>}}Zoom{{</cor>}} {{<s>}} {{<cgr>}}Day 3: Feb-18 9:30am-12:30pm Pacific time{{</cgr>}} \
+{{<nolinktitle>}}Finishing the last section from Wednesday{{</nolinktitle>}} - Marie\
 {{<nolinktitle>}}DistributedArrays.jl: concepts, tridiagonal matrix, memory usage{{</nolinktitle>}} - Baolai\
 {{<nolinktitle>}}Parallelizing the Julia set with DistributedArrays{{</nolinktitle>}} - Alex\
 {{<nolinktitle>}}SharedArrays.jl: concepts, 1D heat equation{{</nolinktitle>}} - Baolai\
