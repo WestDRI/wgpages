@@ -129,7 +129,7 @@ showDistribution(de)
 
 ### Building a distributed array from local pieces [^1]
 
-[^1]: This example was adapted from Ge Baolai's (Western University/SHARCNET) presentation.
+[^1]: This example was adapted from Ge Baolai's presentation "Julia: A third perspective - parallel computing explained" (https://www.youtube.com/watch?v=HWLV6oTmfO8&t=2420s), Western University, SHARCNET, 2020.
 
 Let's restart Julia with `julia` (single control process) and load the packages:
 
@@ -190,21 +190,50 @@ d
 
 <!-- Solution: need to run `using DistributedArrays` on all workers. -->
 
-### Setting values in distributed arrays
+### Accessing distributed arrays
 
 While using distribited array saves memory and allows one to access the entire array in global address, it is tedious and sometimes challenging to do book keeping. For instance, setting values to a specific location in a distributed array is no easy job, as the DistributedArrays package only allows the process that owns the portion of the data to alter the values. Finding the boundary of the portion of data owned by each process is the first step towards setting values at the right locations within the boundaries.
 
 Consider two scenarios in which we are to write a slice of data to an one dimensional array `A[istart:iend]`:
 
 1. The range `istart:iend` falls into the range of indices of data owned by a process;
-2. The range `istart:iden` falls across two adjacent portion of data owned by two different processes.
+2. The range `istart:iend` falls across two adjacent portion of data owned by two different processes.
 
+as depicted in the diagram below, the shaped areas represent the portion of the array `A` to be updated
 
-### Data are distributed, but the meta data is not
+{{< figure src="/img/darray_part.png" width=550px >}}
 
-An important concept about any DistributedArray objects is that the data are distributed across processes, but the meta data is not.
+To set the value of `A[i]`, we need to use the method `.localpart`
 
-### Solving 1D heat equation using distributed array
+```julia
+A.localpart[i] = value
+```
+
+We wish this can be improved in the future, such that we can simply do
+
+```julia
+A[i] = value
+```
+
+But the time being, this is the way it is.
+
+Logically, to accomplish the setting values at `A[istart:iend]`, we need perform the following
+
+1. On each worker, find the lower and upper indices `ilo` and `iup`, respectively, of the data portion owned by the worker process; 
+2. Find the intersection `iset` of indices of range `istart` and `iend` and the set of indices of local portion of data ranging from `ilo` to `iup;
+3. Find the range of local indices of `iset` 
+```julia
+lstart = iset[1] - ilo + 1;
+lend = iset[2] - ilo + 1;
+```
+4. Set the values with 
+```julia
+A.localpart[lstart:lend] = ...
+```
+
+### Solving 1D heat equation using distributed array[^2]
+
+[^2]: This example is included in some of the SHARCNET training courses including Modern Fortran, Python, MPI and a few others.
 
 Consider a (simplified) physics problem: A rod of length $[-L,L]$ heated in the middle, then the heat source is removed. The temperature distribution $T(x,t)$ across the rod over time can be simulated by the following equation
 
@@ -255,3 +284,129 @@ u[2:N-1] = (1-2k)*u[2:N-1] + k*(u[1:N-2) + u[3:N])
 
 In this case, vectorized operations on the right hand side take place first before the individual elements on the left hand side are updated.
 
+__Serial code__. A serial code is given below. The time evolution loop is at the end of the code.
+
+```julia
+using Plots, Base
+
+# Input parameters
+a = 1.0
+n = 65			# Number of end points 1 to n (n-1 intervals).
+dt = -0.0005 		# dt <= 0.5*dx^2/a, ignored if set negative
+k = 0.1
+num_steps = 10000       # Number of stemps in t.
+output_freq = 1		# Number of stemps per display.
+xlim = zeros(Float64,2)
+xlim[1] = -1.0
+xlim[2] = 1.0
+heat_range = zeros(Float64,2)
+heat_range[1] = -0.1
+heat_range[2] = 0.1
+heat_temp = 1.0
+
+# Set the k value
+dx = (xlim[2] - xlim[1])/(n-1)
+if (dt > 0)
+    k = a*dt/(dx*dx)
+end
+
+# Create space for u; create coordinates x for demo
+x = xlim[1] .+ dx*(collect(1:n) .-1);
+u = zeros(Float64,n);
+
+# Set initial condition
+ix = findall(x->(heat_range[1] .< x .&& x .< heat_range[2]),x);
+@. u[ix] = heat_temp;
+
+# Display plot (it could be really slow on some systems to launch)
+display(plot(x,u[1:n],lw=3,ylim=(0,1),label=("u")))
+
+# Compute the solution over time
+for j=1:num_steps
+    # Compute the solution for the next time step
+    u[2:n-1] = (1.0-2.0k)*u[2:n-1] + k*(u[1:n-2]+u[3:n])
+  
+    # Display the solution (comment it out for pro
+    if (j % output_freq == 0)
+        display(plot(x,u[1:n],lw=3,ylim=(0,1),label=("u")))
+    end		   
+end
+```
+
+__Parallel code__. To demonstrate the use of distributed arrays, we implement the parallel version of the code using a distributed array `u` to store the solution. Since we can't write directly to a distributed array, the loop
+
+```julia
+for j=1:num_steps
+    # Compute the solution for the next time step
+    u[2:n-1] = (1.0-2.0k)*u[2:n-1] + k*(u[1:n-2]+u[3:n])
+  
+    # Display the solution (comment it out for pro
+    if (j % output_freq == 0)
+        display(plot(x,u[1:n],lw=3,ylim=(0,1),label=("u")))
+    end		   
+end
+```
+
+needs to be modified. Note the array `u` is distributed across workers. The grid is partitioned accordingly. The following illustrates the partition
+
+{{< figure src="/img/grid_1-N.png" width=650px >}}
+
+We need to modify the line
+
+```julia
+u[2:n-1] = (1.0-2.0k)*u[2:n-1] + k*(u[1:n-2]+u[3:n])
+```
+
+such that the computation is done on each worker locally. This is illustrated in the diagram below
+
+{{< figure src="/img/grid_part_no_overlap.png" width=650px >}}
+
+The indices on the right hand side need to be replaced by the start and end indices on the current process. On the left hand side, as we've seen before, we need to use the function `localindices(local_start, local_end)` to replace the global index (which is a huge draw back with the current design of the package DistributedArrays)
+
+```julia
+ll1 = ... # Local start index
+lln = ... # Local end index
+u.localpart[ll1:lln] = (1.0-2.0*k)*u[l1:ln] + k*(u[l1-1:ln-1]+u[l1+1:ln+1])
+```
+
+where `.localpart` is a method associated with the distributed array object that allows us to access and alter the values of the portion owned by the current worker process.
+
+To avoid retrieving the start and end indices `l1` and `ln` on each worker repeatedly during the time loop, we extract that information before the time loop using a function
+
+```julia
+@everywhere function get_partition_info()
+    global u;
+    global l1, ln, ilo, iup;
+
+    # Get the lower and upper boundary indices from distributed array
+    idx = localindices(u);
+    index_range = idx[1];
+    ilo = index_range.start;
+    iup = index_range.stop;
+    l1 = ilo;
+    ln = iup;
+
+    # Local compute end indices (skip the left and right most end points)
+    me = myid() - 1
+    if (me == 1) 
+        l1 = 2;
+    end
+    if (me == num_workers)
+        ln = iup - 1;
+    end
+end
+
+for p in workers()
+    @async remotecall_fetch(get_partition_info, p)
+end
+```
+
+Note we use the julia function `localindices()` to get the index range of the distributed array `u`. It returns a range, we then use the method `.start` and `.stop` to get the lower and upper indices `ilo` and `iup`, respectively, of the array owned by the current worker process. We adjust the start and end indices for the very first and very end of the sub-grid for skipping the boundary point there.
+
+Another tricky task we need to accomplish is setting initial condition in `u`. We need to locate the range of indices corresponding to the condition
+
+\\[
+u(x,0) = 1,\ \ \mbox{for} -h \leq x \leq h.
+\\]
+
+We've done such in the previous exercise. We leave it to the reader as an exercise. A complete sample parallel can be found {{<a "/files/heat1d_darray.jl" "here">}}.

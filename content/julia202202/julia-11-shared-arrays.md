@@ -17,7 +17,14 @@ a = zeros(n)
 end
 ```
 
-we attempt to assign values to array `a` concurrently by distributing the task in the loop to workers randomly (determined by Julia). But this is not going to happen. One will see, just by typing `a`, that `a` still contains zeros afterwards. This is because, the distributed assignments took place on workers, not on the control process. Let's see what's on workers
+we attempt to assign values to array `a` concurrently by distributing the task in the loop to workers randomly (determined by Julia). But this is not going to happen
+
+```julia
+println(a)
+[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+``` 
+
+This is because, the distributed assignments took place on workers, not on the control process. Let's see what's on workers
 
 ```julia
 @everywhere function show()
