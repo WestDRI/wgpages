@@ -143,7 +143,7 @@ using DistributedArrays       # important to load this after addprocs()
 We will define an $8 \times 8$ matrix with the main diagonal and two off-diagonals (*tridiagonal* matrix). The lines show our
 matrix distribution across workers:
 
-{{< figure src="/img/matrix.png" >}}
+{{< figure src="/img/matrix.png" width=350px >}}
 
 Notice that with the 2x2 decomposition two of the 4 blocks are also tridiagonal matrices. We'll define a function to
 initiate them:
@@ -185,19 +185,19 @@ d = DArray(reshape([d11 d21 d12 d22],(2,2)))   # create a distributed 8x8 matrix
 d
 ```
 
-> ### Exercise "DArrays.2"
+> ### Exercise: "DArrays.2"
 > Redefine `showDistribution()` on the control process and run `showDistribution(d)`.
 
 <!-- Solution: need to run `using DistributedArrays` on all workers. -->
 
 ### Accessing distributed arrays
 
-While using distribited array saves memory and allows one to access the entire array in global address, it is tedious and sometimes challenging to do book keeping. For instance, setting values to a specific location in a distributed array is no easy job, as the DistributedArrays package only allows the process that owns the portion of the data to alter the values. Finding the boundary of the portion of data owned by each process is the first step towards setting values at the right locations within the boundaries.
+While using distributed array saves memory and allows one to access the entire array in global address, it is tedious and sometimes challenging to do book keeping. For instance, setting values to a specific location in a distributed array is no easy job, as the DistributedArrays package only allows the process that owns the portion of the data to alter the values. Finding the boundary of the portion of data owned by each process is the first step towards setting values at the right locations within the boundaries.
 
 Consider two scenarios in which we are to write a slice of data to an one dimensional array `A[istart:iend]`:
 
 1. The range `istart:iend` falls into the range of indices of data owned by a process;
-2. The range `istart:iend` falls across two adjacent portion of data owned by two different processes.
+2. The range `istart:iend` falls across two adjacent portions of data owned by two different processes.
 
 as depicted in the diagram below, the shaped areas represent the portion of the array `A` to be updated
 
@@ -206,8 +206,9 @@ as depicted in the diagram below, the shaped areas represent the portion of the 
 To set the value of `A[i]`, we need to use the method `.localpart`
 
 ```julia
-A.localpart[i] = value
+A.localpart[i-offset+1] = value
 ```
+where `offset` is the offset of the global index of the first element in the portion owned by the current worker process, `i-offset+1` gives the local index relative to the first element in the local portion.
 
 We wish this can be improved in the future, such that we can simply do
 
@@ -217,7 +218,7 @@ A[i] = value
 
 But the time being, this is the way it is.
 
-Logically, to accomplish the setting values at `A[istart:iend]`, we need perform the following
+Now let's have a look at how we to accomplish the task of setting a slice of data `A[istart:iend]`. Logically we need perform the following
 
 1. On each worker, find the lower and upper indices `ilo` and `iup`, respectively, of the data portion owned by the worker process; 
 2. Find the intersection `iset` of indices of range `istart` and `iend` and the set of indices of local portion of data ranging from `ilo` to `iup;
@@ -230,6 +231,39 @@ lend = iset[2] - ilo + 1;
 ```julia
 A.localpart[lstart:lend] = ...
 ```
+
+To practice this, one may do the following exercise
+
+> ### Exercise: Setting a slice of values in a distributed array
+> Run Julia with 4 worker processes. Create a distributed array `u` of length `n=17`, initialized with zeros. Set slice of `u[7:11]` to 1.0, as shown in the diagram below
+> {{< figure src="/img/darray_set_slice.png" width=600px >}}
+> On may see the actual partitions by running the following commands
+> ```julia
+> for p in workers()
+>     @spawnat p println(localindices(a))
+> end
+> ```
+> Hint: The array `u` is partitioned into four subarrays. Perform the following operations on each worker.
+> 1. For each subarray, find the lower and upper indices of the subarray `ilo` and `iup`;
+> 2. For each subarray, find the start and end indices that fall in `[7:11]`, that is, a subset of `[7:11]` in the partition. One may use the following operations
+> ```julia
+> iset = intersect(Vector(7:11),Vector(ilo,iup));
+> # If iset is empty, skip
+> istart = iset[1];
+> iend = iset[end];
+> ```
+> 3. Set the value 1.0 to the slices with local indices
+> ```julia
+> lstart = istart - ilo + 1;
+> lend = iend - ilo + 1;
+> u.localpart[lstart:lend] .= 1.0;
+> ```
+> 4. The operations need to be performed on each worker, unless you can locate the subarrays that contain the slice of indices `[7:11]` otherwise.
+
+The same idea can be extended to multidimensional arrays.
+
+> ### Exercise: Setting values in a submatrix
+> Homework: Write a function `setval(a,va1,istart,iend,jstart,jend)` that will set the value `val` in a distributed array `a` at `a[istart:iend,jstart:jend]`.
 
 ### Solving 1D heat equation using distributed array[^2]
 
@@ -267,14 +301,14 @@ Let $U_i^n$ denote the value of $T(x_i,t_n)$ at grid points $x_i$, $i=1,\ldots,N
 U_i^{n+1} = (1-2k)U_i^n + k(U_{i-1}^n + U_{i+1}^n).
 \\]
 
-for $i=1,\ldots,N$. This can be translated into the following code with one dimensional two arrays `unew[1:N]` and `u[1:N]` holding values at the $N$ grid points at $t_{n+1}$ and $t_n$ respectively[^1]
+for $i=1,\ldots,N$. This can be translated into the following code with one dimensional two arrays `unew[1:N]` and `u[1:N]` holding values at the $N$ grid points at $t_{n+1}$ and $t_n$ respectively[^3]
 
 ```julia
 for i=1:N
     unew[i] = (1-2k)u[i] + k*(u[i-1] + u[i+1])
 end
 ```
-[^1]: Note that `2k` is not a typo, it is a legal Julia expression, meaning `2*k`.  
+[^3]: Note that `2k` is not a typo, it is a legal Julia expression, meaning `2*k`.  
 
 This loop in fact can be replaced by the following one line of code using a single array `u[1:N]`
 
@@ -347,19 +381,17 @@ for j=1:num_steps
 end
 ```
 
-needs to be modified. Note the array `u` is distributed across workers. The grid is partitioned accordingly. The following illustrates the partition
+needs to be modified. Note the array `u` is distributed across workers. The grid is partitioned accordingly. The following diagram illustrates the partition of the grid and corresponding solution array `u`
 
-{{< figure src="/img/grid_1-N.png" width=650px >}}
+{{< figure src="/img/grid_darray.png" width=650px >}}
 
-We need to modify the line
+We are going to modify the line
 
 ```julia
 u[2:n-1] = (1.0-2.0k)*u[2:n-1] + k*(u[1:n-2]+u[3:n])
 ```
 
-such that the computation is done on each worker locally. This is illustrated in the diagram below
-
-{{< figure src="/img/grid_part_no_overlap.png" width=650px >}}
+such that the computation is done on each worker locally. 
 
 The indices on the right hand side need to be replaced by the start and end indices on the current process. On the left hand side, as we've seen before, we need to use the function `localindices(local_start, local_end)` to replace the global index (which is a huge draw back with the current design of the package DistributedArrays)
 
@@ -409,4 +441,85 @@ Another tricky task we need to accomplish is setting initial condition in `u`. W
 u(x,0) = 1,\ \ \mbox{for} -h \leq x \leq h.
 \\]
 
-We've done such in the previous exercise. We leave it to the reader as an exercise. A complete sample parallel can be found {{<a "/files/heat1d_darray.jl" "here">}}.
+We've done such in the previous exercise. We leave it to the reader as an exercise. The skeleton of the code is shown below
+
+```julia
+using Base, Distributed, DistributedArrays
+using Plots
+
+# Input parameters
+... ...
+
+# Set x-coordinates for plot
+x = xlim[1] .+ dx*(collect(1:n) .-1);
+
+# For demo purpose, set number of workers to 4
+num_workers = nworkers() # Number of workder processes
+np = div(n,nprocs())	# Number of points local to the process
+
+# Allocate spaces
+@everywhere using DistributedArrays
+u = dzeros(Float64,n);
+
+# Broadcast parameters to all
+@everywhere k=$k
+@everywhere n=$n
+@everywhere np=$np
+@everywhere num_workers=$num_workers
+@everywhere heat_temp=$heat_temp
+@everywhere u=$u
+
+# Define gloabl vars and functions on all worker processes
+@everywhere using Distributed, DistributedArrays
+@everywhere ilo=1
+@everywhere iup=1
+@everywhere l1=1
+@everywhere ln=1 # Local start and end indices
+
+# Get lower and upper indices of array u owned by this process
+@everywhere function get_partition_info()
+    ... ...
+end
+
+# Define the function to compute the soluton on a process
+@everywhere function update()
+    ... ...
+end
+
+# Set initial condition
+ihot = findall(x->(heat_range[1] .< x .&& x .< heat_range[2]),x);
+@everywhere ihot=$ihot
+
+# Set the initial condition within this process
+@everywhere function set_init_cond()
+    ... ...
+end
+
+# Initialize variables and set initial conditions
+for p in workers()
+    @async remotecall_fetch(get_partition_info,p)
+end
+for p in workers()
+    @async remotecall_fetch(set_init_cond,p)
+end
+
+# Display the initial value of u
+v = zeros(Float64,n)
+v .= u;
+display(plot(x,v,lw=3,ylim=(0,1),label=("u")))
+
+# Update u in time on workders
+for j=1:num_steps 
+    @sync begin
+        for p=1:num_workers
+            @async remotecall_fetch(update,p+1);
+        end
+    end           
+    if (j % output_freq == 0)
+        v .= u;
+        display(plot(x,v,lw=3,ylim=(0,1),label=("u")))
+    end
+end
+```
+
+A complete sample parallel can be found {{<a "/files/heat1d_darray.jl" "here">}}.
