@@ -35,7 +35,7 @@ We can cycle through all available workers:
 <!-- ``` -->
 
 With two workers and two CPU cores, we should get times very similar to the last run. However, now our code can scale to
-much larger number of cores!
+much larger numbers of cores!
 
 > ### Exercise "Distributed.4"
 > If you did the previous exercise with an interactive job, now submit a Slurm batch job running the same code on 4 CPU
@@ -43,7 +43,7 @@ much larger number of cores!
 
 ### Solution 2: parallel `for` loop with summation reduction
 
-Unlike **Base.Threads** module, **Distributed** provides a parallel loop with reduction. This means that we can
+Unlike the **Base.Threads** module, **Distributed** provides a parallel loop with reduction. This means that we can
 implement a parallel loop for computing the sum. Let's write `parallelFor.jl` with this version of the function:
 
 ```julia
