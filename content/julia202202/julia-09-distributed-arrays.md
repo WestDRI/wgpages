@@ -189,3 +189,69 @@ d
 > Redefine `showDistribution()` on the control process and run `showDistribution(d)`.
 
 <!-- Solution: need to run `using DistributedArrays` on all workers. -->
+
+### Setting values in distributed arrays
+
+While using distribited array saves memory and allows one to access the entire array in global address, it is tedious and sometimes challenging to do book keeping. For instance, setting values to a specific location in a distributed array is no easy job, as the DistributedArrays package only allows the process that owns the portion of the data to alter the values. Finding the boundary of the portion of data owned by each process is the first step towards setting values at the right locations within the boundaries.
+
+Consider two scenarios in which we are to write a slice of data to an one dimensional array `A[istart:iend]`:
+
+1. The range `istart:iend` falls into the range of indices of data owned by a process;
+2. The range `istart:iden` falls across two adjacent portion of data owned by two different processes.
+
+
+### Data are distributed, but the meta data is not
+
+An important concept about any DistributedArray objects is that the data are distributed across processes, but the meta data is not.
+
+### Solving 1D heat equation using distributed array
+
+Consider a (simplified) physics problem: A rod of length $[-L,L]$ heated in the middle, then the heat source is removed. The temperature distribution $T(x,t)$ across the rod over time can be simulated by the following equation
+
+\\[
+T(x,t+\Delta t) = \frac{1}{2}T(x-\Delta x,t) + \frac{1}{2}T(x+\Delta x,t)
+\\]
+
+on a set of evenly spaced points apart by $\Delta x$. The initial condition is shown in the diagram below. At $t=0$, $T(x,0) = T_0$ for $-h \leq x \leq h$ and $T(x,0) = 0$ elsewhere.
+
+{{< figure src="/img/grid_coords.png" width=650px >}}
+
+At both ends, we impose the boundary conditions $T(-L,t)=0$ and $T(L,t)=0$.
+
+The solution of the temperature across the rod is a bell shaped curve being flattened over time. The figure below shows a snapshot of the solution (with $T_0 = 1$) on an interval $[-1,1]$ at certain time.
+
+{{< figure src="/img/1d_heat_eq_solution.png" >}}
+
+This example is used in many of our training courses, for example, MPI, Fortran and Python courses to illustrate parallel processing in advanced research computing. A more "accurate" formula involving three spatial points $x_i - \Delta x$, $x_i$ and $x_i + \Delta x$ for computing the temperature at the next time step $t_n+\Delta t$ for interior points $i=1,\ldots,N$ is given below
+
+\\[
+T(x_i,t_n+\Delta t) = (1-2k)T(x_i,t_n) + k((T(x_{i-1},t_n)+T(x_{i+1},t_n))
+\\]
+
+where $k$ is a parameter that shall be chosen properly in order for the numerical procedure to be stable.
+
+Note in the formula, the temperature $T(x_i,t_n+\Delta t)$ at the next time step $t_{n+1} = t_n +\Delta t$ can be computed explicitly using the values of $T$ at three points at current time step $t_n$, which are all known. This allows us to compute all grid values of $T$ at time $t_n+\Delta t$ independent of each other, hence to achieve parallelism.
+
+Let $U_i^n$ denote the value of $T(x_i,t_n)$ at grid points $x_i$, $i=1,\ldots,N$ at time $t_n$, we use the short notation
+
+\\[
+U_i^{n+1} = (1-2k)U_i^n + k(U_{i-1}^n + U_{i+1}^n).
+\\]
+
+for $i=1,\ldots,N$. This can be translated into the following code with one dimensional two arrays `unew[1:N]` and `u[1:N]` holding values at the $N$ grid points at $t_{n+1}$ and $t_n$ respectively[^1]
+
+```julia
+for i=1:N
+    unew[i] = (1-2k)u[i] + k*(u[i-1] + u[i+1])
+end
+```
+[^1]: Note that `2k` is not a typo, it is a legal Julia expression, meaning `2*k`.  
+
+This loop in fact can be replaced by the following one line of code using a single array `u[1:N]`
+
+```julia
+u[2:N-1] = (1-2k)*u[2:N-1] + k*(u[1:N-2) + u[3:N])
+```
+
+In this case, vectorized operations on the right hand side take place first before the individual elements on the left hand side are updated.
+
