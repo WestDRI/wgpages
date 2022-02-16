@@ -37,10 +37,9 @@ remote secure shell (SSH) client installed on your computer. On Windows we recom
 usually pre-installed (try typing `ssh` in a terminal to make sure it is there). We will provide guest accounts to all
 participants.
 
-<!-- {{<cor>}}Zoom{{</cor>}} {{<s>}} {{<cgr>}}Day 1: Feb-14 9:30am-12:30pm Pacific time{{</cgr>}}\ -->
 <!-- {{<nolinktitle>}}Introduction to Julia language{{</nolinktitle>}} - Marie\ -->
 <!-- {{<nolinktitle>}}Intro to parallelism{{</nolinktitle>}} - Marie\ -->
-<!-- {{<nolinktitle>}}Multi-threading with Base.Threads (slow series){{</nolinktitle>}} - Marie\ -->
+<!-- {{<nolinktitle>}}Multi-threading with Base.Threads (slow series){{</nolinktitle>}} - Alex\ -->
 <!-- {{<nolinktitle>}}Multi-threading with ThreadsX (slow series){{</nolinktitle>}} - Alex -->
 
 {{<cor>}}Zoom{{</cor>}} {{<s>}} {{<cgr>}}Day 1: Feb-14 9:30am-12:30pm Pacific time{{</cgr>}}\
@@ -50,10 +49,10 @@ participants.
 
 {{<cor>}}Zoom{{</cor>}} {{<s>}} {{<cgr>}}Day 2: Feb-16 9:30am-12:30pm Pacific time{{</cgr>}}\
 {{<linktitle url="../julia202202/julia-04-threadsx-slow-series" text="Multi-threading with ThreadsX (slow series)">}} - Alex \
-{{<nolinktitle>}}Parallelizing the Julia set with Base.Threads{{</nolinktitle>}} - Alex\
-{{<nolinktitle>}}Parallelizing the Julia set with ThreadsX{{</nolinktitle>}} - Alex\
-{{<nolinktitle>}}Distributed.jl: basics{{</nolinktitle>}} - Alex\
-{{<nolinktitle>}}Distributed.jl: three scalable versions of the slow series{{</nolinktitle>}} - Alex
+{{<linktitle url="../julia202202/julia-05-threads-julia-set" text="Parallelizing the Julia set with Base.Threads">}} - Alex\
+{{<linktitle url="../julia202202/julia-06-threadsx-julia-set" text="Parallelizing the Julia set with ThreadsX">}} - Alex\
+{{<linktitle url="../julia202202/julia-07-distributed1" text="Distributed.jl: basics">}} - Alex\
+{{<linktitle url="../julia202202/julia-08-distributed2" text="Distributed.jl: three scalable versions of the slow series">}} - Marie
 
 {{<cor>}}Zoom{{</cor>}} {{<s>}} {{<cgr>}}Day 3: Feb-18 9:30am-12:30pm Pacific time{{</cgr>}} \
 {{<nolinktitle>}}DistributedArrays.jl: concepts, tridiagonal matrix, memory usage{{</nolinktitle>}} - Baolai\
@@ -62,13 +61,6 @@ participants.
 {{<nolinktitle>}}Parallelizing the N-body problem{{</nolinktitle>}} - Alex (supplemental material)\
 {{<nolinktitle>}}Parallelizing the additive Schwarz method{{</nolinktitle>}} - Alex (supplemental material)
 
-<!-- {{<cor>}}Zoom{{</cor>}} {{<s>}} {{<cgr>}}Day 2: Feb-16 9:30am-12:30pm Pacific time{{</cgr>}}\ -->
-<!-- {{<linktitle url="../julia202202/julia-05-threads-julia-set" text="Parallelizing the Julia set with Base.Threads">}} - Alex\ -->
-<!-- {{<linktitle url="../julia202202/julia-06-threadsx-julia-set" text="Parallelizing the Julia set with ThreadsX">}} - Alex\ -->
-<!-- {{<linktitle url="../julia202202/julia-07-distributed1" text="Distributed.jl: basics">}} - Alex\ -->
-<!-- {{<linktitle url="../julia202202/julia-08-distributed2" text="Distributed.jl: three scalable versions of the slow series">}} - Alex -->
-
-<!-- {{<cor>}}Zoom{{</cor>}} {{<s>}} {{<cgr>}}Day 3: Feb-18 9:30am-12:30pm Pacific time{{</cgr>}} \ -->
 <!-- {{<linktitle url="../julia202202/julia-09-distributed-arrays" text="DistributedArrays.jl: concepts, tridiagonal matrix, memory usage">}} - Baolai\ -->
 <!-- {{<linktitle url="../julia202202/julia-10-distributed-julia-set" text="Parallelizing the Julia set with DistributedArrays">}} - Alex\ -->
 <!-- {{<linktitle url="../julia202202/julia-11-shared-arrays" text="SharedArrays.jl: concepts, 1D heat equation">}} - Baolai\ -->
