@@ -441,7 +441,7 @@ u[2:N-1] = (1-2k)*u[2:N-1] + k*(u[1:N-2) + u[3:N])
 ```
 is now done on each subset of the grid points, as shown in the diagram below
 
-{{< figure src="/img/grid_part_no_overlap.png" width=600px >}}
+{{< figure src="/img/grid_sarray.png" width=600px >}}
 
 We need to replace the start and end indices with the local ones `l1` and `lN`
 

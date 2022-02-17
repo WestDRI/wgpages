@@ -435,6 +435,21 @@ end
 
 Note we use the julia function `localindices()` to get the index range of the distributed array `u`. It returns a range, we then use the method `.start` and `.stop` to get the lower and upper indices `ilo` and `iup`, respectively, of the array owned by the current worker process. We adjust the start and end indices for the very first and very end of the sub-grid for skipping the boundary point there.
 
+We also define a function `update` that computes the solution
+```julia
+@everywhere function update()
+    global u, ilo, iup, l1, ln;
+    global k;
+
+    # Compute updated solution for the next time steop
+    # The line below does not work: method setting value not defined
+    #u[l1:ln] = (1.0-2.0*k)*u[l1:ln] + k*(u[l1-1:ln-1]+u[l1+1:ln+1])
+    ll1 = l1 - ilo + 1;
+    lln = ln - ilo + 1;
+    u.localpart[ll1:lln] = (1.0-2.0*k)*u[l1:ln] + k*(u[l1-1:ln-1]+u[l1+1:ln+1])
+end
+```
+
 Another tricky task we need to accomplish is setting initial condition in `u`. We need to locate the range of indices corresponding to the condition
 
 \\[
@@ -453,21 +468,12 @@ using Plots
 # Set x-coordinates for plot
 x = xlim[1] .+ dx*(collect(1:n) .-1);
 
-# For demo purpose, set number of workers to 4
-num_workers = nworkers() # Number of workder processes
-np = div(n,nprocs())	# Number of points local to the process
-
 # Allocate spaces
 @everywhere using DistributedArrays
 u = dzeros(Float64,n);
 
 # Broadcast parameters to all
-@everywhere k=$k
-@everywhere n=$n
-@everywhere np=$np
-@everywhere num_workers=$num_workers
-@everywhere heat_temp=$heat_temp
-@everywhere u=$u
+... ...
 
 # Define gloabl vars and functions on all worker processes
 @everywhere using Distributed, DistributedArrays
@@ -511,8 +517,8 @@ display(plot(x,v,lw=3,ylim=(0,1),label=("u")))
 # Update u in time on workders
 for j=1:num_steps 
     @sync begin
-        for p=1:num_workers
-            @async remotecall_fetch(update,p+1);
+        for p in workers()
+            @async remotecall_fetch(update,p);
         end
     end           
     if (j % output_freq == 0)
