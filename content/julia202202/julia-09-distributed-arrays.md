@@ -5,6 +5,8 @@ weight = 9
 katex = true
 +++
 
+### Distributed arrays at a glance
+
 **DistributedArrays** package provides **DArray** object that can be split across several processes (set of workers),
 either on the same or multiple nodes. This allows use of arrays that are too large to fit in memory on one node. Each
 process operates on the part of the array that it owns -- this provides a very natural way to achieve parallelism for
@@ -240,7 +242,7 @@ To practice this, one may do the following exercise
 > On may see the actual partitions by running the following commands
 > ```julia
 > for p in workers()
->     @spawnat p println(localindices(a))
+>     @spawnat p println(localindices(u))
 > end
 > ```
 > Hint: The array `u` is partitioned into four subarrays. Perform the following operations on each worker.
