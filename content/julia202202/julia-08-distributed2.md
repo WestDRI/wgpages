@@ -133,7 +133,7 @@ and launch the function on each worker:
 ```julia
 slow((10, 9, 1, 1))   # package arguments in a tuple
 nw = nworkers()
-args = [(Int64(1e8),9,j,nw) for j in 1:nw]   # array of tuples to be mapped to workers
+args = [(Int64(1e8), 9, j, nw) for j in 1:nw]   # array of tuples to be mapped to workers
 println("total = ", sum(pmap(slow, args)))   # launch the function on each worker and sum the results
 ```
 
