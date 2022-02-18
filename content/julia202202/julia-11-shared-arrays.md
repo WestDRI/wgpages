@@ -163,8 +163,6 @@ Now the output is what we expected
       From worker 5:	13:17
 ```
 
-```julia
-
 Now come back to the task we want to accomplish while we hit the unexpected outcomes. What we really want is each worker should fill only its assigned block (parallel init, same result every time. This can be achieved as follows
 
 ```julia
