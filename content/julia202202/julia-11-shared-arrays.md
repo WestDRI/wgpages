@@ -61,7 +61,7 @@ end
     println(a)
 end
 for p in workers()
-    remotecall_call(showa,p)
+    remotecall_fetch(showa,p)
 end
 ```
 
