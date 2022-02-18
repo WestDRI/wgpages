@@ -40,7 +40,7 @@ Below is the serial code `juliaSetSerial.jl`. If you are running Julia on your o
 Let's study the code:
 
 ```julia
-using BenchmarkTools, Plots
+using BenchmarkTools
 
 function pixel(z)
     c = 0.355 + 0.355im
@@ -64,6 +64,7 @@ stability = zeros(Int32, height, width);
 end
 
 println("Plotting to PNG ...")
+using Plots
 gr()                       # initialize the gr backend
 ENV["GKSwstype"] = "100"   # operate in headless mode
 fname = "$(height)x$(width)"
@@ -78,11 +79,11 @@ Let's run this code with `julia juliaSetSerial.jl`. On my laptop it reports 1.16
   work on Apple's M1 processors.
 
 ```jl
-using NetCDF
 println("Writing NetCDF ...")
+using NetCDF
 filename = "test.nc"
 isfile(filename) && rm(filename)
-nccreate(filename, "stability", "x", collect(1:height), "y", collect(1:width), t=NC_FLOAT, mode=NC_NETCDF4, compress=9);
+nccreate(filename, "stability", "x", collect(1:height), "y", collect(1:width), t=NC_INT, mode=NC_NETCDF4, compress=9);
 ncwrite(stability, filename, "stability");
 ```
 

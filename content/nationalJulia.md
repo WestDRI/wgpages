@@ -56,17 +56,11 @@ participants.
 
 {{<cor>}}Zoom{{</cor>}} {{<s>}} {{<cgr>}}Day 3: Feb-18 9:30am-12:30pm Pacific time{{</cgr>}} \
 {{<nolinktitle>}}Finishing the last section from Wednesday{{</nolinktitle>}} - Marie\
-{{<nolinktitle>}}DistributedArrays.jl: concepts, tridiagonal matrix, memory usage{{</nolinktitle>}} - Baolai\
-{{<nolinktitle>}}Parallelizing the Julia set with DistributedArrays{{</nolinktitle>}} - Alex\
-{{<nolinktitle>}}SharedArrays.jl: concepts, 1D heat equation{{</nolinktitle>}} - Baolai\
-{{<nolinktitle>}}Parallelizing the N-body problem{{</nolinktitle>}} - Alex (supplemental material)\
-{{<nolinktitle>}}Parallelizing the additive Schwarz method{{</nolinktitle>}} - Alex (supplemental material)
-
-<!-- {{<linktitle url="../julia202202/julia-09-distributed-arrays" text="DistributedArrays.jl: concepts, tridiagonal matrix, memory usage">}} - Baolai\ -->
-<!-- {{<linktitle url="../julia202202/julia-10-distributed-julia-set" text="Parallelizing the Julia set with DistributedArrays">}} - Alex\ -->
-<!-- {{<linktitle url="../julia202202/julia-11-shared-arrays" text="SharedArrays.jl: concepts, 1D heat equation">}} - Baolai\ -->
-<!-- {{<linktitle url="../julia202202/julia-12-nbody" text="Parallelizing the N-body problem">}} - Alex (supplemental material)\ -->
-<!-- {{<linktitle url="../julia202202/julia-13-asm" text="Parallelizing the additive Schwarz method">}} - Alex (supplemental material) -->
+{{<linktitle url="../julia202202/julia-09-distributed-arrays" text="DistributedArrays.jl: concepts, tridiagonal matrix, memory usage">}} - Baolai\
+{{<linktitle url="../julia202202/julia-10-distributed-julia-set" text="Parallelizing the Julia set with DistributedArrays">}} - Alex\
+{{<linktitle url="../julia202202/julia-11-shared-arrays" text="SharedArrays.jl: concepts, 1D heat equation">}} - Baolai\
+{{<linktitle url="../julia202202/julia-12-nbody" text="Parallelizing the N-body problem">}} (supplemental material)\
+{{<linktitle url="../julia202202/julia-13-asm" text="Parallelizing the additive Schwarz method">}} (supplemental material)
 
 <!-- In the afternoon Zoom session you'll be working on one of two projects: parallelizing Julia set (I recommend to do this -->
 <!-- with distributed arrays) and parallelizing the N-body code (I recommend to do this with shared arrays). **Note:** we -->

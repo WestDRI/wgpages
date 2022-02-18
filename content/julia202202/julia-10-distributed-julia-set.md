@@ -12,30 +12,34 @@ The Julia set problem was [described in one of the earlier sections](../julia-05
 How would we parallelize this problem with multi-processing? We have a large array, so we can use DistributedArrays and
 compute it in parallel. Here are the steps:
 
-1. `data` array should be distributed:
+1. Load `Distributed` on the control process.
+1. Load `DistributedArrays` on all processes.
+1. `stability` array should be distributed:
 ```jl
-data = dzeros(Float32, height, width);   # distributed 2D array of 0's`
+stability = dzeros(Int32, height, width);   # distributed 2D array of 0's
 ```
-2. You need to replace `juliaSet(data, c, zoomOut)` with `fillLocalBlock(data, c, zoomOut)` to compute local pieces of
-   `data` on each worker in parallel. If you don't know where to start in this project, begin with checking the complete
-   example with `fillLocalBlock()` from the previous section.
-2. Functions `pixel()` and `fillLocalBlock()` should be defined on all processes.
-2. Load `Distributed` on the control process.
-2. Load `DistributedArrays` on all processes.
-2. Replace
+4. Define function `pixel()` on all processes.
+4. Create `fillLocalBlock(stability)` to compute local pieces `stability.localpart` on each worker in parallel. If you
+   don't know where to start, begin with checking the complete example with `fillLocalBlock()` from the previous
+   section. This function will cycle through all local indices `localindices(stability)`. This function needs to be
+   defined on all processes.
+4. Replace the loop
 ```julia
-@btime juliaSet(data, c, zoomOut)
+@btime for i in 1:height, j in 1:width
+    point = (2*(j-0.5)/width-1) + (2*(i-0.5)/height-1)im
+    stability[i,j] = pixel(point)
+end
 ```
 with
 ```jl
-@btime @sync for i in workers()
-    @spawnat i fillLocalBlock(data, c, zoomOut)
+@btime @sync for w in workers()
+    @spawnat w fillLocalBlock(stability)
 end
 ```
-5. Why do we need `@sync` in the previous `for` block?
-5. To the best of my knowledge, NetCDF's `ncwrite()` is serial in Julia. Is there a parallel version of NetCDF for
-   Julia? If not, then unfortunately we will have to use serial NetCDF. How do we do this with distributed `data`?
-5. Is your parallel code faster?
+7. Why do we need `@sync` in the previous `for` block?
+7. To the best of my knowledge, both Plots' `heatmap()` and NetCDF's `ncwrite()` are serial in Julia, and they cannot
+   take distributed arrays. How do we convert a distributed array to a local array to pass to one of these functions?
+7. Is your parallel code faster?
 
 ### Results for 1000^2
 
