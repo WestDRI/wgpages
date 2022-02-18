@@ -66,7 +66,7 @@ Let's start an interactive MPI job:
 
 ```sh
 source /project/def-sponsor00/shared/julia/config/loadJulia.sh
-salloc --mem-per-cpu=3600M --time=01:00:00 --ntasks=3
+salloc --mem-per-cpu=3600M --time=01:00:00 --ntasks=4
 ```
 
 Inside this job, start Julia with `julia` (single control process).
