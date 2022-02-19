@@ -54,10 +54,10 @@ function pixel(z)
     return 255
 end
 
-height, width = repeat([2_000],2)   # 2000^2 image
+const height, width = repeat([2_000],2)   # 2000^2 image
 
 println("Computing Julia set ...")
-stability = zeros(Int32, height, width);
+const stability = zeros(Int32, height, width);
 @btime for i in 1:height, j in 1:width
     point = (2*(j-0.5)/width-1) + (2*(i-0.5)/height-1)im # rescale to -1:1 in the complex plane
     stability[i,j] = pixel(point)
@@ -71,12 +71,32 @@ fname = "$(height)x$(width)"
 png(heatmap(stability, size=(width,height), color=:gist_ncar), fname)
 ```
 
-Let's run this code with `julia juliaSetSerial.jl`. On my laptop it reports 1.160 s.
+Let's run this code with `julia juliaSetSerial.jl`. On my laptop it reports 931.024 ms.
 
-**Note**: Built-in plotting in Julia is fairly slow and will take forever for drawing much larger fractals
+{{<note>}} Note: Without the two `const` keywords the code will slow down to 1.599 s on the same laptop. This shows the
+importance of insuring type stability in Julia: for these global variables making their type constant allows Julia not
+to check their type inside the loop `@btime for i in 1:height, j in 1:width` at runtime, making the code run
+faster. Note that making the array `stability` constant simply insures that its type will not change; its elements are
+still mutable and can be assigned values. An alternative solution would be to package this loop into a function where
+all variables are already local with a known, pre-compiled type:
+{{</note>}}
+
+```jl
+function juliaSet(height, width)
+    stability = zeros(Int32, height, width);
+    for i in 1:height, j in 1:width
+        point = (2*(j-0.5)/width-1) + (2*(i-0.5)/height-1)im # rescale to -1:1 in the complex plane
+        stability[i,j] = pixel(point)
+    end
+end
+println("Computing Julia set ...")
+@btime juliaSet(2000, 2000)
+```
+
+{{<note>}} Note: Built-in plotting in Julia is fairly slow and will take forever for drawing much larger fractals
   (e.g. $8000^2$). A faster alternative is to save your plot as compressed NetCDF and visualize it with something
   faster, e.g. ParaView. The code for this is below. Note that as of February 2022 Julia's NetCDF library does not yet
-  work on Apple's M1 processors.
+  work on Apple's M1 processors.{{</note>}}
 
 ```jl
 println("Writing NetCDF ...")
@@ -109,11 +129,12 @@ visualization tool.
 1. Load Base.Threads.
 1. Add `@threads` before the outer loop, and time this parallel loop.
 
-On my laptop with 8 threads the timing is 249.924 ms (4.6X speedup) which is good but not great ... In terms of
-row-major vs. column-major loop order, we are doing the faster one here. On Uu the serial runtime was 2.844 s, and with
-8 threads it went down to 1.030 s (2.8X speedup). The likely culprit here is the false sharing effect (cache issues with
-multiple threads writing into adjacent array elements), but since we are writing into a large array, it is more
-difficult to fix it with spacing (like we did before).
+On my laptop with 8 threads the timing is 193.942 ms (4.8X speedup) which is good but not great ... In terms of
+row-major vs. column-major loop order, we are doing the faster one here (try changing `stability[i,j]` to
+`stability[j,i]`). On Uu the serial runtime was 2.844 s, and with 8 threads it went down to 1.030 s (2.8X speedup). The
+likely culprit here is the false sharing effect (cache issues with multiple threads writing into adjacent array
+elements), but since we are writing into a large array, it is more difficult to fix it with spacing (like we did
+before).
 
 > ### Take-home exercise "Fractal.2"
 > How would you fix this issue? If you manage to get a speedup closer to 8X with Base.Threads on 8 cores, we would love

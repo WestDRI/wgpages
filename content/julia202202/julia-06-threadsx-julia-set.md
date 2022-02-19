@@ -26,17 +26,17 @@ end
 ```
 3. Replace the loop for computing `stability` with
 ```jl
-stability = @btime map(pixel, point);
+stability = @btime map(pixel, point);   # no const keyword this time!
 ```
 
-Running this new, vectorized version of the serial code, `@btime` reports 963.062 ms.
+Running this new, vectorized version of the serial code on my laptop, I see `@btime` report 1.011 s.
 
 ## Parallelizing the vectorized code
 
 1. Load ThreadsX library.
 1. Replace `map()` with `ThreadsX.map()`.
 
-With 8 threads on my laptop, the runtime went down to 175.994 ms -- 5.5X speedup. On 8 cores on Uu I see 6.6X speedup.
+With 8 threads on my laptop, the runtime went down to 180.815 -- 5.6X speedup. On 8 cores on Uu I see 6.5X speedup.
 
 ## Running multi-threaded Julia codes on a production cluster
 
