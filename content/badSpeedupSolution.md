@@ -49,7 +49,7 @@ function juliaSet(height, width)
     end
     Threads.foreach(c) do i
         for j in 1:width
-            point = (2*(j-0.5)/width-1) + (2*(i-0.5)/height-1)im # rescale to -1:1 in the complex plane
+            point = (2*(j-0.5)/width-1) + (2*(i-0.5)/height-1)im
             stability[i,j] = pixel(point)
         end
     end
