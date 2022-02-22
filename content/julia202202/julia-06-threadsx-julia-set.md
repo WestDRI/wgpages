@@ -38,6 +38,24 @@ Running this new, vectorized version of the serial code on my laptop, I see `@bt
 
 With 8 threads on my laptop, the runtime went down to 180.815 -- 5.6X speedup. On 8 cores on Uu I see 6.5X speedup.
 
+## Alternative parallel solution
+
+Jeremiah O'Neil suggested an alternative, slightly faster implementation using `ThreadsX.foreach` (not covered in this
+workshop):
+
+```jl
+function juliaSet(height, width)
+    stability = zeros(Int32, height, width)
+    ThreadsX.foreach(1:height) do i
+        for j = 1:width
+            point = (2*(j-0.5)/width-1) + (2*(i-0.5)/height-1)im
+            stability[i,j] = pixel(point)
+        end
+    end
+    return stability
+end
+```
+
 ## Running multi-threaded Julia codes on a production cluster
 
 Before we jump to multi-processing in Julia, let us remind you how to run multi-threaded Julia codes on an HPC cluster.

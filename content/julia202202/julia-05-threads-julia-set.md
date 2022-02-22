@@ -129,13 +129,15 @@ visualization tool.
 1. Load Base.Threads.
 1. Add `@threads` before the outer loop, and time this parallel loop.
 
-On my laptop with 8 threads the timing is 193.942 ms (4.8X speedup) which is good but not great ... In terms of
-row-major vs. column-major loop order, we are doing the faster one here (try changing `stability[i,j]` to
-`stability[j,i]`). On Uu the serial runtime was 2.844 s, and with 8 threads it went down to 1.030 s (2.8X speedup). The
-likely culprit here is the false sharing effect (cache issues with multiple threads writing into adjacent array
-elements), but since we are writing into a large array, it is more difficult to fix it with spacing (like we did
-before).
+On my laptop with 8 threads the timing is 193.942 ms (4.8X speedup) which is good but not great -- certainly worse than
+linear speedup ... The speedup on Uu cluster is not great either. There could be several potential problems:
+
+1. False sharing effect (cache issues with multiple threads writing into adjacent array elements).
+1. Less than perfect load balancing between different threads.
+1. Row-major vs. column-major loop order for filling in the `stability` array.
+1. Some CPU cores are slower efficiency cores, and they are slowing down the whole calculation.
 
 > ### Take-home exercise "Fractal.2"
 > How would you fix this issue? If you manage to get a speedup closer to 8X with Base.Threads on 8 cores, we would love
-> to hear your solution!
+> to hear your solution! Please only check the {{<a "/bad-speedup-solution" "solution">}} once you work on the problem
+> yourself.
