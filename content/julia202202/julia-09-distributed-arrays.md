@@ -145,7 +145,7 @@ using DistributedArrays       # important to load this after addprocs()
 We will define an $8 \times 8$ matrix with the main diagonal and two off-diagonals (*tridiagonal* matrix). The lines show our
 matrix distribution across workers:
 
-{{< figure src="/img/matrix.png" width=350px >}}
+{{< figure src="/img/matrix_8x8.png" width=420px >}}
 
 Notice that with the 2x2 decomposition two of the 4 blocks are also tridiagonal matrices. We'll define a function to
 initiate them:
@@ -300,7 +300,7 @@ Note in the formula, the temperature $T(x_i,t_n+\Delta t)$ at the next time step
 Let $U_i^n$ denote the value of $T(x_i,t_n)$ at grid points $x_i$, $i=1,\ldots,N$ at time $t_n$, we use the short notation
 
 \\[
-U_i^{n+1} = (1-2k)U_i^n + k(U_{i-1}^n + U_{i+1}^n).
+U_i^{n+1} = (1-2k)U_i^n + k(U_{i-1}^n + U_{i+1}^n)
 \\]
 
 for $i=1,\ldots,N$. This can be translated into the following code with one dimensional two arrays `unew[1:N]` and `u[1:N]` holding values at the $N$ grid points at $t_{n+1}$ and $t_n$ respectively[^3]
@@ -455,7 +455,7 @@ end
 Another tricky task we need to accomplish is setting initial condition in `u`. We need to locate the range of indices corresponding to the condition
 
 \\[
-u(x,0) = 1,\ \ \mbox{for} -h \leq x \leq h.
+T(x,0) = 1,\ \ \mbox{for} -h \leq x \leq h.
 \\]
 
 We've done such in the previous exercise. We leave it to the reader as an exercise. The skeleton of the code is shown below
@@ -516,7 +516,7 @@ v = zeros(Float64,n)
 v .= u;
 display(plot(x,v,lw=3,ylim=(0,1),label=("u")))
 
-# Update u in time on workders
+# Update u in time on workers
 for j=1:num_steps 
     @sync begin
         for p in workers()
@@ -531,3 +531,12 @@ end
 ```
 
 A complete sample parallel can be found {{<a "/files/heat1d_darray.jl" "here">}}.
+
+__Technical Points:__ This is a toy example for the demonstration of domain decomposition in one dimensional case. Because of the lack of enough computational work on each subdomain, the overhead due to the underlying data communications necessary between adjacent array elements may dominate the execution time, hence one may hardly observe any gain using multiple cores.
+
+If one attempts to increase number of grid points to increase the amount of work, an unexpected numerical instability problem can occur. The explicit finite difference scheme suffers from a major drawback of instability. It can be shown theoretically that if $k \ge 0.5$ or for a given grid size $\Delta t \ge 0.5\Delta x^2$, the solution of $U_i^{n+1}$ will quickly go divergent wildly.  The following graph shows when $k=0.52$, the solution starts to diverge after 20 step
+
+{{< figure src="/img/1d_heat_eq_diverges.png" width=600px >}}
+
+In other words, there is a constraint on the sizes of time step and grid size. Implicit methods are preferred in practice. One may refer to works on the numerical solution of partial differential equations for details.
+
