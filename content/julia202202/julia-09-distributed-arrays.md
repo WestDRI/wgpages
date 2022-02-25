@@ -534,7 +534,7 @@ A complete sample parallel can be found {{<a "/files/heat1d_darray.jl" "here">}}
 
 __Technical Points:__ This is a toy example for the demonstration of domain decomposition in one dimensional case. Because of the lack of enough computational work on each subdomain, the overhead due to the underlying data communications necessary between adjacent array elements may dominate the execution time, hence one may hardly observe any gain using multiple cores.
 
-If one attempts to increase number of grid points to increase the amount of work, an unexpected numerical instability problem can occur. The explicit finite difference scheme suffers from a major drawback of instability. It can be shown theoretically that if $k \ge 0.5$ or for a given grid size $\Delta t \ge 0.5\Delta x^2$, the solution of $U_i^{n+1}$ will quickly go divergent wildly.  The following graph shows when $k=0.52$, the solution starts to diverge after 20 step
+If one attempts to increase number of grid points to increase the amount of work, an unexpected numerical instability problem can occur. The explicit finite difference scheme suffers from a major drawback of instability. It can be shown theoretically that if $k \ge 0.5$ or for a given grid size $\Delta t \ge 0.5\Delta x^2$, the solution of $U_i^{n+1}$ will quickly go divergent wildly.  The following graph shows when $k=0.52$, the solution starts to diverge after 20 steps.
 
 {{< figure src="/img/1d_heat_eq_diverges.png" width=600px >}}
 
