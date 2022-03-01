@@ -95,7 +95,7 @@ or use the latest single-locale Chapel:
 source /home/razoumov/startSingleLocale.sh
 ```
 
-If you are working instead on *cassiopeia.c3.ca* cluster, please load single-locale Chapel from `/project`:
+If you are working instead on *uu.c3.ca* cluster, please load single-locale Chapel from `/project`:
 
 ```sh
 source ~/projects/def-sponsor00/shared/startSingleLocale.sh

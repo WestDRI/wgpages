@@ -68,9 +68,9 @@ chpl test.chpl -o test
 ./test -nl 8
 ```
 
-## Running Chapel codes on *cassiopeia.c3.ca* cluster
+## Running Chapel codes on *uu.c3.ca* cluster
 
-If you are working on *cassiopeia.c3.ca* training cluster, please load Chapel from the shared project directory:
+If you are working on *uu.c3.ca* training cluster, please load Chapel from the shared project directory:
 
 ```sh
 source ~/projects/def-sponsor00/shared/startSingleLocale.sh

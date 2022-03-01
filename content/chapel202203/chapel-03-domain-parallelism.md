@@ -73,7 +73,7 @@ jobs:
 ```
 
 ```sh
-source ~/projects/def-sponsor00/shared/startSingleLocale.sh   # on cassiopeia.c3.ca
+source ~/projects/def-sponsor00/shared/startSingleLocale.sh   # on uu.c3.ca
 chpl forall.chpl -o forall
 sbatch shared.sh
 cat solution.out
@@ -246,7 +246,7 @@ Let us test our multi-locale Chapel environment by launching the following code:
 writeln(Locales);
 ```
 ```sh
-source ~/projects/def-sponsor00/shared/startMultiLocale.sh     # on cassiopeia.c3.ca
+source ~/projects/def-sponsor00/shared/startMultiLocale.sh     # on uu.c3.ca
 chpl test.chpl -o test
 sbatch distributed.sh
 cat solution.out
@@ -321,22 +321,22 @@ cat solution.out
 ```
 ```
 locale #0...
-  ...is named: node1.cassiopeia.westgrid.ca
+  ...is named: node1.uu.westgrid.ca
   ...has 2 processor cores
   ...has 2.77974 GB of memory
   ...has 2 maximum parallelism
 locale #1...
-  ...is named: node2.cassiopeia.westgrid.ca
+  ...is named: node2.uu.westgrid.ca
   ...has 2 processor cores
   ...has 2.77974 GB of memory
   ...has 2 maximum parallelism
 locale #2...
-  ...is named: node4.cassiopeia.westgrid.ca
+  ...is named: node4.uu.westgrid.ca
   ...has 2 processor cores
   ...has 2.77974 GB of memory
   ...has 2 maximum parallelism
 locale #3...
-  ...is named: node3.cassiopeia.westgrid.ca
+  ...is named: node3.uu.westgrid.ca
   ...has 2 processor cores
   ...has 2.77974 GB of memory
   ...has 2 maximum parallelism
