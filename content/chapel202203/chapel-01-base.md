@@ -16,40 +16,38 @@ weight = 1
 <!-- - library of standard domain maps provided by chapel -->
 <!-- - users can write their own domain maps -->
 
-Chapel
-
-- is a modern, open-source programming language developed at _Cray Inc._
-- offers simplicity and readability of scripting languages such as Python or Matlab
-- is a compiled language
-- features speed and performance of Fortran and C
-- supports high-level abstractions for data distribution/parallelism, and for task parallelism
-  - allow users to express parallel computations in a natural, almost intuitive, manner
-  - can achieve anything you can do with MPI and OpenMP
-- was designed around a _multi-resolution_ philosophy: users can incrementally add more detail to their
-  original code, to bring it as close to the machine as required
-- has its source code stored in text files with the extension `.chpl`
+- Chapel is a modern, open-source programming language developed at _Cray Inc._ (acquired by Hewlett Packard Enterprise in 2019).
+- Chapel offers simplicity and readability of scripting languages such as Python or Matlab.
+- Chapel is a compiled language.
+- Chapel features speed and performance of Fortran and C.
+- Chapel supports high-level abstractions for data distribution and parallel processing, and for task parallelism.
+  <!-- - allow users to express parallel computations in a natural, almost intuitive, manner -->
+  <!-- - can achieve anything you can do with MPI and OpenMP -->
+- Chapel was designed around a _multi-resolution_ philosophy: users can incrementally add more detail to their original
+  code, to bring it as close to the machine as required.
+<!-- - has its source code stored in text files with the extension `.chpl` -->
 
 ## Links
 
-- [Chapel homepage](https://chapel-lang.org)
-- [What is Chapel?](https://developer.hpe.com/platform/chapel/home) at HPE Developer Portal
+- {{<a "https://chapel-lang.org" "Chapel homepage">}}
+- {{<a "https://developer.hpe.com/platform/chapel/home" "What is Chapel?">}} (HPE Developer Portal)
 
 ## Running Chapel codes on Cedar / Graham / Béluga
 
-On Compute Canada clusters Cedar / Graham / Béluga we have two versions of Chapel, one is a single-locale (single-node) Chapel,
-and the other is a multi-locale (multi-node) Chapel. For now, we will start with single-locale Chapel. If you are logged
-into Cedar or Graham or Béluga, you'll can either load the official (but slightly outdated) single-locale Chapel module:
+On Compute Canada clusters Cedar / Graham / Béluga / Narval we have two versions of Chapel: a single-locale
+(single-node) Chapel and a multi-locale (multi-node) Chapel. You can find the documentation on running Chapel in {{<a
+"https://docs.computecanada.ca/wiki/Chapel" "our wiki">}}.
+
+If you want to start single-locale Chapel, you will need to load `chapel-multicore` module, e.g.
 
 ```sh
 module spider chapel     # list all Chapel modules
 module load gcc/9.3.0 chapel-multicore/1.25.0
 ```
 
-or use the latest single-locale Chapel:
-
-```sh
-source /home/razoumov/startSingleLocale.sh
-```
+Multi-locale is provided by `chapel-ofi` module on OmniPath clusters such as Cedar, and by `chapel-ucx` module on
+InfiniBand clusters such as Graham, Béluga, Narval. Multi-locale Chapel includes the parallel launcher for the right
+interconnect architecture.
 
 ## Running Chapel codes inside a Docker container
 
@@ -70,10 +68,10 @@ chpl test.chpl -o test
 
 ## Running Chapel codes on *uu.c3.ca* cluster
 
-If you are working on *uu.c3.ca* training cluster, please load Chapel from the shared project directory:
+On our training cluster *uu.c3.ca*, you can start single-locale Chapel the usual way:
 
 ```sh
-source ~/projects/def-sponsor00/shared/startSingleLocale.sh
+module load gcc/9.3.0 chapel-multicore/1.25
 ```
 
 Let's write a simple Chapel code, compile and run it:
@@ -114,8 +112,8 @@ Let's write the job script `serial.sh`:
 
 ```sh
 #!/bin/bash
-#SBATCH --time=00:05:00   # walltime in d-hh:mm or hh:mm:ss format
-#SBATCH --mem-per-cpu=1000   # in MB
+#SBATCH --time=00:05:00      # walltime in d-hh:mm or hh:mm:ss format
+#SBATCH --mem-per-cpu=3600   # in MB
 ./test
 ```
 
@@ -124,7 +122,7 @@ and then submit it:
 ```sh
 $ chpl test.chpl -o test
 $ sbatch serial.sh
-$ squeue -u $USER
+$ sq                     # same as `squeue -u $USER`
 $ cat slurm-jobID.out
 ```
 
@@ -354,8 +352,8 @@ Let's compile and execute our code to see what we get until now, using the job s
 
 ```sh
 #!/bin/bash
-#SBATCH --time=00:05:00   # walltime in d-hh:mm or hh:mm:ss format
-#SBATCH --mem-per-cpu=1200   # in MB
+#SBATCH --time=00:05:00      # walltime in d-hh:mm or hh:mm:ss format
+#SBATCH --mem-per-cpu=3600   # in MB
 #SBATCH --output=solution.out
 ./baseSolver
 ```

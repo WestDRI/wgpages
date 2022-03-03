@@ -84,29 +84,18 @@ scenario.
 <!-- echo $SLURM_CPUS_PER_TASK     # print the number of cores per node (3) -->
 <!-- ``` -->
 
-If working on Cedar / Graham / Béluga, please either load the official single-locale Chapel module:
+Make sure you have loaded the official single-locale Chapel module:
 
 ```sh
-module load gcc chapel-single/1.15.0
-```
-or use the latest single-locale Chapel:
-
-```sh
-source /home/razoumov/startSingleLocale.sh
-```
-
-If you are working instead on *uu.c3.ca* cluster, please load single-locale Chapel from `/project`:
-
-```sh
-source ~/projects/def-sponsor00/shared/startSingleLocale.sh
+module load gcc/9.3.0 chapel-multicore/1.25.0
 ```
 
 In this lesson, we'll be running on several cores on one node with a script `shared.sh`:
 
 ```sh
 #!/bin/bash
-#SBATCH --time=00:05:00   # walltime in d-hh:mm or hh:mm:ss format
-#SBATCH --mem-per-cpu=1000   # in MB
+#SBATCH --time=00:05:00      # walltime in d-hh:mm or hh:mm:ss format
+#SBATCH --mem-per-cpu=3600   # in MB
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=2
 #SBATCH --output=solution.out
