@@ -168,12 +168,12 @@ same time (in this case the screen); the system decides in which order the threa
 screen.
 
 > ## Discussion
-> What would happen if in the last code we declare `count` in the main thread?
+> 1. What would happen if in the last code we declare `count` in the main thread?
 >
 >> _Answer_: we'll get an error at compilation, since then `count` will belong to the main thread (will
 >> be defined within the scope of the main thread), and we can modify its value only in the main thread.
 >
-> What would happen if we try to insert a second definition `var x = 10;` inside the first `begin`
+> 2. What would happen if we try to insert a second definition `var x = 10;` inside the first `begin`
 > statement?
 >
 >> _Answer_: that will actually work, as we'll simply create another, local instance of `x` with its own
@@ -194,11 +194,10 @@ screen.
 >> ## Key idea
 >> To maximize performance, start as many threads as the number of available cores.
 
-A slightly more structured way to start concurrent threads in Chapel is by using the `cobegin`
-statement. Here you can start a block of concurrent threads, **one for each statement** inside the curly
-brackets. Another difference between the `begin`and `cobegin` statements is that with the `cobegin`, all
-the spawned threads are synchronized at the end of the statement, i.e. the main thread won't continue its
-execution until all threads are done. Let's start `cobegin.chpl`:
+A slightly more structured way to start concurrent threads in Chapel is by using the `cobegin` statement. Here you can
+start a block of concurrent threads, **one for each statement** inside the curly brackets. Another difference between
+the `begin` and `cobegin` statements is that with the `cobegin`, all the spawned threads are synchronized at the end of
+the statement, i.e. the main thread won't continue its execution until all threads are done. Let's start `cobegin.chpl`:
 
 ```chpl
 var x = 0;
@@ -271,16 +270,15 @@ Notice the random order of the print statements. And notice how, once again, the
 outside the `coforall` can be read by all threads, while the variables declared inside, are available
 only to the particular thread.
 
-> ## Exercise 6
-> Would it be possible to print all the messages in the right order? Modify the code in the last example
-> as required and save it as `exercise6.chpl`.
+> ### Exercise "Task.1"
+> Would it be possible to print all the messages in the right order? Modify the code in the last example as required and
+> save it as `consecutive.chpl`.
 >
-> Hint: you can use an array of strings declared in the main thread, into which all the concurrent threads
-> could write their messages in the right order. Then, at the end, have the main thread print all elements
-> of the array.
+> Hint: you can use an array of strings declared in the main thread, into which all the concurrent threads could write
+> their messages in the right order. Then, at the end, have the main thread print all elements of the array.
 
-> ## Exercise 7
-> Consider the following code `exercise7.chpl`:
+> ### Exercise "Task.2"
+> Consider the following code `gmax.chpl`:
 > ```chpl
 > use Random;
 > config const m = 8: int;
@@ -293,14 +291,16 @@ only to the particular thread.
 >
 > writeln('the maximum value in x is: ', gmax);
 > ```
-> Write a parallel code to find the maximum value in the array `x`. Be careful: the number of threads
-> should not be excessive. Best to use `numthreads` to organize parallel loops.
+> Write a parallel code to find the maximum value in the array `x`. Be careful: the number of threads should not be
+> excessive. Best to use `numthreads` to organize parallel loops. For each thread compute the `start` and `finish`
+> indices of its array elements and cycle through them to find the local maximum. Then in the main thread cycle through
+> all local maxima to find the global maximum.
 
 > ## Discussion
 > Run the code of last Exercise using different number of threads, and different sizes of the array `x` to
 > see how the execution time changes. For example:
 > ```sh
-> time ./exercise7 --m=8 --numthreads=1
+> time ./gmax --m=8 --numthreads=1
 > ```
 >
 > Discuss your observations. Is there a limit on how fast the code could run?
@@ -357,7 +357,7 @@ writeln('This is the main thread, I am done ...');
 ```
 ```sh
 chpl sync1.chpl -o sync1
-sed -i -e 's|exercise7|sync1|' shared.sh
+sed -i -e 's|gmax|sync1|' shared.sh
 sbatch shared.sh
 cat solution.out
 ```
@@ -404,13 +404,13 @@ thread 2: 10
 > ```
 > Discuss your observations.
 >
-> Answer: `sync` would have no effect on the rest of the program. We only pause the execution of the
-> first thread, until all statements inside sync {} are completed -- but this does not affect the main and
-> the second threads: they keep on running.
+> Answer: `sync` would have no effect on the rest of the program. We only pause the execution of the first thread, until
+> all statements inside sync {} are completed -- but this does not affect the main and the second threads: they keep on
+> running.
 
-> ## Exercise 8
-> Use `begin` and `sync` statements to reproduce the functionality of `cobegin` in cobegin.chpl, i.e.,
-> the main thread should not continue until both threads 1 and 2 are completed.
+> ### Exercise "Task.3"
+> Use `begin` and `sync` statements to reproduce the functionality of `cobegin` in cobegin.chpl, i.e., the main thread
+> should not continue until both threads 1 and 2 are completed.
 
 ### `sync` variables
 
@@ -549,7 +549,7 @@ For the reduction of the grid we can simply use the `max reduce` statement, whic
 divide the grid into `rowthreads` * `colthreads` subgrids, and assign each subgrid to a thread using the `coforall` loop
 (we will have `rowthreads * colthreads` threads in total).
 
-Recall out code `exercise7.chpl` in which we broke the 1D array with 1e9 elements into `numthreads=12` blocks, and each
+Recall out code `gmax.chpl` in which we broke the 1D array with 1e9 elements into `numthreads=12` blocks, and each
 thread was processing elements `start..finish`. Now we'll do exactly the same in 2D. First, let's write a quick serial
 code `test.chpl` to test the indices:
 
@@ -738,7 +738,7 @@ synchronization points inside the `coforall` loop.
 <!-- 1. We need to be sure that all threads have finished with the computations of their part of the grid `temp`, before updating `delta` and `past_temp` safely. -->
 <!-- 2. We need to be sure that all threads use the updated value of `delta` to evaluate the condition of the while loop for the next iteration. -->
 
-> ## Exercise 9
+> ### Exercise "Task.4"
 > Recall our earlier code `atomic.chpl`:
 > ```chpl
 > var lock: atomic int;
@@ -759,7 +759,7 @@ synchronization points inside the `coforall` loop.
 >   writeln('thread ', id, ' is really done ...');
 > ```
 
-> ## Exercise 10
+> ### Exercise "Task.5"
 > Ok, then what is the solution if we want two synchronization points?
 
 (3) Define two atomic variables that we'll use for synchronization

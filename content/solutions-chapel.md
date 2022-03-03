@@ -4,7 +4,7 @@ slug = "solutions-chapel"
 +++
 
 ## Part 1: basic language features
-### Solution to Exercise 1
+### Solution to "Basic.1"
 
 To see the evolution of the temperature at the top right corner of the plate, we just need to modify `iout` and
 `jout`. This corner correspond to the first row (`iout=1`) and the last column (`jout=cols`) of the plate.
@@ -24,7 +24,7 @@ Temperature at iteration 480: 0.0661081
 Temperature at iteration 500: 0.0634717
 ```
 
-### Solution to Exercise 2
+### Solution to "Basic.2"
 
 To get the linear distribution, the 80 degrees must be divided by the number of rows or columns in our
 plate. So, the following couple of for loops at the start of time iteration will give us what we want:
@@ -55,7 +55,7 @@ Temperature at iteration 480: 0.824959
 Temperature at iteration 500: 0.823152
 ```
 
-### Solution to Exercise 3
+### Solution to "Basic.3"
 
 The idea is simple: after each iteration of the while loop, we must compare all elements of `Tnew` and `T`, find the
 greatest difference, and update `delta` with that value. The following nested `for` loops should do the job:
@@ -88,7 +88,7 @@ Temperature at iteration 480: 0.824959
 Temperature at iteration 500: 0.823152
 ```
 
-### Solution to Exercise 4
+### Solution to "Basic.4"
 
 For example, lets use a 650 x 650 grid and observe the evolution of the temperature at the position (200,300) for 10000
 iterations or until the difference of temperature between iterations is less than 0.002; also, let's print the
@@ -111,13 +111,13 @@ Final temperature at the desired position after 7750 iterations is: 24.9671
 The greatest difference in temperatures between the last two iterations was: 0.00199985
 ```
 
-### Solution to Exercise 5
+### Solution to "Basic.5"
 
 Without `--fast` the calculation will become slower by ~95X.
 
 ## Part 2: task parallelism
 
-### Solution to Exercise 6
+### Solution to "Task.1"
 
 The following code is a possible solution:
 
@@ -135,8 +135,8 @@ for i in 1..numthreads do  // serial loop, will be printed in sequential order
   writeln(messages[i]);
 ```
 ```sh
-$ chpl exercise1.chpl -o exercise1
-$ sed -i -e 's|coforall --numthreads=5|exercise1 --numthreads=5|' shared.sh
+$ chpl consecutive.chpl -o consecutive
+$ sed -i -e 's|coforall --numthreads=5|consecutive --numthreads=5|' shared.sh
 $ sbatch shared.sh
 $ cat solution.out
 ```
@@ -150,7 +150,7 @@ this is thread 4: my value of c is 16 and x is 10
 this is thread 5: my value of c is 25 and x is 10
 ```
 
-### Solution to Exercise 7
+### Solution to "Task.2"
 
 ```chpl
 config const numthreads = 12;     // let's pretend we have 12 cores
@@ -172,8 +172,8 @@ for threadid in 1..numthreads do     // no need for a parallel loop here
 
 ```
 ```sh
-$ chpl --fast exercise2.chpl -o exercise2
-$ sed -i -e 's|coforall --numthreads=5|exercise2|' shared.sh
+$ chpl --fast gmax.chpl -o gmax
+$ sed -i -e 's|coforall --numthreads=5|gmax|' shared.sh
 $ sbatch shared.sh
 $ cat solution.out
 ```
@@ -186,7 +186,7 @@ based on the _threadid_, the initial and final indices that the thread will use.
 fraction of the array, and finally, after the coforall is done, the main thread obtains the maximum of the array from
 the maximums of all threads.
 
-### Solution to Exercise 8
+### Solution to "Task.3"
 
 ```chpl
 var x = 0;
@@ -203,12 +203,12 @@ sync {
 writeln('this message will not appear until all threads are done...');
 ```
 
-### Solution to Exercise 9
+### Solution to "Task.4"
 
 The code most likely will lock (although sometimes it might not), as we'll be hitting a race
 condition. Refer to the diagram for explanation.
 
-### Solution to Exercise 10
+### Solution to "Task.5"
 
 You need two separate locks, and for simplicity increment them both:
 
@@ -230,7 +230,7 @@ coforall id in 1..numthreads {
 
 ## Part 3: data parallelism
 
-### Solution to Exercise 11
+### Solution to "Data.1"
 
 Change the line
 
@@ -244,7 +244,7 @@ to
 forall i in 1..n with (+ reduce total) {
 ```
 
-### Solution to Exercise 12
+### Solution to "Data.2"
 
 Run the code with
 
@@ -256,13 +256,13 @@ $ ./test -nl 4 --n=20
 For n=3 we get fewer threads (7 in my case), for n=20 we still get 12 threads (the maximum available number of cores
 inside our job).
 
-### Solution to Exercise 13
+### Solution to "Data.3"
 
 Something along the lines of `m = here.id:string + '-' + m.locale.id:string;` should work.
 
 In most cases `m.locale.id` should be the same as `here.id` (computation follows data distribution).
 
-### Solution to Exercise 14
+### Solution to "Data.4"
 
 It should be `forall (i,j) in largerMesh[1..rows,1..cols] do` (run on multiple locales in parallel) instead of
 `forall (i,j) in mesh do` (run in parallel on locale 0 only).
@@ -272,7 +272,7 @@ Another possible solution is `forall (i,j) in Tnew.domain[1..rows,1..cols] do` (
 Also, we cannot have `forall (i,j) in largerMesh do` (run in parallel on multiple locales) as this would overwrite the
 boundaries.
 
-### Solution to Exercise 15
+### Solution to "Data.5"
 
 Just before temperature output (if count%nout == 0), insert the following:
 
@@ -299,7 +299,7 @@ The largest temperature difference was 9.9534e-05
 The simulation took 0.114942 seconds
 ```
 
-### Solution to Exercise 16
+### Solution to "Data.6"
 
 Here is one possible solution examining the locality of the finite-difference stencil:
 

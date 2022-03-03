@@ -34,11 +34,12 @@ forall a in A do
   a += 1;
 ```
 
-In this code we update all elements of the array `A`. The code will run on a single node, lauching as
-many threads as the number of available cores.
+In this code we update all elements of the array `A`. The code will run on a single node, lauching as many threads as
+the number of available cores. It is thread-safe, meaning that no two threads are writing into the same variable at the
+same time.
 
 * if we replace `forall` with `for`, we'll get a serial loop on a sigle core
-* if we replace `forall` with `coforall`, we'll create 1e6 threads (definitely an overkill!)
+* if we replace `forall` with `coforall`, we'll create 1e6 threads (likely an overkill!)
 
 Consider a simple code `forall.chpl` that we'll run inside a 3-core interactive job. We have a range of
 indices 1..1000, and they get broken into groups that are processed by different threads:
@@ -84,10 +85,10 @@ count = 500500
 
 We computed the sum of integers from 1 to 1000 in parallel. How many cores did the code run on? Looking
 at the code or its output, **we don't know**. Most likely, on two cores available to us inside the
-job. But we can actually check that!
+job. But we can actually check that! Do this:
 
-(1) replace `count += i;` with `count = 1;`
-(2) change the last line to `writeln('actual number of threads = ', count);`
+1. replace `count += i;` with `count = 1;`
+1. change the last line to `writeln('actual number of threads = ', count);`
 
 ```sh
 chpl forall.chpl -o forall
@@ -100,7 +101,7 @@ actual number of threads = 2
 
 If you see one thread, try running this code as a batch multi-core job.
 
-> ## Exercise 11
+> ### Exercise "Data.1"
 > Using the first version of `forall.chpl` (where we computed the sum of integers 1..1000) as a template,
 > write a Chapel code to compute `pi` by calculating the integral (see slides) numerically through
 > summation using `forall` parallelism. Implement the number of intervals as `config` variable.
@@ -132,6 +133,132 @@ forall (r,c) in {1..rows,1..cols} by (rowStride,colStride) do {   // nested c-lo
   }
 }
 ```
+
+
+
+
+
+
+
+
+
+## Parallelizing the Julia set problem
+
+This project is a mathematical problem to compute a [Julia set](https://en.wikipedia.org/wiki/Julia_set), defined as a
+set of points on the complex plane that remain bound under infinite recursive transformation $f(z)$. We will use the
+traditional form $f(z)=z^2+c$, where $c$ is a complex constant. Here is our algorithm:
+
+1. pick a point $z_0\in\mathbb{C}$
+1. compute iterations $z_{i+1}=z_i^2+c$ until $|z_i|>4$ (arbitrary fixed radius; here $c$ is a complex constant)
+1. store the iteration number $\xi(z_0)$ at which $z_i$ reaches the circle $|z|=4$
+1. limit max iterations at 255  
+    4.1 if $\xi(z_0)=255$, then $z_0$ is a stable point  
+    4.2 the quicker a point diverges, the lower its $\xi(z_0)$ is
+1. plot $\xi(z_0)$ for all $z_0$ in a rectangular region $-1<=\mathfrak{Re}(z_0)<=1$, $-1<=\mathfrak{Im}(z_0)<=1$
+
+We should get something conceptually similar to this figure (here $c = 0.355 + 0.355i$; we'll get drastically different
+fractals for different values of $c$):
+
+{{< figure src="/img/2000a.png" >}}
+
+**Note**: you might want to try these values too:
+- $c = 1.2e^{1.1πi}$ $~\Rightarrow~$ original textbook example
+- $c = -0.4-0.59i$ and 1.5X zoom-out $~\Rightarrow~$ denser spirals
+- $c = 1.34-0.45i$ and 1.8X zoom-out $~\Rightarrow~$ beans
+- $c = 0.34-0.05i$ and 1.2X zoom-out $~\Rightarrow~$ connected spiral boots
+
+Below is the serial code `juliaSetSerial.chpl`:
+
+```chpl
+use Time;
+use NetCDF.C_NetCDF;
+
+proc pixel(z0) {
+  const c = 0.355 + 0.355i;
+  var z = z0*1.2;   // zoom out
+  for i in 1..255 do {
+    z = z*z + c;
+    if abs(z) >= 4 then
+      return i:c_int;
+  }
+  return 255:c_int;
+}
+
+const height, width = 2_000;   // 2000^2 image
+var point: complex, y: real, watch: Timer;
+
+writeln("Computing Julia set ...");
+var stability: [1..height,1..width] c_int;
+watch.start();
+for i in 1..height do {
+  y = 2*(i-0.5)/height - 1;
+  for j in 1..width do {
+    point = 2*(j-0.5)/width - 1 + y*1i;   // rescale to -1:1 in the complex plane
+    stability[i,j] = pixel(point);
+  }
+}
+watch.stop();
+writeln('It took ', watch.elapsed(), ' seconds');
+```
+
+The reason we are using C types (`c_int`) here -- and not Chapel's own int(32) or int(64) -- is that we can save the
+resulting array `stability` into a compressed netCDF file. To the best of my knowledge, this can only be done using
+`NetCDF.C_NetCDF` library that relies on C types. You can add this to your code:
+
+```chpl
+writeln("Writing NetCDF ...");
+use NetCDF.C_NetCDF;
+proc cdfError(e) {
+  if e != NC_NOERR {
+    writeln("Error: ", nc_strerror(e): string);
+    exit(2);
+  }
+}
+var ncid, xDimID, yDimID, varID: c_int;
+var dimIDs: [0..1] c_int;   // two elements
+cdfError(nc_create("test.nc", NC_NETCDF4, ncid));   // const NC_NETCDF4 => file in netCDF-4 standard
+cdfError(nc_def_dim(ncid, "x", width: size_t, xDimID));   // define the dimensions
+cdfError(nc_def_dim(ncid, "y", height: size_t, yDimID));
+dimIDs = [xDimID, yDimID];                          // set up dimension IDs array
+cdfError(nc_def_var(ncid, "stability", NC_INT, 2, dimIDs[0], varID));   // define the 2D data variable
+cdfError(nc_def_var_deflate(ncid, varID, NC_SHUFFLE, deflate=1, deflate_level=9)); // compress 0=no 9=max
+cdfError(nc_enddef(ncid));                          // done defining metadata
+cdfError(nc_put_var_int(ncid, varID, stability[1,1]));    // write data to file
+cdfError(nc_close(ncid));
+```
+
+Try running the code! It will produce a file `test.nc` that you can download to your computer and render with ParaView or other
+visualization tool. Does the size of `test.nc` make sense?
+
+Now let's parallelize this code with `forall`. Copy `juliaSetSerial.chpl` into `juliaSetParallel.chpl` and start
+modifying it:
+
+1. For the outer loop, replace `for` with `forall`. This will produce an error about the scope of variables `y` and
+   `point`:
+
+```sh
+error: cannot assign to const variable
+note: The shadow variable '...' is constant due to forall intents in this loop
+```
+
+> ### Discussion
+> Why do you think this message was produced? How do we solve this problem?
+
+2. What do we do next?
+
+Once you have the working shared-memory parallel code, study its performance.
+
+> ### Discussion
+> Why do you think the code's speed does not scale linearly with the number of cores?
+
+
+
+
+
+
+
+
+
 
 ## Multi-locale Chapel setup
 
@@ -571,7 +698,7 @@ cat solution.out
 actual number of threads = 12
 ```
 
-> ## Exercise 12
+> ### Exercise "Data.2"
 > Try reducing the array size `n` to see if that changes the output (fewer threads per locale), e.g.,
 > setting n=3. Also try increasing the array size to n=20 and study the output. Does the output make sense?
 
@@ -716,7 +843,7 @@ The outer perimeter in the partition below are the *ghost points*, with the inne
 2 2 2 2 2 3 3 3 3 3
 ```
 
-> ## Exercise 13
+> ### Exercise "Data.3"
 > In addition to here.id, also print the ID of the locale holding that value. Is it the same or different
 > from `here.id`?
 
@@ -741,7 +868,7 @@ with a parallel `forall` loop (**contains a mistake on purpose!**):
 	Tnew[i,j] = 0.25 * (T[i-1,j] + T[i+1,j] + T[i,j-1] + T[i,j+1]);
 ```
 
-> ## Exercise 14
+> ### Exercise "Data.4"
 > Can anyone spot a mistake in this loop?
 
 (7) Replace
@@ -927,12 +1054,12 @@ writeln('The simulation took ', watch.elapsed(), ' seconds');
 
 This is the entire multi-locale, data-parallel, hybrid shared-/distributed-memory solver!
 
-> ## Exercise 15
+> ### Exercise "Data.5"
 > Add printout to the code to show the total energy on the inner mesh [1..row,1..cols] at each
 > iteration. Consider the temperature sum over all mesh points to be the total energy of the system. Is
 > the total energy on the mesh conserved?
 
-> ## Exercise 16
+> ### Exercise "Data.6"
 > Write a code to print how the finite-difference stencil [i,j], [i-1,j], [i+1,j], [i,j-1], [i,j+1] is
 > distributed among nodes, and compare that to the ID of the node where T[i,i] is computed. Use problem
 > size 8x8.

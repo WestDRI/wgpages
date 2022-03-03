@@ -204,11 +204,39 @@ var count = 0: int;                // the iteration counter
 const nout = 20: int;             // the temperature at (iout,jout) will be printed every nout interations
 ```
 
-Lets print out our configuration after we set all parameters:
+Let's print out our configuration after we set all parameters:
 
 ```chpl
 writeln('Working with a matrix ', rows, 'x', cols, ' to ', niter, ' iterations or dT below ', tolerance);
 ```
+
+<!-- {{<note>}} -->
+<!-- {{</note>}} -->
+
+### Checking variable's type
+
+To check a variable's type, use `.type` query:
+
+```chpl
+var x = 1e8:int;
+type t = x.type;
+writeln(t:string);
+```
+
+or in a single line:
+
+```chpl
+writeln((1e8:int).type:string);
+writeln((0.355 + 0.355i).type: string);
+```
+
+
+
+
+
+
+
+
 
 ## Ranges and Arrays
 
@@ -241,6 +269,23 @@ We must now be ready to start coding our simulations ... here is what we are goi
 - it will run up to _niter_ iterations, or until the largest difference in temperature between iterations
   is less than _tolerance_
 - at each iteration print out the temperature at the position (iout,jout)
+
+### Using expressions to create arrays
+
+In Chapel arrays can also be initialized with expressions (similarly to list comprehensions in Python):
+
+```chpl
+writeln([i in 1..10] i**2);   // prints 1 4 9 16 25 36 49 64 81 100
+var x = [i in 1..10] if (i%2 == 0) then i else 0;
+writeln(x);                   // prints 0 2 0 4 0 6 0 8 0 10
+writeln(x.type:string);       // 1D array of type int(64)
+```
+
+
+
+
+
+
 
 ## Conditional statements
 
@@ -387,26 +432,25 @@ Temperature at iteration 500: 24.8595
 As we can see, the temperature in the middle of the plate (position 50,50) is slowly decreasing as the
 plate is cooling down.
 
-> ## Exercise 1
-> What would be the temperature at the top right corner (row 1, column `cols`) of the plate? The border
-> of the plate is in contact with the boundary conditions, which are set to zero (default boundary values
-> for T), so we expect the temperature at these points to decrease faster. Modify the code to see the
-> temperature at the top right corner.
+> ### Exercise "Basic.1"
+> What would be the temperature at the top right corner (row 1, column `cols`) of the plate? The border of the plate is
+> in contact with the boundary conditions, which are set to zero (default boundary values for T), so we expect the
+> temperature at these points to decrease faster. Modify the code to see the temperature at the top right corner.
 
-> ## Exercise 2
-> Now let's have some more interesting boundary conditions. Suppose that the plate is heated by a source
-> of 80 degrees located at the bottom right corner (row `rows`, column `cols`), and that the temperature
-> on the rest of the border on adjacent sides (to this bottom right corner) decreases linearly to zero as
-> one gets farther from that corner. Utilize `for` loops to setup the described boundary
-> conditions. Compile and run your code to see how the temperature is changing now.
+> ### Exercise "Basic.2"
+> Now let's have some more interesting boundary conditions. Suppose that the plate is heated by a source of 80 degrees
+> located at the bottom right corner (row `rows`, column `cols`), and that the temperature on the rest of the border on
+> adjacent sides (to this bottom right corner) decreases linearly to zero as one gets farther from that corner. Utilize
+> `for` loops to setup the described boundary conditions. Compile and run your code to see how the temperature is
+> changing now.
 
-> ## Exercise 3
-> So far, `delta` has been always equal to `tolerance`, which means that our main while loop will always
-> run the 500 iterations. So let's update `delta` after each iteration. Use what we have studied so far
-> to write the required piece of code.
+> ### Exercise "Basic.3"
+> So far, `delta` has been always equal to `tolerance`, which means that our main while loop will always run the 500
+> iterations. So let's update `delta` after each iteration. Use what we have studied so far to write the required piece
+> of code.
 
-Now, after Exercise 3 we should have a working program to simulate our heat transfer equation. Let's
-just print some additional useful information:
+Now, after Exercise "Basic.3" we should have a working program to simulate our heat transfer equation. Let's print some
+additional useful information:
 
 ```chpl
 writeln('Final temperature at the desired position [', iout, ',', jout, '] after ', count, ' iterations is: ', T[iout,jout]);
@@ -460,16 +504,15 @@ Final temperature at the desired position after 3000 iterations is: 0.793947
 The greatest difference in temperatures between the last two iterations was: 0.00142546
 ```
 
-> ## Exercise 4
-> Make `rows`, `cols`, `nout`, `iout`, `jout`, `tolerance` configurable variables, and
-> test the code simulating different configurations. What can you conclude about the performance of the
-> code.
+> ### Exercise "Basic.4"
+> Make `rows`, `cols`, `nout`, `iout`, `jout`, `tolerance` configurable variables, and test the code simulating
+> different configurations. What can you conclude about the performance of the code.
 
 ## Timing the execution of code in Chapel
 
-The code generated after Exercise 4 is the basic implementation of our simulation. We will be using it
-as a benchmark, to see how much we can improve the performance when introducing the parallel programming
-features of the language in the following lessons.
+The code generated after Exercise "Basic.4" is the full implementation of our simulation. We will be using it as a
+benchmark, to see how much we can improve the performance with Chapel's parallel programming features in the following
+lessons.
 
 But first, we need a quantitative way to measure the performance of our code. Maybe the easiest way to do
 it, is to see how much it takes to finish a simulation. The UNIX command `time` could be used to this
@@ -536,9 +579,9 @@ Final temperature at the desired position after 7750 iterations is: 24.9671
 The greatest difference in temperatures between the last two iterations was: 0.00199985
 ```
 
-> ## Exercise 5
-> Try recompiling without `--fast` and see how it affects the execution time. If it becomes too slow,
-> try reducing the problem size. What is the speedup factor with `--fast`?
+> ### Exercise "Basic.5"
+> Try recompiling without `--fast` and see how it affects the execution time. If it becomes too slow, try reducing the
+> problem size. What is the speedup factor with `--fast`?
 
 ## Solutions
 
