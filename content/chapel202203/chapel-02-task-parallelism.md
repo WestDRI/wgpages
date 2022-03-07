@@ -275,6 +275,7 @@ only to the particular thread.
 > fillRandom(x);	// fill array with random numbers
 > var gmax = 0.0;
 >
+> config const numthreads = 2;      // let's pretend we have 12 cores
 > // here put your code to find gmax + time this code
 >
 > writef('The maximum value in x is %14.12dr\n', gmax);   # formatted output
@@ -680,13 +681,12 @@ Both ran to 7750 iterations, with the same numerical results, but the parallel c
 > ## Discussion
 > What happened!?...
 
-To understand the reason, let's analyze the code. When the program starts, the main thread does all the
-declarations and initializations, and then, it enters the main loop of the simulation (the **_while_**
-loop). Inside this loop, the parallel threads are launched for the first time. When these threads finish
-their computations, the main thread resumes its execution, it updates `delta` and T, and everything is
-repeated again. So, in essence, parallel threads are launched and resumed 7750 times, which introduces a
-significant amount of overhead (the time the system needs to effectively start and destroy threads in the
-specific hardware, at each iteration of the while loop).
+To understand the reason, let's analyze the code. When the program starts, the main thread does all the declarations and
+initializations, and then, it enters the main loop of the simulation (the **_while_** loop). Inside this loop, the
+parallel threads are launched for the first time. When these threads finish their computations, the main thread resumes
+its execution, it updates `delta` and T, and everything is repeated again. So, in essence, parallel threads are launched
+and terminated 7750 times, which introduces a significant amount of overhead (the time the system needs to effectively
+start and destroy threads in the specific hardware, at each iteration of the while loop).
 
 Clearly, a better approach would be to launch the parallel threads just once, and have them execute all the
 time steps, before resuming the main thread to print the final results.
