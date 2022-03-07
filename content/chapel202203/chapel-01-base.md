@@ -149,6 +149,25 @@ Note that on *uu.c3.ca* we have:
 
 
 
+## Makefiles
+
+In the rest of this workshop, we'll be compiling codes `test.chpl`, `baseSolver.chpl`, `begin.chpl`, `cobegin.chpl` and
+many others. To simplify compilation, we suggest writing a file called `Makefile` in your working directory:
+
+```makefile
+%: %.chpl
+	chpl $^ -o $@
+```
+
+Note that the second line starts with TAB and not with multiple spaces -- this is **very important**!
+
+With this makefile, to compile any Chapel code, e.g. `baseSolver.chpl`, you would type:
+
+```sh
+make baseSolver
+```
+
+Add `--fast` flag to the makefile to optimize your code.
 
 
 
