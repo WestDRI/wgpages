@@ -13,7 +13,7 @@ weight = 2
   _jout_, _tolerance_, _nout_
 * we ran the benchmark solution to convergence after 7750 iterations
 ```sh
-./baseSolver --rows=650 --cols=650 --iout=200 --jout=300 --niter=10000 --tolerance=0.002 --nout=1000
+./baseSolver --rows=650 --iout=200 --niter=10_000 --tolerance=0.002 --nout=1000
 ```
 * we learned how to time individual sections of the code
 * we saw that `--fast` flag sped up calculation by ~100X
@@ -24,8 +24,8 @@ The basic concept of parallel computing is simple to understand: we **divide our
 be executed at the same time**, so that we finish the job in a fraction of the time that it would have
 taken if the tasks are executed one by one.
 
->> ## Key idea
->> **Task** is a unit of computation that can run in parallel with other tasks.
+> ## Key idea
+> **Task** is a unit of computation that can run in parallel with other tasks.
 
 Implementing parallel computations, however, is not always easy. How easy it is to parallelize a code
 really depends on the underlying problem you are trying to solve. This can result in:
@@ -68,11 +68,11 @@ And again, Chapel could take care of all the stuff required to run our algorithm
 scenarios, but we can always add more specific detail to gain performance when targeting a particular
 scenario.
 
->> ## Key idea
->> **Task parallelism** is a style of parallel programming in which parallelism is driven by
->> *programmer-specified tasks*. This is in contrast with **Data Parallelism** which is a style of
->> parallel programming in which parallelism is driven by *computations over collections of data elements
->> or their indices*.
+> ## Key idea
+> **Task parallelism** is a style of parallel programming in which parallelism is driven by
+> *programmer-specified tasks*. This is in contrast with **Data Parallelism** which is a style of
+> parallel programming in which parallelism is driven by *computations over collections of data elements
+> or their indices*.
 
 ## Running single-local parallel Chapel
 
@@ -84,29 +84,18 @@ scenario.
 <!-- echo $SLURM_CPUS_PER_TASK     # print the number of cores per node (3) -->
 <!-- ``` -->
 
-If working on Cedar / Graham / Béluga, please either load the official single-locale Chapel module:
+Make sure you have loaded the official single-locale Chapel module:
 
 ```sh
-module load gcc chapel-single/1.15.0
-```
-or use the latest single-locale Chapel:
-
-```sh
-source /home/razoumov/startSingleLocale.sh
-```
-
-If you are working instead on *uu.c3.ca* cluster, please load single-locale Chapel from `/project`:
-
-```sh
-source ~/projects/def-sponsor00/shared/startSingleLocale.sh
+module load gcc/9.3.0 chapel-multicore/1.25.0
 ```
 
 In this lesson, we'll be running on several cores on one node with a script `shared.sh`:
 
 ```sh
 #!/bin/bash
-#SBATCH --time=00:05:00   # walltime in d-hh:mm or hh:mm:ss format
-#SBATCH --mem-per-cpu=1000   # in MB
+#SBATCH --time=00:05:00      # walltime in d-hh:mm or hh:mm:ss format
+#SBATCH --mem-per-cpu=3600   # in MB
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=2
 #SBATCH --output=solution.out
@@ -179,10 +168,10 @@ screen.
 >> _Answer_: that will actually work, as we'll simply create another, local instance of `x` with its own
 >> value.
 
->> ## Key idea
->> All variables have a **_scope_** in which they can be used. The variables declared inside a concurrent
->> thread are accessible only by the thread. The variables declared in the main thread can be read everywhere,
->> but Chapel won't allow other concurrent threads to modify them.
+> ## Key idea
+> All variables have a **_scope_** in which they can be used. The variables declared inside a concurrent
+> thread are accessible only by the thread. The variables declared in the main thread can be read everywhere,
+> but Chapel won't allow other concurrent threads to modify them.
 
 > ## Discussion
 > Are the concurrent threads, spawned by the last code, running truly in parallel?
@@ -191,8 +180,8 @@ screen.
 > run concurrently, with the CPU switching between the threads. If you have two cores, thread1 and thread2
 > will likely run in parallel using the two cores.
 
->> ## Key idea
->> To maximize performance, start as many threads as the number of available cores.
+> ## Key idea
+> To maximize performance, start as many threads as the number of available cores.
 
 A slightly more structured way to start concurrent threads in Chapel is by using the `cobegin` statement. Here you can
 start a block of concurrent threads, **one for each statement** inside the curly brackets. Another difference between
@@ -280,16 +269,17 @@ only to the particular thread.
 > ### Exercise "Task.2"
 > Consider the following code `gmax.chpl`:
 > ```chpl
-> use Random;
-> config const m = 8: int;
-> const nelem = 10**m: int;
+> use Random, Time;
+> config const nelem = 1e8: int;
 > var x: [1..nelem] real;
 > fillRandom(x);	// fill array with random numbers
 > var gmax = 0.0;
 >
-> // here put your code to find gmax
+> config const numthreads = 2;      // let's pretend we have 12 cores
+> // here put your code to find gmax + time this code
 >
-> writeln('the maximum value in x is: ', gmax);
+> writef('The maximum value in x is %14.12dr\n', gmax);   # formatted output
+> writeln('It took ', watch.elapsed(), ' seconds');
 > ```
 > Write a parallel code to find the maximum value in the array `x`. Be careful: the number of threads should not be
 > excessive. Best to use `numthreads` to organize parallel loops. For each thread compute the `start` and `finish`
@@ -300,7 +290,7 @@ only to the particular thread.
 > Run the code of last Exercise using different number of threads, and different sizes of the array `x` to
 > see how the execution time changes. For example:
 > ```sh
-> time ./gmax --m=8 --numthreads=1
+> ./gmax --nelem=100_000_000 --numthreads=1
 > ```
 >
 > Discuss your observations. Is there a limit on how fast the code could run?
@@ -317,13 +307,13 @@ only to the particular thread.
 > Time the execution of the original code and this new one. How do they compare?
 >
 >> Answer: the built-in reduction operation runs in parallel utilizing all cores.
->
->> ## Key idea
->> It is always a good idea to check whether there is _built-in_ functions or methods in the used
->> language, that can do what we want as efficiently (or better) than our house-made code. In this case,
->> the _reduce_ statement reduces the given array to a single number using the operation `max`, and it is
->> parallelized. Here is the full list of reduce operations: + &nbsp; * &nbsp; && &nbsp; || &nbsp; &
->> &nbsp; | &nbsp; ^ &nbsp; min &nbsp; max.
+
+> ## Key idea
+> It is always a good idea to check whether there is _built-in_ functions or methods in the used
+> language, that can do what we want as efficiently (or better) than our house-made code. In this case,
+> the _reduce_ statement reduces the given array to a single number using the operation `max`, and it is
+> parallelized. Here is the full list of reduce operations: + &nbsp; * &nbsp; && &nbsp; || &nbsp; &
+> &nbsp; | &nbsp; ^ &nbsp; min &nbsp; max.
 
 ## Synchronization of threads
 ### `sync` block
@@ -651,7 +641,7 @@ Let's compile and run both codes on the same large problem:
 
 ```sh
 chpl --fast baseSolver.chpl -o baseSolver
-sed -i -e 's|test|baseSolver --rows=650 --cols=650 --iout=200 --jout=300 --niter=10000 --tolerance=0.002 --nout=1000|' shared.sh
+sed -i -e 's|test|baseSolver --rows=650 --iout=200 --niter=10_000 --tolerance=0.002 --nout=1000|' shared.sh
 sbatch shared.sh
 cat solution.out
 Working with a matrix 650x650 to 10000 iterations or dT below 0.002
@@ -691,13 +681,12 @@ Both ran to 7750 iterations, with the same numerical results, but the parallel c
 > ## Discussion
 > What happened!?...
 
-To understand the reason, let's analyze the code. When the program starts, the main thread does all the
-declarations and initializations, and then, it enters the main loop of the simulation (the **_while_**
-loop). Inside this loop, the parallel threads are launched for the first time. When these threads finish
-their computations, the main thread resumes its execution, it updates `delta` and T, and everything is
-repeated again. So, in essence, parallel threads are launched and resumed 7750 times, which introduces a
-significant amount of overhead (the time the system needs to effectively start and destroy threads in the
-specific hardware, at each iteration of the while loop).
+To understand the reason, let's analyze the code. When the program starts, the main thread does all the declarations and
+initializations, and then, it enters the main loop of the simulation (the **_while_** loop). Inside this loop, the
+parallel threads are launched for the first time. When these threads finish their computations, the main thread resumes
+its execution, it updates `delta` and T, and everything is repeated again. So, in essence, parallel threads are launched
+and terminated 7750 times, which introduces a significant amount of overhead (the time the system needs to effectively
+start and destroy threads in the specific hardware, at each iteration of the while loop).
 
 Clearly, a better approach would be to launch the parallel threads just once, and have them execute all the
 time steps, before resuming the main thread to print the final results.

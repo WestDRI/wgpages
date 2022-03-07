@@ -41,8 +41,8 @@ same time.
 * if we replace `forall` with `for`, we'll get a serial loop on a sigle core
 * if we replace `forall` with `coforall`, we'll create 1e6 threads (likely an overkill!)
 
-Consider a simple code `forall.chpl` that we'll run inside a 3-core interactive job. We have a range of
-indices 1..1000, and they get broken into groups that are processed by different threads:
+Consider a simple code `forall.chpl` that we'll run inside a 3-core interactive job. We have a range of indices 1..1000,
+and they get broken into groups that are processed by different threads:
 
 ```chpl
 var count = 0;
@@ -52,8 +52,7 @@ forall i in 1..1000 with (+ reduce count) {   // parallel loop
 writeln('count = ', count);
 ```
 
-If we have not done so, let's write a script `shared.sh` for submitting single-locale, two-core Chapel
-jobs:
+If we have not done so, let's write a script `shared.sh` for submitting single-locale, two-core Chapel jobs:
 
 <!-- ```sh -->
 <!-- module load gcc chapel-single/1.15.0 -->
@@ -65,8 +64,8 @@ jobs:
 
 ```sh
 #!/bin/bash
-#SBATCH --time=00:05:00   # walltime in d-hh:mm or hh:mm:ss format
-#SBATCH --mem-per-cpu=1000   # in MB
+#SBATCH --time=00:05:00      # walltime in d-hh:mm or hh:mm:ss format
+#SBATCH --mem-per-cpu=3600   # in MB
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=2
 #SBATCH --output=solution.out
@@ -74,7 +73,7 @@ jobs:
 ```
 
 ```sh
-source ~/projects/def-sponsor00/shared/startSingleLocale.sh   # on uu.c3.ca
+source ~/projects/def-sponsor00/shared/chapel/startMultiLocale.sh   # on uu.c3.ca
 chpl forall.chpl -o forall
 sbatch shared.sh
 cat solution.out
@@ -83,9 +82,9 @@ cat solution.out
 count = 500500
 ```
 
-We computed the sum of integers from 1 to 1000 in parallel. How many cores did the code run on? Looking
-at the code or its output, **we don't know**. Most likely, on two cores available to us inside the
-job. But we can actually check that! Do this:
+We computed the sum of integers from 1 to 1000 in parallel. How many cores did the code run on? Looking at the code or
+its output, **we don't know**. Most likely, on two cores available to us inside the job. But we can actually check that!
+Do this:
 
 1. replace `count += i;` with `count = 1;`
 1. change the last line to `writeln('actual number of threads = ', count);`
@@ -227,8 +226,10 @@ cdfError(nc_put_var_int(ncid, varID, stability[1,1]));    // write data to file
 cdfError(nc_close(ncid));
 ```
 
-Try running the code! It will produce a file `test.nc` that you can download to your computer and render with ParaView or other
-visualization tool. Does the size of `test.nc` make sense?
+Testing on my laptop, it took the code 0.471 seconds to compute a $2000^2$ fractal.
+
+Try running it yourself! It will produce a file `test.nc` that you can download to your computer and render with
+ParaView or other visualization tool. Does the size of `test.nc` make sense?
 
 Now let's parallelize this code with `forall`. Copy `juliaSetSerial.chpl` into `juliaSetParallel.chpl` and start
 modifying it:
@@ -280,8 +281,7 @@ this is referred to as *multi-locale* execution.
 >>
 >> Inside the Docker container on multiple locales your code will not run any faster than on a single
 >> locale, since you are emulating a virtual cluster, and all tasks run on the same physical node. To
->> achieve actual speedup, you need to run your parallel multi-locale Chapel code on a real physical
->> cluster which we hope you have access to for this session.
+>> achieve actual speedup, you need to run your parallel multi-locale Chapel code on a real HPC cluster.
 
 On an HPC cluster you would need to submit either an interactive or a batch job asking for several nodes
 and then run a multi-locale Chapel code inside that job. In practice, the exact commands to run
@@ -343,24 +343,13 @@ Let's write a job submission script `distributed.sh`:
 
 ```sh
 #!/bin/bash
-#SBATCH --time=00:05:00   # walltime in d-hh:mm or hh:mm:ss format
-#SBATCH --mem-per-cpu=1000   # in MB
+#SBATCH --time=00:05:00      # walltime in d-hh:mm or hh:mm:ss format
+#SBATCH --mem-per-cpu=3600   # in MB
 #SBATCH --nodes=4
 #SBATCH --cpus-per-task=2
 #SBATCH --output=solution.out
 ./test -nl 4   # in this case the 'srun' launcher is already configured for our interconnect
 ```
-
-<!-- **Note**: On Graham currently there is no good Chapel installed centrally, so you'll have to load it from -->
-<!-- AR's home directory: -->
-
-<!-- ```sh -->
-<!-- . /home/razoumov/startMultiLocale.sh -->
-<!-- salloc --time=2:00:0 --nodes=4 --cpus-per-task=3 --mem-per-cpu=1000 \ -->
-<!--          --account=def-razoumov-ws_cpu --reservation=arazoumov-may17 -->
-<!-- echo $SLURM_NODELIST          # print the list of nodes (should be four) -->
-<!-- echo $SLURM_CPUS_PER_TASK     # print the number of cores per node (3) -->
-<!-- ``` -->
 
 <!-- Check: without `CHPL_RT_NUM_THREADS_PER_LOCALE`, will 32 threads run on separate 32 cores -->
 <!-- or will they run on the 3 cores inside our Slurm job? -->
@@ -373,7 +362,7 @@ Let us test our multi-locale Chapel environment by launching the following code:
 writeln(Locales);
 ```
 ```sh
-source ~/projects/def-sponsor00/shared/startMultiLocale.sh     # on uu.c3.ca
+source ~/projects/def-sponsor00/shared/chapel/startMultiLocale.sh   # on uu.c3.ca
 chpl test.chpl -o test
 sbatch distributed.sh
 cat solution.out
@@ -918,8 +907,8 @@ First, let's try this on a smaller problem. Let's write two job submission scrip
 ```sh
 #!/bin/bash
 # this is baseSolver.sh
-#SBATCH --time=00:05:00   # walltime in d-hh:mm or hh:mm:ss format
-#SBATCH --mem-per-cpu=1000   # in MB
+#SBATCH --time=00:05:00      # walltime in d-hh:mm or hh:mm:ss format
+#SBATCH --mem-per-cpu=3600   # in MB
 #SBATCH --output=baseSolver.out
 ./baseSolver -nl 1 --rows=30 --cols=30 --niter=2000
 ```
@@ -927,8 +916,8 @@ First, let's try this on a smaller problem. Let's write two job submission scrip
 ```sh
 #!/bin/bash
 # this is parallel.sh
-#SBATCH --time=00:05:00   # walltime in d-hh:mm or hh:mm:ss format
-#SBATCH --mem-per-cpu=1000   # in MB
+#SBATCH --time=00:05:00      # walltime in d-hh:mm or hh:mm:ss format
+#SBATCH --mem-per-cpu=3600   # in MB
 #SBATCH --nodes=4
 #SBATCH --cpus-per-task=2
 #SBATCH --output=parallel.out
