@@ -16,21 +16,35 @@ weight = 1
 <!-- - library of standard domain maps provided by chapel -->
 <!-- - users can write their own domain maps -->
 
-- Chapel is a modern, open-source programming language developed at _Cray Inc._ (acquired by Hewlett Packard Enterprise in 2019).
-- Chapel offers simplicity and readability of scripting languages such as Python or Matlab.
-- Chapel is a compiled language.
-- Chapel features speed and performance of Fortran and C.
-- Chapel supports high-level abstractions for data distribution and parallel processing, and for task parallelism.
+## Language for parallel computing on large-scale systems
+
+- Chapel is a modern, **open-source parallel programming language** developed at _Cray Inc._ (acquired by Hewlett Packard Enterprise in 2019).
+- Chapel offers simplicity and readability of scripting languages such as Python or Matlab: "Python for parallel programming".
+- Chapel is a compiled language $~\Rightarrow~$ provides the **speed and performance** of Fortran and C.
+- Chapel supports high-level abstractions for data distribution and **data parallel processing**, and for **task parallelism**.
+- Chapel provides optimization for **data-driven placement of computations**.
   <!-- - allow users to express parallel computations in a natural, almost intuitive, manner -->
-  <!-- - can achieve anything you can do with MPI and OpenMP -->
-- Chapel was designed around a _multi-resolution_ philosophy: users can incrementally add more detail to their original
-  code, to bring it as close to the machine as required.
+- Chapel was designed around a **multi-resolution** philosophy: users can incrementally add more detail to their
+  original code, to bring it as close to the machine as required, and the same time they can achieve anything you can
+  normally do with MPI and OpenMP.
+
 <!-- - has its source code stored in text files with the extension `.chpl` -->
+
+The Chapel community is fairly small: too few people know/use Chapel $~\Leftarrow\Rightarrow~$ relatively few
+libraries. However, you can use functions/libraries written in other languages:
+
+1. direct calls will always be serial.
+2. high-level Chapel parallel libraries can use C/F90/etc libraries underneath.
 
 ## Links
 
 - {{<a "https://chapel-lang.org" "Chapel homepage">}}
 - {{<a "https://developer.hpe.com/platform/chapel/home" "What is Chapel?">}} (HPE Developer Portal)
+- {{<a "https://chapel-for-python-programmers.readthedocs.io/basics.html" "Getting started guide for Python programmers">}}
+- {{<a "https://learnxinyminutes.com/docs/chapel" "Learn X=Chapel in Y minutes">}}
+- {{<a "https://stackoverflow.com/questions/tagged/chapel" "Chapel on StackOverflow">}}
+
+{{< figure src="/img/threeParts.png" width=800px >}}
 
 ## Running Chapel codes on Cedar / Graham / Béluga
 
@@ -46,8 +60,8 @@ module load gcc/9.3.0 chapel-multicore/1.25.0
 ```
 
 Multi-locale is provided by `chapel-ofi` module on OmniPath clusters such as Cedar, and by `chapel-ucx` module on
-InfiniBand clusters such as Graham, Béluga, Narval. Multi-locale Chapel includes the parallel launcher for the right
-interconnect architecture.
+InfiniBand clusters such as Graham, Béluga, Narval. Since multi-locale Chapel includes a parallel launcher for the right
+interconnect type, there is no single Chapel module for all cluster architectures.
 
 ## Running Chapel codes inside a Docker container
 
@@ -102,12 +116,6 @@ login node is shared by many people at the same time, and where it might not be 
 cores on a login node with CPU-intensive tasks. Therefore, we'll be running test Chapel codes inside
 submitted jobs on compute nodes.
 
-<!-- We'll start by submitting a single-core interactive job: -->
-<!-- ```sh -->
-<!-- $ salloc --time=0:30:0 --mem-per-cpu=1000 --account=def-razoumov-ws_cpu --reservation=arazoumov-may17 -->
-<!-- ``` -->
-<!-- and then inside that job compile and run the test code -->
-
 Let's write the job script `serial.sh`:
 
 ```sh
@@ -125,6 +133,25 @@ $ sbatch serial.sh
 $ sq                     # same as `squeue -u $USER`
 $ cat slurm-jobID.out
 ```
+
+Alternatively, today we could work inside a serial interactive job:
+
+```sh
+$ salloc --time=3:00:0 --mem-per-cpu=3600
+```
+
+Note that on *uu.c3.ca* we have:
+
+- the login node with 16 "p"-type cores and 32GB memory,
+- 8 compute nodes with 16 "c"-type cores and 60GB memory each, for the total of 128 cores.
+
+
+
+
+
+
+
+
 
 ## Case study: solving the **_Heat transfer_** problem
 
@@ -146,11 +173,10 @@ Tnew[i,j] = 0.25 * (T[i-1,j] + T[i+1,j] + T[i,j-1] + T[i,j+1])
 
 So, our objective is to:
 
-1. Write a code to implement the difference equation above.The code should have the following
-   requirements: (a) it should work for any given number of rows and columns in the grid, (b) it should
-   run for a given number of iterations, or until the difference between `Tnew` and `T` is smaller than a
-   given tolerance value, and (c) it should output the temperature at a desired position on the grid
-   every given number of iterations.
+1. Write a code to implement the difference equation above. The code should:
+   - work for any given number of rows and columns in the grid,
+   - run for a given number of iterations, or until the difference between `Tnew` and `T` is smaller than a given tolerance value, and
+   - output the temperature at a desired position on the grid every given number of iterations.
 1. Use task parallelism to improve the performance of the code and run it on a single cluster node.
 1. Use data parallelism to improve the performance of the code and run it on multiple cluster nodes using
    hybrid parallelism.
@@ -177,9 +203,9 @@ If a variable is declared without a type, Chapel will infer it from the given in
 (let's store this in file `baseSolver.chpl`)
 
 ```chpl
-const rows = 100, cols = 100;      // number of rows and columns in a matrix
-const niter = 500;     // number of iterations
-const iout = 50, jout = 50;     // some row and column numbers
+const rows, cols = 100;      // number of rows and columns in a matrix
+const niter = 500;           // number of iterations
+const iout, jout = 50;       // row and column to print
 ```
 
 All these constant variables will be created as integers, and no other values can be assigned to these
@@ -198,7 +224,7 @@ Of course, we can use both, the initial value and the type, when declaring a var
 
 ```chpl
 const tolerance = 0.0001: real;   // temperature difference tolerance
-var count = 0: int;                // the iteration counter
+var count = 0: int;               // the iteration counter
 const nout = 20: int;             // the temperature at (iout,jout) will be printed every nout interations
 ```
 
@@ -517,24 +543,22 @@ it, is to see how much it takes to finish a simulation. The UNIX command `time` 
 effect
 
 ```sh
-time ./baseSolver --rows=650 --cols=650 --iout=200 --jout=300 --niter=10000 --tolerance=0.002 --nout=1000
+time ./baseSolver --rows=650 --iout=200 --niter=10_000 --tolerance=0.002 --nout=1000
 ```
 ```chpl
-Working with a matrix 650x650 to 10000 iterations or dT below 0.002
 Temperature at iteration 0: 25.0
 Temperature at iteration 1000: 25.0
 Temperature at iteration 2000: 25.0
 Temperature at iteration 3000: 25.0
-Temperature at iteration 4000: 24.9998
-Temperature at iteration 5000: 24.9984
-Temperature at iteration 6000: 24.9935
-Temperature at iteration 7000: 24.9819
-Final temperature at the desired position after 7750 iterations is: 24.9671
-The greatest difference in temperatures between the last two iterations was: 0.00199985
-
-real   0m9.206s
-user   0m9.122s
-sys    0m0.040s
+Temperature at iteration 4000: 24.9996
+Temperature at iteration 5000: 24.9968
+Temperature at iteration 6000: 24.987
+Temperature at iteration 7000: 24.9639
+Final temperature at the desired position [200,200] after 7750 iterations is: 24.9343
+The largest temperature difference was 0.00199985
+real	0m3.931s
+user	0m7.354s
+sys	0m9.952s
 ```
 
 The real time is what interest us. Our code is taking around 9.2 seconds from the moment it is called at
@@ -560,21 +584,20 @@ writeln('The simulation took ', watch.elapsed(), ' seconds');
 ```
 ```sh
 chpl --fast baseSolver.chpl -o baseSolver
-./baseSolver --rows=650 --cols=650 --iout=200 --jout=300 --niter=10000 --tolerance=0.002 --nout=1000
+./baseSolver --rows=650 --iout=200 --niter=10_000 --tolerance=0.002 --nout=1000
 ```
 ```chpl
-Working with a matrix 650x650 to 10000 iterations or dT below 0.002
 Temperature at iteration 0: 25.0
 Temperature at iteration 1000: 25.0
 Temperature at iteration 2000: 25.0
 Temperature at iteration 3000: 25.0
-Temperature at iteration 4000: 24.9998
-Temperature at iteration 5000: 24.9984
-Temperature at iteration 6000: 24.9935
-Temperature at iteration 7000: 24.9819
-The simulation took 8.03206 seconds
-Final temperature at the desired position after 7750 iterations is: 24.9671
-The greatest difference in temperatures between the last two iterations was: 0.00199985
+Temperature at iteration 4000: 24.9996
+Temperature at iteration 5000: 24.9968
+Temperature at iteration 6000: 24.987
+Temperature at iteration 7000: 24.9639
+Final temperature at the desired position [200,200] after 7750 iterations is: 24.9343
+The largest temperature difference was 0.00199985
+The simulation took 3.9187 seconds
 ```
 
 > ### Exercise "Basic.5"

@@ -13,7 +13,7 @@ weight = 2
   _jout_, _tolerance_, _nout_
 * we ran the benchmark solution to convergence after 7750 iterations
 ```sh
-./baseSolver --rows=650 --cols=650 --iout=200 --jout=300 --niter=10000 --tolerance=0.002 --nout=1000
+./baseSolver --rows=650 --iout=200 --niter=10_000 --tolerance=0.002 --nout=1000
 ```
 * we learned how to time individual sections of the code
 * we saw that `--fast` flag sped up calculation by ~100X
@@ -24,8 +24,8 @@ The basic concept of parallel computing is simple to understand: we **divide our
 be executed at the same time**, so that we finish the job in a fraction of the time that it would have
 taken if the tasks are executed one by one.
 
->> ## Key idea
->> **Task** is a unit of computation that can run in parallel with other tasks.
+> ## Key idea
+> **Task** is a unit of computation that can run in parallel with other tasks.
 
 Implementing parallel computations, however, is not always easy. How easy it is to parallelize a code
 really depends on the underlying problem you are trying to solve. This can result in:
@@ -68,11 +68,11 @@ And again, Chapel could take care of all the stuff required to run our algorithm
 scenarios, but we can always add more specific detail to gain performance when targeting a particular
 scenario.
 
->> ## Key idea
->> **Task parallelism** is a style of parallel programming in which parallelism is driven by
->> *programmer-specified tasks*. This is in contrast with **Data Parallelism** which is a style of
->> parallel programming in which parallelism is driven by *computations over collections of data elements
->> or their indices*.
+> ## Key idea
+> **Task parallelism** is a style of parallel programming in which parallelism is driven by
+> *programmer-specified tasks*. This is in contrast with **Data Parallelism** which is a style of
+> parallel programming in which parallelism is driven by *computations over collections of data elements
+> or their indices*.
 
 ## Running single-local parallel Chapel
 
@@ -168,10 +168,10 @@ screen.
 >> _Answer_: that will actually work, as we'll simply create another, local instance of `x` with its own
 >> value.
 
->> ## Key idea
->> All variables have a **_scope_** in which they can be used. The variables declared inside a concurrent
->> thread are accessible only by the thread. The variables declared in the main thread can be read everywhere,
->> but Chapel won't allow other concurrent threads to modify them.
+> ## Key idea
+> All variables have a **_scope_** in which they can be used. The variables declared inside a concurrent
+> thread are accessible only by the thread. The variables declared in the main thread can be read everywhere,
+> but Chapel won't allow other concurrent threads to modify them.
 
 > ## Discussion
 > Are the concurrent threads, spawned by the last code, running truly in parallel?
@@ -180,8 +180,8 @@ screen.
 > run concurrently, with the CPU switching between the threads. If you have two cores, thread1 and thread2
 > will likely run in parallel using the two cores.
 
->> ## Key idea
->> To maximize performance, start as many threads as the number of available cores.
+> ## Key idea
+> To maximize performance, start as many threads as the number of available cores.
 
 A slightly more structured way to start concurrent threads in Chapel is by using the `cobegin` statement. Here you can
 start a block of concurrent threads, **one for each statement** inside the curly brackets. Another difference between
@@ -269,16 +269,16 @@ only to the particular thread.
 > ### Exercise "Task.2"
 > Consider the following code `gmax.chpl`:
 > ```chpl
-> use Random;
-> config const m = 8: int;
-> const nelem = 10**m: int;
+> use Random, Time;
+> config const nelem = 1e8: int;
 > var x: [1..nelem] real;
 > fillRandom(x);	// fill array with random numbers
 > var gmax = 0.0;
 >
-> // here put your code to find gmax
+> // here put your code to find gmax + time this code
 >
-> writeln('the maximum value in x is: ', gmax);
+> writef('The maximum value in x is %14.12dr\n', gmax);   # formatted output
+> writeln('It took ', watch.elapsed(), ' seconds');
 > ```
 > Write a parallel code to find the maximum value in the array `x`. Be careful: the number of threads should not be
 > excessive. Best to use `numthreads` to organize parallel loops. For each thread compute the `start` and `finish`
@@ -289,7 +289,7 @@ only to the particular thread.
 > Run the code of last Exercise using different number of threads, and different sizes of the array `x` to
 > see how the execution time changes. For example:
 > ```sh
-> time ./gmax --m=8 --numthreads=1
+> ./gmax --nelem=100_000_000 --numthreads=1
 > ```
 >
 > Discuss your observations. Is there a limit on how fast the code could run?
@@ -306,13 +306,13 @@ only to the particular thread.
 > Time the execution of the original code and this new one. How do they compare?
 >
 >> Answer: the built-in reduction operation runs in parallel utilizing all cores.
->
->> ## Key idea
->> It is always a good idea to check whether there is _built-in_ functions or methods in the used
->> language, that can do what we want as efficiently (or better) than our house-made code. In this case,
->> the _reduce_ statement reduces the given array to a single number using the operation `max`, and it is
->> parallelized. Here is the full list of reduce operations: + &nbsp; * &nbsp; && &nbsp; || &nbsp; &
->> &nbsp; | &nbsp; ^ &nbsp; min &nbsp; max.
+
+> ## Key idea
+> It is always a good idea to check whether there is _built-in_ functions or methods in the used
+> language, that can do what we want as efficiently (or better) than our house-made code. In this case,
+> the _reduce_ statement reduces the given array to a single number using the operation `max`, and it is
+> parallelized. Here is the full list of reduce operations: + &nbsp; * &nbsp; && &nbsp; || &nbsp; &
+> &nbsp; | &nbsp; ^ &nbsp; min &nbsp; max.
 
 ## Synchronization of threads
 ### `sync` block
@@ -640,7 +640,7 @@ Let's compile and run both codes on the same large problem:
 
 ```sh
 chpl --fast baseSolver.chpl -o baseSolver
-sed -i -e 's|test|baseSolver --rows=650 --cols=650 --iout=200 --jout=300 --niter=10000 --tolerance=0.002 --nout=1000|' shared.sh
+sed -i -e 's|test|baseSolver --rows=650 --iout=200 --niter=10_000 --tolerance=0.002 --nout=1000|' shared.sh
 sbatch shared.sh
 cat solution.out
 Working with a matrix 650x650 to 10000 iterations or dT below 0.002
