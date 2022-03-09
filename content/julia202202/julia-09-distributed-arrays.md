@@ -303,7 +303,7 @@ Let $U_i^n$ denote the value of $T(x_i,t_n)$ at grid points $x_i$, $i=1,\ldots,N
 U_i^{n+1} = (1-2k)U_i^n + k(U_{i-1}^n + U_{i+1}^n)
 \\]
 
-for $i=1,\ldots,N$. This can be translated into the following code with one dimensional two arrays `unew[1:N]` and `u[1:N]` holding values at the $N$ grid points at $t_{n+1}$ and $t_n$ respectively[^3]
+for $i=1,\ldots,N$. This can be translated into the following code with two one dimensional arrays `unew[1:N]` and `u[1:N]` holding values at the $N$ grid points at $t_{n+1}$ and $t_n$ respectively[^3]
 
 ```julia
 for i=1:N
