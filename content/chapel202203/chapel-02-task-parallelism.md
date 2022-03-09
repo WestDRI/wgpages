@@ -821,6 +821,8 @@ var arrayDelta: [0..colthreads*rowthreads-1] real;
 
 (7) Remove the original T[iout,jout] output line.
 
+(8) Finally, move the boundary conditions (right+bottom edges) before the `while` loop. Why can we do it now?
+
 Now let's compare the performance of `parallel2.chpl` to the benchmark serial solution `baseSolver.chpl`:
 
 ```sh
