@@ -157,20 +157,20 @@ same time (in this case the screen); the system decides in which order the threa
 screen.
 
 > ## Discussion
-> 1. What would happen if in the last code we declare `count` in the main thread?
+> 1. What would happen if in the last code we move the definition of `count` into the main thread, but try to assign it
+>    from threads 1 and 2?
 >
->> _Answer_: we'll get an error at compilation, since then `count` will belong to the main thread (will
->> be defined within the scope of the main thread), and we can modify its value only in the main thread.
+>> _Answer_: we'll get an error at compilation ("cannot assign to const variable"), since then `count` would belong to the
+>> main thread (would be defined within the scope of the main thread), and we could modify its value only in the main
+>> thread.
+
+> 2. What would happen if we try to insert a second definition `var x = 10;` inside the first `begin` statement?
 >
-> 2. What would happen if we try to insert a second definition `var x = 10;` inside the first `begin`
-> statement?
->
->> _Answer_: that will actually work, as we'll simply create another, local instance of `x` with its own
->> value.
+>> _Answer_: that will actually work, as we'll simply create another, local instance of `x` with its own value.
 
 > ## Key idea
-> All variables have a **_scope_** in which they can be used. The variables declared inside a concurrent
-> thread are accessible only by the thread. The variables declared in the main thread can be read everywhere,
+> All variables have a **_scope_** in which they can be used. Variables declared inside a concurrent
+> thread are accessible only by that thread. Variables declared in the main thread can be read everywhere,
 > but Chapel won't allow other concurrent threads to modify them.
 
 > ## Discussion
@@ -267,7 +267,8 @@ only to the particular thread.
 > their messages in the right order. Then, at the end, have the main thread print all elements of the array.
 
 > ### Exercise "Task.2"
-> Consider the following code `gmax.chpl`:
+> Consider the following code `gmax.chpl` to find the maximum array element. Complete this code, and also time the
+> `coforall` loop.
 > ```chpl
 > use Random, Time;
 > config const nelem = 1e8: int;
@@ -275,8 +276,20 @@ only to the particular thread.
 > fillRandom(x);	// fill array with random numbers
 > var gmax = 0.0;
 >
-> config const numthreads = 2;      // let's pretend we have 12 cores
-> // here put your code to find gmax + time this code
+> config const numthreads = 2;      // let's pretend we have 2 cores
+> const n = nelem / numthreads;     // number of elements per thread
+> const r = nelem - n*numthreads;   // these elements did not fit into the last thread
+> var lmax: [1..numthreads] real;   // local maxima for each thread
+> coforall threadid in 1..numthreads do {
+>   var start, finish: int;
+>   start = ...
+>   finish = ...
+>   ... compute lmax for this thread ...
+> }
+>
+> // put largest lmax into gmax
+> for threadid in 1..numthreads do     // a serial loop
+>   if lmax[threadid] > gmax then gmax = lmax[threadid];
 >
 > writef('The maximum value in x is %14.12dr\n', gmax);   # formatted output
 > writeln('It took ', watch.elapsed(), ' seconds');
@@ -539,12 +552,12 @@ For the reduction of the grid we can simply use the `max reduce` statement, whic
 divide the grid into `rowthreads` * `colthreads` subgrids, and assign each subgrid to a thread using the `coforall` loop
 (we will have `rowthreads * colthreads` threads in total).
 
-Recall out code `gmax.chpl` in which we broke the 1D array with 1e9 elements into `numthreads=12` blocks, and each
-thread was processing elements `start..finish`. Now we'll do exactly the same in 2D. First, let's write a quick serial
-code `test.chpl` to test the indices:
+Recall out code `gmax.chpl` in which we broke the 1D array with 1e8 elements into `numthreads=2` blocks, and each thread
+was processing elements `start..finish`. Now we'll do exactly the same in 2D. First, let's write a quick serial code
+`test.chpl` to test the indices:
 
 ```chpl
-config const rows = 100, cols = 100;   // number of rows and columns in our matrix
+config const rows, cols = 100;   // number of rows and columns in our matrix
 
 config const rowthreads = 3, colthreads = 4;   // number of blocks in x- and y-dimensions
 										   // each block processed by a separate thread

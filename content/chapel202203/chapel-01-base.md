@@ -157,6 +157,8 @@ many others. To simplify compilation, we suggest writing a file called `Makefile
 ```makefile
 %: %.chpl
 	chpl $^ -o $@
+clean:
+	@find . -maxdepth 1 -type f -executable -exec rm {} +
 ```
 
 Note that the second line starts with TAB and not with multiple spaces -- this is **very important**!
@@ -167,7 +169,8 @@ With this makefile, to compile any Chapel code, e.g. `baseSolver.chpl`, you woul
 make baseSolver
 ```
 
-Add `--fast` flag to the makefile to optimize your code.
+Add `--fast` flag to the makefile to optimize your code. And you can type `make clean` to delete all executables in the
+current directory.
 
 
 
