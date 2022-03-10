@@ -245,10 +245,17 @@ var tmp: real;      // for temporary results when computing the temperatures
 Of course, we can use both, the initial value and the type, when declaring a varible as follows:
 
 ```chpl
-const tolerance = 0.0001: real;   // temperature difference tolerance
-var count = 0: int;               // the iteration counter
-const nout = 20: int;             // the temperature at (iout,jout) will be printed every nout interations
+const tolerance: real = 0.0001;   // temperature difference tolerance
+var count: int = 0;               // the iteration counter
+const nout: int = 20;             // the temperature at (iout,jout) will be printed every nout interations
 ```
+
+> Note that these two notations are different, but produce the same result in the end:
+>
+> ```chpl
+> var a: real = 10;   // we specify both the type and the value
+> var a = 10: real;   // we specify only the value (10 converted to real)
+> ```
 
 Let's print out our configuration after we set all parameters:
 

@@ -57,11 +57,11 @@ participants. No need to install Chapel on your computer.
 {{<linktitle url="../chapel202203/chapel-02-task-parallelism" text="Task parallelism">}}
 
 {{<cor>}}Zoom{{</cor>}} {{<s>}} {{<cgr>}}Day 3: March-11 9:30am-12:30pm Pacific time{{</cgr>}}\
-{{<nolinktitle>}}Data parallelism{{</nolinktitle>}}
+{{<linktitle url="../chapel202203/chapel-03-domain-parallelism" text="Data parallelism">}}
 
 <!-- {{<nolinktitle>}}Basic language features{{</nolinktitle>}} -->
 <!-- {{<nolinktitle>}}Task parallelism{{</nolinktitle>}} -->
-<!-- {{<linktitle url="../chapel202203/chapel-03-domain-parallelism" text="Data parallelism">}} -->
+<!-- {{<nolinktitle>}}Data parallelism{{</nolinktitle>}} -->
 
 &nbsp;
 {{< figure src="/img/solveMulti.gif" >}}

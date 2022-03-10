@@ -491,7 +491,7 @@ for idx in twoDimensions do   // cycle through all points in a 2D domain
   write(idx, ', ');
 writeln();
 for (x,y) in twoDimensions {   // can also cycle using explicit tuples (x,y)
-  write('(', x, ', ', y, ')', ', ');
+  write(x,",",y,"  ");
 }
 writeln();
 ```
@@ -649,11 +649,9 @@ runs on locale 0 gathering remote elements from other locales and printing them 
 Now we can print the range of indices for each sub-domain by adding the following to our code:
 
 ```chpl
-for loc in Locales {
-  on loc {
-	writeln(A.localSubdomain());
-  }
-}
+for loc in Locales do
+  on loc do
+    writeln(A.localSubdomain());
 ```
 
 On 4 locales we should get:
@@ -810,7 +808,7 @@ var message: [largerMesh] string;
 forall m in message do
   m = here.id:string;   // store ID of the locale on which the code is running
 writeln(message);
-assert(1>2);    // will halt if the condition is false
+halt();
 ```
 ```sh
 chpl -o parallel parallel.chpl
@@ -975,24 +973,29 @@ Final temperature at the desired position [1,16000] after 9806 iterations is: 0.
 The largest temperature difference was 0.00199975
 ```
 
-
 #### On the training VM:
 
-| | 30^2 | 650^2 | 2,000^2 |
-| ----- | ----- | ----- | ----- |
-| baseSolver | 0.00852s | 59s | 745s |
-| parallel --nodes=4 --cpus-per-task=2 | 193s | 2,208s | 5,876s |
-| slowdown | ~22,700 | ~38 | ~8 |
+I switched both codes to single precision, to be able to accommodate larger arrays. The table below shows the
+**slowdown** factor when going from serial to parallel. For each row correspondingly, I was running the following:
+
+```sh
+./baseSolver --rows=2000 --niter=200 --tolerance=0.002
+./parallel -nl 4 --rows=2000 --niter=200 --tolerance=0.002
+./parallel -nl 6 --rows=2000 --niter=200 --tolerance=0.002
+```
+
+| | 30^2 | 650^2 | 2,000^2 | 16,000^2 |
+| ----- | ----- | ----- | ----- | ----- |
+| --nodes=4 --cpus-per-task=2 | 32,324 | 176 | 27.78 | 4.13 |
+| --nodes=6 --cpus-per-task=16 | | | | 1/5.7 |
 
 #### On Graham (faster interconnect):
 
 | | 30^2 | 650^2 | 2,000^2 | 8,000^2 |
 | ----- | ----- | ----- | ----- | ----- |
-| baseSolver | 0.0203s | 56s | 565s | 11,140s |
-| parallel --nodes=4 --cpus-per-task=2 | 105s | 802s | 1,627s | 13,975s |
-| slowdown | ~5,170 | ~14 | ~2.9 | ~1.25 |
-| parallel --nodes=4 --cpus-per-task=4 | | | | 7,157s |
-| parallel --nodes=8 --cpus-per-task=4 | | | | 4,096s |
+| --nodes=4 --cpus-per-task=2 | 5,170 | 14 | 2.9 | 1.25 |
+| --nodes=4 --cpus-per-task=4 | | | | 1/1.56 |
+| --nodes=8 --cpus-per-task=4 | | | | 1/2.72 |
 
 <!-- 16,000^2 on Graham: baseSolver 41,482s; parallel --nodes=4 --cpus-per-task=2 61,052s -->
 
