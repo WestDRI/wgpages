@@ -273,13 +273,13 @@ only to the particular thread.
 > use Random, Time;
 > config const nelem = 1e8: int;
 > var x: [1..nelem] real;
-> fillRandom(x);	// fill array with random numbers
+> fillRandom(x);	                   // fill array with random numbers
 > var gmax = 0.0;
 >
-> config const numthreads = 2;      // let's pretend we have 2 cores
-> const n = nelem / numthreads;     // number of elements per thread
-> const r = nelem - n*numthreads;   // these elements did not fit into the last thread
-> var lmax: [1..numthreads] real;   // local maxima for each thread
+> config const numthreads = 2;       // let's pretend we have 2 cores
+> const n = nelem / numthreads;      // number of elements per thread
+> const r = nelem - n*numthreads;    // these elements did not fit into the last thread
+> var lmax: [1..numthreads] real;    // local maxima for each thread
 > coforall threadid in 1..numthreads do {
 >   var start, finish: int;
 >   start = ...
@@ -288,7 +288,7 @@ only to the particular thread.
 > }
 >
 > // put largest lmax into gmax
-> for threadid in 1..numthreads do     // a serial loop
+> for threadid in 1..numthreads do                        // a serial loop
 >   if lmax[threadid] > gmax then gmax = lmax[threadid];
 >
 > writef('The maximum value in x is %14.12dr\n', gmax);   // formatted output
@@ -434,7 +434,7 @@ begin {
   writeln('New thread finished');
 }
 writeln('this is the main thread after launching new thread ... I will wait until x is full');
-x.readFE();   // read the value, state changes from Full to Empty
+x.readFE();         // read the value, state changes from Full to Empty
 writeln('and now it is done');
 ```
 ```sh
@@ -501,12 +501,12 @@ establish explicit synchronization between threads, as shown in the next code `a
 var lock: atomic int;
 const numthreads = 5;
 
-lock.write(0);   // the main thread set lock to zero
+lock.write(0);               // the main thread set lock to zero
 
 coforall id in 1..numthreads {
   writeln('greetings form thread ', id, '... I am waiting for all threads to say hello');
-  lock.add(1);              // thread id says hello and atomically adds 1 to lock
-  lock.waitFor(numthreads);   // then it waits for lock to be equal numthreads (which will happen when all threads say hello)
+  lock.add(1);               // thread id says hello and atomically adds 1 to lock
+  lock.waitFor(numthreads);  // then it waits for lock to be equal numthreads (which will happen when all threads say hello)
   writeln('thread ', id, ' is done ...');
 }
 ```
@@ -557,15 +557,16 @@ was processing elements `start..finish`. Now we'll do exactly the same in 2D. Fi
 `test.chpl` to test the indices:
 
 ```chpl
-config const rows, cols = 100;   // number of rows and columns in our matrix
+config const rows, cols = 100;               // number of rows and columns in our matrix
 
-config const rowthreads = 3, colthreads = 4;   // number of blocks in x- and y-dimensions
-										   // each block processed by a separate thread
-										   // let's pretend we have 12 cores
+config const rowthreads = 3, colthreads = 4; // number of blocks in x- and y-dimensions
+// each block processed by a separate thread
+// let's pretend we have 12 cores
+
 const nr = rows / rowthreads;   // number of rows per thread
-const rr = rows % rowthreads; // remainder rows (did not fit into the last row of threads)
+const rr = rows % rowthreads;   // remainder rows (did not fit into the last row of threads)
 const nc = cols / colthreads;   // number of columns per thread
-const rc = cols % colthreads; // remainder columns (did not fit into the last column of threads)
+const rc = cols % colthreads;   // remainder columns (did not fit into the last column of threads)
 
 coforall threadid in 0..colthreads*rowthreads-1 do {
   var row1, row2, col1, col2: int;
@@ -611,14 +612,14 @@ then start editing the latter. We'll make the following changes in `parallel1.ch
 diff baseSolver.chpl parallel1.chpl
 18a19,24
 > config const rowthreads = 3, colthreads = 4;   // let's pretend we have 12 cores
-> const nr = rows / rowthreads;   // number of rows per thread
+> const nr = rows / rowthreads;    // number of rows per thread
 > const rr = rows - nr*rowthreads; // remainder rows (did not fit into the last thread)
-> const nc = cols / colthreads;   // number of columns per thread
+> const nc = cols / colthreads;    // number of columns per thread
 > const rc = cols - nc*colthreads; // remainder columns (did not fit into the last thread)
 >
 31,32c37,46
-<   for i in 1..rows do {  // do smth for row i
-<     for j in 1..cols do {   // do smth for row i and column j
+<   for i in 1..rows do {    // do smth for row i
+<     for j in 1..cols do {  // do smth for row i and column j
 <       Tnew[i,j] = 0.25 * (T[i-1,j] + T[i+1,j] + T[i,j-1] + T[i,j+1]);
 <     }
 <   }
@@ -745,11 +746,11 @@ synchronization points inside the `coforall` loop.
 > ```chpl
 > var lock: atomic int;
 > const numthreads = 5;
-> lock.write(0);   // the main thread set lock to zero
+> lock.write(0);                // the main thread set lock to zero
 > coforall id in 1..numthreads {
 >   writeln('greetings form thread ', id, '... I am waiting for all threads to say hello');
->   lock.add(1);              // thread id says hello and atomically adds 1 to lock
->   lock.waitFor(numthreads);   // then it waits for lock to be equal numthreads (which will happen when all threads say hello)
+>   lock.add(1);               // thread id says hello and atomically adds 1 to lock
+>   lock.waitFor(numthreads);  // then it waits for lock to be equal numthreads (which will happen when all threads say hello)
 >   writeln('thread ', id, ' is done ...');
 > }
 > ```
@@ -757,7 +758,7 @@ synchronization points inside the `coforall` loop.
 > wrong with adding the following at the end of the `coforall` loop?
 > ```chpl
 >   lock.sub(1);      // thread id says hello and atomically subtracts 1 from lock
->   lock.waitFor(0);   // then it waits for lock to be equal 0 (which will happen when all threads say hello)
+>   lock.waitFor(0);  // then it waits for lock to be equal 0 (which will happen when all threads say hello)
 >   writeln('thread ', id, ' is really done ...');
 > ```
 
@@ -773,15 +774,15 @@ var lock1, lock2: atomic int;
 and add after the (i,j)-loops to compute Tnew the following:
 
 ```chpl
-	lock1.add(1);   // each thread atomically adds 1 to lock
-	lock1.waitFor(colthreads*rowthreads*count);   // then it waits for lock to be equal colthreads*rowthreads
+lock1.add(1);   // each thread atomically adds 1 to lock
+lock1.waitFor(colthreads*rowthreads*count);   // then it waits for lock to be equal colthreads*rowthreads
 ```
 
 and after `T[row1..row2,col1..col2] = Tnew[row1..row2,col1..col2];` the following:
 
 ```chpl
-	lock2.add(1);   // each thread atomically subtracts 1 from lock
-	lock2.waitFor(colthreads*rowthreads*count);   // then it waits for lock to be equal 0
+lock2.add(1);   // each thread atomically subtracts 1 from lock
+lock2.waitFor(colthreads*rowthreads*count);   // then it waits for lock to be equal 0
 ```
 
 Notice that we have a product `colthreads*rowthreads*count`, since lock1/lock2 will be incremented by all
@@ -795,9 +796,9 @@ remove `count` instance (in `writeln()`) after `coforall` ends.
 ```chpl
 var delta: atomic real;    // the greatest temperature difference between Tnew and T
 ...
-delta.write(tolerance*10);    // some safe initial large value
+delta.write(tolerance*10); // some safe initial large value
 ...
-  while (count < niter && delta.read() >= tolerance) do {
+while (count < niter && delta.read() >= tolerance) do {
 ```
 
 (6) Define an array of local delta's for each thread and use it to compute delta:
@@ -805,18 +806,18 @@ delta.write(tolerance*10);    // some safe initial large value
 ```chpl
 var arrayDelta: [0..colthreads*rowthreads-1] real;
 ...
-  var tmp: real;   // inside coforall
+var tmp: real;  // inside coforall
 ...
-	tmp = 0;       // inside while
+tmp = 0;        // inside while
 ...
-		tmp = max(abs(Tnew[i,j]-T[i,j]),tmp);    // next line after Tnew[i,j] = ...
+tmp = max(abs(Tnew[i,j]-T[i,j]),tmp);    // next line after Tnew[i,j] = ...
 ...
-	arrayDelta[threadid] = tmp;      // right after (i,j)-loop to compute Tnew[i,j]
+arrayDelta[threadid] = tmp;   // right after (i,j)-loop to compute Tnew[i,j]
 ...
-	if threadid == 0 then {        // compute delta right after lock1.waitFor()
-	  delta.write(max reduce arrayDelta);
-	  if count%nout == 0 then writeln('Temperature at iteration ', count, ': ', Tnew[iout,jout]);
-	}
+if threadid == 0 then {       // compute delta right after lock1.waitFor()
+	delta.write(max reduce arrayDelta);
+	if count%nout == 0 then writeln('Temperature at iteration ', count, ': ', Tnew[iout,jout]);
+}
 ```
 
 (7) Remove the original T[iout,jout] output line.
