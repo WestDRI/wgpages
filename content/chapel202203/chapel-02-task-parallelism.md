@@ -608,7 +608,7 @@ study data parallelism in the following lessons, but for now let's compare the b
 Now we'll parallelize our heat transfer solver. Let's copy `baseSolver.chpl` into `parallel1.chpl` and
 then start editing the latter. We'll make the following changes in `parallel1.chpl`:
 
-```sh
+```
 diff baseSolver.chpl parallel1.chpl
 18a19,24
 > config const rowthreads = 3, colthreads = 4;   // let's pretend we have 12 cores
