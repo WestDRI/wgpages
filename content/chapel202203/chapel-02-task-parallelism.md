@@ -291,7 +291,7 @@ only to the particular thread.
 > for threadid in 1..numthreads do     // a serial loop
 >   if lmax[threadid] > gmax then gmax = lmax[threadid];
 >
-> writef('The maximum value in x is %14.12dr\n', gmax);   # formatted output
+> writef('The maximum value in x is %14.12dr\n', gmax);   // formatted output
 > writeln('It took ', watch.elapsed(), ' seconds');
 > ```
 > Write a parallel code to find the maximum value in the array `x`. Be careful: the number of threads should not be
