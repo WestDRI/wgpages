@@ -12,7 +12,7 @@ for this in Chapel is a `forall` loop -- it'll create an *appropriate* number of
 loop, dividing the loop's iterations between them.
 
 ```chpl
-forall index in iterand   # iterating over all elements of an array or over a range of indices
+forall index in iterand   \\ iterating over all elements of an array or over a range of indices
 {instructions}
 ```
 
