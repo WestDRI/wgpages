@@ -121,7 +121,7 @@ Let's write the job script `serial.sh`:
 ```sh
 #!/bin/bash
 #SBATCH --time=00:05:00      # walltime in d-hh:mm or hh:mm:ss format
-#SBATCH --mem-per-cpu=3600   # in MB
+#SBATCH --mem-per-cpu=3200   # in MB
 ./test
 ```
 
@@ -137,7 +137,7 @@ $ cat slurm-jobID.out
 Alternatively, today we could work inside a serial interactive job:
 
 ```sh
-$ salloc --time=3:00:0 --mem-per-cpu=3600
+$ salloc --time=3:00:0 --mem-per-cpu=3200
 ```
 
 Note that on *uu.c3.ca* we have:
@@ -408,7 +408,7 @@ Let's compile and execute our code to see what we get until now, using the job s
 ```sh
 #!/bin/bash
 #SBATCH --time=00:05:00      # walltime in d-hh:mm or hh:mm:ss format
-#SBATCH --mem-per-cpu=3600   # in MB
+#SBATCH --mem-per-cpu=3200   # in MB
 #SBATCH --output=solution.out
 ./baseSolver
 ```
