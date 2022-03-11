@@ -25,7 +25,7 @@ weight = 1
 - Chapel provides optimization for **data-driven placement of computations**.
   <!-- - allow users to express parallel computations in a natural, almost intuitive, manner -->
 - Chapel was designed around a **multi-resolution** philosophy: users can incrementally add more detail to their
-  original code, to bring it as close to the machine as required, and the same time they can achieve anything you can
+  original code, to bring it as close to the machine as required, at the same time they can achieve anything you can
   normally do with MPI and OpenMP.
 
 <!-- - has its source code stored in text files with the extension `.chpl` -->
