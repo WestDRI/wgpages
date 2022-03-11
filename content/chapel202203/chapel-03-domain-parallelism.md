@@ -54,18 +54,10 @@ writeln('count = ', count);
 
 If we have not done so, let's write a script `shared.sh` for submitting single-locale, two-core Chapel jobs:
 
-<!-- ```sh -->
-<!-- module load gcc chapel-single/1.15.0 -->
-<!-- salloc --time=2:00:0 --ntasks=1 --cpus-per-task=2 --mem-per-cpu=1000 \ -->
-<!--          --account=def-razoumov-ws_cpu --reservation=arazoumov-may17 -->
-<!-- chpl forall.chpl -o forall -->
-<!-- ./forall -->
-<!-- ``` -->
-
 ```sh
 #!/bin/bash
 #SBATCH --time=00:05:00      # walltime in d-hh:mm or hh:mm:ss format
-#SBATCH --mem-per-cpu=3200   # in MB
+#SBATCH --mem-per-cpu=1000   # in MB
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=2
 #SBATCH --output=solution.out
@@ -344,7 +336,7 @@ Let's write a job submission script `distributed.sh`:
 ```sh
 #!/bin/bash
 #SBATCH --time=00:05:00      # walltime in d-hh:mm or hh:mm:ss format
-#SBATCH --mem-per-cpu=3200   # in MB
+#SBATCH --mem-per-cpu=1000   # in MB
 #SBATCH --nodes=4
 #SBATCH --cpus-per-task=2
 #SBATCH --output=solution.out
@@ -906,7 +898,7 @@ First, let's try this on a smaller problem. Let's write two job submission scrip
 #!/bin/bash
 # this is baseSolver.sh
 #SBATCH --time=00:05:00      # walltime in d-hh:mm or hh:mm:ss format
-#SBATCH --mem-per-cpu=3200   # in MB
+#SBATCH --mem-per-cpu=1000   # in MB
 #SBATCH --output=baseSolver.out
 ./baseSolver -nl 1 --rows=30 --cols=30 --niter=2000
 ```
@@ -915,7 +907,7 @@ First, let's try this on a smaller problem. Let's write two job submission scrip
 #!/bin/bash
 # this is parallel.sh
 #SBATCH --time=00:05:00      # walltime in d-hh:mm or hh:mm:ss format
-#SBATCH --mem-per-cpu=3200   # in MB
+#SBATCH --mem-per-cpu=1000   # in MB
 #SBATCH --nodes=4
 #SBATCH --cpus-per-task=2
 #SBATCH --output=parallel.out

@@ -76,14 +76,6 @@ scenario.
 
 ## Running single-local parallel Chapel
 
-<!-- ```sh -->
-<!-- module load gcc chapel-single/1.15.0 -->
-<!-- salloc --time=2:00:0 --ntasks=1 --cpus-per-task=3 --mem-per-cpu=1000 \ -->
-<!--          --account=def-razoumov-ws_cpu --reservation=arazoumov-may17 -->
-<!-- echo $SLURM_NODELIST          # print the list of nodes (should be one) -->
-<!-- echo $SLURM_CPUS_PER_TASK     # print the number of cores per node (3) -->
-<!-- ``` -->
-
 Make sure you have loaded the official single-locale Chapel module:
 
 ```sh
@@ -95,7 +87,7 @@ In this lesson, we'll be running on several cores on one node with a script `sha
 ```sh
 #!/bin/bash
 #SBATCH --time=00:05:00      # walltime in d-hh:mm or hh:mm:ss format
-#SBATCH --mem-per-cpu=3200   # in MB
+#SBATCH --mem-per-cpu=1000   # in MB
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=2
 #SBATCH --output=solution.out

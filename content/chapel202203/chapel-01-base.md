@@ -121,7 +121,7 @@ Let's write the job script `serial.sh`:
 ```sh
 #!/bin/bash
 #SBATCH --time=00:05:00      # walltime in d-hh:mm or hh:mm:ss format
-#SBATCH --mem-per-cpu=3200   # in MB
+#SBATCH --mem-per-cpu=1000   # in MB
 ./test
 ```
 
@@ -137,7 +137,7 @@ $ cat slurm-jobID.out
 Alternatively, today we could work inside a serial interactive job:
 
 ```sh
-$ salloc --time=3:00:0 --mem-per-cpu=3200
+$ salloc --time=3:00:0 --mem-per-cpu=1000
 ```
 
 Note that on *uu.c3.ca* we have:
@@ -145,9 +145,12 @@ Note that on *uu.c3.ca* we have:
 - the login node with 16 "p"-type cores and 32GB memory,
 - 8 compute nodes with 16 "c"-type cores and 60GB memory each, for the total of 128 cores.
 
-
-
-
+**Important**: Even though each node effectively has 3.75GB of memory, we highly recommend to use `--mem-per-cpu=1000`
+  (and not more) throughout this workshop. Some memory is being used for the operating system, drivers, system
+  utilities, MPI buffers and the like. Unfortunately, unlike the production clusters, the training cluster does not have
+  safeguards when its nodes run out of memory, shutting down some system utilities and leading to inability to run
+  parallel jobs. The cluster will rebuild itself within few hours, but unfortunately asking for too much memory might
+  leave it unable to run parallel jobs during the workshop.
 
 ## Makefiles
 
@@ -408,7 +411,7 @@ Let's compile and execute our code to see what we get until now, using the job s
 ```sh
 #!/bin/bash
 #SBATCH --time=00:05:00      # walltime in d-hh:mm or hh:mm:ss format
-#SBATCH --mem-per-cpu=3200   # in MB
+#SBATCH --mem-per-cpu=1000   # in MB
 #SBATCH --output=solution.out
 ./baseSolver
 ```
