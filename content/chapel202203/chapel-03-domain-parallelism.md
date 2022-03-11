@@ -65,7 +65,7 @@ If we have not done so, let's write a script `shared.sh` for submitting single-l
 ```sh
 #!/bin/bash
 #SBATCH --time=00:05:00      # walltime in d-hh:mm or hh:mm:ss format
-#SBATCH --mem-per-cpu=3600   # in MB
+#SBATCH --mem-per-cpu=3200   # in MB
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=2
 #SBATCH --output=solution.out
@@ -344,7 +344,7 @@ Let's write a job submission script `distributed.sh`:
 ```sh
 #!/bin/bash
 #SBATCH --time=00:05:00      # walltime in d-hh:mm or hh:mm:ss format
-#SBATCH --mem-per-cpu=3600   # in MB
+#SBATCH --mem-per-cpu=3200   # in MB
 #SBATCH --nodes=4
 #SBATCH --cpus-per-task=2
 #SBATCH --output=solution.out
@@ -906,7 +906,7 @@ First, let's try this on a smaller problem. Let's write two job submission scrip
 #!/bin/bash
 # this is baseSolver.sh
 #SBATCH --time=00:05:00      # walltime in d-hh:mm or hh:mm:ss format
-#SBATCH --mem-per-cpu=3600   # in MB
+#SBATCH --mem-per-cpu=3200   # in MB
 #SBATCH --output=baseSolver.out
 ./baseSolver -nl 1 --rows=30 --cols=30 --niter=2000
 ```
@@ -915,7 +915,7 @@ First, let's try this on a smaller problem. Let's write two job submission scrip
 #!/bin/bash
 # this is parallel.sh
 #SBATCH --time=00:05:00      # walltime in d-hh:mm or hh:mm:ss format
-#SBATCH --mem-per-cpu=3600   # in MB
+#SBATCH --mem-per-cpu=3200   # in MB
 #SBATCH --nodes=4
 #SBATCH --cpus-per-task=2
 #SBATCH --output=parallel.out
@@ -987,7 +987,7 @@ I switched both codes to single precision, to be able to accommodate larger arra
 | | 30^2 | 650^2 | 2,000^2 | 16,000^2 |
 | ----- | ----- | ----- | ----- | ----- |
 | --nodes=4 --cpus-per-task=2 | 32,324 | 176 | 27.78 | 4.13 |
-| --nodes=6 --cpus-per-task=16 | | | | 1/5.7 |
+| --nodes=6 --cpus-per-task=16 | | | 15.3 | 1/5.7 |
 
 #### On Graham (faster interconnect):
 
