@@ -109,7 +109,7 @@ If you see one thread, try running this code as a batch multi-core job.
 > ```chpl
 > config const n = 1000;
 > var h, total: real;
-> h = 1.0 / n;    // interval width
+> h = 1.0 / n;                          // interval width
 > for i in 1..n {
 >   var x = h * ( i - 0.5 );
 >   total += 4.0 / ( 1.0 + x**2);
@@ -215,14 +215,14 @@ proc cdfError(e) {
 }
 var ncid, xDimID, yDimID, varID: c_int;
 var dimIDs: [0..1] c_int;   // two elements
-cdfError(nc_create("test.nc", NC_NETCDF4, ncid));   // const NC_NETCDF4 => file in netCDF-4 standard
-cdfError(nc_def_dim(ncid, "x", width: size_t, xDimID));   // define the dimensions
+cdfError(nc_create("test.nc", NC_NETCDF4, ncid));       // const NC_NETCDF4 => file in netCDF-4 standard
+cdfError(nc_def_dim(ncid, "x", width: size_t, xDimID)); // define the dimensions
 cdfError(nc_def_dim(ncid, "y", height: size_t, yDimID));
-dimIDs = [xDimID, yDimID];                          // set up dimension IDs array
+dimIDs = [xDimID, yDimID];                              // set up dimension IDs array
 cdfError(nc_def_var(ncid, "stability", NC_INT, 2, dimIDs[0], varID));   // define the 2D data variable
 cdfError(nc_def_var_deflate(ncid, varID, NC_SHUFFLE, deflate=1, deflate_level=9)); // compress 0=no 9=max
-cdfError(nc_enddef(ncid));                          // done defining metadata
-cdfError(nc_put_var_int(ncid, varID, stability[1,1]));    // write data to file
+cdfError(nc_enddef(ncid));                              // done defining metadata
+cdfError(nc_put_var_int(ncid, varID, stability[1,1]));  // write data to file
 cdfError(nc_close(ncid));
 ```
 
@@ -473,9 +473,9 @@ integer indices that can be bounded or infinite:
 ```chpl
 var oneToTen: range = 1..10; // 1, 2, 3, ..., 10
 var a = 1234, b = 5678;
-var aToB: range = a..b; // using variables
+var aToB: range = a..b;      // using variables
 var twoToTenByTwo: range(stridable=true) = 2..10 by 2; // 2, 4, 6, 8, 10
-var oneToInf = 1.. ; // unbounded range
+var oneToInf = 1.. ;         // unbounded range
 ```
 
 On the other hand, **domains** are multi-dimensional (including 1D) sets of integer indices that are
@@ -483,14 +483,14 @@ always bounded. To stress the difference between domain ranges and domains, doma
 enclose their indices in curly brackets. Ranges can be used to define a specific dimension of a domain:
 
 ```chpl
-var domain1to10: domain(1) = {1..10};        // 1D domain from 1 to 10 defined using the range 1..10
-var twoDimensions: domain(2) = {-2..2, 0..2}; // 2D domain over a product of two ranges
-var thirdDim: range = 1..16; // a range
+var domain1to10: domain(1) = {1..10};                // 1D domain from 1 to 10 defined using the range 1..10
+var twoDimensions: domain(2) = {-2..2, 0..2};        // 2D domain over a product of two ranges
+var thirdDim: range = 1..16;                         // a range
 var threeDims: domain(3) = {1..10, 5..10, thirdDim}; // 3D domain over a product of three ranges
-for idx in twoDimensions do   // cycle through all points in a 2D domain
+for idx in twoDimensions do                          // cycle through all points in a 2D domain
   write(idx, ', ');
 writeln();
-for (x,y) in twoDimensions {   // can also cycle using explicit tuples (x,y)
+for (x,y) in twoDimensions {                         // can also cycle using explicit tuples (x,y)
   write(x,",",y,"  ");
 }
 writeln();
@@ -509,8 +509,8 @@ here.numPUs(), here.physicalMemory(), here.maxTaskPar.
 
 ```chpl
 config const n = 8;
-const mesh: domain(2) = {1..n, 1..n};  // a 2D domain defined in shared memory on a single locale
-forall m in mesh do   // go in parallel through all n^2 mesh points
+const mesh: domain(2) = {1..n, 1..n}; // a 2D domain defined in shared memory on a single locale
+forall m in mesh do                   // go in parallel through all n^2 mesh points
   writeln(m, ' ', m.locale.id, ' ', here.id, ' ', here.maxTaskPar);
 ```
 ```
@@ -530,9 +530,9 @@ real numbers on top of `mesh`:
 
 ```chpl
 config const n = 8;
-const mesh: domain(2) = {1..n, 1..n};   // a 2D domain defined in shared memory on a single locale
-var T: [mesh] real;   // a 2D array of reals defined in shared memory on a single locale (mapped onto this domain)
-forall t in T do   // go in parallel through all n^2 elements of T
+const mesh: domain(2) = {1..n, 1..n}; // a 2D domain defined in shared memory on a single locale
+var T: [mesh] real;                   // a 2D array of reals defined in shared memory on a single locale (mapped onto this domain)
+forall t in T do                      // go in parallel through all n^2 elements of T
   writeln(t, ' ', t.locale.id);
 ```
 ```sh
@@ -574,12 +574,12 @@ Since we use a paralell `forall` loop, the print statements appear in a random r
 We can also define multiple arrays on the same domain:
 
 ```chpl
-const grid = {1..100}; // 1D domain
-const alpha = 5; // some number
-var A, B, C: [grid] real; // local real-type arrays on this 1D domain
+const grid = {1..100};          // 1D domain
+const alpha = 5;                // some number
+var A, B, C: [grid] real;       // local real-type arrays on this 1D domain
 B = 2; C = 3;
 forall (a,b,c) in zip(A,B,C) do // parallel loop
-  a = b + alpha*c;   // simple example of data parallelism on a single locale
+  a = b + alpha*c;              // simple example of data parallelism on a single locale
 writeln(A);
 ```
 
@@ -841,18 +841,18 @@ The outer perimeter in the partition below are the *ghost points*, with the inne
 (6) Replace the loop for computing *inner* `Tnew`:
 
 ```chpl
-  for i in 1..rows do {  // do smth for row i
-	for j in 1..cols do {   // do smth for row i and column j
-	  Tnew[i,j] = 0.25 * (T[i-1,j] + T[i+1,j] + T[i,j-1] + T[i,j+1]);
-	}
+for i in 1..rows do {  // do smth for row i
+  for j in 1..cols do {   // do smth for row i and column j
+	Tnew[i,j] = 0.25 * (T[i-1,j] + T[i+1,j] + T[i,j-1] + T[i,j+1]);
   }
+}
 ```
 
 with a parallel `forall` loop (**contains a mistake on purpose!**):
 
 ```chpl
-  forall (i,j) in mesh do
-	Tnew[i,j] = 0.25 * (T[i-1,j] + T[i+1,j] + T[i,j-1] + T[i,j+1]);
+forall (i,j) in mesh do
+  Tnew[i,j] = 0.25 * (T[i-1,j] + T[i+1,j] + T[i,j-1] + T[i,j+1]);
 ```
 
 > ### Exercise "Data.4"
@@ -861,31 +861,31 @@ with a parallel `forall` loop (**contains a mistake on purpose!**):
 (7) Replace
 
 ```chpl
-  delta = 0;
-  for i in 1..rows do {
-	for j in 1..cols do {
-	  tmp = abs(Tnew[i,j]-T[i,j]);
-	  if tmp > delta then delta = tmp;
-	}
+delta = 0;
+for i in 1..rows do {
+  for j in 1..cols do {
+	tmp = abs(Tnew[i,j]-T[i,j]);
+	if tmp > delta then delta = tmp;
   }
+}
 ```
 
 with
 
 ```chpl
-  delta = max reduce abs(Tnew[1..rows,1..cols]-T[1..rows,1..cols]);
+delta = max reduce abs(Tnew[1..rows,1..cols]-T[1..rows,1..cols]);
 ```
 
 (8) Replace
 
 ```chpl
-  T = Tnew;
+T = Tnew;
 ```
 
 with the **inner-only** update
 
 ```chpl
-  T[1..rows,1..cols] = Tnew[1..rows,1..cols];   // uses parallel `forall` underneath
+T[1..rows,1..cols] = Tnew[1..rows,1..cols];   // uses parallel `forall` underneath
 ```
 
 ## Benchmarking
