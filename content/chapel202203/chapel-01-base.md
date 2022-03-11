@@ -55,7 +55,7 @@ On Compute Canada clusters Cedar / Graham / Béluga / Narval we have two version
 If you want to start single-locale Chapel, you will need to load `chapel-multicore` module, e.g.
 
 ```sh
-module spider chapel     # list all Chapel modules
+module spider chapel  # list all Chapel modules
 module load gcc/9.3.0 chapel-multicore/1.25.0
 ```
 
@@ -69,13 +69,13 @@ If you are familiar with Docker and have it installed, you can run multi-locale 
 on your laptop, or inside an Ubuntu VM on Arbutus):
 
 ```sh
-docker pull chapel/chapel-gasnet   # will emulate a cluster with 4 cores/node
+docker pull chapel/chapel-gasnet  # will emulate a cluster with 4 cores/node
 mkdir -p ~/tmp
 docker run -v /home/ubuntu/tmp:/mnt -it -h chapel chapel/chapel-gasnet  # map host's ~/tmp to container's /mnt
 cd /mnt
 apt-get update
-apt-get install nano    # install nano inside the Docker container
-nano test.chpl   # file is /mnt/test.chpl inside the container and ~ubuntu/tmp/test.chpl on the host VM
+apt-get install nano  # install nano inside the Docker container
+nano test.chpl        # file is /mnt/test.chpl inside the container and ~ubuntu/tmp/test.chpl on the host VM
 chpl test.chpl -o test
 ./test -nl 8
 ```
@@ -130,7 +130,7 @@ and then submit it:
 ```sh
 $ chpl test.chpl -o test
 $ sbatch serial.sh
-$ sq                     # same as `squeue -u $USER`
+$ sq                         # same as `squeue -u $USER`
 $ cat slurm-jobID.out
 ```
 
@@ -362,10 +362,10 @@ The main loop in our simulation can be programmed using a while statement like t
 delta = tolerance;   // safe initial bet; could also be a large number
 while (count < niter && delta >= tolerance) do {
   // specify boundary conditions for T
-  count += 1;      // increase the iteration counter by one
-  Tnew = T;    // will be replaced: calculate Tnew from T
+  count += 1;        // increase the iteration counter by one
+  Tnew = T;          // will be replaced: calculate Tnew from T
   // update delta, the greatest difference between Tnew and T
-  T = Tnew;    // update T once all elements of Tnew are calculated
+  T = Tnew;          // update T once all elements of Tnew are calculated
   // print the temperature at [iout,jout] if the iteration is multiple of nout
 }
 ```
@@ -456,7 +456,7 @@ We need to iterate both over all rows and all columns in order to access every s
 `Tnew`. This can be done with nested _for_ loops like this
 
 ```chpl
-for i in 1..rows do {   // process row i
+for i in 1..rows do {     // process row i
   for j in 1..cols do {   // process column j, row i
     Tnew[i,j] = (T[i-1,j] + T[i+1,j] + T[i,j-1] + T[i,j+1])/4;
   }
@@ -541,11 +541,11 @@ mechanism for this is the use of **_config_** variables. When a variable is decl
 keyword, in addition to `var` or `const`, like this:
 
 ```chpl
-config const niter = 500;    //number of iterations
+config const niter = 500;             //number of iterations
 ```
 ```sh
-chpl baseSolver.chpl -o baseSolver       # using the default value 500
-./baseSolver --niter=3000                # passing another value from the command line
+chpl baseSolver.chpl -o baseSolver    # using the default value 500
+./baseSolver --niter=3000             # passing another value from the command line
 ```
 ```chpl
 Temperature at iteration 0: 25.0
