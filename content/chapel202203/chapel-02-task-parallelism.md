@@ -13,7 +13,7 @@ weight = 2
   _jout_, _tolerance_, _nout_
 * we ran the benchmark solution to convergence after 7750 iterations
 ```sh
-./baseSolver --rows=650 --iout=200 --niter=10_000 --tolerance=0.002 --nout=1000
+$ ./baseSolver --rows=650 --iout=200 --niter=10_000 --tolerance=0.002 --nout=1000
 ```
 * we learned how to time individual sections of the code
 * we saw that `--fast` flag sped up calculation by ~100X
@@ -79,7 +79,7 @@ scenario.
 Make sure you have loaded the official single-locale Chapel module:
 
 ```sh
-module load gcc/9.3.0 chapel-multicore/1.25.0
+$ module load gcc/9.3.0 chapel-multicore/1.25.0
 ```
 
 In this lesson, we'll be running on several cores on one node with a script `shared.sh`:
@@ -121,9 +121,9 @@ begin {
 writeln('This is the main thread, I am done ...');
 ```
 ```sh
-chpl begin.chpl -o begin
-sbatch shared.sh
-cat solution.out
+$ chpl begin.chpl -o begin
+$ sbatch shared.sh
+$ cat solution.out
 ```
 ```
 This is the main thread starting first thread
@@ -193,10 +193,10 @@ cobegin {
 writeln('This message will not appear until all threads are done ...');
 ```
 ```sh
-chpl cobegin.chpl -o cobegin
-sed -i -e 's|begin|cobegin|' shared.sh
-sbatch shared.sh
-cat solution.out
+$ chpl cobegin.chpl -o cobegin
+$ sed -i -e 's|begin|cobegin|' shared.sh
+$ sbatch shared.sh
+$ cat solution.out
 ```
 ```
 This is the main thread, my value of x is 0
@@ -232,10 +232,10 @@ coforall threadid in 1..numthreads do {
 writeln('This message will not appear until all threads are done ...');
 ```
 ```sh
-chpl coforall.chpl -o coforall
-sed -i -e 's|cobegin|coforall --numthreads=5|' shared.sh
-sbatch shared.sh
-cat solution.out
+$ chpl coforall.chpl -o coforall
+$ sed -i -e 's|cobegin|coforall --numthreads=5|' shared.sh
+$ sbatch shared.sh
+$ cat solution.out
 ```
 ```
 This is the main thread: x = 10
@@ -295,7 +295,7 @@ only to the particular thread.
 > Run the code of last Exercise using different number of threads, and different sizes of the array `x` to
 > see how the execution time changes. For example:
 > ```sh
-> ./gmax --nelem=100_000_000 --numthreads=1
+> $ ./gmax --nelem=100_000_000 --numthreads=1
 > ```
 >
 > Discuss your observations. Is there a limit on how fast the code could run?
@@ -351,10 +351,10 @@ begin {
 writeln('This is the main thread, I am done ...');
 ```
 ```sh
-chpl sync1.chpl -o sync1
-sed -i -e 's|gmax|sync1|' shared.sh
-sbatch shared.sh
-cat solution.out
+$ chpl sync1.chpl -o sync1
+$ sed -i -e 's|gmax|sync1|' shared.sh
+$ sbatch shared.sh
+$ cat solution.out
 ```
 ```
 This is the main thread starting a synchronous thread
@@ -430,10 +430,10 @@ x.readFE();         // read the value, state changes from Full to Empty
 writeln('and now it is done');
 ```
 ```sh
-chpl sync2.chpl -o sync2
-sed -i -e 's|sync1|sync2|' shared.sh
-sbatch shared.sh
-cat solution.out
+$ chpl sync2.chpl -o sync2
+$ sed -i -e 's|sync1|sync2|' shared.sh
+$ sbatch shared.sh
+$ cat solution.out
 ```
 ```
 this is main thread launching a new thread
@@ -503,10 +503,10 @@ coforall id in 1..numthreads {
 }
 ```
 ```sh
-chpl atomic.chpl -o atomic
-sed -i -e 's|sync2|atomic|' shared.sh
-sbatch shared.sh
-cat solution.out
+$ chpl atomic.chpl -o atomic
+$ sed -i -e 's|sync2|atomic|' shared.sh
+$ sbatch shared.sh
+$ cat solution.out
 ```
 ```
 greetings form thread 4... I am waiting for all threads to say hello
@@ -572,10 +572,10 @@ coforall threadid in 0..colthreads*rowthreads-1 do {
 }
 ```
 ```sh
-chpl test.chpl -o test
-sed -i -e 's|atomic|test|' shared.sh
-sbatch shared.sh
-cat solution.out
+$ chpl test.chpl -o test
+$ sed -i -e 's|atomic|test|' shared.sh
+$ sbatch shared.sh
+$ cat solution.out
 ```
 ```
 thread 0: rows 1-33 and columns 1-25
@@ -646,10 +646,10 @@ diff baseSolver.chpl parallel1.chpl
 Let's compile and run both codes on the same large problem:
 
 ```sh
-chpl --fast baseSolver.chpl -o baseSolver
-sed -i -e 's|test|baseSolver --rows=650 --iout=200 --niter=10_000 --tolerance=0.002 --nout=1000|' shared.sh
-sbatch shared.sh
-cat solution.out
+$ chpl --fast baseSolver.chpl -o baseSolver
+$ sed -i -e 's|test|baseSolver --rows=650 --iout=200 --niter=10_000 --tolerance=0.002 --nout=1000|' shared.sh
+$ sbatch shared.sh
+$ cat solution.out
 Working with a matrix 650x650 to 10000 iterations or dT below 0.002
 Temperature at iteration 0: 25.0
 Temperature at iteration 1000: 25.0
@@ -663,10 +663,10 @@ Final temperature at the desired position [200,300] after 7750 iterations is: 24
 The largest temperature difference was 0.00199985
 The simulation took 8.96548 seconds
 
-chpl --fast parallel1.chpl -o parallel1
-sed -i -e 's|baseSolver|parallel1|' shared.sh
-sbatch shared.sh
-cat solution.out
+$ chpl --fast parallel1.chpl -o parallel1
+$ sed -i -e 's|baseSolver|parallel1|' shared.sh
+$ sbatch shared.sh
+$ cat solution.out
 Working with a matrix 650x650 to 10000 iterations or dT below 0.002
 Temperature at iteration 0: 25.0
 Temperature at iteration 1000: 25.0
@@ -819,9 +819,9 @@ if threadid == 0 then {       // compute delta right after lock1.waitFor()
 Now let's compare the performance of `parallel2.chpl` to the benchmark serial solution `baseSolver.chpl`:
 
 ```sh
-sed -i -e 's|parallel1|baseSolver|' shared.sh
-sbatch shared.sh
-cat solution.out
+$ sed -i -e 's|parallel1|baseSolver|' shared.sh
+$ sbatch shared.sh
+$ cat solution.out
 Working with a matrix 650x650 to 10000 iterations or dT below 0.002
 Temperature at iteration 0: 25.0
 Temperature at iteration 1000: 25.0
@@ -835,10 +835,10 @@ Final temperature at the desired position [200,300] after 7750 iterations is: 24
 The largest temperature difference was 0.00199985
 The simulation took 9.40637 seconds
 
-chpl --fast parallel2.chpl -o parallel2
-sed -i -e 's|baseSolver|parallel2|' shared.sh
-sbatch shared.sh
-cat solution.out
+$ chpl --fast parallel2.chpl -o parallel2
+$ sed -i -e 's|baseSolver|parallel2|' shared.sh
+$ sbatch shared.sh
+$ cat solution.out
 Working with a matrix 650x650 to 10000 iterations or dT below 0.002
 Temperature at iteration 0: 25.0
 Temperature at iteration 1000: 25.0
@@ -858,16 +858,16 @@ We get a speedup of 2X on two cores, as we should.
 Finally, here is a parallel scaling test on Cedar inside a 32-core interactive job:
 
 ```sh
-./parallel2 ... --rowthreads=1 --colthreads=1
+$ ./parallel2 ... --rowthreads=1 --colthreads=1
 The simulation took 32.2201 seconds
 
-./parallel2 ... --rowthreads=2 --colthreads=2
+$ ./parallel2 ... --rowthreads=2 --colthreads=2
 The simulation took 10.197 seconds
 
-./parallel2 ... --rowthreads=4 --colthreads=4
+$ ./parallel2 ... --rowthreads=4 --colthreads=4
 The simulation took 3.79577 seconds
 
-./parallel2 ... --rowthreads=4 --colthreads=8
+$ ./parallel2 ... --rowthreads=4 --colthreads=8
 The simulation took 2.4874 seconds
 ```
 

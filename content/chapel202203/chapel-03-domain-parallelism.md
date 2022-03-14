@@ -65,10 +65,10 @@ If we have not done so, let's write a script `shared.sh` for submitting single-l
 ```
 
 ```sh
-source ~/projects/def-sponsor00/shared/chapel/startMultiLocale.sh   # on uu.c3.ca
-chpl forall.chpl -o forall
-sbatch shared.sh
-cat solution.out
+$ source ~/projects/def-sponsor00/shared/chapel/startMultiLocale.sh   # on uu.c3.ca
+$ chpl forall.chpl -o forall
+$ sbatch shared.sh
+$ cat solution.out
 ```
 ```
 count = 500500
@@ -82,9 +82,9 @@ Do this:
 1. change the last line to `writeln('actual number of threads = ', count);`
 
 ```sh
-chpl forall.chpl -o forall
-sbatch shared.sh
-cat solution.out
+$ chpl forall.chpl -o forall
+$ sbatch shared.sh
+$ cat solution.out
 ```
 ```
 actual number of threads = 2
@@ -267,8 +267,8 @@ this is referred to as *multi-locale* execution.
 >> specifying the number of locales with `-nl` flag:
 >>
 >> ```sh
->> chpl --fast mycode.chpl -o mybinary
->> ./mybinary -nl 4
+>> $ chpl --fast mycode.chpl -o mybinary
+>> $ ./mybinary -nl 4
 >> ```
 >>
 >> Inside the Docker container on multiple locales your code will not run any faster than on a single
@@ -289,8 +289,8 @@ provided by a Docker container or by multi-locale Chapel on a physical HPC clust
 examples on four nodes with two cores per node.
 
 <!-- ```sh -->
-<!-- chpl mycode.chpl -o mybinary -->
-<!-- ./mybinary -nl 2 -->
+<!-- $ chpl mycode.chpl -o mybinary -->
+<!-- $ ./mybinary -nl 2 -->
 <!-- ``` -->
 <!-- The exact parameters of the job such as the maximum runtime and the requested memory can be specified -->
 <!-- with Chapel environment variables. One drawback of this launching method is that Chapel will have access -->
@@ -299,18 +299,18 @@ examples on four nodes with two cores per node.
 <!-- The Compute Canada clusters Cedar and Graham employ two different physical interconnects, and since we -->
 <!-- use exactly the same multi-locale Chapel module on both clusters -->
 <!-- ```sh -->
-<!-- module load gcc chapel-slurm-gasnetrun_ibv/1.15.0 -->
-<!-- export GASNET_PHYSMEM_MAX=1G      # needed for faster job launch -->
-<!-- export GASNET_PHYSMEM_NOPROBE=1   # needed for faster job launch -->
+<!-- $ module load gcc chapel-slurm-gasnetrun_ibv/1.15.0 -->
+<!-- $ export GASNET_PHYSMEM_MAX=1G      # needed for faster job launch -->
+<!-- $ export GASNET_PHYSMEM_NOPROBE=1   # needed for faster job launch -->
 <!-- ``` -->
 <!-- we cannot configure the same single launcher for both. Therefore, we launch multi-locale Chapel codes -->
 <!-- using the real executable `mybinary_real`. For example, for an interactive job you would type: -->
 <!-- ```sh -->
-<!-- salloc --time=0:30:0 --nodes=4 --cpus-per-task=2 --mem-per-cpu=1000 --account=def-razoumov-ac -->
-<!-- echo $SLURM_NODELIST          # print the list of four nodes -->
-<!-- echo $SLURM_CPUS_PER_TASK     # print the number of cores per node (3) -->
-<!-- chpl mycode.chpl -o mybinary -->
-<!-- srun ./mybinary_real -nl 4   # will run on four locales with max 3 cores per locale -->
+<!-- $ salloc --time=0:30:0 --nodes=4 --cpus-per-task=2 --mem-per-cpu=1000 --account=def-razoumov-ac -->
+<!-- $ echo $SLURM_NODELIST          # print the list of four nodes -->
+<!-- $ echo $SLURM_CPUS_PER_TASK     # print the number of cores per node (3) -->
+<!-- $ chpl mycode.chpl -o mybinary -->
+<!-- $ srun ./mybinary_real -nl 4   # will run on four locales with max 3 cores per locale -->
 <!-- ``` -->
 <!-- Production jobs would be launched with `sbatch` command and a Slurm launch script as usual. -->
 <!-- Alternatively, instead of loading the system-wide module, you can configure multi-locale Chapel in your -->
@@ -321,14 +321,14 @@ examples on four nodes with two cores per node.
 <!-- with **3 cores per MPI task** (12 cores per job): -->
 
 <!-- ```sh -->
-<!-- module unload chapel-single -->
-<!-- module load chapel-multi-cedar/1.16.0 -->
-<!-- salloc --time=2:00:0 --nodes=4 --cpus-per-task=3 --mem-per-cpu=1000 \ -->
+<!-- $ module unload chapel-single -->
+<!-- $ module load chapel-multi-cedar/1.16.0 -->
+<!-- $ salloc --time=2:00:0 --nodes=4 --cpus-per-task=3 --mem-per-cpu=1000 \ -->
 <!--          --account=def-razoumov-ws_cpu --reservation=arazoumov-may17 -->
-<!-- echo $SLURM_NODELIST          # print the list of nodes (should be four) -->
-<!-- echo $SLURM_CPUS_PER_TASK     # print the number of cores per node (3) -->
-<!-- export HFI_NO_CPUAFFINITY=1   # to enable parallelism on each locale with OmniPath drivers -->
-<!-- export CHPL_RT_NUM_THREADS_PER_LOCALE=$SLURM_CPUS_PER_TASK   # to limit the number of tasks -->
+<!-- $ echo $SLURM_NODELIST          # print the list of nodes (should be four) -->
+<!-- $ echo $SLURM_CPUS_PER_TASK     # print the number of cores per node (3) -->
+<!-- $ export HFI_NO_CPUAFFINITY=1   # to enable parallelism on each locale with OmniPath drivers -->
+<!-- $ export CHPL_RT_NUM_THREADS_PER_LOCALE=$SLURM_CPUS_PER_TASK   # to limit the number of tasks -->
 <!-- ``` -->
 
 Let's write a job submission script `distributed.sh`:
@@ -354,10 +354,10 @@ Let us test our multi-locale Chapel environment by launching the following code:
 writeln(Locales);
 ```
 ```sh
-source ~/projects/def-sponsor00/shared/chapel/startMultiLocale.sh   # on uu.c3.ca
-chpl test.chpl -o test
-sbatch distributed.sh
-cat solution.out
+$ source ~/projects/def-sponsor00/shared/chapel/startMultiLocale.sh   # on uu.c3.ca
+$ chpl test.chpl -o test
+$ sbatch distributed.sh
+$ cat solution.out
 ```
 
 This code will print the built-in global array `Locales`. Running it on four locales will produce
@@ -423,9 +423,9 @@ for loc in Locales do
   }
 ```
 ```sh
-chpl test.chpl -o test
-sbatch distributed.sh
-cat solution.out
+$ chpl test.chpl -o test
+$ sbatch distributed.sh
+$ cat solution.out
 ```
 ```
 locale #0...
@@ -528,9 +528,9 @@ forall t in T do                      // go in parallel through all n^2 elements
   writeln(t, ' ', t.locale.id);
 ```
 ```sh
-chpl test.chpl -o test
-sbatch distributed.sh
-cat solution.out
+$ chpl test.chpl -o test
+$ sbatch distributed.sh
+$ cat solution.out
 ```
 ```
 (0.0, 0)
@@ -669,9 +669,9 @@ If `n=8` in our code is sufficiently large, there are enough array elements per 
 case) to fully utilize the two available cores on each node, so our output should be
 
 ```sh
-chpl test.chpl -o test
-sbatch distributed.sh
-cat solution.out
+$ chpl test.chpl -o test
+$ sbatch distributed.sh
+$ cat solution.out
 ```
 ```
 actual number of threads = 12
@@ -704,9 +704,9 @@ forall a in A2 {
 writeln(A2);
 ```
 ```sh
-chpl -o test test.chpl
-sbatch distributed.sh
-cat solution.out
+$ chpl -o test test.chpl
+$ sbatch distributed.sh
+$ cat solution.out
 ```
 ```
 0-node1-2   1-node4-2   0-node1-2   1-node4-2   0-node1-2   1-node4-2   0-node1-2   1-node4-2__
@@ -803,8 +803,8 @@ writeln(message);
 halt();
 ```
 ```sh
-chpl -o parallel parallel.chpl
-./parallel -nl 4 --rows=8 --cols=8   # run this from inside distributed.sh
+$ chpl -o parallel parallel.chpl
+$ ./parallel -nl 4 --rows=8 --cols=8   # run this from inside distributed.sh
 ```
 
 The outer perimeter in the partition below are the *ghost points*, with the inner 8x8 array:
@@ -886,10 +886,10 @@ Let's compile both serial and data-parallel versions using the same multi-locale
 need `-nl` flag when running both):
 
 ```sh
-which chpl
+$ which chpl
 /project/60303/shared/c3/chapel-1.24.1/bin/linux64-x86_64/chpl
-chpl --fast baseSolver.chpl -o baseSolver
-chpl --fast parallel.chpl -o parallel
+$ chpl --fast baseSolver.chpl -o baseSolver
+$ chpl --fast parallel.chpl -o parallel
 ```
 
 First, let's try this on a smaller problem. Let's write two job submission scripts:
@@ -917,19 +917,19 @@ First, let's try this on a smaller problem. Let's write two job submission scrip
 Let's run them both:
 
 ```sh
-sbatch baseSolver.sh
-sbatch parallel.sh
+$ sbatch baseSolver.sh
+$ sbatch parallel.sh
 ```
 
 Wait for the jobs to finish and then check the results:
 
 ```sh
-tail -3 baseSolver.out
+$ tail -3 baseSolver.out
 Final temperature at the desired position [1,30] after 1148 iterations is: 2.58084
 The largest temperature difference was 9.9534e-05
 The simulation took 0.008524 seconds
 
-tail -3 parallel.out
+$ tail -3 parallel.out
 Final temperature at the desired position [1,30] after 1148 iterations is: 2.58084
 The largest temperature difference was 9.9534e-05
 The simulation took 193.279 seconds
@@ -971,9 +971,9 @@ I switched both codes to single precision, to be able to accommodate larger arra
 **slowdown** factor when going from serial to parallel. For each row correspondingly, I was running the following:
 
 ```sh
-./baseSolver --rows=2000 --niter=200 --tolerance=0.002
-./parallel -nl 4 --rows=2000 --niter=200 --tolerance=0.002
-./parallel -nl 6 --rows=2000 --niter=200 --tolerance=0.002
+$ ./baseSolver --rows=2000 --niter=200 --tolerance=0.002
+$ ./parallel -nl 4 --rows=2000 --niter=200 --tolerance=0.002
+$ ./parallel -nl 6 --rows=2000 --niter=200 --tolerance=0.002
 ```
 
 | | 30^2 | 650^2 | 2,000^2 | 16,000^2 |
@@ -1102,9 +1102,9 @@ myWritingChannel.write(T);   // write the array
 myWritingChannel.close();   // close the channel
 ```
 ```sh
-chpl --fast parallel.chpl -o parallel
-./parallel -nl 4 --rows=8 --cols=8   # run this from inside distributed.sh
-ls -l *dat
+$ chpl --fast parallel.chpl -o parallel
+$ ./parallel -nl 4 --rows=8 --cols=8   # run this from inside distributed.sh
+$ ls -l *dat
 -rw-rw-r-- 1 razoumov razoumov 659 Mar  9 18:04 output.dat
 ```
 

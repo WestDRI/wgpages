@@ -55,8 +55,8 @@ On Compute Canada clusters Cedar / Graham / Béluga / Narval we have two version
 If you want to start single-locale Chapel, you will need to load `chapel-multicore` module, e.g.
 
 ```sh
-module spider chapel  # list all Chapel modules
-module load gcc/9.3.0 chapel-multicore/1.25.0
+$ module spider chapel  # list all Chapel modules
+$ module load gcc/9.3.0 chapel-multicore/1.25.0
 ```
 
 Multi-locale is provided by `chapel-ofi` module on OmniPath clusters such as Cedar, and by `chapel-ucx` module on
@@ -69,15 +69,15 @@ If you are familiar with Docker and have it installed, you can run multi-locale 
 on your laptop, or inside an Ubuntu VM on Arbutus):
 
 ```sh
-docker pull chapel/chapel-gasnet  # will emulate a cluster with 4 cores/node
-mkdir -p ~/tmp
-docker run -v /home/ubuntu/tmp:/mnt -it -h chapel chapel/chapel-gasnet  # map host's ~/tmp to container's /mnt
-cd /mnt
-apt-get update
-apt-get install nano  # install nano inside the Docker container
-nano test.chpl        # file is /mnt/test.chpl inside the container and ~ubuntu/tmp/test.chpl on the host VM
-chpl test.chpl -o test
-./test -nl 8
+$ docker pull chapel/chapel-gasnet  # will emulate a cluster with 4 cores/node
+$ mkdir -p ~/tmp
+$ docker run -v /home/ubuntu/tmp:/mnt -it -h chapel chapel/chapel-gasnet  # map host's ~/tmp to container's /mnt
+$ cd /mnt
+$ apt-get update
+$ apt-get install nano  # install nano inside the Docker container
+$ nano test.chpl        # file is /mnt/test.chpl inside the container and ~ubuntu/tmp/test.chpl on the host VM
+$ chpl test.chpl -o test
+$ ./test -nl 8
 ```
 
 ## Running Chapel codes on *uu.c3.ca* cluster
@@ -85,17 +85,17 @@ chpl test.chpl -o test
 On our training cluster *uu.c3.ca*, you can start single-locale Chapel the usual way:
 
 ```sh
-module load gcc/9.3.0 chapel-multicore/1.25
+$ module load gcc/9.3.0 chapel-multicore/1.25
 ```
 
 Let's write a simple Chapel code, compile and run it:
 
 ```sh
-cd ~/tmp
-nano test.chpl
-    writeln('If you can see this, everything works!');
-chpl test.chpl -o test
-./test
+$ cd ~/tmp
+$ nano test.chpl
+$     writeln('If you can see this, everything works!');
+$ chpl test.chpl -o test
+$ ./test
 ```
 
 You can optionally pass the flag `--fast` to the compiler to optimize the binary to run as fast as
@@ -169,7 +169,7 @@ Note that the second line starts with TAB and not with multiple spaces -- this i
 With this makefile, to compile any Chapel code, e.g. `baseSolver.chpl`, you would type:
 
 ```sh
-make baseSolver
+$ make baseSolver
 ```
 
 Add `--fast` flag to the makefile to optimize your code. And you can type `make clean` to delete all executables in the
@@ -419,9 +419,9 @@ Let's compile and execute our code to see what we get until now, using the job s
 and then submitting it:
 
 ```sh
-chpl baseSolver.chpl -o baseSolver
-sbatch serial.sh
-tail -f solution.out
+$ chpl baseSolver.chpl -o baseSolver
+$ sbatch serial.sh
+$ tail -f solution.out
 ```
 
 ```chpl
@@ -469,9 +469,9 @@ for i in 1..rows do {     // process row i
 Now let's compile and execute our code again:
 
 ```sh
-chpl baseSolver.chpl -o baseSolver
-sbatch serial.sh
-tail -f solution.out
+$ chpl baseSolver.chpl -o baseSolver
+$ sbatch serial.sh
+$ tail -f solution.out
 ```
 
 ```chpl
@@ -516,9 +516,9 @@ writeln('The largest temperature difference between the last two iterations was:
 and compile and execute our final code
 
 ```sh
-chpl baseSolver.chpl -o baseSolver
-sbatch serial.sh
-tail -f solution.out
+$ chpl baseSolver.chpl -o baseSolver
+$ sbatch serial.sh
+$ tail -f solution.out
 ```
 ```chpl
 Temperature at iteration 0: 25.0
@@ -547,8 +547,8 @@ keyword, in addition to `var` or `const`, like this:
 config const niter = 500;             //number of iterations
 ```
 ```sh
-chpl baseSolver.chpl -o baseSolver    # using the default value 500
-./baseSolver --niter=3000             # passing another value from the command line
+$ chpl baseSolver.chpl -o baseSolver    # using the default value 500
+$ ./baseSolver --niter=3000             # passing another value from the command line
 ```
 ```chpl
 Temperature at iteration 0: 25.0
@@ -575,7 +575,7 @@ it, is to see how much it takes to finish a simulation. The UNIX command `time` 
 effect
 
 ```sh
-time ./baseSolver --rows=650 --iout=200 --niter=10_000 --tolerance=0.002 --nout=1000
+$ time ./baseSolver --rows=650 --iout=200 --niter=10_000 --tolerance=0.002 --nout=1000
 ```
 ```chpl
 Temperature at iteration 0: 25.0
@@ -615,8 +615,8 @@ watch.stop();
 writeln('The simulation took ', watch.elapsed(), ' seconds');
 ```
 ```sh
-chpl --fast baseSolver.chpl -o baseSolver
-./baseSolver --rows=650 --iout=200 --niter=10_000 --tolerance=0.002 --nout=1000
+$ chpl --fast baseSolver.chpl -o baseSolver
+$ ./baseSolver --rows=650 --iout=200 --niter=10_000 --tolerance=0.002 --nout=1000
 ```
 ```chpl
 Temperature at iteration 0: 25.0
