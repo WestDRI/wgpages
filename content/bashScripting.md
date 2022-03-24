@@ -52,6 +52,14 @@ have to pass a directory name to the script.
 1. return a usage page if there are no arguments: `if [ $# -eq 0 ]; then ... fi`
 1. ask `countFiles()` to count files in all directories passed as arguments: need to loop through all arguments
 
+```sh
+function countfiles() {
+    for dir in $@; do
+        echo in $dir we found $(find $dir -type f | wc -l) files
+    done
+}
+```sh
+
 <!-- ```sh -->
 <!-- if [ $# -eq 0 ]; then -->
 <!--     echo "No arguments specified. Usage: command file1 [file2 ...]" -->
