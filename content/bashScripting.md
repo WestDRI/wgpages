@@ -117,11 +117,11 @@ touch 2022-Mar-{0{1..9},{10..24}}.md
 
 **Task**: convert all months in the filenames to digital months, e.g. `2022-Jan-01.md` should become `20220101.md`.
 
-<!-- ```sh -->
-<!-- for f in *Jan*md; do -->
-<!--   mv $f ${f/-Jan-/01} -->
-<!-- done -->
-<!-- ``` -->
+```sh
+for f in *Jan*md; do
+  mv $f ${f/-Jan-/01}
+done
+```
 
 ## Convert spaces to underscores
 
@@ -134,13 +134,13 @@ ls *\ *
 Let's write `takeOutSpaces()` that will scan the current directory for all files with spaces in their file names and
 convert these spaces to underscores.
 
-<!-- ```sh -->
-<!-- function takeOutSpaces() { -->
-<!--     for file in *\ *; do -->
-<!-- 	    mv "$file" "${file// /_}" -->
-<!--     done -->
-<!-- } -->
-<!-- ``` -->
+```sh
+function takeOutSpaces() {
+    for file in *\ *; do
+	    mv "$file" "${file// /_}"
+    done
+}
+```
 
 **After we are done**: how about a recursive scan? This is trickier! E.g., count the number of `---` in the output of
   this script:
