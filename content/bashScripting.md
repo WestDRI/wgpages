@@ -62,7 +62,7 @@ function countfiles() {
         echo in $dir we found $(find $dir -type f | wc -l) files
     done
 }
-```sh
+```
 
 ## Archive/unarchive scripts
 
