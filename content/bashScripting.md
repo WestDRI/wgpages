@@ -31,11 +31,11 @@ usernames into the Zoom chat.
 1. setting internal variables
 1. result of a bash command inside the script $~\Rightarrow~$ `echo "we found $num files"`
 
-<!-- ```sh -->
-<!-- #!/bin/bash -->
-<!-- num=$(find . -type f | wc -l) -->
-<!-- echo "we found $num files" -->
-<!-- ``` -->
+```sh
+#!/bin/bash
+num=$(find . -type f | wc -l)
+echo "we found $num files"
+```
 
 ## Scripts vs. functions
 
