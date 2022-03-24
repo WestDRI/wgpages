@@ -88,6 +88,9 @@ $ echo ${word//l/L}
 heLLo
 ```
 
+Here is the solution:
+
+```sh
 function archive() {
     if [ $# -eq 0 ]; then
         echo "No arguments given. Usage: archive dir1 dir2 ..."
@@ -97,6 +100,7 @@ function archive() {
         tar cvfz ${dir/\//}.tar.gz $dir && /bin/rm -r $dir
     done
 }
+```
 
 **Take-home exercise**: write `unarchive()` that would do the opposite, i.e. take a set of `.tar.gz` files via arguments
   and expand each of them.
