@@ -54,18 +54,15 @@ have to pass a directory name to the script.
 
 ```sh
 function countfiles() {
+    if [ $# -eq 0 ]; then
+        echo "No arguments given. Usage: countfiles dir1 dir2 ..."
+        return 1
+    fi
     for dir in $@; do
         echo in $dir we found $(find $dir -type f | wc -l) files
     done
 }
 ```sh
-
-<!-- ```sh -->
-<!-- if [ $# -eq 0 ]; then -->
-<!--     echo "No arguments specified. Usage: command file1 [file2 ...]" -->
-<!--     return 1 -->
-<!-- fi -->
-<!-- ``` -->
 
 ## Archive/unarchive scripts
 
