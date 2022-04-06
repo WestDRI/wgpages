@@ -52,6 +52,7 @@ have to pass a directory name to the script.
 1. return a usage page if there are no arguments: `if [ $# -eq 0 ]; then ... fi`
 1. ask `countFiles()` to count files in all directories passed as arguments: need to loop through all arguments
 
+{{< solution >}}
 ```sh
 function countfiles() {
     if [ $# -eq 0 ]; then
@@ -63,6 +64,7 @@ function countfiles() {
     done
 }
 ```
+{{< /solution >}}
 
 ## Archive/unarchive scripts
 
@@ -88,8 +90,7 @@ $ echo ${word//l/L}
 heLLo
 ```
 
-Here is the solution:
-
+{{< solution >}}
 ```sh
 function archive() {
     if [ $# -eq 0 ]; then
@@ -101,6 +102,7 @@ function archive() {
     done
 }
 ```
+{{< /solution >}}
 
 **Take-home exercise**: write `unarchive()` that would do the opposite, i.e. take a set of `.tar.gz` files via arguments
   and expand each of them.
@@ -134,6 +136,7 @@ ls *\ *
 Let's write `takeOutSpaces()` that will scan the current directory for all files with spaces in their file names and
 convert these spaces to underscores.
 
+{{< solution >}}
 ```sh
 function takeOutSpaces() {
     for file in *\ *; do
@@ -141,6 +144,7 @@ function takeOutSpaces() {
     done
 }
 ```
+{{< /solution >}}
 
 **After we are done**: how about a recursive scan? This is trickier! E.g., count the number of `---` in the output of
   this script:
