@@ -119,11 +119,13 @@ touch 2022-Mar-{0{1..9},{10..24}}.md
 
 **Task**: convert all months in the filenames to digital months, e.g. `2022-Jan-01.md` should become `20220101.md`.
 
+{{< solution >}}
 ```sh
 for f in *Jan*md; do
   mv $f ${f/-Jan-/01}
 done
 ```
+{{< /solution >}}
 
 ## Convert spaces to underscores
 
