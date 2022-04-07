@@ -4,7 +4,6 @@
     <p class="footcontent"><a href="/info">{{ . }}</a></p>
     {{ end }}
     <br>
-    <a href="https://westgrid.ca/"><img src="/img/favicon.png" width="35"></a>&ensp;&nbsp;
     <a href="https://twitter.com/WestGrid"><i class="fab fa-twitter fa-lg" style='color: #58585a'></i></a>&ensp;&ensp;
     <a href="mailto:training@westgrid.ca"><i class="far fa-envelope-open fa-lg" style='color: #58585a'></i></a>&ensp;&ensp;
     <a href="/"><i class="fa fa-home fa-lg" style='color: #58585a'></i></a>
@@ -13,10 +12,10 @@
     <div style="font-size: 1.3rem;">
       {{ if not .Site.Params.hideCopyright }}
       {{ with .Site.Params.since }}
-      © {{ if lt . now.Year }}{{ . }}–{{ end }}{{ now.Year }} <a href="https://www.westgrid.ca/">WestGrid</a>
+      © {{ if lt . now.Year }}{{ . }}–{{ end }}{{ now.Year }} <a href="https://www.sfu.ca/">SFU</a> & <a href="https://alliancecan.ca/">DRAC</a>
       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
       {{ else }}
-      © {{ now.Year }} <a href="https://www.westgrid.ca/">WestGrid</a>
+      © {{ now.Year }} <a href="https://www.sfu.ca/">Simon Fraser University</a> & <a href="https://alliancecan.ca/">Digital Research Alliance of Canada</a>
       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
       {{ end }}
       <!-- {{ if .Site.Params.Author }} {{ .Site.Params.Author }} {{ end }} -->

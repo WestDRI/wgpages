@@ -8,14 +8,19 @@
     <!-- {{ with .Site.Params.gravatar }} -->
     <!-- <div class="avatar"><img src="https://www.gravatar.com/avatar/{{md5 .}}?s=240&d=mp" alt="gravatar"></div> -->
     <!-- {{ end }} -->
-    {{ with .Site.Params.wgavatar }}
+    {{ if and (.Site.Params.sfuavatar) (.Site.Params.dracavatar) }} 
     <div>
-      <a href="https://westgrid.ca/">
-	<img src="{{ . | relURL }}" alt="wgavatar">
+      <a href="https://www.sfu.ca/">
+	<img src="{{ $.Site.Params.sfuavatar | relURL }}" alt="sfuavatar">
       </a>
+      &emsp;&emsp;
+     <a href="https://alliancecan.ca/">
+	<img src="{{ $.Site.Params.dracavatar | relURL }}" alt="dracavatar">
+     </a>
     </div>
-    <br>
     {{ end }}
+    <br>
+    <br>
     <h1>{{ .Site.Params.info }}</h1>
     <br>
     <br>

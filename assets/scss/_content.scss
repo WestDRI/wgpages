@@ -81,14 +81,28 @@
   }
 }
 
-img[alt=wgavatar] {
-  width: 50rem;
+img[alt=sfuavatar] {
+  width: 28rem;
   @media only screen and (max-width : 768px) {
-    width: 30rem;
+    width: 16.8rem;
   }
   @media only screen and (max-width : 480px) {
-    width: 20rem;
+    width: 11.2rem;
   }
+  border-radius: 0px;
+  box-shadow: 0.5px 0.2px 1px #b3b3b3;
+}
+
+img[alt=dracavatar] {
+  width: 28rem;
+  @media only screen and (max-width : 768px) {
+    width: 16.8rem;
+  }
+  @media only screen and (max-width : 480px) {
+    width: 11.2rem;
+  }
+  border-radius: 0px;
+  box-shadow: 0.2px 0.5px 1.5px #b3b3b3;
 }
 
 ol {

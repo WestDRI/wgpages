@@ -16,8 +16,9 @@ canonifyurls = true
 [params]
  repourl = "https://github.com/WestGrid/wgtm21"
  info = "Various courses"
- wgavatar = "/img/wglogo.png"
- favicon_32 = "/img/favicon.png"
+ sfuavatar = "/img/sfu.png"
+ dracavatar = "/img/drac.png"
+ favicon_32 = "/img/sfu_favicon.png"
  footercontent = ""
  dateformat = "January 2, 2006"
  hideCredits = false
