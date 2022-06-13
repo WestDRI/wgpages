@@ -88,7 +88,7 @@ On Uu I get 6.57s, 6.19s, 6.10s -- this is ~2X speedup, as expected.
 
 ## Let's add reduction
 
-We will compute the sum $~~\sum_{i=1}^{10^6}i~~$ with multiple threads. Consider this code:
+We will compute the sum $\sum_{i=1}^{10^6}i$ with multiple threads. Consider this code:
 
 ```julia
 total = 0
@@ -182,8 +182,8 @@ We want to:
 
 ## Slow series
 
-We could replace integer summation $~~\sum_{i=1}^\infty i~~$ with the harmonic series, however, the traditional harmonic
-series $~~\sum\limits_{k=1}^\infty{1\over k}~~$ diverges. It turns out that if we omit the terms whose denominators in
+We could replace integer summation $\sum_{i=1}^\infty i$ with the harmonic series, however, the traditional harmonic
+series $\sum\limits_{k=1}^\infty{1\over k}$ diverges. It turns out that if we omit the terms whose denominators in
 decimal notation contain any *digit* or *string of digits*, it converges, albeit very slowly (Schmelzer & Baillie 2008),
 e.g.
 
