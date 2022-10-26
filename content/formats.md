@@ -48,7 +48,7 @@ these libraries installed -- all you'll need is a browser.
 Log in to the remote system and copy the workshop files into your home directory:
 
 ```sh
-cp /home/user19/shared/workshop/{jeopardy.csv,mandelbulb300.nc,writeNodesEdges.py} .
+cp /home/user19/shared/formats/{jeopardy.csv,mandelbulb300.nc,writeNodesEdges.py} .
 ```
 
 ## Python packages
@@ -260,7 +260,7 @@ x = {
 }
 yaml.dump(x)                            # dump to the terminal
 with open('personal.yaml', 'w') as f:   # write to a file
-    data = yaml.dump(x, f, sort_keys=False, default_flow_style=False)
+    yaml.dump(x, f, sort_keys=False, default_flow_style=False)
 ```
 
 Setting `default_flow_style=True` will give you a more compact notation with separators, but it'll be more
@@ -533,7 +533,7 @@ print(ds["density"][:])   # it is a numpy array
 <!-- Optionally can specify the level of compression, e.g. complevel=9 (highest). -->
 
 > ### Exercise "Compression 2"
-> Read a highly compressed dataset from file `mandelbulb800.nc`. Compare the file size to the
+> Read a highly compressed dataset from file `mandelbulb300.nc`. Compare the file size to the
 > size of embedded data -- do they agree? Give a reason behind that.
 
 If you want the functionality of pandas (easy 2D table manipulation) in a multidimensional array, then you can
