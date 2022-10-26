@@ -1,11 +1,23 @@
 +++
-title = "What format to choose to save your data"
+title = ""
 slug = "formats"
 katex = true
 +++
 
-{{<cor>}}Thursday, October 27, 2022{{</cor>}}\
-{{<cgr>}}2:30pm - 4:00pm{{</cgr>}}
+<!-- {{<cor>}}Thursday, October 27, 2022{{</cor>}}\ -->
+<!-- {{<cgr>}}2:30pm - 4:00pm{{</cgr>}} -->
+
+{{< figure src="/img/qr-formats.png" >}}
+
+## Links
+
+- Fall 2022 training schedule: https://bit.ly/wg2022b
+- Research computing autumn in November: https://autumnschool2022.westdri.ca (free registration)
+- Training materials: https://training.westdri.ca (past and future events, ~100 recorded webinar)
+- Documentation: https://docs.alliancecan.ca
+- Email: training "at" westdri "dot" ca
+
+<!-- {{<a "link" "text">}} -->
 
 ## Abstract
 
@@ -33,8 +45,10 @@ these libraries installed -- all you'll need is a browser.
 
 ## Remote system
 
+Log in to the remote system and copy the workshop files into your home directory:
+
 ```sh
-cp /shared/location/{jeopardy.csv,mandelbulb300.nc,writeNodesEdges.py} .
+cp /home/user19/shared/workshop/{jeopardy.csv,mandelbulb300.nc,writeNodesEdges.py} .
 ```
 
 ## Python packages
