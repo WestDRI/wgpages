@@ -13,7 +13,7 @@ katex = true
 
 - Fall 2022 training schedule: https://bit.ly/wg2022b
 - Research computing autumn in November: https://autumnschool2022.westdri.ca (free registration)
-- Training materials: https://training.westdri.ca (past and future events, ~100 recorded webinar)
+- Training materials: https://training.westdri.ca (upcoming and archived events, ~100 recorded webinars)
 - Documentation: https://docs.alliancecan.ca
 - Email: training "at" westdri "dot" ca
 
