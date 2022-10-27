@@ -112,7 +112,7 @@ data.shape   # 216930 rows, 7 columns
 data.head(10)   # first 10 rows
 data.columns    # names of the columns
 data.loc[data['Category']=='HISTORY'].shape   # 349 matches
-data.loc[data['Category']=='HISTORY'].to_csv("history.nc")   # write to a file
+data.loc[data['Category']=='HISTORY'].to_csv("history.csv")   # write to a file
 ```
 
 Simple Python dictionaries can be stored as 2-column tables. Here is an example of writing a Python dictionary
