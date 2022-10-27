@@ -51,6 +51,12 @@ Log in to the remote system and copy the workshop files into your home directory
 cp /home/user19/shared/formats/{jeopardy.csv,mandelbulb300.nc,writeNodesEdges.py} .
 ```
 
+In a Python notebook in our JupyterHub, use:
+
+```sh
+!cp /home/user19/shared/formats/{jeopardy.csv,mandelbulb300.nc,writeNodesEdges.py} .
+```
+
 ## Python packages
 
 ```txt
