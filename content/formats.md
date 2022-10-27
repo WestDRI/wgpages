@@ -54,7 +54,7 @@ cp /home/user19/shared/formats/{jeopardy.csv,mandelbulb300.nc,writeNodesEdges.py
 ## Python packages
 
 ```txt
-csv json yaml bson dict2xml pickle netCDF4 networkx numpy pandas xarray vtk pyevtk
+pyyaml bson dict2xml pickle netCDF4 networkx numpy pandas xarray vtk pyevtk
 ```
 
 ## CSV
