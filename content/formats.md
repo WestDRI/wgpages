@@ -1,13 +1,15 @@
 +++
-title = ""
+title = "What format to choose to save your data"
 slug = "formats"
 katex = true
 +++
 
-<!-- {{<cor>}}Thursday, October 27, 2022{{</cor>}}\ -->
-<!-- {{<cgr>}}2:30pm - 4:00pm{{</cgr>}} -->
+# https://wgpages.netlify.app/formats
 
-{{< figure src="/img/qr-formats.png" >}}
+{{<cor>}}Friday, November 4, 2022{{</cor>}}\
+{{<cgr>}}1:00pm - 2:30pm{{</cgr>}}
+
+<!-- {{< figure src="/img/qr-formats.png" >}} -->
 
 ## Links
 
