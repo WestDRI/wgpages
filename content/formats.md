@@ -128,7 +128,7 @@ with open('cities.csv', 'w') as f:   # open a stream for writing
 ```
 
 > ### Exercise "Header"
-> Add a header "city, population" to this CSV file.
+> Modify the last Python script to add a header "city, population" to this CSV file.
 <!-- > Add `f.write("city, population\n")` before the `for` loop. -->
 
 How about a more complex Python dictionary, with some hierarchical structure? For that a CSV file won't work,
@@ -151,7 +151,12 @@ type(y)                      # it is string, as far as Python is concerned
 json.loads(y)["Vancouver"]   # back to a Python dictionary that we can subset
 type(json.loads(y))          # it is really a dictionary
 
-y = json.dumps(['something', {'more': ('complex', None, 1.0, 2)}]) # convert more complex Python object to a JSON string
+# convert more complex Python object to a JSON string
+a = ['something', {'more': ('complex', None, 1.0, 2)}]
+json.dumps(a)
+
+# can use custom separators
+json.dumps(a, separators=("; ", " > "), sort_keys=True)
 ```
 
 You can convert into JSON strings the following Python objects: *int, float, string, logical, tuple, list, dict, None*.
@@ -177,9 +182,13 @@ print(jstring)
 with open('personal.json', 'w') as f:
     f.write(jstring)
 
-# can use custom separators
-jstring = json.dumps(x, separators=("; ", " > "), sort_keys=True)
-print(jstring)
+# read the file
+with open('personal.json', 'r') as f:
+    data = f.read()
+
+type(data)             # it is a (JSON) string
+g = json.loads(data)   # convert to a dictionary
+g["name"]
 ```
 
 > ### Exercise "Open-close"
@@ -271,7 +280,7 @@ with open('personal.yaml', 'w') as f:   # write to a file
     yaml.dump(x, f, sort_keys=False, default_flow_style=False)
 ```
 
-Setting `default_flow_style=True` will give you a more compact notation with separators, but it'll be more
+Setting `default_flow_style=True` would give you a more compact notation with separators, but it'll be more
 difficult to read with a naked eye.
 
 Let's now read it. There are different readers ("loaders") ordered by their security level:
