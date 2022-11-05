@@ -41,9 +41,11 @@ these libraries installed -- all you'll need is a browser.
 
 ## Themes
 
-- **progression**: tabular data &nbsp;⮕&nbsp; Python data structures (hierarchical dictionaries) &nbsp;⮕&nbsp; large arrays
-- **simultaneously**: ASCII &nbsp;⮕&nbsp; binary &nbsp;⮕&nbsp; scientific formats with metadata, compression, parallel I/O
-- **also to consider**: file sizes, bandwidth (I/O speed), portability
+- **Main theme**:&nbsp; tabular data &nbsp;⮕&nbsp; Python data structures (hierarchical dictionaries)
+  &nbsp;⮕&nbsp; large arrays
+- **Parallel theme**:&nbsp; ASCII &nbsp;⮕&nbsp; binary &nbsp;⮕&nbsp; scientific formats with metadata,
+  compression, parallel I/O
+- **Also to consider**:&nbsp; file sizes, bandwidth (I/O speed), portability
 
 ## Remote system
 
@@ -239,7 +241,7 @@ To read it:
 
 ```py
 import json
-f = open("array.json", 'rb')
+f = open("array.json", 'r')
 data = f.read()
 f.close()
 b = json.loads(data)   # convert to a nested list
