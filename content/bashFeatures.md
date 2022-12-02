@@ -42,11 +42,11 @@ topics.
 
 <!-- https://askubuntu.com/questions/606378/when-to-use-vs-in-bash -->
 
-to avoid any side-effects in the current shell
-commands inside () execute in a subshell
-use directly in the shell
-use when defining a function
-one common use: when testing, cd temporarily into another directory and run something there, Ctrl-C will break and take you back
+- to avoid any side-effects in the current shell
+- commands inside `()` execute in a subshell
+- use directly in the shell or when defining a function
+- one common use: when testing, cd temporarily into another directory and run something there, Ctrl-C will
+  break and take you back
 
 ```sh
 cd src
@@ -56,7 +56,9 @@ cp code.exe ../run
 break execution with Ctrl-C (and you are back in src)
 ```
 
-can include the above into a script/function; run it and then break to be back in src
+You can include the above into a script/function; run it and then break to find yourself back in `src`.
+
+Now consider these two functions:
 
 ```sh
 function tmp() {     # function body executes in the current shell
@@ -78,10 +80,10 @@ cd; tmp; pwd   # you'll end up in your home
 (myvar="temporary value"; echo $myvar) && echo $myvar   # myvar defined only inside the subshell
 ```
 
-can use this for testing things, so you don't pollute the current shell with temporary definitions
+You can use this for testing things, so you don't pollute the current shell with temporary definitions.
 
-pro: very easy to use
-con: takes longer to execute (opens a subshell) but in most use cases this is probably not an issue
+- **pro**: very easy to use
+- **con**: takes longer to execute (opens a subshell) but in most use cases this is probably not an issue
 
 ### Subsetting string variables
 
@@ -352,7 +354,7 @@ done
 to a program, e.g.
 
 ```sh
-cat << EOF
+wc -l << EOF
 line 1
 line 2
 EOF
@@ -403,6 +405,8 @@ EOF
     ./uniqueCode.py $1
     /bin/rm uniqueCode.py
 }
+cat contact.txt
+extractEmails contact.txt
 ```
 
 
