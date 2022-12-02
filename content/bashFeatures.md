@@ -36,6 +36,25 @@ modifying separators with IFS, running Python code from inside self-contained Ba
 command history, running unaliased versions of commands, handy use of bracket expansion, and a few other
 topics.
 
+## Intro
+
+We regularly teach bash in our summer/etc schools:
+
+- navigating files and directories; creating, moving and copying things
+- archives and compression
+- transferring files and directories to/from remote computers
+- wildcards, redirection, pipes, and aliases
+- loops and variables
+- scripts and functions
+- finding things with `grep` and `find`
+- text manipulation with `sed` and `awk`
+
+In previous webinars we've also taught 3rd-party command-line tools such as fuzzy finder `fzf`, Git terminal
+UI `lazygit`, syntax highlighter `bat`, a fast alternative to grep `ripgrep`, a really fast `find` alternative
+`fd`, and so no.
+
+Today we would like to focus on some useful built-in bash features that we rarely get to demo.
+
 ## First part (Alex)
 
 ### subshells with ()
@@ -98,6 +117,9 @@ You can use this for testing things, so you don't pollute the current shell with
 
 
 
+
+
+
 ### Bash arrays
 
 ```sh
@@ -151,11 +173,12 @@ for x in "${runtime[@]}"; do
 done
 ```
 
-Using arrays for a backup script:
+Using arrays in a backup script:
 
 ```sh
 if [ -e /Volumes/gdrive ]; then
-    BSRC=(~/Documents ~/Desktop ~/Downloads/{books,images})
+    BSRC=(~/Documents ~/Desktop
+          ~/Downloads/{books,images})
     BDEST='/Volumes/gdrive/backups'
 elif [ -e /Volumes/t7 ]; then
     BSRC=(~/Pictures ~/Music)
@@ -191,7 +214,7 @@ Command substitution to an array:
 str=$(ls)              # command substitution to save `ls` output as a string
 arr=($(ls))            # save `ls` output as an array of file/directory names
 echo ${arr[@]:2:3}     # retrieve 3 elements starting at index 2
-${a[@]:3:1} is the same as ${a[3]}
+                       # ${a[@]:3:1} is the same as ${a[3]}
 ```
 
 
