@@ -11,6 +11,8 @@ katex = true
 
 <!-- <\!-- {{< figure src="/img/qr-formats.png" >}} -\-> -->
 
+{{< toc >}}
+
 ## Links
 
 - Fall 2022 training schedule: https://bit.ly/wg2022b
@@ -34,11 +36,11 @@ modifying separators with IFS, running Python code from inside self-contained Ba
 command history, running unaliased versions of commands, handy use of bracket expansion, and a few other
 topics.
 
-# First part (Alex)
+## First part (Alex)
 
 ### subshells with ()
 
-https://askubuntu.com/questions/606378/when-to-use-vs-in-bash
+<!-- https://askubuntu.com/questions/606378/when-to-use-vs-in-bash -->
 
 to avoid any side-effects in the current shell
 commands inside () execute in a subshell
@@ -406,7 +408,7 @@ EOF
 
 
 
-# Second part (Marie)
+## Second part (Marie)
 
 ### fc
 ### command file
