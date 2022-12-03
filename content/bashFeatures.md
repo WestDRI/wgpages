@@ -8,7 +8,7 @@ katex = true
 You can find this webpage at:
 {{</ex>}}
 
-# https://wgpages.netlify.app/bashFeatures
+# https://wgpages.netlify.app/bashfeatures/
 
 <!-- {{<cor>}}Friday, November 4, 2022{{</cor>}}\ -->
 <!-- {{<cgr>}}1:00pm - 2:30pm{{</cgr>}} -->
@@ -515,14 +515,25 @@ cat contact.txt
 extractEmails contact.txt
 ```
 
-
-
-
 ## Second part (Marie)
 
 ### fc
+
+
+### Easy access to unaliased version of command
+
+`\` for unaliased form of commands
+
 ### command file
+
+
 ### command command -V
+
+
 ### cp file{,.bak} and mv file.{org,txt}
+
+
 ### $_
+
+
 ### ^old^new
