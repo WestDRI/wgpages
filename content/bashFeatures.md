@@ -44,9 +44,9 @@ We regularly teach bash in our summer/etc schools:
 - archives and compression
 - transferring files and directories to/from remote computers
 - wildcards, redirection, pipes, and aliases
-- loops and variables
-- scripts and functions
-- finding things with `grep` and `find`
+- loops and variables; command substitution
+- scripts and functions, briefly on conditionals
+- finding things with `grep` and `find`; tying things with `xargs`
 - text manipulation with `sed` and `awk`
 
 In previous webinars we've also taught 3rd-party command-line tools such as fuzzy finder `fzf`, Git terminal
@@ -107,15 +107,94 @@ You can use this for testing things, so you don't pollute the current shell with
 ### Subsetting string variables
 
 <!-- https://devhints.io/bash -->
-
-<!-- abc -->
 <!-- https://tldp.org/LDP/abs/html/string-manipulation.html -->
 
+```sh
+author="Charles Dickens"
+echo $author
+echo "$author was an English writer"
+echo $author\'s novels     # works in this case
+echo "$author"\'s novels   # safer approach
+echo ${author}\'s novels   # another safer approach
+echo "${author}'s novels"  # another safer approach
+
+echo "string's length is ${#author} characters"
+```
+
+```sh
+echo ${author/Charles/Ch.}   # replace the first match of a substring
+echo ${author//s/S}          # replace all first matches of a substring
+
+echo ${author/Charles }      # if no replacement string supplied, the substring will be deleted
+echo ${author/Charles /}     # the same
+
+original="Charles"             # can use a variable for the substring
+short="C."                     # can use a variable for a replacement string
+echo ${author/$original/$short}
+
+echo ${author/#Ch/ch}        # replace the match only at the start (if found)
+echo ${author/%ns/ns ---}    # replace the match only at the end (if found)
+```
+
+E.g. you can use this to change file extensions:
+
+```sh
+touch {a..z}{0..9}.txt   # create 260 files
+for file in *.txt; do
+    mv $file ${file/%txt/md}
+done
+```
+
+Another solution of course:
+
+```sh
+/bin/rm ??.md
+touch {a..z}{0..9}.txt   # create 260 files
+for file in *.txt; do
+    mv $file ${file/.txt/.md}
+done
+```
+
+Question: what will this do `echo ${author/#/---}`?
+
+```sh
+echo ${author:5:2}     # display 2 characters starting from number 5 (indexing from 0)
+echo ${author::2}      # display the first 2 characters
+echo ${author:5:${#author}}     # display all characters starting from number 5 to the end
+echo ${author:5:999}            # simpler
+echo ${author:5}                # even simpler
+echo ${author: -2}     # last two characters; important to have space there!
+echo ${author: -5:3}   # display 3 characters starting from number -5; important to have space there!
+```
+
+
+
+<!-- If you want to return the index of a substring match: -->
+<!-- expr index "$author" "Dickens" -->
 
 
 
 
+<!-- library="Charles Dickens, Edgar Allan Poe" -->
 
+<!-- Let's look for a front substring starting with `C` and ending with ` ` (space). There are 4 possibilities: -->
+
+<!-- 1. `Charles `Dickens, Edgar Allan Poe -->
+<!-- 2. `Charles Dickens, `Edgar Allan Poe -->
+<!-- 3. `Charles Dickens, Edgar `Allan Poe -->
+<!-- 4. `Charles Dickens, Edgar Allan `Poe -->
+
+<!-- ```sh -->
+<!-- echo ${library#C* }    # delete the shortest match of `C* ` from the front -->
+<!-- echo ${library##C* }   # delete the longest match of `C* ` from the front -->
+<!-- ``` -->
+
+<!-- There is similar syntax for deleting from the back: -->
+
+<!-- ```sh -->
+<!-- echo ${library% *}     # delete the shortest match of ` *` from the back -->
+<!-- echo ${library%% *}    # delete the longest match of ` *` from the back -->
+<!-- ``` -->
 
 
 
