@@ -345,13 +345,6 @@ ul {
     padding-left: 5.0rem;
   }
 }
-.box-block {
-  padding: 0.7rem 3.5rem;
-  line-height: 3.0rem;
-  border: 1pt solid #c6b7c8;
-  border-radius: 3px;
-  box-shadow: 0px 0px 6px #c6b7c8;
-}
 
 // #frontdates {
 //   padding-left: 6.0rem;
@@ -495,6 +488,184 @@ ul {
   }
 }
 
+// * blocks
+
+.example-block {
+  // this will be rendered as pre
+  padding: 0rem 1.3rem;
+}
+
+.syntax-block {
+  // box-shadow: 0px 0px 1.5px rgba(0,0,0,0.3);
+  // box-shadow: 0px 0px 1.5px rgba(0,0,0,0.3);
+  // background-color: #ffffff;
+  border-left: 3px solid #e7e7e7;
+  font-family: $code-font-family;
+  font-size: 1.6rem;
+  font-weight: 400;
+  // line-height: 2.5rem;
+  margin: 0rem 0rem;
+  padding: 0rem 1.6rem;
+  overflow-x: auto;
+}
+
+.exsimple-block {
+  color: #262626;
+  margin: 45px 50px 45px 20px;
+  border-left: 4px solid #ff3399;
+  padding-left: 1.3rem;
+  line-height: 3.0rem;
+}
+
+.exsimplec-block {
+  color: #262626;
+  margin: 45px 50px 45px 20px;
+  padding-left: 1.3rem;
+  line-height: 3.0rem;
+}
+
+.challenge-block {
+  color: #262626;
+  margin: 45px 50px 45px 20px;
+  border-left: 5px solid #ff3399;
+  padding-left: 1.3rem;
+  line-height: 2.5rem;
+}
+
+.challengec-block {
+  color: #262626;
+  margin: 45px 50px 45px 20px;
+  padding-left: 1.3rem;
+  line-height: 2.5rem;
+}
+
+.challenge_dark-block {
+  text-align: left;
+  color: #e5e5e6;
+  border-left: 5px solid #f6903c;
+  margin: 45px 50px 45px 20px;
+  padding-left: 4rem;
+  line-height: 2rem;
+}
+
+.exercise-block {
+  color: #262626;
+  margin: 45px 50px 45px 0px;
+  border-left: 5px solid #fbcc9d;
+  padding-left: 2.0rem;
+  line-height: 2.5rem;
+}
+
+.simplebox-block {
+  font-family: $heading-font-family;
+  line-height: 3.0rem;
+  border-radius: 3px;
+  border: 0.5pt solid #000000;
+  // box-shadow: 0px 0px 6px rgba(0,0,0,0.3);
+  box-shadow: 0px 0px 3px rgba(0,0,0,0.3);
+  // padding: 0.5px 2.0rem 0.5px 2.0rem;
+  padding: 0.6px 3.0rem 0.6px 3.0rem;
+}
+
+.box-block {
+  // mono font framed by subtle gray border
+  // padding: 0em 1.0em;
+  padding: 0.7rem 3.5rem;
+  line-height: 3.0rem;
+  // border: 1pt solid #cc9900;
+  // border: 1pt solid #6699cc;
+  border: 1pt solid #c6b7c8;
+  // border: 1pt solid #644f67;
+  border-radius: 3px;
+  // box-shadow: 0px 0px 6px #eee8d5;
+  // box-shadow: 0px 0px 6px #cc9900;
+  // box-shadow: 0px 0px 6px #6699cc;
+  box-shadow: 0px 0px 6px #c6b7c8;
+  // box-shadow: 0px 0px 6px #644f67;
+}
+
+.bigquo-block {
+  // border-left: 3px solid #cccccc;
+  border-left: 3px solid #c6d9ec;
+  color: #264d73;
+  margin-left: 3.5rem;
+  padding-left: 1.9rem;
+  line-height: 2.2rem;
+  font-weight: 400;
+  font-size: 2.3rem;
+  line-height: 4rem;
+}
+
+.zoombox-block {
+  padding: 0.7rem 3.5rem;
+  line-height: 22px;
+  border: 0.5pt solid #cc0066;
+  border-radius: 3px;
+  box-shadow: 0px 0px 3px #cc0066;
+}
+
+.debugbox-block {
+  padding: 0.7rem 3.5rem;
+  line-height: 22px;
+  border: 0.5pt solid #800040;
+  border-radius: 3px;
+  box-shadow: 0px 0px 3px #800040;
+}
+
+.definition-block {
+  // small font in dull gray box
+  // background-color: #f0efe7;
+  // background-color: #f3f0f4;
+  background-color: #e8e2e9;
+  // font-family: 'Playfair Display', serif;
+  font-family: 'Crimson Text', serif;
+  // color: #3e3e3e;
+  padding: 0.7rem 3.5rem;
+  font-size: 1.8rem;
+  // line-height: 22px;
+  // border: 0.5pt solid #ebeae0;
+  border: 0.5pt solid #e8e2e9;
+  border-radius: 3px;
+}
+
+.def-block {
+  // small font in dull gray box
+  // background-color: #f0efe7;
+  // background-color: #f3f0f4;
+  background-color: #eae8f0;
+  // font-family: 'Playfair Display', serif;
+  font-family: 'Crimson Text', serif;
+  // color: #3e3e3e;
+  margin: 4rem 0;
+  padding: 0rem 3.5rem;
+  font-size: 2rem;
+  // line-height: 22px;
+  // border: 0.5pt solid #ebeae0;
+  border: 0.5pt solid #e8e2e9;
+  border-radius: 3px;
+}
+
+.info-block {
+  // small font in dull gray box
+  background-color: #eae8f0;
+  font-family: 'Crimson Text', serif;
+  margin: 4rem 0;
+  padding: 0rem 3.5rem;
+  font-size: 2rem;
+  border: 1.5pt solid #669999;
+  border-radius: 3px;
+}
+
+.verse-block {
+  color: #262626;
+  font-family: 'IM Fell English';
+  font-size: 110%;
+  font-style: italic;
+  margin-left: 30px;
+  // keep this line to have the verses indented
+  line-height: 25px;
+}
+
 .note-block {
   color: #424a57;
   font-family: 'Maven Pro', sans-serif;
@@ -506,6 +677,155 @@ ul {
   padding-left: 2rem;
   line-height: 2.5rem;
 }
+
+.ex-block {
+  color: #424a57;
+  font-family: 'Maven Pro', sans-serif;
+  font-size: 1.7rem;
+  font-style: italic;
+  margin: 3rem 1rem 0rem 0rem;
+  line-height: 25px;
+}
+
+.org-center-block {
+  // center
+  margin: auto;
+  line-height: 22px;
+  width: max-content;
+}
+
+.right-block {
+  // right-aligned
+  text-align: right;
+  line-height: 22px;
+}
+
+.handwriting-block {
+  // handwriting font
+  font-family: 'Montez';
+  line-height: 26px;
+  font-size: 130%;
+}
+
+.monofont-block {
+  // monospace font
+  margin: auto;
+  font-family: 'Slabo';
+  width: max-content;
+  color: #000000;
+  padding: 0em 0.8em;
+  font-size: 95%;
+  line-height: 20px;
+  border: 0.5pt solid #999999;
+  border-radius: 3px;
+}
+
+.sticker-block {
+  color: #b35900;
+  // background-color: #ececec;
+  // background-color: #fdfdfd;
+  border: 1pt solid #e7dbd1;
+  box-shadow: 0px 0px 6px rgba(244,164,96,0.3);
+  // box-shadow: 0px 0px 6px #e7dbd1;
+  // margin: auto;
+  font-family: 'Slabo';
+  width: max-content;
+  padding: 0em 0.8em;
+  font-size: 95%;
+  line-height: 3px;
+  border-radius: 5px;
+}
+
+.red-block {
+  // with monospace font
+  padding: 0.1em 0.8em;
+  background-color: #f5deb3;
+  color: #262626;
+  font-size: 92%;
+  // border-radius: 3px;
+  box-shadow: 0pt 0pt 0pt #eee8d5;
+}
+
+.vertbar-block {
+  // vertical-bar and big margin for questions or emphasis
+  line-height: 27px;
+  font-family: 'Linden Hill';
+  margin: 45px 50px 45px 100px;
+  font-size: 120%;
+  color: #303b52;
+  padding: 0 0 0 15px;
+  border-left: 0.5px solid #425170;
+  width: max-content;
+}
+
+.vertbarsmall-block {
+  // less space before and after the vertbar section
+  line-height: 27px;
+  font-family: 'Linden Hill';
+  margin: 45px 50px 10px 10px;
+  font-size: 120%;
+  color: #303b52;
+  padding: 0 0 0 20px;
+  border-left: 0.5px solid #425170;
+  width: max-content;
+}
+
+.emphasis-block {
+  line-height: 27px;
+  font-family: 'Montserrat';
+  margin: 30px 100px;
+  color: #911808;
+}
+
+.emph-block {
+  line-height: 2.6rem;
+  font-weight: 600;
+  font-size: 1.8rem;
+  font-family: 'Montserrat';
+  color: #e8761e;
+  // margin: 10px 0;
+}
+
+.emphbig-block {
+  color: #264d73;
+  line-height: 2.2rem;
+  font-weight: 400;
+  font-size: 2.3rem;
+  line-height: 4rem;
+}
+
+.footnote-definition {
+  font-size: 83%;
+  margin: 4rem 0 0 0.5rem;
+  line-height: 2.5rem;
+  ol {
+    p {
+      margin: 1.8rem 0 0 0.2rem;
+    }
+  }
+}
+
+/* Two image containers (use 25% for four, 33.33% for three, etc) */
+.column {
+  float: left;
+  width: 50%;
+  padding: 5px;
+}
+
+/* Clear floats after image containers */
+.row::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+
+.copyright {
+  font-size: 1.3rem;
+  @media only screen and (max-width : 480px) {
+    font-size: 0.8rem;
+  }
+}
+
 // bootstrap SVG-Icons
 .bi {
   display: inline-block;
