@@ -4,14 +4,16 @@ slug = "bashfeatures"
 katex = true
 +++
 
+{{<ex>}}
+You can find this webpage at:
+{{</ex>}}
+
 # https://wgpages.netlify.app/bashFeatures
 
 <!-- {{<cor>}}Friday, November 4, 2022{{</cor>}}\ -->
 <!-- {{<cgr>}}1:00pm - 2:30pm{{</cgr>}} -->
 
 <!-- <\!-- {{< figure src="/img/qr-formats.png" >}} -\-> -->
-
-{{< toc >}}
 
 ## Links
 
