@@ -1,0 +1,12 @@
+<figure style="display: table; margin: {{ .Get "margin" }} auto">
+  <center>
+    <img src="{{ .Get "src" }}" style='border-radius: 10px; background-color:{{ .Get "bg" }}' title="{{ .Get "title" }}" width="{{ .Get "width" }}">
+  </center>
+  <div align="right" style="font-size: 1.3rem; line-height: {{ .Get "line-height" }}">
+    <figcaption>
+      <em>
+ 	{{ .Inner | markdownify }}
+      </em>
+    </figcaption>
+  </div>
+</figure>
