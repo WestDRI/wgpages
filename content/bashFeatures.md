@@ -167,6 +167,8 @@ echo ${author: -2}     # last two characters; important to have space there!
 echo ${author: -5:3}   # display 3 characters starting from number -5; important to have space there!
 ```
 
+If you want to perform more granular operations with bash strings, e.g. work with patterns, you can look into
+regular expressions (not covered in this webinar).
 
 
 <!-- If you want to return the index of a substring match: -->
