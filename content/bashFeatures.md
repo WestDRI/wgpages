@@ -561,4 +561,34 @@ I can run the original `ls` command without loosing my alias and without botheri
 ### $_
 
 
-### ^old^new
+### Quick substitution
+
+If you want to rerun your last command with a substitution (e.g. you made a typo in the last command and you want to re-run it without the typo, or you are running a second command very similar to your last command), you could recall the last command with C-p and navigate to the part that needs to be changed.
+
+But there is a much faster method: **the quick substitution of `old` by `new` simply by typing: `^old^new`.**
+
+{{<ex>}}
+**Example**
+
+I already ran:
+{{</ex>}}
+
+```
+echo This is a test
+```
+
+{{<ex>}}
+Now, if I run:
+{{</ex>}}
+
+```
+^test^cool test
+```
+
+{{<ex>}}
+It will actually run the command:
+{{</ex>}}
+
+```
+echo This is a cool test
+```
