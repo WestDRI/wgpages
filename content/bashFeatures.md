@@ -531,18 +531,21 @@ Another option is to use the full path of the command (e.g. `/usr/bin/<command>`
 Still, there is an even easier method: **simply prepend your alias with `\`.**
 
 {{<ex>}}
-Example:
+**Example**
+
+I have an alias called `ls` for `ls --color`. I can know this by typing any of:
 {{</ex>}}
-<br>
 
 ```sh
-# I have an alias called `ls` for `ls --color`
-# I can know this by typing any of:
 alias ls
 type ls
+```
 
-# I can run the original `ls` command without loosing my alias
-# and without bothering with the full path of `ls` with:
+{{<ex>}}
+I can run the original `ls` command without loosing my alias and without bothering with the full path of `ls` with:
+{{</ex>}}
+
+```
 \ls
 ```
 
