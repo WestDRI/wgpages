@@ -520,9 +520,31 @@ extractEmails contact.txt
 ### fc
 
 
-### Easy access to unaliased version of command
+### Easy access to unaliased versions of commands
 
-`\` for unaliased form of commands
+If you have created aliases which use the names of Bash commands, calling those commands will call the aliases. You may however occasionally need to use the non-aliased commands.
+
+One way to do this is to unalias your alias with `unalias <command>`. But then, you have lost your alias for the rest of your session or until you resource your .bashrc file.
+
+Another option is to use the full path of the command (e.g. `/usr/bin/<command>`). If you don't know the path of the command, you can find it with `which <command>`.
+
+Still, there is an even easier method: **simply prepend your alias with `\`.**
+
+{{<ex>}}
+Example:
+{{</ex>}}
+<br>
+
+```sh
+# I have an alias called `ls` for `ls --color`
+# I can know this by typing any of:
+alias ls
+type ls
+
+# I can run the original `ls` command without loosing my alias
+# and without bothering with the full path of `ls` with:
+\ls
+```
 
 ### command file
 
