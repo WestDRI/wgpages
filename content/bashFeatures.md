@@ -51,7 +51,7 @@ We regularly teach bash in our summer/etc schools:
 
 In previous webinars we've also taught 3rd-party command-line tools such as fuzzy finder `fzf`, Git terminal
 UI `lazygit`, syntax highlighter `bat`, a fast alternative to grep `ripgrep`, a really fast `find` alternative
-`fd`, and so no.
+`fd`, `autojump` replacement for `cd` that learns and adapts to your use, and so on.
 
 Today we would like to focus on some useful built-in bash features that we rarely get to demo.
 
@@ -97,8 +97,8 @@ function run() {
 run
 ```
 
-Breaking execution with Ctrl-C will leave you in `run` every time. You can modify your function so that Ctrl-C
-will always take you to `src`:
+Breaking execution with Ctrl-C will leave you in `run` every time. You can modify your function to change
+directory and run the code in a subshell so that Ctrl-C will always take you to `src`:
 
 ```sh
 cd ../src
@@ -499,8 +499,8 @@ done
 
 ### Python inside self-contained bash functions
 
-`<<` -- called *here-document* structure in bash -- is used to pass some input along with its ending pattern
-to a program, e.g.
+The operator `<<` -- called *here-document* structure in bash -- is used to pass some text input along with
+its ending pattern to a program, e.g.
 
 ```sh
 wc -l << EOF
