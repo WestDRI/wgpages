@@ -385,8 +385,9 @@ $@    # all arguments
 Alternatively, we can treat all arguments as an array:
 
 ```sh
-arr=($@)                  # all arguments stored as an array
+arr=($@)                  # store all arguments inside an array
 num=${#arr[@]}            # the length of this array
+num=$#                    # same
 echo ${arr[@]:0:$num-1}   # all arguments but the last
 echo ${arr[$num-1]}       # last argument
 ```
@@ -403,12 +404,13 @@ function move() {
 ```
 
 Why do we want to use it?
-- in `/project` the 1TB (or higher) quota is applied to all files with the group ID `def-<PI>`
+- on our HPC clusters in `/project` the 1TB (or higher) quota is applied to all files with the group ID
+  `def-<PI>`
   - the quota for group ID `$USER` is almost zero
 - by default, all files in `/home`, `/scratch` have group ID `$USER`
 - the usual `mv` command preserves group ID &nbsp;⮕&nbsp; moving files with `mv` from `/home`,`/scratch` to
-  `/project` will almost certainly exceed your quota
-- solution: use `cp` followed by `rm`, i.e. what we coded above
+  `/project` will almost certainly exceed your quota for group ID `$USER`
+- solution: use `cp` (modifies quota accordingly) followed by `rm`, i.e. what we coded above
 
 
 
