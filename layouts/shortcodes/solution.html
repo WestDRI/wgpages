@@ -1,4 +1,5 @@
 <details>
-  <summary> Click the triangle to see the solution{{ (.Get 0) | markdownify }}</summary>
+  <summary> <b>Solution {{ .Get "num" }}</b>{{ (.Get 0) | markdownify }}</summary>
   {{ .Inner | markdownify }}
+  <div>&nbsp;</div>
 </details>

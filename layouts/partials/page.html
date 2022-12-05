@@ -2,8 +2,35 @@
   <article>
     <header>
       <h1>{{ .Title }}</h1>
+      {{ if .TableOfContents }}
+      <br>
+      <br>
+      <div class="toggle">
+      	<i class="fas fa-plus-circle"></i>
+	&nbsp;Table of contents
+      </div>
+      <div class="panel">
+	{{ .TableOfContents }}
+      </div>
+      {{ end }}
     </header>
-
-    {{ .Content }}
-  </article>
+    <div>
+      {{ .Content }}
+    </div>
 </section>
+
+<script>
+  var acc = document.getElementsByClassName("toggle")
+  var i
+  for (i = 0; i < acc.length; i++) {
+      acc[i].addEventListener("click", function() {
+  	  this.classList.toggle("active")
+  	  var panel = this.nextElementSibling
+  	  if (panel.style.maxHeight){
+  	      panel.style.maxHeight = null
+  	  } else {
+  	      panel.style.maxHeight = panel.scrollHeight + "px"
+  	  }
+      })
+  }
+</script>

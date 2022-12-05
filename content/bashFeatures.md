@@ -4,14 +4,15 @@ slug = "bashfeatures"
 katex = true
 +++
 
+{{<ex>}}
+You can find this webpage at:
+{{</ex>}}
 # https://wgpages.netlify.app/bashfeatures
 
 <!-- {{<cor>}}Friday, November 4, 2022{{</cor>}}\ -->
 <!-- {{<cgr>}}1:00pm - 2:30pm{{</cgr>}} -->
 
 <!-- <\!-- {{< figure src="/img/qr-formats.png" >}} -\-> -->
-
-{{< toc >}}
 
 ## Links
 
@@ -142,7 +143,8 @@ run
 <!-- (myvar="temporary value"; echo $myvar) && echo $myvar   # myvar defined only inside the subshell -->
 <!-- ``` -->
 
-You can use subshells for testing things, so you don't pollute the current shell with temporary definitions.
+Another use case: utilize subshells for testing things, so you don't pollute the current shell with temporary
+definitions.
 
 - **pro**: very easy to use
 - **con**: takes slightly longer to execute (opens a subshell) but in most use cases this is probably not an issue
@@ -556,14 +558,80 @@ cat contact.txt
 extractEmails contact.txt
 ```
 
-
-
-
 ## Second part (Marie)
 
 ### fc
+
+
+### Easy access to unaliased versions of commands
+
+If you have created aliases which use the names of Bash commands, calling those commands will call the aliases. You may however occasionally need to use the non-aliased commands.
+
+One way to do this is to unalias your alias with `unalias <command>`. But then, you have lost your alias for the rest of your session or until you resource your .bashrc file.
+
+Another option is to use the full path of the command (e.g. `/usr/bin/<command>`). If you don't know the path of the command, you can find it with `which <command>`.
+
+Still, there is an even easier method: **simply prepend your alias with `\`.**
+
+{{<ex>}}
+**Example**
+
+I have an alias called `ls` for `ls --color`. I can know this by typing any of:
+{{</ex>}}
+
+```sh
+alias ls
+type ls
+```
+
+{{<ex>}}
+I can run the original `ls` command without loosing my alias and without bothering with the full path of `ls` with:
+{{</ex>}}
+
+```
+\ls
+```
+
 ### command file
+
+
 ### command command -V
+
+
 ### cp file{,.bak} and mv file.{org,txt}
+
+
 ### $_
-### ^old^new
+
+
+### Quick substitution
+
+If you want to rerun your last command with a substitution (e.g. you made a typo in the last command and you want to re-run it without the typo, or you are running a second command very similar to your last command), you could recall the last command with C-p and navigate to the part that needs to be changed.
+
+But there is a much faster method: **the quick substitution of `old` by `new` simply by typing: `^old^new`.**
+
+{{<ex>}}
+**Example**
+
+I already ran:
+{{</ex>}}
+
+```
+echo This is a test
+```
+
+{{<ex>}}
+Now, if I run:
+{{</ex>}}
+
+```
+^test^cool test
+```
+
+{{<ex>}}
+It will actually run the command:
+{{</ex>}}
+
+```
+echo This is a cool test
+```
