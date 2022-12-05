@@ -719,7 +719,7 @@ JPEG image data, JFIF standard 1.01, resolution (DPI), density 72x72, segment le
 {{<br size="4">}}
 
 {{<emph>}}
-Where this is most useful is for binaries from which it is harder to gather information.
+This is most useful for binaries from which it is harder to gather information.
 {{</emph>}}
 <br>
 {{<ex>}}
@@ -750,7 +750,9 @@ Example of object file (`.o`):
 ELF 64-bit LSB relocatable, x86-64, version 1 (SYSV), not stripped
 ```
 
-### command command -V
+### 
+
+command command -V
 
 
 ### cp file{,.bak} and mv file.{org,txt}
