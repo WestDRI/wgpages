@@ -4,7 +4,7 @@ slug = "bashfeatures"
 katex = true
 +++
 
-# https://wgpages.netlify.app/bashFeatures
+# https://wgpages.netlify.app/bashfeatures
 
 <!-- {{<cor>}}Friday, November 4, 2022{{</cor>}}\ -->
 <!-- {{<cgr>}}1:00pm - 2:30pm{{</cgr>}} -->
@@ -33,8 +33,7 @@ of them with you in this webinar!
 
 In this presentation, we talk about running commands in a subshell, subsetting string variables, Bash arrays,
 modifying separators with IFS, running Python code from inside self-contained Bash functions, editing your
-command history, running unaliased versions of commands, handy use of bracket expansion, and a few other
-topics.
+command history, running unaliased versions of commands, handy use of brace expansion, and a few other topics.
 
 ## Intro
 
@@ -43,7 +42,7 @@ We regularly teach bash in our summer/etc schools:
 - navigating files and directories; creating, moving and copying things
 - archives and compression
 - transferring files and directories to/from remote computers
-- wildcards, redirection, pipes, and aliases
+- wildcards, redirection, pipes, and aliases; brace expansion
 - loops and variables; command substitution
 - scripts and functions, briefly on conditionals
 - finding things with `grep` and `find`; tying things with `xargs`
@@ -61,48 +60,92 @@ Today we would like to focus on some useful built-in bash features that we rarel
 
 <!-- https://askubuntu.com/questions/606378/when-to-use-vs-in-bash -->
 
-- to avoid any side-effects in the current shell
+- can be used to avoid any side-effects in the current shell
 - commands inside `()` execute in a subshell
 - use directly in the shell or when defining a function
-- one common use: when testing, cd temporarily into another directory and run something there, Ctrl-C will
-  break and take you back
+
+All operations inside `()` will be local to the subshell:
+
+```sh
+cd ~/Documents
+(cd ~/Desktop; pwd)
+pwd
+```
+
+```sh
+(export greeting="hello" && echo $greeting)
+echo $greeting
+```
+
+```sh
+(alias ll="ls -A" && alias ll)
+alias ll
+```
+
+One common use: when testing, cd temporarily into another directory and run something there, Ctrl-C will break
+and take you back to the original directory. Consider a code with separate `src` and `run` subdirectories:
 
 ```sh
 cd src
-compile the code
-cp code.exe ../run
-(cd ../run && mpirun -np 8 ./code.exe --output dataset-%04ts.vtpd)
-break execution with Ctrl-C (and you are back in src)
-```
-
-You can include the above into a script/function; run it and then break to find yourself back in `src`.
-
-Now consider these two functions:
-
-```sh
-function tmp() {     # function body executes in the current shell
-  cd /tmp
-  pwd                # do something in that directory
+function run() {
+  make
+  /bin/cp pi ../run
+  cd ../run
+  ./pi
 }
-cd; tmp; pwd   # you'll end up in /tmp
+run
 ```
 
+Breaking execution with Ctrl-C will leave you in `run` every time. You can modify your function so that Ctrl-C
+will always take you to `src`:
+
 ```sh
-function tmp() (     # function body executes in a subshell
-  cd /tmp
-  pwd                # do something in that directory
+cd ../src
+function run() {
+  make
+  /bin/cp pi ../run
+  (cd ../run ; ./pi)
+}
+run
+```
+
+Another solution is to define `run(){...}` as `run()(...)` -- then the entire function will run in a subshell:
+
+```sh
+function run() (
+  make
+  /bin/cp pi ../run
+  cd ../run ; ./pi
 )
-cd; tmp; pwd   # you'll end up in your home
+run
 ```
 
-```sh
-(myvar="temporary value"; echo $myvar) && echo $myvar   # myvar defined only inside the subshell
-```
+<!-- Now consider these two functions: -->
 
-You can use this for testing things, so you don't pollute the current shell with temporary definitions.
+<!-- ```sh -->
+<!-- function tmp() {     # function body executes in the current shell -->
+<!--   cd /tmp -->
+<!--   pwd                # do something in that directory -->
+<!-- } -->
+<!-- cd; tmp; pwd   # you'll end up in /tmp -->
+<!-- ``` -->
+
+<!-- ```sh -->
+<!-- function tmp() (     # function body executes in a subshell -->
+<!--   cd /tmp -->
+<!--   pwd                # do something in that directory -->
+<!-- ) -->
+<!-- cd; tmp; pwd   # you'll end up in your home -->
+<!-- ``` -->
+
+<!-- ```sh -->
+<!-- (myvar="temporary value"; echo $myvar) && echo $myvar   # myvar defined only inside the subshell -->
+<!-- ``` -->
+
+You can use subshells for testing things, so you don't pollute the current shell with temporary definitions.
 
 - **pro**: very easy to use
-- **con**: takes longer to execute (opens a subshell) but in most use cases this is probably not an issue
+- **con**: takes slightly longer to execute (opens a subshell) but in most use cases this is probably not an issue
 
 ### Subsetting string variables
 
