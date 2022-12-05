@@ -398,7 +398,7 @@ function move() {
     num=${#arr[@]}
     objects=${arr[@]:0:$num-1}
     last=${arr[$num-1]}
-    echo $objects ">>>" $last
+    echo MOVING $objects TO $last
     /bin/cp $objects $last && /bin/rm $objects
 }
 ```
@@ -406,11 +406,14 @@ function move() {
 Why do we want to use it?
 - on our HPC clusters in `/project` the 1TB (or higher) quota is applied to all files with the group ID
   `def-<PI>`
+  - the `/project` quota is applied to the entire research group
   - the quota for group ID `$USER` is almost zero
 - by default, all files in `/home`, `/scratch` have group ID `$USER`
-- the usual `mv` command preserves group ID &nbsp;⮕&nbsp; moving files with `mv` from `/home`,`/scratch` to
-  `/project` will almost certainly exceed your quota for group ID `$USER`
-- solution: use `cp` (modifies quota accordingly) followed by `rm`, i.e. what we coded above
+- **problem**: the usual `mv` command preserves group ID &nbsp;⮕&nbsp; moving files with `mv` from
+  `/home`,`/scratch` to `/project` will almost certainly exceed your quota for group ID `$USER` &nbsp;⮕&nbsp;
+  trouble writing files, running jobs, etc.
+- solution: use `cp` (modifies quota accordingly) followed by `rm`, i.e. replace `mv` with our new function
+  `move`
 
 
 
