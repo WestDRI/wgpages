@@ -57,7 +57,7 @@ Today we would like to focus on some useful built-in bash features that we rarel
 
 ## First part (Alex)
 
-### subshells with ()
+### Subshells with ()
 
 <!-- https://askubuntu.com/questions/606378/when-to-use-vs-in-bash -->
 
@@ -212,8 +212,8 @@ echo ${author: -2}     # last two characters; important to have space there!
 echo ${author: -5:3}   # display 3 characters starting from number -5; important to have space there!
 ```
 
-If you want to perform more granular operations with bash strings, e.g. work with patterns, you can look into
-regular expressions (not covered in this webinar).
+**Note**: If you want to perform more granular operations with bash strings, e.g. work with patterns, you can
+look into regular expressions (not covered in this webinar).
 
 
 <!-- If you want to return the index of a substring match: -->
@@ -242,6 +242,11 @@ regular expressions (not covered in this webinar).
 <!-- echo ${library% *}     # delete the shortest match of ` *` from the back -->
 <!-- echo ${library%% *}    # delete the longest match of ` *` from the back -->
 <!-- ``` -->
+
+
+
+
+
 
 
 
@@ -364,6 +369,54 @@ ${arr[@]:i:j}   # retrieve j elements starting at index i
 
 
 
+### Little practical example
+
+Now let's apply this knowledge!
+
+Here is the standard bash syntax for arguments passed to a function:
+
+```sh
+$1    # first argument
+$2    # second argument
+$#    # number of arguments
+$@    # all arguments
+```
+
+Alternatively, we can treat all arguments as an array:
+
+```sh
+arr=($@)                  # all arguments stored as an array
+num=${#arr[@]}            # the length of this array
+echo ${arr[@]:0:$num-1}   # all arguments but the last
+echo ${arr[$num-1]}       # last argument
+```
+
+```sh
+function move() {
+    arr=($@)
+    num=${#arr[@]}
+    objects=${arr[@]:0:$num-1}
+    last=${arr[$num-1]}
+    echo $objects ">>>" $last
+    /bin/cp $objects $last && /bin/rm $objects
+}
+```
+
+Why do we want to use it?
+- in `/project` the 1TB (or higher) quota is applied to all files with the group ID `def-<PI>`
+  - the quota for group ID `$USER` is almost zero
+- by default, all files in `/home`, `/scratch` have group ID `$USER`
+- the usual `mv` command preserves group ID &nbsp;⮕&nbsp; moving files with `mv` from `/home`,`/scratch` to
+  `/project` will almost certainly exceed your quota
+- solution: use `cp` followed by `rm`, i.e. what we coded above
+
+
+
+
+
+
+
+
 ### IFS to edit separators
 
 <!-- http://redsymbol.net/articles/unofficial-bash-strict-mode -->
@@ -377,7 +430,7 @@ for word in $phrase; do
 done
 ```
 
-Default IFS is any of <space><tab><newline>, i.e. IFS=$' \n\t':
+Default IFS is any of `space/newline/tab`, i.e. IFS=$'_\n\t':
 
 ```sh
 export IFS     # shows an empty line ... as if it was not set
@@ -389,17 +442,17 @@ IFS=,
 for word in $phrase; do
     echo $word
 done
-IFS=", "        # both characters will be used as separators
+IFS=", "       # both characters will be used as separators
 for word in $phrase; do
     echo $word
 done
-unset IFS     # back to default behaviour
+unset IFS      # back to default behaviour
 for word in $phrase; do
     echo $word
 done
 ```
 
-Why is this useful? One use: IFS can help you deal with files with spaces in their names. Imagine, you want to
+Why is this useful? One use: IFS can help you deal with files with spaces in their names. Imagine you want to
 process some files in a loop:
 
 ```sh
