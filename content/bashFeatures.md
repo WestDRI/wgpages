@@ -173,12 +173,14 @@ echo ${author//s/S}          # replace all first matches of a substring
 echo ${author/Charles }      # if no replacement string supplied, the substring will be deleted
 echo ${author/Charles /}     # the same
 
-original="Charles"             # can use a variable for the substring
-short="C."                     # can use a variable for a replacement string
+original="Charles"           # can use a variable for the substring
+short="C."                   # can use a variable for a replacement string
 echo ${author/$original/$short}
 
 echo ${author/#Ch/ch}        # replace the match only at the start (if found)
 echo ${author/%ns/ns ---}    # replace the match only at the end (if found)
+
+echo ${author/#Charles }ian  # form an adjective (Dickénsian)
 ```
 
 E.g. you can use this to change file extensions:
@@ -213,7 +215,7 @@ echo ${author: -5:3}   # display 3 characters starting from number -5; important
 ```
 
 **Note**: If you want to perform more granular operations with bash strings, e.g. work with patterns, you can
-look into regular expressions (not covered in this webinar).
+look into *regular expressions* (not covered in this webinar).
 
 
 <!-- If you want to return the index of a substring match: -->
@@ -292,6 +294,9 @@ for n in ${threads[@]}; do
     runtime+=($time)    # adding one element per cycle
 done
 echo ${runtime[@]}
+for i in $(seq 1 ${#runtime[@]}); do
+    echo ${threads[i-1]} threads completed in ${runtime[i-1]} seconds
+done
 
 runtime=()
 for n in ${threads[@]}; do
@@ -426,7 +431,7 @@ Why do we want to use it?
 
 <!-- http://redsymbol.net/articles/unofficial-bash-strict-mode -->
 
-The IFS variable -- which stands for Internal Field Separator -- controls how Bash does word splitting.
+The IFS variable -- which stands for *Internal Field Separator* -- controls how Bash does word splitting.
 
 ```sh
 phrase="one,two three four"
@@ -463,8 +468,8 @@ process some files in a loop:
 ```sh
 unset IFS
 touch "my thesis.md" "first results.md"   # really bad idea, but 99% of people do it anyway
-for i in *.md; do      # the wildcard gets expanded here into a string with 2 items => 2 loop iterations
-    ls -l $i           # $i is a string with space; this gives an error, as `ls` sees this string as 2 names
+for i in *.md; do     # the wildcard gets expanded here into a string with 2 items => 2 loop iterations
+    ls -l $i          # $i is a string with space; this gives an error, as `ls` sees this string as 2 names
 	mv $i ${i/.md/.tex}   # this gives an error too, as `mv` sees each string as 2 names
 done
 ```
@@ -472,8 +477,8 @@ done
 This would be a bad way to fix this:
 
 ```sh
-for i in "*.md"; do    # loop over one element (the string with *.md inside) => 1 loop iteration
-    ls -l $i           # $i contains a wildcard that gets expanded here; `ls -l` over 2 items => works
+for i in "*.md"; do   # loop over one element (the string with *.md inside) => 1 loop iteration
+    ls -l $i          # $i contains a wildcard that gets expanded here; `ls -l` over 2 items => works
 	mv $i ${i/.md/.tex}   # 1st wildcat gets expanded into 2 items, 2nd wildcard does not get expanded => error
 done
 ```
