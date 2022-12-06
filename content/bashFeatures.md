@@ -294,14 +294,14 @@ for n in ${threads[@]}; do
     runtime+=($time)    # adding one element per cycle
 done
 echo ${runtime[@]}
-for i in $(seq 1 ${#runtime[@]}); do
-    echo ${threads[i-1]} threads completed in ${runtime[i-1]} seconds
+for i in ${!threads[@]}; do   # cycling through array indices
+    echo ${threads[i]} threads completed in ${runtime[i]} seconds
 done
 
 runtime=()
 for n in ${threads[@]}; do
     time=$(julia -t $n slowSeries.jl)
-    runtime+=("$n threads: $time")   # also adding one element per cycle, b/c of the quotes
+    runtime+=("$n threads: $time")   # also adding one element per cycle with the quotes
 done
 echo ${#runtime[@]}
 for x in "${runtime[@]}"; do
