@@ -655,10 +655,109 @@ I can run the original `ls` command without loosing my alias and without botheri
 \ls
 ```
 
-### command file
+### Determine file types
 
+**The command `file` runs tests to determine the types of files** based on their content (thus independently of any extension(s)).
 
-### command command -V
+{{<ex>}}
+Example outputs:
+{{</ex>}}
+
+```sh
+directory                                                            # directory
+
+symbolic link to </some/path>                                        # symlink
+
+POSIX shell script, ASCII text executable                            # executable shell script
+Python script, ASCII text executable                                 # executable Python script
+Perl script text executable                                          # executable Perl script
+
+ASCII text								                             # text file
+
+empty									                             # empty file
+
+PDF document, version 1.4                                            # .pdf
+PDF document, version 1.7 (zip deflate encoded)                      # .pdf
+
+Git index, version 2, 208 entries		                             # index in .Git repository
+
+GNU dbm 1.x or ndbm database, little endian, 64-bit                  # .db database
+
+Zstandard compressed data (v0.8+)                                    # .zst compressed file
+gzip compressed data, was "<file>.tar", last modified: \
+	 Wed Feb 28 09:25:16 2007, \
+	 from FAT filesystem (MS-DOS, OS/2, NT), \
+	 original size modulo 2^32 24064                                 # .tar.gz compressed archive
+
+MPEG ADTS, layer III, v1, 128 kbps, 44.1 kHz, JntStereo	             # .mp3 sound
+MPEG ADTS, layer III, v1, 128 kbps, 44.1 kHz, Stereo	             # .mp3 sound
+MPEG ADTS, layer III v1, 96 kbps, 44.1 kHz, Monaural                 # .mp3 sound
+FLAC audio bitstream data, 16 bit, stereo, 44.1 kHz, 7670460 samples # .flack sound
+Microsoft ASF							                             # .wma sound
+
+PNG image data, 665 x 742, 8-bit/color RGBA, non-interlaced          # .png image
+GIMP XCF image data, version 011, 161 x 157, RGB Color               # .xcf GIMP file
+SVG Scalable Vector Graphics image                                   # .svg image
+GIF image data, version 89a, 160 x 40                                # .gif image
+
+EPUB document                                                        # .epub book
+DjVu multiple page document                                          # .djvu book
+```
+{{<br size="3">}}
+
+For some file types, you get a lot more information.
+
+{{<ex>}}
+Here are two examples for .jpg:
+{{</ex>}}
+
+```sh
+JPEG image data, JFIF standard 1.01, resolution (DPI), density 72x72, segment length 16, \
+	 Exif Standard: [\012- TIFF image data, little-endian, direntries=6, xresolution=86, \
+						   yresolution=94, resolutionunit=2, software=GIMP 2.10.14, \
+						   datetime=2019:12:04 23:53:09], progressive, precision 8, 161x157, \
+	 components 3
+
+JPEG image data, JFIF standard 1.01, resolution (DPI), density 72x72, segment length 16, \
+	 progressive, precision 8, 395x533, components 3
+```
+{{<br size="4">}}
+
+{{<emph>}}
+This is most useful for binaries from which it is harder to gather information.
+{{</emph>}}
+<br>
+{{<ex>}}
+Example of Executable and Linkable Format on Linux:
+{{</ex>}}
+
+```sh
+ELF 64-bit LSB pie executable, x86-64, version 1 (SYSV), dynamically linked, \
+	interpreter /lib64/ld-linux-x86-64.so.2, \
+	BuildID[sha1]=0e291ede656cae727e7a1d056c54392452b0fc59, for GNU/Linux 4.4.0, stripped
+```
+{{<br size="3">}}
+
+{{<ex>}}
+Example of Windows .exe file:
+{{</ex>}}
+
+```sh
+PE32+ executable (console) x86-64, for MS Windows
+```
+{{<br size="3">}}
+
+{{<ex>}}
+Example of object file (`.o`):
+{{</ex>}}
+
+```sh
+ELF 64-bit LSB relocatable, x86-64, version 1 (SYSV), not stripped
+```
+
+### 
+
+command command -V
 
 
 ### cp file{,.bak} and mv file.{org,txt}
