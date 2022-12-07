@@ -809,9 +809,6 @@ To get information on a program, you can run `command -V <program>`.
 Examples (outputs in comments):
 {{</ex>}}
 
-### cp file{,.bak} and mv file.{org,txt}
-
-
 ### $_
 ```sh
 command -V python  # python is /usr/bin/python
@@ -819,17 +816,27 @@ command -V pwd	   # pwd is a shell builtin
 command -V ls	   # ls is aliased to `ls --color=auto' (because I have this alias)
 ```
 
+### Brace expansion to create backup files or change file extensions
 
+Brace expansion is useful in countless contexts (e.g. `touch file{1..5}.txt` will create the files `file1.txt` to `file5.txt`).
 
+Here are two situations where brace expansion is convenient: creating backup files and changing the extensions of files.
 
 {{<ex>}}
+Example1, creating backup files:
 {{</ex>}}
 
+```sh
+cp <file>{,.bak}    # Creates a copy of <file> called <file>.bak
 ```
+{{<br size="3">}}
 
 {{<ex>}}
+Example2, changing the extension of files:
 {{</ex>}}
 
+```sh
+mv <file>.{txt,md}	# Changes <file>.txt to <file>.md
 ```
 
 {{<ex>}}
