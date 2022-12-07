@@ -801,15 +801,23 @@ Example of object file (`.o`):
 ELF 64-bit LSB relocatable, x86-64, version 1 (SYSV), not stripped
 ```
 
-### 
+### Get information on a program
 
-command command -V
+To get information on a program, you can run `command -V <program>`.
 
+{{<ex>}}
+Examples (outputs in comments):
+{{</ex>}}
 
 ### cp file{,.bak} and mv file.{org,txt}
 
 
 ### $_
+```sh
+command -V python  # python is /usr/bin/python
+command -V pwd	   # pwd is a shell builtin
+command -V ls	   # ls is aliased to `ls --color=auto' (because I have this alias)
+```
 
 
 
