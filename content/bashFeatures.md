@@ -626,7 +626,7 @@ extractEmails contact.txt
 
 ### Fix commands
 
-The builtin utility `fc` ("fix command") allows to rerun or edit and rerun previous commands. This is particularly useful if you made a typo in a long command or a series of commands.
+The builtin utility `fc` ("fix command") allows to rerun or edit and rerun previous commands. This is particularly useful if you made a typo in a long command or a series of commands. It is also convenient if you want to rerun a series of commands.
 
 Without any flag, `fc` will open your default text editor with the last command for you to edit. After saving and exiting your editor, the edited command will run.
 
@@ -639,7 +639,7 @@ With flags, you can:
 - re-execute a particular command without edit: `fc -s <number>`,
 - re-execute all commands between `<number1>` and `<number2>` without edit: `fc -s <number1> <number2>`.
 
-Additionally, you can specify the editor with with the `-e` flag.
+Additionally, you can specify the editor with the `-e` flag.
 
 {{<ex>}}
 Examples:
