@@ -18,7 +18,8 @@ You can find this webpage at:
 
 - Fall 2022 training schedule: https://bit.ly/wg2022b
 - Winter/spring 2023 training schedule: https://bit.ly/wg2023a
-- Training materials: https://training.westdri.ca (upcoming and archived events, ~100 recorded webinars)
+- Training materials: https://training.westdri.ca (upcoming and archived events, ~100 recorded webinars,
+  subscribe to our training events mailing list)
 - Documentation: https://docs.alliancecan.ca
 - Email: training "at" westdri "dot" ca
 
