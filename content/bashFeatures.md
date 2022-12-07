@@ -657,7 +657,7 @@ fc -s 54     # rerun command number 54 without edit
 
 ### Quick substitution
 
-Still on the subject of fixing commands, if you want to rerun your last command with a substitution (e.g. you made a typo in the last command and you want to re-run it without the typo, or you are running a second similar command), you could recall the last command with C-p and navigate to the part that needs to be changed or you could run `fc` and edit in your editor the part that needs changing.
+Still on the subject of fixing commands, if you want to rerun your last command with a substitution (e.g. you made a typo in the last command and you want to re-run it without the typo, or you are running a second similar command), you could recall the last command with C-p and navigate to the part that needs changing or you could run `fc` and do the same in your editor.
 
 But there is a much faster method: **the quick substitution of `old` by `new` simply by typing: `^old^new`.**
 
@@ -718,7 +718,7 @@ I can run the original `ls` command without loosing my alias and without botheri
 
 ### Determine file types
 
-**The command `file` runs tests to determine the types of files** based on their content (thus independently of any extension(s)).
+**The command `file` runs tests to determine the types of files based on their content** (thus independently of any extension(s)).
 
 {{<ex>}}
 Example outputs:
@@ -827,7 +827,8 @@ Examples (outputs in comments):
 ```sh
 command -V python  # python is /usr/bin/python
 command -V pwd	   # pwd is a shell builtin
-command -V ls	   # ls is aliased to `ls --color=auto' (because I have this alias)
+command -V ls	   # ls is aliased to `ls --color'
+# The last one because I have this alias on my system
 ```
 
 ### Brace expansion to create backup files or change file extensions
@@ -865,3 +866,5 @@ Example:
 mkdir test
 cd $_
 ```
+
+When using commands with long arguments (e.g. long file paths), this can be really convenient.
