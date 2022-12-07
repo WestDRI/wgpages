@@ -14,7 +14,7 @@ canonifyurls = true
     style = "manni"   # Chroma Style Gallery https://xyproto.github.io/splash/docs/longer/all.html
 
 [params]
- repourl = "https://github.com/razoumov/wgpages"
+ repourl = "https://github.com/WestDRI/wgpages"
  info = "Various courses"
  sfuavatar = "/img/sfu.png"
  dracavatar = "/img/drac.png"
