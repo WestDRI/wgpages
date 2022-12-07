@@ -626,7 +626,7 @@ extractEmails contact.txt
 
 ### Fix commands
 
-The builtin utility `fc` ("fix command") allows to rerun or edit and rerun previous commands. This is particularly useful if you made a typo in a long command or a series of commands. It is also convenient if you want to rerun a series of commands.
+**The builtin utility `fc` ("fix command") allows to rerun or edit and rerun previous commands**. This is particularly useful if you made a typo in a long command or a series of commands. It is also convenient if you want to rerun a series of commands.
 
 Without any flag, `fc` will open your default text editor with the last command for you to edit. After saving and exiting your editor, the edited command will run.
 
@@ -657,7 +657,7 @@ fc -s 54     # rerun command number 54 without edit
 
 ### Quick substitution
 
-Still on the subject of fixing commands, if you want to rerun your last command with a substitution (e.g. you made a typo in the last command and you want to re-run it without the typo, or you are running a second command very similar to your last command), you could recall the last command with C-p and navigate to the part that needs to be changed.
+Still on the subject of fixing commands, if you want to rerun your last command with a substitution (e.g. you made a typo in the last command and you want to re-run it without the typo, or you are running a second similar command), you could recall the last command with C-p and navigate to the part that needs to be changed or you could run `fc` and edit in your editor the part that needs changing.
 
 But there is a much faster method: **the quick substitution of `old` by `new` simply by typing: `^old^new`.**
 
