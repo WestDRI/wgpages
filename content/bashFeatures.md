@@ -258,18 +258,18 @@ look into *regular expressions* (not covered in this webinar).
 ```sh
 a=(10 20 30 hello)
 echo $a              # only the first element
-echo ${a[0]}         # the same
+echo ${a[@]}         # all elements, i.e. @=all
+echo ${a[0]}         # specific element
 echo $a[0]           # concatenate $a (the first element) and "[0]"
-echo ${a[@]}         # output all elements, i.e. @=all
 for x in ${a[@]}; do
   echo $x
 done
 
 a=(10 20 30 hello "hi there")
-for x in ${a[@]}; do     # will put hi,there in separate lines (6 loop iterations)
+for x in ${a[@]}; do     # puts hi,there in separate lines (6 loop iterations)
   echo $x
 done
-for x in "${a[@]}"; do   # proper way to iterate over bash array elements; 5 loop iterations
+for x in "${a[@]}"; do   # better way to iterate over bash array elements; 5 loop iterations
   echo $x
 done
 
