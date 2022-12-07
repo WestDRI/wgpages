@@ -618,8 +618,27 @@ extractEmails contact.txt
 
 ## Second part (Marie)
 
-### fc
+### Fix commands
 
+The builtin utility `fc` allows to edit previously run commands. This is particularly useful if you made a typo in a long command or a series of commands.
+
+Without any flag, `fc` will open your default text editor with the last command in it for you to edit. After saving and exiting your editor, the edited command will run.
+
+You can list previous commands with `fc -l` (they will be numbered), open a particular command or commands from that list with `fc <number>` or `fc <number1> <number2>`, re-execute a command with `fc -s`, or change the editor with `fc -e <editor>`.
+
+{{<ex>}}
+Examples:
+{{</ex>}}
+
+```sh
+fc		     # open last command with default editor to edit, then rerun
+fc -e emacs	 # open last command with Emacs to edit, then rerun
+
+fc -l	     # list past commands (they will be numbered)
+fc 34 38     # open default editor with commands number 34 to 38 to edit, then rerun
+
+fc -s 54     # rerun command number 54 without edit
+```
 
 ### Easy access to unaliased versions of commands
 
