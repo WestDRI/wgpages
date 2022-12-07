@@ -637,7 +637,7 @@ With flags, you can:
 - open all commands between `<number1>` and `<number2>` in your editor (they will all rerun once you save and close): `fc <number1> <number2>`,
 - re-execute the last command with `fc -s`,
 - re-execute a particular command without edit: `fc -s <number>`,
-- re-execute all commands between `<number1>` and `<number2>` without edit: `fc -s <number1> <number2>`,
+- re-execute all commands between `<number1>` and `<number2>` without edit: `fc -s <number1> <number2>`.
 
 Additionally, you can specify the editor with with the `-e` flag.
 
