@@ -809,7 +809,6 @@ To get information on a program, you can run `command -V <program>`.
 Examples (outputs in comments):
 {{</ex>}}
 
-### $_
 ```sh
 command -V python  # python is /usr/bin/python
 command -V pwd	   # pwd is a shell builtin
@@ -839,7 +838,15 @@ Example2, changing the extension of files:
 mv <file>.{txt,md}	# Changes <file>.txt to <file>.md
 ```
 
+### Expansion to the last argument of previous command
+
+`$_` will expand to the last argument of the previous command.
+
 {{<ex>}}
+Example:
 {{</ex>}}
 
+```sh
+mkdir test
+cd $_
 ```
