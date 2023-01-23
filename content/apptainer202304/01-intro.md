@@ -4,6 +4,33 @@ slug = "01-intro"
 weight = 1
 +++
 
+{{< toc >}}
+
+
+<!-- Paul Preney on 2022-Dec-19: For a course, describe how to use Apptainer v1.0. In January I will be -->
+<!-- teaching an Apptainer course. I will focus on v1.0 features and methodology. As you've seen Apptainer v1.1 has -->
+<!-- issues with "fakeroot" related things and IMHO such is not completely ready for normal users. -->
+
+<!-- What would I recommend on how to best build a container? I strongly recommend using one's own computer where -->
+<!-- one has root access, a virtual machine where one has root access, one's own cloud instance where one has root -->
+<!-- access, etc. and avoid using directly or indirectly any non-local disk space (i.e., avoid NFS and lustre and -->
+<!-- the Apptainer docs say this too). Yes I know this isn't ideal or what everyone wants to hear. Building on -->
+<!-- networked disk space is unwise because of two reasons: stuff like this -->
+<!-- https://apptainer.org/docs/admin/1.1/installation.html#lustre-gpfs (NFS isn't much better -->
+<!-- https://apptainer.org/docs/admin/1.1/installation.html#nfs ) and Apptainer reads and writes a LOT of space -->
+<!-- which all much be transferred over the network in order to build images. Building without root is unwise -->
+<!-- (IMHO) because --fakeroot can work but in my experience it won't always work whereas using sudo -->
+<!-- will. Guaranteed results are way better than flaky results. -->
+
+<!-- Can some images be built as a user? Sure -- but the larger these images are, it seems the greater the chances -->
+<!-- things won't work out especially on our clusters (as one is typically using NFS or Lustre -- and it is at -->
+<!-- least very slow-to-build even if it does work, or, fails after a waiting a long time). Worse users have no -->
+<!-- idea how big the images will be that they are building really. Small images will typically build. Increasingly -->
+<!-- larger images increasingly encounter issues. Sigh. (edited) -->
+
+
+
+
 Apptainer (until recently called Singularity):
 
 - is an open-source project developed within the research community since 2015, first by the Lawrence Berkeley
@@ -98,13 +125,7 @@ There are few other container engines focusing on specific features.
 ## Singularity on HPC systems
 
 ```sh
-module load singularity
-singularity --version   # singularity version 3.7.4 on the training cluster
-singularity             # see the list of available commands
-```
-
-```sh
-module load apptainer
-apptainer --version   # apptainer version 1.0.2 on production clusters
+module load apptainer/1.1.3
+apptainer --version
 apptainer             # see the list of available commands
 ```

@@ -4,36 +4,40 @@ slug = "03-run"
 weight = 3
 +++
 
+{{< toc >}}
+
+## Different ways to run a container
+
 If you have not done so already, let's pull the latest Ubuntu container from Docker:
 
 ```sh
 # cd ~/tmp
-module load singularity
+module load apptainer/1.1.3
 # salloc --cpus-per-task=1 --time=3:00:0 --mem-per-cpu=3600
-singularity pull ubuntu.sif docker://ubuntu
+apptainer pull ubuntu.sif docker://ubuntu
 ```
 
 We already saw some of these commands:
 
-- `singularity shell ubuntu.sif` launches the container and opens an interactive shell inside it
-- `singularity exec ubuntu.sif <command>` launches the container and runs a command inside it
-- `singularity run ubuntu.sif` launches the container and executes the default runscript
+- `apptainer shell ubuntu.sif` launches the container and opens an interactive shell inside it
+- `apptainer exec ubuntu.sif <command>` launches the container and runs a command inside it
+- `apptainer run ubuntu.sif` launches the container and executes the default runscript
 
-Singularity matches users between the container and the host. For example, if you run a container that needs
+Apptainer matches users between the container and the host. For example, if you run a container that needs
 to be root, you also need to be root outside the container.
 
 ## Running a single command
 
 ```sh
-singularity exec ubuntu.sif ls /
-singularity exec ubuntu.sif ls /; whoami
-singularity exec ubuntu.sif bash -c "ls /; whoami"   # probably a safer way
-singularity exec ubuntu.sif cat /etc/os-release
+apptainer exec ubuntu.sif ls /
+apptainer exec ubuntu.sif ls /; whoami
+apptainer exec ubuntu.sif bash -c "ls /; whoami"   # probably a safer way
+apptainer exec ubuntu.sif cat /etc/os-release
 ```
 
 ## Running a default script
 
-We've already done this! If there is no default script, Singularity will give you the shell to type in your
+We've already done this! If there is no default script, Apptainer will give you the shell to type in your
 commands.
 
 ## Starting a shell
@@ -41,24 +45,24 @@ commands.
 We've already done this!
 
 ```sh
-$ singularity shell ubuntu.sif
-Singularity> whoami   # same username as in the host system
-Singularity> groups   # same groups as on the host system
+$ apptainer shell ubuntu.sif
+Apptainer> whoami   # same username as in the host system
+Apptainer> groups   # same groups as on the host system
 ```
 
-At startup Singularity simply copied the relevant user and group lines from the host system to files
+At startup Apptainer simply copied the relevant user and group lines from the host system to files
 `/etc/passwd` and `/etc/group` inside the container. Why do this? The container must ensure that you cannot
 modify anything on the host system that you should not have permission to, i.e. you are restricted to the same
 user permissions within the container as you are on the host system.
 
 ## Mounting external directories and copying environment
 
-By default, Singularity containers are read-only, so you cannot write into its directories. However, from
+By default, Apptainer containers are read-only, so you cannot write into its directories. However, from
 inside the container you can organize read-write access to your directories on the host filesystem. The
 command
 
 ```sh
-singularity shell -B /home,/project,/scratch ubuntu.sif
+apptainer shell -B /home,/project,/scratch ubuntu.sif
 ```
 
 will bind-mount `/home,/project,/scratch` inside the container so that these directories can be accessed for
@@ -75,17 +79,17 @@ ls /project/def-sponsor00/$USER
 You can mount host directories to specific paths inside the container, e.g.
 
 ```sh
-singularity shell -B /project/def-sponsor00/${USER}:/project,$SCRATCH:/scratch ubuntu.sif
+apptainer shell -B /project/def-sponsor00/${USER}:/project,$SCRATCH:/scratch ubuntu.sif
 ls /project
 ls /scratch
 ```
 
-Note that by default Singularity typically mounts some of the host's directories. The flag `-C` will hide the
+Note that by default Apptainer typically mounts some of the host's directories. The flag `-C` will hide the
 host's filesystems and environment variables, but then you need to explicitly bind-mount the needed paths (to
 store results), e.g.
 
 ```sh
-singularity shell -C -B /scratch ubuntu.sif   # inside see only /scratch
+apptainer shell -C -B /scratch ubuntu.sif   # inside see only /scratch
 ```
 
 <!-- The reason is that it needs some space to store temporary files that get generated along the way, access some -->
@@ -94,7 +98,7 @@ singularity shell -C -B /scratch ubuntu.sif   # inside see only /scratch
 You can disable specific mounts, e.g. the following will start the container without a home directory:
 
 ```sh
-singularity shell --no-mount home ubuntu.sif
+apptainer shell --no-mount home ubuntu.sif
 cd     # no such file or directory
 ```
 
@@ -106,21 +110,21 @@ with something like `--no-mount tmp,sys,dev`.
 
 
 
-In general, without `-C`, Singularity inherits all environment variables from the build/pull time. You can add
+In general, without `-C`, Apptainer inherits all environment variables from the build/pull time. You can add
 the `-e` flag to remove only the host's environment variables from your container, to start in a *cleaner*
 environment:
 
 ```sh
-$ singularity shell -e -B /home,/project,/scratch ubuntu.sif
-Singularity> echo $USER
-Singularity> $(whoami)
+$ apptainer shell -e -B /home,/project,/scratch ubuntu.sif
+Apptainer> echo $USER
+Apptainer> $(whoami)
 ```
 
 On the other hand, you can pass variables environment variables to your container by prefixing their names:
 
 ```sh
-$ SINGULARITYENV_HI=hello singularity shell mpi.sif
-Singularity> echo $HI
+$ APPTAINERENV_HI=hello apptainer shell mpi.sif
+Apptainer> echo $HI
 hello
 ```
 
@@ -131,8 +135,8 @@ Finally, you don't have to pass the same bind (`-B`) flags every time -- instead
 variable (that can be stored in your `~/.bashrc` file):
 
 ```sh
-export SINGULARITY_BIND="/home,/project/def-sponsor00/${USER}:/project,/scratch/${USER}:/scratch"
-singularity shell ubuntu.sif
+export APPTAINER_BIND="/home,/project/def-sponsor00/${USER}:/project,/scratch/${USER}:/scratch"
+apptainer shell ubuntu.sif
 ```
 
 You can have more granular control (e.g. specifying read only) with the `--mount` flag -- for details see the

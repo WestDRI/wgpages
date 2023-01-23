@@ -1,62 +1,24 @@
 +++
-title = "Advanced Singularity usage"
+title = "Advanced Apptainer usage"
 slug = "04-advanced"
 weight = 4
 +++
 
-## Remote builder: no need for root!
-
-If you have access to a platform with Singularity installed but you don't have root access to create
-containers, you may be able to use the Remote Builder functionality to offload the process of building an
-image to remote cloud resources. One popular cloud service for this is the {{<a
-"https://cloud.sylabs.io/builder" "Remote Builder">}} from SyLabs, the developers of Singularity. If you want
-to use their service, you will need to register for a cloud token via the link on the
-[their page](https://cloud.sylabs.io/builder). Here is one possible workflow:
-
-1. Log in at https://cloud.sylabs.io/builder (can sign in with an existing GitHub account).
-1. Generate an access token at https://cloud.sylabs.io/auth/tokens and copy it into your clipboard.
-1. On the training cluster create a new local file `test.def`:
-
-```txt
-Bootstrap: docker
-From: ubuntu:20.04
-
-%post
-    apt-get -y update && apt-get install -y python
-
-%runscript
-    python -c 'print("Hello World! Hello from our custom Singularity image!")'
-```
-
-4. Build the image remotely and then run it locally:
-
-```sh
-module load singularity
-singularity remote login    # enter the token
-singularity remote status   # check that you are able to connect to the services
-singularity build --remote test.sif test.def
-ls -l test.sif   # 62M
-singularity run test.sif   # Hello World! Hello from our custom Singularity image!
-```
-
-You can find more information on remote endpoints in the
-[official documentation](https://sylabs.io/guides/3.8/user-guide/endpoint.html).
-
-
+{{< toc >}}
 
 
 
 
 ## Running GPU programs: using CUDA
 
-Singularity supports Nvidia GPUs through bind-mounting the GPU drivers and the base CUDA libraries. The `--nv`
+Apptainer supports Nvidia GPUs through bind-mounting the GPU drivers and the base CUDA libraries. The `--nv`
 flag does it transparently to the user, e.g.
 
 ```sh
-singularity pull tensorflow.sif docker://tensorflow/tensorflow
+apptainer pull tensorflow.sif docker://tensorflow/tensorflow
 ls -l tensorflow.sif   # 415M
 salloc --gres=gpu:p100:1 --cpus-per-task=8 --mem=40Gb --time=2:0:0 --account=...
-singularity exec --nv -B /scratch/${USER}:/scratch tensorflow.sif python my-tf.py
+apptainer exec --nv -B /scratch/${USER}:/scratch tensorflow.sif python my-tf.py
 ```
 
 > ## Key point
@@ -68,14 +30,14 @@ and NAMD (molecular dynamics), VMD, ParaView, NVIDIA IndeX (visualization). Thei
 are quite large, so it might take a while to build one of them:
 
 ```sh
-singularity pull tensorflow-22.06-tf1-py3.sif docker://nvcr.io/nvidia/tensorflow:22.06-tf1-py3
+apptainer pull tensorflow-22.06-tf1-py3.sif docker://nvcr.io/nvidia/tensorflow:22.06-tf1-py3
 ls -l tensorflow-22.06-tf1-py3.sif   # 5.9G (very large!)
 ```
 
 <!-- Grigory's slides 23, 24 -->
 <!-- Paul's slide 19 -->
 
-<!-- https://developer.nvidia.com/blog/how-to-run-ngc-deep-learning-containers-with-singularity -->
+<!-- https://developer.nvidia.com/blog/how-to-run-ngc-deep-learning-containers-with-apptainer -->
 <!-- https://catalog.ngc.nvidia.com/orgs/hpc/collections/nvidia_hpc -->
 
 <!-- NAMD - A parallel molecular dynamics code designed for high-performance simulation of large biomolecular systems. -->
@@ -101,14 +63,14 @@ containerize. Thus no generic `--mpi` flag could be implemented for containers t
 different HPC clusters.
 
 The official user guide provides a [good overview](https://docs.sylabs.io/guides/3.7/user-guide/mpi.html) of
-running MPI codes inside containers. There are 3 possible modes of running MPI programs with Singularity:
+running MPI codes inside containers. There are 3 possible modes of running MPI programs with Apptainer:
 
 1. **MPI inside the container**: least interesting, won't work across multiple nodes.
 
 2. **Hybrid mode**: use MPI on the host to spawn the MPI processes, and MPI inside the container to compile
    the code and provide runtime MPI libraries. Call the parallel launcher (`srun`) on the container itself, e.g.
 ```sh
-srun singularity exec mpi.sif /path/inside/the/container/to/your-mpi-program
+srun apptainer exec mpi.sif /path/inside/the/container/to/your-mpi-program
 ```
 Install MPI (similar that of the host) inside the container, use it to compile the code `mpitest` when
 building the container, and also use it at runtime. MPI inside the container should also be configured to
@@ -119,11 +81,11 @@ support the same process management mechanism and version, e.g. PMI2 / PMIx, as 
    container) with a version of MPI similar to that of the host -- typically that MPI will reside on the build
    node used to build the container, but will not be installed inside the container.
 ```sh
-srun singularity exec -B /path/to/host/MPI/directory nompi.sif /path/inside/the/container/to/your-mpi-program
+srun apptainer exec -B /path/to/host/MPI/directory nompi.sif /path/inside/the/container/to/your-mpi-program
 ```
 
 {{<note>}}
-Always use `srun` to run MPI code with Singularity. Do not use `mpirun` or `mpiexec` with containers: they
+Always use `srun` to run MPI code with Apptainer. Do not use `mpirun` or `mpiexec` with containers: they
 may or may not work.
 {{</note>}}
 
@@ -145,12 +107,12 @@ now. However, if you want to run containers with MPI applications on the Allianc
 at <i>"support@tech.alliancecan.ca"</i>, and we will help you to get started.
 {{</note>}}
 
-We have already seen that building Singularity containers can be impractical without root access. Since we are
+We have already seen that building Apptainer containers can be impractical without root access. Since we are
 highly unlikely to have root access on a large HPC cluster, building a container directly on the target
 platform is not normally an option. Instead, you will need to build on a local platform with root access (your
 computer, a VM), install MPI into it, and then deploy it to a cluster with a *compatible* MPI implementation.
 
-<!-- https://docs.alliancecan.ca/wiki/Singularity#Running_MPI_programs_from_within_a_container -->
+<!-- https://docs.alliancecan.ca/wiki/Apptainer#Running_MPI_programs_from_within_a_container -->
 You will need:
 
 - inside your container:
@@ -168,7 +130,7 @@ You will need:
 You need to be root when creating the container here.
 {{</note>}}
 
-<!-- https://docs.sylabs.io/guides/3.5/user-guide/mpi.html#singularity-and-mpi-applications -->
+<!-- https://docs.sylabs.io/guides/3.5/user-guide/mpi.html#apptainer-and-mpi-applications -->
 Start by logging in to your VM as `centos` and changing to the working directory:
 
 ```sh
@@ -228,7 +190,7 @@ Next create an image (this step took me 16 mins on a VM):
 
 ```sh
 sudo yum install debootstrap -y   # install Debian bootstrapper
-sudo singularity build mpi.sif parallelContainer.def
+sudo apptainer build mpi.sif parallelContainer.def
 ls -lh mpi.sif   # 417M
 scp mpi.sif <username>@kandinsky.c3.ca:tmp/
 ```
@@ -255,7 +217,7 @@ This image will work only on clusters with the Infiniband interconnect, such as 
 > ```
 > When using such container, you would have to run the executable from the correct path:
 > ```sh
-> srun singularity exec -C mpi.sif bash -c "cd /home && ./distributedPi"
+> srun apptainer exec -C mpi.sif bash -c "cd /home && ./distributedPi"
 > ```
 
 
@@ -271,8 +233,8 @@ This image will work only on clusters with the Infiniband interconnect, such as 
 > 
 > %environment
 >     export OMPI_DIR=/opt/ompi
->     export SINGULARITY_OMPI_DIR=$OMPI_DIR
->     export SINGULARITYENV_APPEND_PATH=$OMPI_DIR/bin
+>     export APPTAINER_OMPI_DIR=$OMPI_DIR
+>     export APPTAINERENV_APPEND_PATH=$OMPI_DIR/bin
 >     export SINGULAIRTYENV_APPEND_LD_LIBRARY_PATH=$OMPI_DIR/lib
 > 
 > %post
@@ -368,24 +330,25 @@ run the container on our training cluster:
 ```sh
 cd ~/tmp
 cat distributedPi.c
-module load singularity
+module load apptainer/1.1.3
 module load openmpi   # version 4 or version 3, no need to match the MPI version inside the container
-singularity shell -C -B /home,/scratch --pwd ~/tmp mpi.sif
-Singularity> mpicc -O2 distributedPi.c -o distributedPi
-Singularity> ./distributedPi                # single process
-Singularity> mpirun -np 4 ./distributedPi   # running on the login node (bad idea!)
-Singularity> mpirun -np 4 hostname          # they all ran on the same node
-Singularity> exit
+apptainer shell -C -B /home,/scratch --pwd ~/tmp mpi.sif
+
+Apptainer> mpicc -O2 distributedPi.c -o distributedPi
+Apptainer> ./distributedPi                # single process
+Apptainer> mpirun -np 4 ./distributedPi   # running on the login node (bad idea!)
+Apptainer> mpirun -np 4 hostname          # they all ran on the same node
+
 salloc --nodes=4 --time=0:10:0 --mem-per-cpu=3600
-srun singularity exec -C -B /home,/scratch --pwd ~/tmp mpi.sif ./distributedPi
+srun apptainer exec -C -B /home,/scratch --pwd ~/tmp mpi.sif ./distributedPi
 ```
 
 
 
 <!-- beluga -->
-<!-- module load singularity openmpi -->
+<!-- module load apptainer/1.1.3 openmpi -->
 <!-- salloc --nodes=1 --ntasks=4 --time=0:20:0 --mem-per-cpu=3600 --account=def-razoumov-ac -->
-<!-- srun singularity exec -C -B /home,/scratch --pwd /scratch/razoumov/ mpi.sif ./distributedPi -->
+<!-- srun apptainer exec -C -B /home,/scratch --pwd /scratch/razoumov/ mpi.sif ./distributedPi -->
 
 
 
@@ -394,8 +357,8 @@ srun singularity exec -C -B /home,/scratch --pwd ~/tmp mpi.sif ./distributedPi
 > ### <font style="color:blue">Exercise 3</font>
 > Compare the following two commands. What do they do differently?
 > ```sh
-> $ srun singularity exec -C -B /home,/scratch --pwd /scratch/razoumov mpi.sif ./distributedPi
-> $ singularity exec -C -B /home,/scratch --pwd /scratch/razoumov mpi.sif mpirun -np 4 ./distributedPi   # seems Ok
+> $ srun apptainer exec -C -B /home,/scratch --pwd /scratch/razoumov mpi.sif ./distributedPi
+> $ apptainer exec -C -B /home,/scratch --pwd /scratch/razoumov mpi.sif mpirun -np 4 ./distributedPi   # seems Ok
 > ```
 > **Hint**: replace `./distributedPi` with `hostname` to check where these processes run.
 
@@ -426,8 +389,8 @@ srun singularity exec -C -B /home,/scratch --pwd ~/tmp mpi.sif ./distributedPi
 <!-- ```sh -->
 <!-- centos -->
 <!-- cd tmp -->
-<!-- sudo singularity build --sandbox debian.dir docker://debian -->
-<!-- sudo singularity shell --writable debian.dir -->
+<!-- sudo apptainer build --sandbox debian.dir docker://debian -->
+<!-- sudo apptainer shell --writable debian.dir -->
 <!-- apt update -->
 <!-- apt upgrade -y -->
 <!-- apt-cache search pmi2 -->
@@ -443,18 +406,18 @@ srun singularity exec -C -B /home,/scratch --pwd ~/tmp mpi.sif ./distributedPi
 
 ## The importance of temp space when running large workflows
 
-By default, for its internal use Singularity allocates some temporary space in `/tmp` which is often in RAM
-and is very limited. When it becomes full, Singularity will stop working, so it is important to give it
+By default, for its internal use Apptainer allocates some temporary space in `/tmp` which is often in RAM
+and is very limited. When it becomes full, Apptainer will stop working, so it is important to give it
 another, larger temporary space via the `-W` flag. In practice, this would mean doing something like:
 
 - on a personal machine or a login node
 ```sh
-singularity shell/exce/run ... -W /localscratch <image.sif>
-singularity shell/exce/run ... -W /localscratch/tmp <image.sif>
+apptainer shell/exce/run ... -W /localscratch <image.sif>
+apptainer shell/exce/run ... -W /localscratch/tmp <image.sif>
 ```
 - inside a Slurm job
 ```sh
-singularity shell/exce/run ... -W $SLURM_TMPDIR <image.sif>
+apptainer shell/exce/run ... -W $SLURM_TMPDIR <image.sif>
 ```
 
 
@@ -480,17 +443,17 @@ You can also run backgrounded processes within your container. You can start/ter
 `instance start`/`instance stop`. All these processes will terminate once your job ends.
 
 ```sh
-module load singularity
+module load apptainer/1.1.3
 salloc --cpus-per-task=1 --time=0:30:0 --mem-per-cpu=3600
-singularity instance start ubuntu.sif test01     # start a container instance test01
-singularity shell instance://test01   # start an interactive shell in that instance
+apptainer instance start ubuntu.sif test01     # start a container instance test01
+apptainer shell instance://test01   # start an interactive shell in that instance
 bash -c 'for i in {1..60}; do sleep 1; echo $i; done' > dump.txt &   # start a 60-sec background process
 exit        # and then exit; the instance and the process are still running
-singularity exec instance://test01 tail -3 dump.txt   # check on the process in that instance
-singularity exec instance://test01 tail -3 dump.txt   # and again
-singularity shell instance://test01                   # poke around the instance
-singularity instance list
-singularity instance stop test01
+apptainer exec instance://test01 tail -3 dump.txt   # check on the process in that instance
+apptainer exec instance://test01 tail -3 dump.txt   # and again
+apptainer shell instance://test01                   # poke around the instance
+apptainer instance list
+apptainer instance stop test01
 ```
 
 
@@ -514,13 +477,13 @@ In November 2021 the guidance of parts of Singularity was transferred to the
 
 1. rename the `singularity` command to `apptainer`
 1. rename all `SINGULARITY_*` environment variables to `APPTAINER_*`
-1. rename all `SINGULARITYENV_*` environment variables to `APPTAINERENV_*`
+1. rename all `SINGULARITYENV_*` environment variables to `APPTAINERENV_*` (prefix to pass variables to your container)
 
 
 
 
 
-## Overlays and ephemeral temporary directories (briefly)
+## Overlays and ephemeral temporary directories
 
 The overlay "layers" on top of an immutable SIF image allow for changes without rebuilding the image. The
 overlay can be:
@@ -530,35 +493,148 @@ overlay can be:
 - a writable ext3 image embedded into the SIF file.
 
 {{<note>}}
-If you write millions of files, do not store them on a cluster filesystem -- instead, use a Singularity
+If you write millions of files, do not store them on a cluster filesystem -- instead, use an Apptainer
 overlay file for that. Everything inside the overlay will appear as a single file to the cluster filesystem.
 {{</note>}}
 
 {{<note>}}
-The direct `singularity overlay` command requires Singularity 3.8 or later and relatively recent filesystem
-tools (won't work in a CentOS7 VM). We can try a demo on Narval cluster (currently running Rocky Linux 8.5).
+The direct `apptainer overlay` command requires Singularity 3.8 / Apptainer 1.0 or later and a relatively
+recent set of filesystem tools, e.g. it won't work in a CentOS7 VM. It should work on a VM or a cluster
+running Rocky Linux 8.5 or later.
 {{</note>}}
 
-Narval's compute nodes don't have Internet access, but we can copy a usable SIF image from elsewhere.
+<!-- Narval's compute nodes don't have Internet access, but we can copy a usable SIF image from elsewhere. -->
 
 ```sh
-[VM]$ scp ubuntu.sif <username>@narval.computecanada.ca:scratch/containers/
-[narval] cd scratch/containers
-module load singularity/3.8
+cd scratch/containers
+apptainer pull ubuntu.sif docker://ubuntu:latest
+module load apptainer/1.1.3
 salloc --cpus-per-task=1 --time=0:30:0 --mem-per-cpu=3600 --account=...
-singularity overlay create --size 512 myoverlay.img   # create a 0.5GB overlay image file
-singularity shell -C --overlay ./myoverlay.img -B /home,/scratch ubuntu.sif
-Singularity> df -kh                # the overlay should be mounted inside the container
-Singularity> mkdir -p /newhome     # by default this will go into the overlay image
-Singularity> export HOME=/newhome
-Singularity> cd
-Singularity> df -kh .              # using overlay; check for available space
-Singularity> ... install something with a crazy number of files here ... (conda?)
+
+apptainer overlay create --size 512 small.img   # create a 0.5GB overlay image file
+apptainer shell -C --overlay ./small.img -B /home,/scratch ubuntu.sif
 ```
 
-Outside the container, when the overlay is *not* in use, you can even resize it:
+
+
+<!-- Alternatively, we could add a writable overlay partition directly to an existing SIF image: -->
+<!-- ```sh -->
+<!-- apptainer overlay create --size 512 --create-dir /data ubuntu.sif -->
+<!-- apptainer shell -C -B /home,/scratch ubuntu.sif -->
+<!-- ``` -->
+<!-- but this comes with a number of limitations, so we won't use this option. -->
+
+
+
 
 ```sh
-e2fsck -f myoverlay.img         # good idea to check your overlay's filesystem first
-resize2fs -p myoverlay.img 2G   # resize your overlay
+Apptainer> df -kh             # the overlay should be mounted inside the container
+Apptainer> mkdir -p /data     # by default this will go into the overlay image
+Apptainer> cd /data
+Apptainer> df -kh .           # using overlay; check for available space
+Apptainer> for num in $(seq -w 00 19); do
+             echo $num
+             # generate a binary file (1-33)MB in size
+             dd if=/dev/urandom of=test"$num" bs=1024 count=$(( RANDOM + 1024 ))
+           done
+Apptainer> df -kh .     # should take ~300-400 MB
+
+apptainer shell -C --overlay ./small.img -B /home,/scratch ubuntu.sif
+
+Apptainer> ls /data     # here is your data
+```
+
+You can create an overlay image with a directory inside with something like:
+
+```sh
+apptainer overlay create --create-dir /data --size 512 overlay.img   # create an overlay with a directory
+```
+
+If you want to mount the overlay in the read-only mode:
+
+```sh
+apptainer shell -C --overlay ./small.img:ro -B /home,/scratch ubuntu.sif
+Apptainer>  touch /data/test.txt    # error: read-only file system
+```
+
+To see the help page:
+
+```sh
+apptainer help overlay create
+```
+
+
+
+Sparse images use disk more efficiently when blocks allocated to them are mostly empty. Let's create a sparse
+overlay image:
+
+```sh
+apptainer overlay create --size 512 --sparse sparse.img
+ls -l sparse.img                   # its apparent size is 512MB
+du -h --apparent-size sparse.img   # same
+du -h sparse.img                   # its actual size is much smaller (17MB)
+```
+
+Let's mount it and fill with some data:
+
+```
+apptainer shell -C --overlay sparse.img -B /home,/scratch ubuntu.sif
+
+Apptainer> mkdir -p /data && cd /data
+Apptainer> for num in $(seq -w 00 19); do
+             echo $num
+             # generate a binary file (1-33)MB in size
+             dd if=/dev/urandom of=test"$num" bs=1024 count=$(( RANDOM + 1024 ))
+           done
+Apptainer> df -kh .     # should take ~300-400 MB, pay attention to "Used"
+
+du -h sparse.img        # actual usage is now 385MB
+```
+
+
+
+
+Here is how you would install Conda into an overlay image:
+
+```sh
+apptainer pull ubuntu.sif docker://ubuntu:latest
+apptainer overlay create --size 1024 big.img   # create a 1GB overlay image file
+wget https://repo.anaconda.com/miniconda/Miniconda3-py39_4.12.0-Linux-x86_64.sh
+
+apptainer shell --overlay ./big.img -B /home,/scratch ubuntu.sif
+
+Apptainer> mkdir /conda && cd /conda
+Apptainer> df -kh .
+Apptainer> bash /home/user01/tmp/Miniconda3-py39_4.12.0-Linux-x86_64.sh
+  agree to the license
+  use /conda/miniconda3 for the installation path
+  no to initialize Miniconda3
+Apptainer> find /conda/miniconda3/ -type f | wc -l        # 17,722 files
+
+apptainer shell  -B /home,/scratch ubuntu.sif
+Apptainer> /conda/miniconda3/bin/python         # it is missing
+Apptainer> ls /conda                            # no such file or directory
+
+apptainer shell --overlay ./big.img -B /home,/scratch ubuntu.sif
+Apptainer> /conda/miniconda3/bin/python         # works
+```
+
+These 17k+ files appear as a single file to the Lustre metadata server.
+
+
+
+
+
+
+
+
+
+
+
+
+Outside the container, when an overlay is *not* in use, you can easily resize it:
+
+```sh
+e2fsck -f small.img         # good idea to check your overlay's filesystem first
+resize2fs -p small.img 1G   # resize your overlay
 ```
