@@ -17,10 +17,14 @@ You can find this webpage at:
 
 **Level**: beginner
 
-**Prerequisites**: first half of today's workshop
+**Prerequisites**: first half of today's workshop -- the notes can be found {{<a "https://mint.westdri.ca/python/packages.html" "here">}}.
 
 
 
+
+
+<!-- abc -->
+<!-- Make Your Pandas Code Lightning Fast https://youtu.be/SAFmrTnEHLg -->
 
 
 
@@ -1210,7 +1214,7 @@ function looks like at intermediate z. Write out a NetCDF file with the 3D funct
 In xarray you can work with time-dependent data. Xarray accepts pandas time formatting,
 e.g. `pd.to_datetime("2020-09-10")` would produce a timestamp. To produce a time range, we can use:
 
-```
+```py
 import pandas as pd
 time = pd.date_range("2000-01-01", freq="D", periods=365*3+1)    # 2000-Jan to 2002-Dec (3 full years)
 time
@@ -1224,7 +1228,7 @@ Using this `time` construct, let's initialize a time-dependent dataset that cont
 space) mimicking seasonal change. We can do this directly without initializing an xarray.DataArray first -- we just need
 to specify what this temperature variable depends on:
 
-```
+```py
 import xarray as xr
 import numpy as np
 ntime = len(time)
@@ -1236,14 +1240,14 @@ ds.temperature.plot(size=8)
 
 We can do the usual subsetting:
 
-```
+```py
 ds.isel(time=100)   # 101st timestep
 ds.sel(time="2002-12-22")
 ```
 
 Time dependency in xarray allows resampling with a different timestep:
 
-```
+```py
 ds.resample(time='7D')    # 1096 times -> 157 time groups
 weekly = ds.resample(time='7D').mean()     # compute mean for each group
 weekly.temperature.plot(size=8)
@@ -1253,7 +1257,7 @@ Now, let's combine spatial and time dependency and construct a dataset containin
 pressure) varying in time. The time dependency is baked into the coordinates of these xarray.DataArray's and should come
 before the spatial coordinates:
 
-```
+```py
 time = pd.date_range("2020-01-01", freq="D", periods=91) # January - March 2020
 ntime = len(time)
 n = 100      # spatial resolution in each dimension
@@ -1291,7 +1295,7 @@ So far we've been working with datasets in Cartesian coordinates. How about sphe
 and store a dataset in spherical coordinates (longitude - latitude - elevation)? Very easy: define these coordinates and
 your data arrays on top, put everything into an xarray dataset, and then specify the following units:
 
-```
+```py
 ds.lat.attrs["units"] = "degrees_north"   # this line is important to adhere to CF convention
 ds.lon.attrs["units"] = "degrees_east"    # this line is important to adhere to CF convention
 ```
@@ -1307,7 +1311,7 @@ geometry is spherical.
 I took one of the ECCC historical model datasets (contains only the near-surface air temperature) published on the CMIP6
 Data-Archive and reduced its size picking only a subset of timesteps:
 
-```
+```py
 import xarray as xr
 data = xr.open_dataset('/Users/razoumov/tmp/xarray/atmosphere/tas_Amon_CanESM5_historical_r1i1p2f1_gn_185001-201412.nc')
 data.sel(time=slice('2001', '2020')).to_netcdf("tasReduced.nc")   # last 168 steps
@@ -1315,13 +1319,13 @@ data.sel(time=slice('2001', '2020')).to_netcdf("tasReduced.nc")   # last 168 ste
 
 Let's download this file in the terminal:
 
-```
+```sh
 wget http://bit.ly/atmosdata -O tasReduced.nc
 ```
 
 First, quickly check this dataset in ParaView (use Dimensions = (lat,lon)).
 
-```
+```py
 data = xr.open_dataset('tasReduced.nc')
 data   # this is a time-dependent 2D dataset: print out the metadata, coordinates, data variables
 data.time   # time goes monthly from 2001-01-16 to 2014-12-16
@@ -1332,7 +1336,7 @@ data.height         # at the fixed height=2m
 
 These five lines all produce the same result:
 
-```
+```py
 data.tas[0] - 273.15   # take all values in the second and third dims, convert to Celsius
 data.tas[0,:] - 273.15
 data.tas[0,:,:] - 273.15
@@ -1342,14 +1346,14 @@ air = data.tas.sel(time='2001-01-16') - 273.15
 
 These two lines produce the same result (1D vector of temperatures as a function of longitude):
 
-```
+```py
 data.tas[0,5]
 data.tas.isel(time=0, lat=5)
 ```
 
 Check temperature variation in the last step:
 
-```
+```py
 air = data.tas.isel(time=-1) - 273.15   # last timestep, to celsius
 air.shape    # (64, 128)
 air.min(), air.max()   # -43.550903, 36.82956
@@ -1357,7 +1361,7 @@ air.min(), air.max()   # -43.550903, 36.82956
 
 Selecting data is slightly more difficult with approximate floating coordinates:
 
-```
+```py
 data.tas.lat
 data.tas.lat.dtype
 data.tas.isel(lat=0)    # the first value lat=-87.86
@@ -1370,7 +1374,7 @@ latSlice.shape    # (168, 3, 128) - 3 latitudes in this slice
 
 Multiple ways to select time:
 
-```
+```py
 data.time[-10:]   # last ten times
 air = data.tas.sel(time='2014-12-16') - 273.15    # last date
 air = data.tas.sel(time='2014') - 273.15    # select everything in 2014
@@ -1381,7 +1385,7 @@ air = data.tas.sel(time='2014-01') - 273.15    # select everything in January 20
 
 Aggregate functions:
 
-```
+```py
 meanOverTime = data.tas.mean(dim='time') - 273.15
 meanOverSpace = data.tas.mean(dim=['lat','lon']) - 273.15     # mean over space for each timestep
 meanOverSpace.shape     # time series (168,)
@@ -1390,7 +1394,7 @@ meanOverSpace.plot(marker="o", size=8)     # calls matplotlib.pyplot.plot
 
 Interpolate to a specific location:
 
-```
+```py
 victoria = data.tas.interp(lat=48.43, lon=360-123.37) - 273.15
 victoria.shape   # (168,) only time
 victoria.plot(marker="o", size=8)      # simple 1D plot
@@ -1399,7 +1403,7 @@ victoria.sel(time=slice('2001','2020')).plot(marker="o", size=8)   # zoom in on 
 
 Let's plot in 2D:
 
-```
+```py
 air = data.tas.isel(time=-1) - 273.15   # last timestep
 air.time
 air.plot(size=8)     # 2D plot, very poor resolution (lat: 64, lon: 128)
@@ -1408,14 +1412,14 @@ air.plot(size=8, y="lon", x="lat")     # can specify which axis is which
 
 What if we have time-dependency in the plot? We put each frame into a separate panel:
 
-```
+```py
 a = data.tas[-6:] - 273.15      # last 6 timesteps => 3D dataset => which coords to use for what?
 a.plot(x="lon", y="lat", col="time", col_wrap=3)
 ```
 
 Breaking into groups and applying a function to each group:
 
-```
+```py
 len(data.time)     # 168 steps
 data.tas.groupby("time")   # 168 groups
 def standardize(x):
