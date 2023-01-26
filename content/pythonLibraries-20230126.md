@@ -991,7 +991,7 @@ Let's index the rows by hand:
 pd.DataFrame({'a': col1, 'b': col2}, index=['a1','a2','a3'])
 ```
 
-### Three solutions to the classification problem
+### Three solutions to a classification problem
 
 <!-- idea from https://youtu.be/SAFmrTnEHLg -->
 
