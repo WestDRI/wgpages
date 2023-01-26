@@ -87,24 +87,28 @@ Convert the angle 0.3 rad to degrees using the math library.
 <!-- Something that comes up often when trying to get people to use python is virtual environments and packaging - it would -->
 <!-- be nice if there could be a discussion on this as well. -->
 
-To install a package into the current Python environment from inside a Jupyter notebook, simply do:
+To install a package into the current Python environment from inside a Jupyter notebook, simply do (you will
+probably need to restart the kernel before you can use the package):
 
 ```sh
-%pip install packageName
+%pip install packageName   # e.g. try bson
 ```
 
 In Python you can create an isolated environment for each project, into which all of its dependencies will be
 installed. This could be useful if your several projects have very different sets of dependencies. On the computer
 running your Jupyter notebooks, open the terminal and type:
 
+(**Important**: on a cluster you must do this on the login node, not inside the JupyterLab terminal.)
+
 ```sh
+module load python/3.9.6    # specific to HPC clusters
 pip install virtualenv
-virtualenv climate   # create a new virtual environment in your current directory
+virtualenv --no-download climate   # create a new virtual environment in your current directory
 source climate/bin/activate
 which python && which pip
-pip install numpy ...
-pip install ipykernel   # install ipykernel (IPython kernel for Jupyter) into this environment
-python -m ipykernel install --user --name=climate   # add your environment to Jupyter
+pip install --no-index netcdf4 ...
+pip install --no-index ipykernel    # install ipykernel (IPython kernel for Jupyter) into this environment
+python -m ipykernel install --user --name=climate --display-name "My climate project"   # add your environment to Jupyter
 ...
 deactivate
 ```
@@ -285,8 +289,10 @@ np.log10(a+1)     # apply this operation to each element
 np.arange(10) / np.arange(1,11)  # this is np.array([ 0/1, 1/2, 2/3, 3/4, ..., 9/10 ])
 ```
 
+Consider the series {{< figure src="/img/eq001.png" >}}.
+
 {{< question num=11aa >}}
-Let's verify the equation {{< figure src="/img/eq001.png" >}} using summation of elements of an `ndarray`.
+Let's verify it using summation of elements of an `ndarray`.
 
 **Hint**: Start with the first 10 terms `k = np.arange(1,11)`. Then try the first 30 terms.
 {{< /question >}}
@@ -496,7 +502,7 @@ plt.ylabel('f(x)', fontsize=18)
 > plt.figure(figsize=(10,8))
 > from numpy import linspace, sin
 > x = linspace(0.01,1,300)
-> y = sin(x)
+> y = sin(1/x)
 > plt.plot(x, y, 'bo-')
 > plt.xlabel('x', fontsize=18)
 > plt.ylabel('f(x)', fontsize=18)
@@ -594,8 +600,8 @@ y = np.radians([15, 16, 17])
 plt.plot(x, y, 'bo-')
 ```
 
-Later, we'll learn how to use this `projection` parameter with cartopy to map your 2D data from one projection to
-another.
+You can use this `projection` parameter together with `cartopy` package to process 2D geospatial data to
+produce maps, while all plotting is still being done by Matplotlib. We teach `cartopy` in a separate workshop.
 
 Let's try a scatter plot:
 
@@ -610,9 +616,11 @@ size = 1 + 50*np.random.random(size=1000)
 plt.scatter(x, y, s=size, color='lightblue')
 ```
 
-For other plot types click on any example in the [Matplotlib gallery](https://matplotlib.org/gallery).
+<!-- {{<a "link" "text">}} -->
 
-For colours, see [Choosing Colormaps in Matplotlib](https://matplotlib.org/3.3.1/tutorials/colors/colormaps.html).
+For other plot types, click on any example in the {{<a "https://matplotlib.org/gallery" "Matplotlib gallery">}}.
+
+For colours, see {{<a "https://matplotlib.org/3.3.1/tutorials/colors/colormaps.html" "Choosing Colormaps in Matplotlib">}}.
 
 ### Heatmaps
 
@@ -697,12 +705,12 @@ ax.view_init(20, 30)      # (theta, phi) viewpoint
 surf = ax.plot_surface(x, y, z, facecolors=rgb, linewidth=0, antialiased=False, shade=False)
 ```
 
-**Note**: If you absolutely cannot locate your downloaded data file, you can also find it in the shared folder at
-`/project/def-sponsor00/shared/astro/data/mt_bruno_elevation.csv`.
+<!-- **Note**: If you absolutely cannot locate your downloaded data file, you can also find it in the shared folder at -->
+<!-- `/project/def-sponsor00/shared/astro/data/mt_bruno_elevation.csv`. -->
 
 {{< question num=11e >}}
 Replace `fig, ax = plt.subplots()` with `fig = plt.figure()` followed by `ax = fig.add_subplot()`. Don't forget about
-the `3d` projection. This is a tricky one -- feel free to google the problem.
+the `3d` projection. This one is a little tricky -- feel free to google the problem.
 {{< /question >}}
 
 Let's replace the last line with the following (running this takes ~10s on my laptop):
@@ -758,8 +766,8 @@ surf = ax.plot_surface(x, y, z, facecolors=rgb, linewidth=0, antialiased=False, 
 
 ### Reading tabular data into dataframes
 
-First, let's download the data, if you have not done this already in the previous chapter. Open a terminal inside your
-Jupyter dashboard. Inside the terminal, type:
+In this section we will be reading datasets from `data-python`. If you have not downloaded it in the previous
+section, open a terminal and type:
 
 ```sh
 wget http://bit.ly/pythfiles -O pfiles.zip
@@ -788,8 +796,23 @@ data.shape    # shape is a *member variable inside data*
 data.info()   # info is a *member method inside data*
 ```
 
-Use dir(data) to list all member variables and methods. Then call that name without (), and if it's a method it'll tell
-you, so you'll need to use ().
+
+
+
+{{< question num=11f >}}
+Try reading a much bigger Jeopardy dataset. First, download it with:
+```sh
+wget https://bit.ly/3kcsQIe -O jeopardy.csv.gz && gunzip jeopardy.csv.gz
+```
+and then read it into a dataframe `game`. How many lines and columns does it have?
+{{< /question >}}
+
+
+
+
+
+Use dir(data) to list all member variables and methods. Then call one of them without `()`, and if it's a
+method it'll tell you, so you'll need to use `()`.
 
 Rows are observations, and columns are the observed variables. You can add new observations at any time.
 
@@ -1250,6 +1273,7 @@ Time dependency in xarray allows resampling with a different timestep:
 ```py
 ds.resample(time='7D')    # 1096 times -> 157 time groups
 weekly = ds.resample(time='7D').mean()     # compute mean for each group
+weekly.dims
 weekly.temperature.plot(size=8)
 ```
 
@@ -1289,7 +1313,7 @@ ds.to_netcdf("evolution.nc")
 The file `evolution.nc` should be 100^2 x 2 variables x 8 bytes x 91 steps = 14MB. We can load it into ParaView and play
 back the pressure and temperature!
 
-### Adhering to climate and forecast (CF) NetCDF convention in spherical geometry
+### Climate and forecast (CF) NetCDF convention in spherical geometry
 
 So far we've been working with datasets in Cartesian coordinates. How about spherical geometry -- how do we initialize
 and store a dataset in spherical coordinates (longitude - latitude - elevation)? Very easy: define these coordinates and
@@ -1308,8 +1332,9 @@ geometry is spherical.
 
 ### Working with atmospheric data
 
-I took one of the ECCC historical model datasets (contains only the near-surface air temperature) published on the CMIP6
-Data-Archive and reduced its size picking only a subset of timesteps:
+I took one of the ECCC (Environment and Climate Change Canada) historical model datasets (contains only the
+near-surface air temperature) published on the CMIP6 Data-Archive and reduced its size picking only a subset
+of timesteps:
 
 ```py
 import xarray as xr
