@@ -17,7 +17,7 @@ You can find this webpage at:
 
 **Level**: beginner
 
-**Prerequisites**: first half of today's workshop -- the notes can be found {{<a "https://mint.westdri.ca/python/packages.html" "here">}}.
+**Prerequisites**: first half of today's workshop -- the notes can be found {{<a "https://mint.westdri.ca/python/run.html" "here">}}.
 
 
 
@@ -1333,7 +1333,7 @@ geometry is spherical.
 ### Working with atmospheric data
 
 I took one of the ECCC (Environment and Climate Change Canada) historical model datasets (contains only the
-near-surface air temperature) published on the CMIP6 Data-Archive and reduced its size picking only a subset
+near-surface air temperature) published on the CMIP6 Data-Archive and reduced its size, picking only a subset
 of timesteps:
 
 ```py
