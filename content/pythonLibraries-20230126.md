@@ -991,6 +991,66 @@ Let's index the rows by hand:
 pd.DataFrame({'a': col1, 'b': col2}, index=['a1','a2','a3'])
 ```
 
+### Three solutions to the classification problem
+
+<!-- idea from https://youtu.be/SAFmrTnEHLg -->
+
+Let's create a simple dataframe from scratch:
+
+```py
+import pandas as pd
+import numpy as np
+
+df = pd.DataFrame()
+size = 10_000
+df['studentID'] = np.arange(1, size+1)
+df['grade'] = np.random.choice(['A', 'B', 'C', 'D'], size)
+
+df.head()
+```
+
+Let's built a new column with an alphabetic grade based on the numeric grade column. Let's start by processing
+a row:
+
+```py
+def result(row):
+    if row['grade'] == 'A':
+        return 'pass'
+    return 'fail'
+```
+
+We can apply this function to each row in a loop:
+
+```py
+%%timeit
+for index, row in df.iterrows():
+    df.loc[index, 'outcome'] = result(row)
+```
+<!-- => 290 ms -->
+
+We can use `df.apply()` to apply this function to each row:
+
+```py
+%%timeit
+df['outcome'] = df.apply(result, axis=1)   # axis=1 applies the function to each row
+```
+<!-- => 30.8 ms -->
+
+Or we could use a mask to only assign `pass` to rows with `A`:
+
+```py
+%%timeit
+df['outcome'] = 'fail'
+df.loc[df['grade'] == 'A', 'outcome'] = 'pass'
+```
+<!-- => 473 µs -->
+
+
+
+
+
+
+
 ### Looping over data sets
 
 Let's say we want to read several files in data-python/. We can use **for** to loop through their list:
