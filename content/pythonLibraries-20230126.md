@@ -491,7 +491,7 @@ plt.ylabel('f(x)', fontsize=18)
  # plt.savefig('tmp.png')
 ```
 
-<img src="https://raw.githubusercontent.com/razoumov/publish/master/styles.png" height="300" />
+{{< figure src="/img/styles.png" height=350 >}}
 
 > **Offscreen plotting** -
 > You can create the same plot with offscreen rendering directly to a file:
