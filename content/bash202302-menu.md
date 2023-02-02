@@ -49,10 +49,19 @@ computers SSH is usually pre-installed (try typing `ssh` in a terminal to make s
 <!-- {{<nolinktitle>}}Transferring files and directories to/from remote computers{{</nolinktitle>}} \ -->
 <!-- {{<nolinktitle>}}Wildcards, redirection, pipes, and aliases{{</nolinktitle>}} -->
 
+{{<cor>}}Zoom session (week 2){{</cor>}} \
+{{<cgr>}}10:00am-noon Pacific{{</cgr>}} \
+*Materials available {{<a "https://mint.westdri.ca/bash/script.html" "here">}} on the topics:* \
+{{<nolinktitle>}}Scripting{{</nolinktitle>}} \
+{{<nolinktitle>}}Control flow{{</nolinktitle>}} \
+{{<nolinktitle>}}Functions{{</nolinktitle>}} \
+{{<nolinktitle>}}Searching{{</nolinktitle>}} \
+{{<nolinktitle>}}Text manipulation{{</nolinktitle>}}
 
 
 
-Week 2 materials will be posted {{<a "link" "here">}}.
+
+
 
 
 <!-- {{<cor>}}Zoom: afternoon session (Marie){{</cor>}} \ -->
