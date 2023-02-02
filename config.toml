@@ -7,6 +7,8 @@ defaultcontentlanguage = "en"
 paginate = 20
 canonifyurls = true
 
+ignoreFiles = [ "\\.qmd$", "\\.ipynb$", "\\.py$" ]
+
 [markup]
   [markup.highlight]
     codeFences = true
