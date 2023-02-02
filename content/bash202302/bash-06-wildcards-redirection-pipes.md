@@ -73,7 +73,7 @@ directoryName` and `ls directoryName/*`?
 {{< /question >}}
 
 {{< question num="`redirection`" >}}
-Redirection `1>` and `2>` and `/dev/null`
+Redirection: `1>`, `2>`, `&>`, `/dev/null`
 {{< /question >}}
 
 {{< question num="`command separators`" >}}

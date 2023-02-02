@@ -23,9 +23,9 @@ our own custom training.
 guest accounts to one of our Linux systems.
 
 **Software**: All attendees will need a remote secure shell (SSH) client installed on their computer in order
-to participate in the course exercises. On Windows we recommend [the free Home Edition of
-MobaXterm](https://mobaxterm.mobatek.net/download.html). On Mac and Linux computers SSH is usually
-pre-installed (try typing `ssh` in a terminal to make sure it is there).
+to participate in the course exercises. On Windows we recommend {{<a
+"https://mobaxterm.mobatek.net/download.html" "the free Home Edition of MobaXterm">}}. On Mac and Linux
+computers SSH is usually pre-installed (try typing `ssh` in a terminal to make sure it is there).
 
 
 

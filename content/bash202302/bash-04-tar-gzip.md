@@ -11,7 +11,7 @@ $ wget http://bit.ly/bashfile -O bfiles.zip
 $ unzip bfiles.zip
 ```
 
-(alternative download link https://autumnschool2022.westdri.ca/files/bfiles.zip)
+(alternative download link https://wgpages.netlify.app/files/bfiles.zip)
 
 Unlike an SSD or a hard drive on your laptop, the filesystem on HPC cluster was designed to store large files,
 ideally with parallel I/O. As a result, it handles any large number of small I/O requests (reads or writes)
@@ -82,6 +82,9 @@ contents. A number of 3rd-party tools can add indexing to `tar`. However, there 
 - DAR can detect corruption in both headers and saved data and recover with minimal data loss,
 
 and so on. Learning DAR is not part of this course. In the future, if you want to know more about working with
-DAR, please watch our <a href="https://westgrid.github.io/trainingMaterials/tools/rdm" target="_blank">DAR
-webinar</a> (scroll down to see it), or check our <a href="https://docs.alliancecan.ca/wiki/Dar"
-target="_blank">DAR documentation page</a>.
+DAR, please watch our {{<a "https://westgrid.github.io/trainingMaterials/tools/rdm" "DAR webinar">}} (scroll
+down to see it), or check our {{<a "https://docs.alliancecan.ca/wiki/Dar" "DAR documentation page">}}.
+
+
+
+<!-- {{<a "link" "text">}} -->
