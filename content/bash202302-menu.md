@@ -36,9 +36,9 @@ computers SSH is usually pre-installed (try typing `ssh` in a terminal to make s
 {{<linktitle url="../bash202302/bash-01-intro" text="Introduction">}} \
 {{<linktitle url="../bash202302/bash-02-filesystem" text="Navigating the filesystem">}} \
 {{<linktitle url="../bash202302/bash-03-creating-moving-copying" text="Creating, moving and copying things">}} \
-{{<linktitle url="../bash202302/bash-04-tar-gzip" text="Archives and compression">}} \
-{{<linktitle url="../bash202302/bash-05-file-transfer" text="Transferring files and directories to/from remote computers">}} \
-{{<linktitle url="../bash202302/bash-06-wildcards-redirection-pipes" text="Wildcards, redirection, pipes, and aliases">}}
+{{<linktitle url="../bash202302/bash-04-tar-gzip" text="Archives and compression">}}
+<!-- {{<linktitle url="../bash202302/bash-05-file-transfer" text="Transferring files and directories to/from remote computers">}} \ -->
+<!-- {{<linktitle url="../bash202302/bash-06-wildcards-redirection-pipes" text="Wildcards, redirection, pipes, and aliases">}} -->
 
 <!-- {{<cor>}}Zoom session{{</cor>}} \ -->
 <!-- {{<cgr>}}10:00am-noon Pacific{{</cgr>}} \ -->
@@ -51,12 +51,13 @@ computers SSH is usually pre-installed (try typing `ssh` in a terminal to make s
 
 {{<cor>}}Zoom session (week 2){{</cor>}} \
 {{<cgr>}}10:00am-noon Pacific{{</cgr>}} \
-*Materials available {{<a "https://mint.westdri.ca/bash/script.html" "here">}} on the topics:* \
-{{<nolinktitle>}}Scripting{{</nolinktitle>}} \
+*Materials available {{<a "https://mint.westdri.ca/bash/transfer.html" "here">}} on the topics:* \
+{{<nolinktitle>}}Transferring files to/from remote machines{{</nolinktitle>}} \
+{{<nolinktitle>}}Pipes and redirections{{</nolinktitle>}} \
+{{<nolinktitle>}}Writing scripts{{</nolinktitle>}} \
 {{<nolinktitle>}}Control flow{{</nolinktitle>}} \
 {{<nolinktitle>}}Functions{{</nolinktitle>}} \
-{{<nolinktitle>}}Searching{{</nolinktitle>}} \
-{{<nolinktitle>}}Text manipulation{{</nolinktitle>}}
+{{<nolinktitle>}}Searching for files{{</nolinktitle>}}
 
 
 
