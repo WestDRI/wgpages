@@ -7,6 +7,24 @@ weight = 1
 **Disclaimer**: These notes started few years ago from the [official SWC lesson](https://software-carpentry.org/lessons)
 but then evolved quite a bit to include other topics.
 
+## Why Python?
+
+Python is a free, open-source programming language developed in the 1980s and 90s that became really popular
+for scientific computing in the past 15 years.
+
+#### Python vs. Excel
+
+- Unlike Excel, Python can essentially read any type of data, both structured and unstructured.
+- Python is free and open-source.
+- Data manipulation is much easier in Python. There are thousands of data processing, machine learning, and
+  visualization libraries.
+- Python can handle much larger amounts of data: limited not by Python, but by your available computing
+  resources. In addition, Python can run at scale on larger systems.
+- Python is more reproducible (rerun / modify the script).
+- Python can run on any platform (Windows, Mac, Linux).
+
+#### Python vs. other programming languages
+
 Python pros                                 | Python cons
 --------------------------------------------|------------------------
 elegant scripting language                  | slow (interpreted, dynamically typed)
@@ -19,7 +37,7 @@ huge number of external libraries           |
 There are many ways to run Python commands:
 
 * from a Unix shell you can start a Python shell and type commands there,
-* you launch Python scripts saved in plain text *.py files,
+* you can launch Python scripts saved in plain text *.py files,
 * you can execute Python cells inside Jupyter notebooks; the code is stored inside JSON files, displayed as HTML
 
 <!-- Today we will be using a Jupyter notebook. -->

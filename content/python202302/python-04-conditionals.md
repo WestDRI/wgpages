@@ -4,34 +4,35 @@ slug = "python-04-conditionals"
 weight = 4
 +++
 
-Python implements conditionals via *if*, *elif* (short for "else if") and *else*. Use an *if* statement to control
-whether some block of code is executed or not.
+Python implements conditionals via `if`, `elif` (short for "else if") and `else`. Use an `if` statement to
+control whether some block of code is executed or not. Let's consider the boundary between the Antiquity and
+the Middle Ages:
 
 ```py
-mass = 3.54
-if mass > 3.0:
-    print(mass, 'is large')
+year = 830
+if year > 476:
+    print('year', year, 'falls into the medieval era')
 ```
 
-Let's modify the mass:
+Let's modify the year:
 
 ```py
-mass = 2.07
-if mass > 3.0:
-    print (mass, 'is large')
+year = 205
+if year > 476:
+    print('year', year, 'falls into the medieval era')
 ```
 
-Add an *else* statement:
+Add an `else` statement:
 
 ```py
-mass = 2.07
-if mass > 3.0:
-    print(mass, 'is large')
+year = 205
+if year > 476:
+    print('year', year, 'falls into the medieval era')
 else:
-    print(mass, 'is small')
+    print('year', year, 'falls into the classical antiquity period')
 ```
 
-Add an *elif* statement:
+Add an `elif` statement:
 
 ```py
 x = 5

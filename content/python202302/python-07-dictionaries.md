@@ -47,7 +47,7 @@ concepts
 Deleting dictionary items:
 
 ```py
-del concepts['list']       # remove the key 'list' and its value
+concepts.pop('list')   # remove the key 'list' and its value
 ```
 
 Values can also be numerical:

@@ -32,8 +32,9 @@ print('primes has become', primes)
 
 ```py
 print('primes before', primes)
-del primes[4]   # remove element #4
+primes.pop(4)      # remove element #4
 print('primes after', primes)
+primes.remove(2)   # remove first value 2
 ```
 
 ```py
