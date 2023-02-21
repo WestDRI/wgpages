@@ -37,26 +37,26 @@ functions, lists, dictionaries).
 {{<cor>}}Zoom session (week 1){{</cor>}} \
 {{<cgr>}}10:00am-noon Pacific{{</cgr>}}
 
-{{<nolinktitle>}}Libraries, virtual environments and packaging{{</nolinktitle>}} \
-{{<nolinktitle>}}Numpy{{</nolinktitle>}} \
-{{<nolinktitle>}}Plotting with matplotlib{{</nolinktitle>}}
+<!-- {{<nolinktitle>}}Libraries, virtual environments and packaging{{</nolinktitle>}} \ -->
+<!-- {{<nolinktitle>}}Numpy{{</nolinktitle>}} \ -->
+<!-- {{<nolinktitle>}}Plotting with matplotlib{{</nolinktitle>}} -->
 
-<!-- {{<linktitle url="../python202302/python-10-libraries" text="Libraries, virtual environments and packaging">}} \ -->
-<!-- {{<linktitle url="../python202302/python-11-numpy" text="Numpy">}} \ -->
-<!-- {{<linktitle url="../python202302/python-12-matplotlib" text="Plotting with matplotlib">}} -->
+{{<linktitle url="../python202302/python-10-libraries" text="Libraries, virtual environments and packaging">}} \
+{{<linktitle url="../python202302/python-11-numpy" text="Numpy">}} \
+{{<linktitle url="../python202302/python-12-matplotlib" text="Plotting with matplotlib">}}
 
 {{<cor>}}Zoom session (week 2){{</cor>}} \
 {{<cgr>}}10:00am-noon Pacific{{</cgr>}}
 
-{{<nolinktitle>}}Pandas dataframes{{</nolinktitle>}} \
-{{<nolinktitle>}}Multidimensional labeled arrays and datasets with xarray{{</nolinktitle>}} \
-{{<nolinktitle>}}Running Python scripts from the command line{{</nolinktitle>}} \
-{{<nolinktitle>}}Basics of object-oriented programming in Python{{</nolinktitle>}}
+<!-- {{<nolinktitle>}}Pandas dataframes{{</nolinktitle>}} \ -->
+<!-- {{<nolinktitle>}}Multidimensional labeled arrays and datasets with xarray{{</nolinktitle>}} \ -->
+<!-- {{<nolinktitle>}}Running Python scripts from the command line{{</nolinktitle>}} \ -->
+<!-- {{<nolinktitle>}}Basics of object-oriented programming in Python{{</nolinktitle>}} -->
 
-<!-- {{<linktitle url="../python202302/python-13-pandas" text="Pandas dataframes">}} \ -->
-<!-- {{<linktitle url="../python202302/python-14-xarray" text="Multidimensional labeled arrays and datasets with xarray">}} \ -->
-<!-- {{<linktitle url="../python202302/python-16-scripts" text="Running Python scripts from the command line">}} (additional material) \ -->
-<!-- {{<linktitle url="../python202302/python-17-objects" text="Basics of object-oriented programming in Python">}} (additional material) -->
+{{<linktitle url="../python202302/python-13-pandas" text="Pandas dataframes">}} \
+{{<linktitle url="../python202302/python-14-xarray" text="Multidimensional labeled arrays and datasets with xarray">}} \
+{{<linktitle url="../python202302/python-16-scripts" text="Running Python scripts from the command line">}} (additional material) \
+{{<linktitle url="../python202302/python-17-objects" text="Basics of object-oriented programming in Python">}} (additional material)
 
 
 

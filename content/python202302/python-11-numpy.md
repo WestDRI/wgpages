@@ -201,14 +201,12 @@ b: (3,)   ->  (1,3)  ->  (3,3)
 "ValueError: operands could not be broadcast together with shapes (3,2) (3,)"
 ```
 
-> Comment on numpy speed: Few years ago, I was working with a spherical dataset describing Earth's mantle
-> convection. It was defined on a spherical grid with 13e6 grid points. For each grid point, I was converting from the spherical
-> (lateral - radial - longitudinal) velocity components to the Cartesian velocity components. For each point this is a
-> matrix-vector multiplication. Doing this by hand with Python's `for` loops would take many hours for 13e6 points. I
-> used numpy to vectorize in one dimension, and that cut the time to ~5 mins. At first glance, a more complex
-> vectorization would not work, as numpy would have to figure out which dimension goes where. Writing it carefully and
-> following the broadcast rules I made it work, with the correct solution at the end -- while the total compute time
-> went down to a couple seconds!
+
+
+
+
+
+
 
 Let's use broadcasting to plot a 2D function with matplotlib:
 
@@ -223,9 +221,85 @@ plt.imshow(z)
 plt.colorbar(shrink=0.8)
 ```
 
-{{< question num=11ab >}}
+{{< question num="`building a 3D array`" >}}
 Use numpy broadcasting to build a 3D array from three 1D ones.
 {{< /question >}}
+
+
+
+
+
+
+
+<!-- > **Comment on numpy speed**: Few years ago, I was working with a spherical dataset describing Earth's mantle -->
+<!-- > convection. It was defined on a spherical grid with 13e6 grid points. For each grid point, I was converting -->
+<!-- > from the spherical -->
+<!-- > (lateral - radial - longitudinal) velocity components to the Cartesian velocity components. For each point this is a -->
+<!-- > matrix-vector multiplication. Doing this by hand with Python's `for` loops would take many hours for 13e6 points. I -->
+<!-- > used numpy to vectorize in one dimension, and that cut the time to ~5 mins. At first glance, a more complex -->
+<!-- > vectorization would not work, as numpy would have to figure out which dimension goes where. Writing it carefully and -->
+<!-- > following the broadcast rules I made it work, with the correct solution at the end -- while the total compute time -->
+<!-- > went down to a couple seconds! -->
+
+
+{{< question num="`converting velocity components`" >}}
+This is a take-home exercise. Consider the following (inefficient) Python code that converts the spherical
+velocity components to the Cartesian components on a $500\times 300\times 800$ spherical grid:
+```py
+#!/usr/bin/env python
+import numpy as np
+from tqdm import tqdm
+import time
+from scipy.special import lpmv
+
+nlat, nr, nlon = 500, 300, 800
+
+latitude = np.linspace(-90, 90, nlat)
+radius = np.linspace(3485, 6371, nr)
+longitude = np.linspace(0, 360, nlon)
+
+# spherical velocity components: use Legendre Polynomials to set values
+vlat = lpmv(0,3,latitude/90).reshape(nlat,1,1) + np.linspace(0,0,nr).reshape(nr,1) + np.linspace(0,0,nlon)
+vrad = np.linspace(0,0,nlat).reshape(nlat,1,1) + lpmv(0,3,(radius-4928)/1443).reshape(nr,1) + np.linspace(0,0,nlon)
+vlon = np.linspace(0,0,nlat).reshape(nlat,1,1) + np.linspace(0,0,nr).reshape(nr,1) + lpmv(0,2,longitude/180-1.)
+
+# Cartesian components
+vx = np.zeros((nlat,nr,nlon))
+vy = np.zeros((nlat,nr,nlon))
+vz = np.zeros((nlat,nr,nlon))
+
+start = time.time()
+for i in tqdm(range(nlat)):
+    for j in range(nr):
+        for k in range(nlon):
+            vx[i,j,k] = - np.sin(np.radians(longitude[k]))*vlon[i,j,k] \
+              - np.sin(np.radians(latitude[i]))*np.cos(np.radians(longitude[k]))*vlat[i,j,k] \
+              + np.cos(np.radians(latitude[i]))*np.cos(np.radians(longitude[k]))*vrad[i,j,k]
+            vy[i,j,k] = np.cos(np.radians(longitude[k]))*vlon[i,j,k] \
+              - np.sin(np.radians(latitude[i]))*np.sin(np.radians(longitude[k]))*vlat[i,j,k] \
+              + np.cos(np.radians(latitude[i]))*np.sin(np.radians(longitude[k]))*vrad[i,j,k]
+            vz[i,j,k] = np.cos(np.radians(latitude[i]))*vlat[i,j,k] \
+              + np.sin(np.radians(latitude[i]))*vrad[i,j,k]
+finish = time.time()
+print("It took", finish - start, "seconds")
+
+```
+Using numpy further, you can speed up the nested loop between the `start = ...` and `finish = ...` lines
+by at least a factor of 1,000X. If you achieve a significant speedup, please
+send us your solution at "`training` at `westdri` dot `ca`".
+{{< /question >}}
+
+
+
+
+
+
+
+
+
+
+
+
 
 ### Aggregate functions
 

@@ -204,10 +204,6 @@ datalad save -m "edited notes.txt"
 
 Let's clone a remote dataset and store it locally as a subdataset:
 
-> From its description: A large and highly detailed volumetric cloud data set, intended to be used for various
-> purposes, including movie and game production as well as research.
-
-
 ```sh
 datalad clone --dataset . https://github.com/datalad-datasets/machinelearning-books   # get its structure
 tree
@@ -337,8 +333,8 @@ datalad push --to central --data nothing   # push metadata to central
 Create the second clone on another portable USB drive:
 
 ```sh
-cd /Volumes/kingston
-datalad clone --description "kingston" ~/tmp/distributed distributed
+cd /Volumes/t7
+datalad clone --description "t7" ~/tmp/distributed distributed
 cd distributed
 du -s .   # no actual data was copied, just the links
 git remote rename origin central
@@ -369,7 +365,7 @@ datalad get books/theLinuxCommandLine.pdf   # try getting this book from a remot
 ... get(error): books/theLinuxCommandLine.pdf (file) [not available]
 git remote    # nothing: this location does not know where the remotes are stored
 datalad siblings add -d . --name tiny --url /Volumes/tiny/distributed
-datalad siblings add -d . --name kingston --url /Volumes/kingston/distributed
+datalad siblings add -d . --name t7 --url /Volumes/t7/distributed
 git remote    # now it knows where to find the remotes
 datalad get books/theLinuxCommandLine.pdf   # successful!
 >>> unmount tiny
@@ -403,18 +399,18 @@ datalad push --to tiny --data nothing   # push metadata, but not the data
 Alternatively, we we can update from a USB drive:
 
 ```sh
-cd /Volumes/kingston/distributed
+cd /Volumes/t7/distributed
 datalad update -s central --how=merge
 ```
 
-Now let's check things from tiny's / kingston's perspectives:
+Now let's check things from tiny's and t7's perspectives:
 
 ```sh
 cd /Volumes/tiny/distributed
 ls books/                             # datalad is there
 git annex whereis books/datalad.pdf   # it is in central only (plus on the web)
 
-cd /Volumes/kingston/distributed
+cd /Volumes/t7/distributed
 ls books/                             # datalad is there
 git annex whereis books/datalad.pdf   # it is in central only (plus on the web)
 ```
@@ -427,8 +423,8 @@ the USB drives. Mount both drives.
 ```sh
 cd /Volumes/tiny/distributed
 git remote    # knows only about central
-datalad siblings add -d . --name kingston --url /Volumes/kingston/distributed
-git remote    # now knows about both central and kingston
+datalad siblings add -d . --name t7 --url /Volumes/t7/distributed
+git remote    # now knows about both central and t7
 for file in $(git annex find --lackingcopies 0); do
     datalad get $file
 done
@@ -440,7 +436,7 @@ git annex find --in=here                   # but they are both here already ==> 
 Let's go to the other drive and do the same:
 
 ```sh
-cd /Volumes/kingston/distributed
+cd /Volumes/t7/distributed
 git remote    # knows only about central
 datalad siblings add -d . --name tiny --url /Volumes/tiny/distributed
 git remote    # now knows about both central and tiny

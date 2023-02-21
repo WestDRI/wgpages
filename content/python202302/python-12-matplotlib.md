@@ -286,3 +286,9 @@ fig, ax = plt.subplots(subplot_kw=dict(projection='3d'), figsize=(10,10))
 ax.view_init(20, 30)
 surf = ax.plot_surface(x, y, z, facecolors=rgb, linewidth=0, antialiased=False, shade=False)
 ```
+
+## More examples
+
+For more 3D examples in matplotlib, click on any example in the
+{{<a "https://matplotlib.org/stable/gallery/mplot3d/index.html" "3D gallery">}} to see the code behind that
+plot. Try pasting it into your Jupyter notebook and running it, and try to modify the code.
