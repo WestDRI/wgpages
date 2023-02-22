@@ -243,16 +243,15 @@ Use numpy broadcasting to build a 3D array from three 1D ones.
 
 
 {{< question num="`converting velocity components`" >}}
-This is a take-home exercise. Consider the following (inefficient) Python code that converts the spherical
-velocity components to the Cartesian components on a $500\times 300\times 800$ spherical grid:
+This is a take-home exercise. Consider the following (inefficient) Python code that converts *the spherical
+velocity components* to *the Cartesian velocity components* on a $500\times 300\times 800$ spherical grid:
 ```py
 #!/usr/bin/env python
 import numpy as np
-from tqdm import tqdm
-import time
 from scipy.special import lpmv
+import time
 
-nlat, nr, nlon = 500, 300, 800
+nlat, nr, nlon = 500, 300, 800   # 120e6 grid points
 
 latitude = np.linspace(-90, 90, nlat)
 radius = np.linspace(3485, 6371, nr)
@@ -263,13 +262,13 @@ vlat = lpmv(0,3,latitude/90).reshape(nlat,1,1) + np.linspace(0,0,nr).reshape(nr,
 vrad = np.linspace(0,0,nlat).reshape(nlat,1,1) + lpmv(0,3,(radius-4928)/1443).reshape(nr,1) + np.linspace(0,0,nlon)
 vlon = np.linspace(0,0,nlat).reshape(nlat,1,1) + np.linspace(0,0,nr).reshape(nr,1) + lpmv(0,2,longitude/180-1.)
 
-# Cartesian components
+# Cartesian velocity components
 vx = np.zeros((nlat,nr,nlon))
 vy = np.zeros((nlat,nr,nlon))
 vz = np.zeros((nlat,nr,nlon))
 
 start = time.time()
-for i in tqdm(range(nlat)):
+for i in range(nlat):
     for j in range(nr):
         for k in range(nlon):
             vx[i,j,k] = - np.sin(np.radians(longitude[k]))*vlon[i,j,k] \

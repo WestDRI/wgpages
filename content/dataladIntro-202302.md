@@ -36,6 +36,8 @@ multiple authors, to work with branches (distinct project copies) and merge them
 Git was designed for version control of text files, it can also be applied to writing projects, such as
 manuscripts, theses, website repositories, etc.
 
+> Quick command-line Git demo.
+
 Git can also keep track of binary (non-text) files and/or of large data files, but putting binary and/or large
 files under version control and especially modifying them will inflate the size of the repositories.
 
@@ -94,10 +96,10 @@ conda install -c conda-forge datalad
 conda update -c conda-forge datalad
 ```
 
-DataLad also needs Git and git-annex, if these are not installed. For mote information, visit the
+DataLad also needs **Git** and **git-annex**, if these are not installed. For mote information, visit the
 {{<a "http://handbook.datalad.org/en/latest/intro/installation.html" "official installation guide">}}.
 
-On our training cluster:
+On our training cluster you can install DataLad into your $HOME directory:
 
 ```sh
 module load git-annex   # need this each time you use DalaLad
@@ -110,6 +112,14 @@ deactivate
 alias datalad=$HOME/datalad-env/bin/datalad   # best to add this line to your ~/.bashrc file
 ```
 
+Alternatively, you can use our central DalaLad installation:
+
+```sh
+module load git-annex   # need this each time you use DalaLad
+alias datalad=/project/def-sponsor00/shared/datalad-env/bin/datalad   # best to add this line to your ~/.bashrc file
+```
+
+> Who wants an account on our training cluster to practice during today's workshop?
 
 
 
@@ -184,6 +194,8 @@ git annex whereis books/proGit.pdf   # show the available copies (including the 
 git annex whereis books              # show the same for all books
 ```
 
+Create and commit a short text file:
+
 ```sh
 cat << EOT > notes.txt
 We have downloaded 4 books.
@@ -193,7 +205,7 @@ git one -n 1      # see the last commit
 git one -n 1 -p   # and its file changes
 ```
 
-Notice that the text file was not annexed: there is no symbolic link. We can change it easily:
+Notice that the text file was not annexed: there is no symbolic link. This means that we can modify it easily:
 
 ```sh
 echo Text files are not in the annex.>> notes.txt
@@ -237,7 +249,7 @@ ls
 This one downloaded all the files, i.e. none of them are annexed. Why?
 
 Well, this is how this new dataset is structured, and it is organized this way because it was created with the
-`text2git` configuration, which keeps text files outside the annex.
+`text2git` configuration too, keeping all text files outside the annex.
 
 #### Running scripts
 
@@ -282,7 +294,7 @@ open A.Shashua-Introduction_to_Machine_Learning.pdf   # this book is not here!
 ```
 
 The book is not here ... That's not a problem for DalaLad, as it can process a file that is stored remotely
-(as long as it is part of the dataset): it will automatically get the required input file.
+(as long as it is part of the dataset) &nbsp;🡲&nbsp; it will automatically get the required input file.
 
 ```sh
 datalad run -m "extract the title page" \
@@ -479,7 +491,48 @@ datalad drop books/theLinuxCommandLine.pdf   # can't: need minimum 2 copies!
 
 ### Scenario 3: managing multiple Git repos under one dataset
 
+Create a new dataset and inside clone a couple of *subdatasets*:
 
+```sh
+cd ~/tmp
+datalad create -c text2git envelope
+cd envelope
+ # let's clobe few regular Git (not DataLad!) repos
+datalad clone --dataset . https://github.com/razoumov/radiativeTransfer.git projects/radiativeTransfer
+datalad clone --dataset . https://github.com/razoumov/sharedSnippets projects/sharedSnippets
+git log   # can see those two new subdatasets
+```
+
+Go into one of these subdatasets, modify a file, and push it back to GitHub:
+
+```sh
+cd projects/sharedSnippets
+datalad create -f   # convert this Git repo to a dataset
+>>> add an empty line to mpiContainer.md
+datalad status
+git add mpiContainer.md
+git commit -m "small edit in mpiContainer.md"
+git push
+```
+
+Let's clone out entire dataset to another location:
+
+```sh
+cd ~/tmp
+datalad install --description "copy of envelope" -r -s envelope copy   # `clone` has no recursive option
+cd copy
+cd projects/sharedSnippets
+git one   # cloned as of the moment of that dataset's creation; no recent updates there yet
+```
+
+Recursively update all child Git repositories:
+
+```sh
+cd ../..   # to ~/tmp/copy
+datalad update -s origin --how=merge --recursive   # pull recent changes from origin
+cd projects/sharedSnippets
+git one
+```
 
 
 

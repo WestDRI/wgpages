@@ -24,11 +24,12 @@ scientific datasets with xarray, and a few other topics.
 functions, lists, dictionaries).
 
 **Software**: We will be using Python on our training cluster, so no need to install it on your computer. However, in
-  the long run you would probably benefit from Python on your computer, so you might want to look into this. During the
-  workshop you will likely need a remote secure shell (SSH) client installed on your computer in order to participate in
-  the course exercises. On Windows we recommend
-  [the free Home Edition of MobaXterm](https://mobaxterm.mobatek.net/download.html). On Mac and Linux computers SSH is
-  usually pre-installed (try typing `ssh` in a terminal to make sure it is there).
+  the long run you would probably benefit from Python on your computer, so you might want to look into this.
+  
+<!-- During the workshop you will likely need a remote secure shell (SSH) client installed on your computer in -->
+<!-- order to participate in the course exercises. On Windows we recommend [the free Home Edition of -->
+<!-- MobaXterm](https://mobaxterm.mobatek.net/download.html). On Mac and Linux computers SSH is usually -->
+<!-- pre-installed (try typing `ssh` in a terminal to make sure it is there). -->
 
 
 

@@ -57,6 +57,36 @@ plt.xlabel('x', fontsize=18)
 plt.ylabel('f(x)', fontsize=18)
 ```
 
+
+
+
+
+<!-- Plotting Legendre Polynomials: -->
+<!-- ```py -->
+<!-- import numpy as np -->
+<!-- import matplotlib.pyplot as plt -->
+<!-- from scipy.special import lpmv -->
+
+<!-- ls = [0,1,2,3] -->
+<!-- x = np.linspace(-1,1,100) -->
+
+<!-- plt.figure() -->
+
+<!-- for l in ls: -->
+<!--     plt.plot(x,lpmv(0,l,x),label=r'$l=$'+str(l)) -->
+<!-- plt.title(r'Legendre Polynomials, $P_l(x)$') -->
+<!-- plt.xlabel(r'$x$') -->
+<!-- plt.ylabel(r'$P_l(x)$') -->
+<!-- plt.legend() -->
+<!-- plt.grid() -->
+<!-- plt.show() -->
+<!-- ``` -->
+
+
+
+
+
+
 Let's plot these two functions side-by-side:
 
 ```py
