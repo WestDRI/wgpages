@@ -175,6 +175,7 @@ datalad save -m "added a couple of books on Linux and Python"
 ls books
 git log -n 1        # check last commit
 git log -n 1 -p     # check last commit in details
+git config --global alias.one "log --graph --date-order --date=short --pretty=format:'%C(cyan)%h %C(yellow)%ar %C(auto)%s%+b %C(green)%ae'"
 git one             # custom alias
 git log --oneline   # a short alternative
 ```

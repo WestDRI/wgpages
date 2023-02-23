@@ -12,7 +12,8 @@ a = 'apple'
 print(a)
 ```
 
-This makes Python very flexible. Out of these variables you form 1D lists, and these can be inhomogeneous:
+This makes Python very flexible. Out of these variables you form 1D lists, and these can be inhomogeneous and
+can change values and types on the fly:
 
 ```py
 a = [1, 2, 'Vancouver', ['Earth', 'Moon'], {'list': 'an ordered collection of values'}]
@@ -24,15 +25,17 @@ Python lists are very general and flexible, which is great for high-level progra
 Python interpreter can't make any assumptions about what will come next in a list, so it treats everything as a generic
 object with its own type and size. As lists get longer, eventually performance takes a hit.
 
-Python does not have any mechanism for a uniform/homogeneous list, where -- to jump to element #1000 -- you just take
-the memory address of the very first element and then increment it by (element size in bytes) x 999. **Numpy** library
-fills this gap by adding the concept of homogenous collections to python -- `numpy.ndarray`s -- which are
-multidimensional, homogeneous arrays of fixed-size items (most commonly numbers).
+Python does not have any mechanism for a uniform/homogeneous list, where -- to jump to element #1000 -- you
+just take the memory address of the very first element and then increment it by (element size in bytes)
+x 999. **Numpy** library fills this gap by adding the concept of homogenous collections to python --
+`numpy.ndarray`s -- which are multidimensional, homogeneous arrays of fixed-size items (most commonly
+numbers).
 
 1. This brings large performance benefits!
   - no reading of extra bits (type, size, reference count)
   - no type checking
   - contiguous allocation in memory
+  - numpy was written in C &nbsp;⇒&nbsp; pre-compiled
 2. numpy lets you work with mathematical arrays.
 
 Lists and numpy arrays behave very differently:

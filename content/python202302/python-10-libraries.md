@@ -7,10 +7,11 @@ weight = 10
 <!-- <u>For Day 2</u>, we will switch to running inside Jupyter Notebook -- please see option 2 in -->
 <!-- [the Setup section](../python-01-setup#starting-python). -->
 
-> Today we'll be running Python via JupyterHub on our training cluster. Point your browser to
-> https://bobthewren.c3.ca, log in with your username and password, then launch a JupyterHub server with time
-> = ***3 hours***, **1 CPU core**, memory = ***3600 MB***, GPU configuration = ***None***, user interface =
-> ***JupyterLab***. Finally, start a new Python 3 notebook.
+> There are many ways to run Python: in the shell, via scripts, in a Jupyter notebook. Today we'll be running
+> Python via JupyterHub on our training cluster. Point your browser to https://bobthewren.c3.ca, log in with
+> your username and password, then launch a JupyterHub server with time = ***3 hours***, **1 CPU core**,
+> memory = ***3600 MB***, GPU configuration = ***None***, user interface = ***JupyterLab***. Finally, start a
+> new Python 3 notebook.
 
 Most of the power of a programming language is in its libraries. This is especially true for Python which is an
 interpreted language and is therefore very slow (compared to compiled languages). However, the libraries are often
