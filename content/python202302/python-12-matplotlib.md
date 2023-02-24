@@ -4,9 +4,16 @@ slug = "python-12-matplotlib"
 weight = 12
 +++
 
-## Simple line/scatter plots
+There are hundreds of Python visualization packages. Check out this {{<a
+"https://raw.githubusercontent.com/rougier/python-visualization-landscape/master/landscape-colors.png"
+"diagram of the Python Visualization Landscape">}} (circa 2017, by Nicolas Rougier) which focuses on 1D+2D
+packages at the time (and only barely mentions 3D sci-vis packages). For 3D examples, check {{<a
+"https://ccvis.netlify.app" "our gallery">}} in which most images were rendered with Python.
 
-One of the most widely used Python plotting libraries is matplotlib. Matplotlib is open source and produces static images.
+One of the most widely used Python plotting libraries is matplotlib. Matplotlib is open source and produces
+static images.
+
+## Simple line/scatter plots
 
 ```py
 %matplotlib inline
@@ -177,8 +184,6 @@ size = 1 + 50*np.random.random(size=1000)
 plt.scatter(x, y, s=size, color='lightblue')
 ```
 
-<!-- {{<a "link" "text">}} -->
-
 For other plot types, click on any example in the {{<a "https://matplotlib.org/gallery" "Matplotlib gallery">}}.
 
 For colours, see {{<a "https://matplotlib.org/3.3.1/tutorials/colors/colormaps.html" "Choosing Colormaps in Matplotlib">}}.
@@ -322,3 +327,5 @@ surf = ax.plot_surface(x, y, z, facecolors=rgb, linewidth=0, antialiased=False, 
 For more 3D examples in matplotlib, click on any example in the
 {{<a "https://matplotlib.org/stable/gallery/mplot3d/index.html" "3D gallery">}} to see the code behind that
 plot. Try pasting it into your Jupyter notebook and running it, and try to modify the code.
+
+<!-- {{<a "link" "text">}} -->
