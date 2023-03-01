@@ -39,29 +39,29 @@ data.info()   # info is a *member method inside data*
 
 
 {{< question num=11f >}}
-Try reading a much bigger Jeopardy dataset. First, download it with:
-```sh
-wget https://bit.ly/3kcsQIe -O jeopardy.csv.gz && gunzip jeopardy.csv.gz
-```
-and then read it into a dataframe `game`. How many lines and columns does it have?
+Try reading a much bigger Jeopardy dataset from
+`https://raw.githubusercontent.com/razoumov/publish/master/jeopardy.csv`. There are two ways to do this:
+1. you can first download it using `wget` and then read a local file, or
+1. you can try doing this without downloading the file.
+
+How many lines and columns does it have? What are the column names?
 {{< /question >}}
 
+> Use `dir(data)` to list all dataframe's variables and methods. Then call one of them without `()`, and if
+> it's a method it'll tell you, so you'll need to use `()`.
 
-
-Use dir(data) to list all member variables and methods. Then call one of them without `()`, and if it's a
-method it'll tell you, so you'll need to use `()`.
-
-Rows are observations, and columns are the observed variables. You can add new observations at any time.
+You can think of rows as observations, and columns as the observed variables. You can add new observations at
+any time.
 
 Currently the rows are indexed by number. Let's index by country:
 
 ```py
 data = pd.read_csv('data-python/gapminder_gdp_oceania.csv', index_col='country')
 data
-data.shape     # now 12 columns
-data.info()    # it's a dataframe! show row/column names, precision, memory usage
-print(data.columns)   # will list all the columns
-print(data.T)   # this will transpose the dataframe; curously this is a variable
+data.shape        # now 12 columns
+data.info()       # it's a dataframe! show row/column names, precision, memory usage
+print(data.columns)   # list all the columns
+print(data.T)     # this will transpose the dataframe; curously this is a variable
 data.describe()   # will print some statistics of numerical columns (very useful for 1000s of rows!)
 ```
 
@@ -85,19 +85,19 @@ data frame?
 The data for your current project is stored in a file called `microbes.csv`, which is located in a folder called
 `field_data`. You are doing analysis in a notebook called `analysis.ipynb` in a sibling folder called `thesis`:
 ```txt
-your_home_directory/
-+-- fieldData/
-  +-- microbes.csv
-+-- thesis/
-  +-- analysis.ipynb
+your_home_directory
+├── fieldData
+│   └── microbes.csv
+└── thesis
+    └── analysis.ipynb
 ```
 What value(s) should you pass to `read_csv()` to read `microbes.csv` in `analysis.ipynb`?
 {{< /question >}}
 
 {{< question num=15 >}}
-As well as the `read_csv()` function for reading data from a file, Pandas provides a `to_csv()` function to write data
-frames to files. Applying what you've learned about reading from files, write one of your data frames to a file called
-`processed.csv`. You can use help to get information on how to use `to_csv()`.
+As well as the `pd.read_csv()` function for reading data from a file, Pandas provides a `to_csv()` function to
+write data frames to files. Applying what you've learned about reading from files, write one of your data
+frames to a file called `processed.csv`. You can use help to get information on how to use `to_csv()`.
 {{< /question >}}
 
 ## Subsetting
@@ -131,7 +131,7 @@ used to have a single function to do both. Now there are two separate functions,
 element:
 
 ```py
-data.iloc[0,0]               # the very first element by position
+data.iloc[0,0]                # the very first element by position
 data.loc['Albania','y1952']   # exactly the same; the very first element by label
 ```
 
@@ -215,7 +215,7 @@ print(data.idxmax())
 ```
 {{< /question >}}
 
-How do you create a dataframe from scratch? Many ways; the easiest by defining columns:
+How do you create a dataframe from scratch? There are many ways; perhaps, the easiest is by defining columns:
 
 ```py
 col1 = [1,2,3]
@@ -223,7 +223,8 @@ col2 = [4,5,6]
 pd.DataFrame({'a': col1, 'b': col2})       # dataframe from a dictionary
 ```
 
-Let's index the rows by hand:
+We can index (assign names to) the rows with this syntax:
+
 ```py
 pd.DataFrame({'a': col1, 'b': col2}, index=['a1','a2','a3'])
 ```

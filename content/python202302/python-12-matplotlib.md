@@ -4,11 +4,22 @@ slug = "python-12-matplotlib"
 weight = 12
 +++
 
+> Quick reminder that today we are running
+> Python via JupyterHub on our training cluster. Point your browser to https://bobthewren.c3.ca, log in with
+> your username and password from last week, then launch a JupyterHub server with time = ***3 hours***, **1 CPU core**,
+> memory = ***3600 MB***, GPU configuration = ***None***, user interface = ***JupyterLab***. Finally, start a
+> new Python 3 notebook.
+
 There are hundreds of Python visualization packages. Check out this {{<a
 "https://raw.githubusercontent.com/rougier/python-visualization-landscape/master/landscape-colors.png"
 "diagram of the Python Visualization Landscape">}} (circa 2017, by Nicolas Rougier) which focuses on 1D+2D
 packages at the time (and only barely mentions 3D sci-vis packages). For 3D examples, check {{<a
 "https://ccvis.netlify.app" "our gallery">}} in which most images were rendered with Python.
+
+- {{<a "https://matplotlib.org" "Matplotlib">}} - plotting into static images
+- {{<a "https://plotly.com/python" "Plotly">}} - plotting into interactive HTML5
+- {{<a "https://plotnine.readthedocs.io" "plotnine">}} - Python clone of R's ggplot2 (based on the "Grammar of
+  Graphics")
 
 One of the most widely used Python plotting libraries is matplotlib. Matplotlib is open source and produces
 static images.
@@ -116,9 +127,8 @@ plt.xlabel('x')
 plt.ylabel('f2')
 ```
 
-Instead of indices, we could specify the absolute coordinates of each plot with `fig.add_axes()`:
+There is also an option to specify absolute coordinates of each plot with `fig.add_axes()`:
 
-1. adjust the size `fig = plt.figure(figsize=(12,4))`
 1. replace the first `ax = fig.add_subplot(121)` with `ax = fig.add_axes([0.1, 0.7, 0.8, 0.3])   # left, bottom, width, height`
 1. replace the second `fig.add_subplot(122)` with `fig.add_axes([0.1, 0.2, 0.8, 0.4])   # left, bottom, width, height`
 
@@ -152,7 +162,7 @@ plt.ylabel('f1')
 ```
 
 Replace `ax = fig.add_subplot(111)` with `ax = fig.add_subplot(111, projection='polar')`. Now we have a plot in the
-phi-r plane, i.e. in polar coordinates. `Phi` goes [0,2\pi], whereas `r` goes [0,1].
+phi-r plane, i.e. in polar coordinates. `Phi` goes [0,2$\pi$], whereas `r` goes [0,1].
 
 ```py
 ?fig.add_subplot    # look into `projection` parameter
@@ -163,13 +173,14 @@ import matplotlib.pyplot as plt
 import numpy as np
 fig = plt.figure(figsize=(12,12))
 ax = fig.add_subplot(111, projection='mollweide')
-x = np.radians([30,40, 50])
-y = np.radians([15, 16, 17])
-plt.plot(x, y, 'bo-')
+lon = np.radians(np.linspace(30,90,10))
+lat = np.radians(np.linspace(15,18,10))
+plt.plot(lon, lat, 'go-')
 ```
 
 You can use this `projection` parameter together with `cartopy` package to process 2D geospatial data to
-produce maps, while all plotting is still being done by Matplotlib. We teach `cartopy` in a separate workshop.
+produce maps, while all plotting is still being done by Matplotlib. We teach {{<a
+"https://scitools.org.uk/cartopy" "cartopy">}} in a separate workshop.
 
 Let's try a scatter plot:
 
@@ -178,7 +189,7 @@ Let's try a scatter plot:
 import matplotlib.pyplot as plt
 import numpy as np
 plt.figure(figsize=(10,8))
-x = np.random.random(size=1000)   # 1D array of 1000 random numbers in [0.,1.]
+x = np.random.random(size=1000)   # 1D array of 1000 random numbers in [0,1]
 y = np.random.random(size=1000)
 size = 1 + 50*np.random.random(size=1000)
 plt.scatter(x, y, s=size, color='lightblue')
@@ -227,7 +238,7 @@ rows/columns explicitly, or (better) by setting a threshold background colour.
 {{< /question >}}
 
 {{< question num=11d >}}
-Modify the code to display only 4 seasons instead of the individual months.
+This is a take-home exercise. Modify the code to display only 4 seasons instead of the individual months.
 {{< /question >}}
 
 ## 3D topographic elevation
@@ -250,7 +261,6 @@ back to our Python notebook and check our location:
 Let's plot tabulated topographic elevation data:
 
 ```py
-from mpl_toolkits.mplot3d import Axes3D
 from matplotlib import cm
 from matplotlib.colors import LightSource
 import matplotlib.pyplot as plt
@@ -263,8 +273,7 @@ nrows, ncols = z.shape
 x = np.linspace(0,1,ncols)
 y = np.linspace(0,1,nrows)
 x, y = np.meshgrid(x, y)
-ls = LightSource(270, 45)
-rgb = ls.shade(z, cmap=cm.gist_earth, vert_exag=0.1, blend_mode='soft')
+rgb = LightSource(270, 45).shade(z, cmap=cm.gist_earth, vert_exag=0.1, blend_mode='soft')
 
 fig, ax = plt.subplots(subplot_kw=dict(projection='3d'), figsize=(10,10))    # figure with one subplot
 ax.view_init(20, 30)      # (theta, phi) viewpoint
@@ -276,13 +285,18 @@ surf = ax.plot_surface(x, y, z, facecolors=rgb, linewidth=0, antialiased=False, 
 
 {{< question num=11e >}}
 Replace `fig, ax = plt.subplots()` with `fig = plt.figure()` followed by `ax = fig.add_subplot()`. Don't forget about
-the `3d` projection. This one is a little tricky -- feel free to google the problem.
+the `3d` projection. This one is a little tricky -- feel free to google the problem, or even better use our
+earlier examples.
 {{< /question >}}
 
-Let's replace the last line with the following (running this takes ~10s on my laptop):
+<!-- ```py -->
+<!-- fig = plt.figure(figsize=(10,10)) -->
+<!-- ax = fig.add_subplot(111, projection='3d') -->
+<!-- ``` -->
+
+Let's add the following to the previous code (running this takes ~10s on my laptop):
 
 ```py
-surf = ax.plot_surface(x, y, z, facecolors=rgb, linewidth=0, antialiased=False, shade=False)
 for angle in range(90):
     print(angle)
     ax.view_init(20, 30+angle)
@@ -300,7 +314,6 @@ ffmpeg -r 30 -i frame%04d.png -c:v libx264 -pix_fmt yuv420p -vf "scale=trunc(iw/
 Here is something visually very different, still using `ax.plot_surface()`:
 
 ```py
-from mpl_toolkits.mplot3d import Axes3D
 from matplotlib import cm
 from matplotlib.colors import LightSource
 import matplotlib.pyplot as plt
@@ -314,8 +327,7 @@ x = r*sin(phi)*cos(theta)   # x is also (252,502)
 y = r*cos(phi)              # y is also (252,502)
 z = r*sin(phi)*sin(theta)   # z is also (252,502)
 
-ls = LightSource(270, 45)
-rgb = ls.shade(z, cmap=cm.gist_earth, vert_exag=0.1, blend_mode='soft')
+rgb = LightSource(270, 45).shade(z, cmap=cm.gist_earth, vert_exag=0.1, blend_mode='soft')
 
 fig, ax = plt.subplots(subplot_kw=dict(projection='3d'), figsize=(10,10))
 ax.view_init(20, 30)
