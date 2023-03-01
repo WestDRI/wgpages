@@ -22,7 +22,8 @@ Let's define out first class:
 
 ```py
 class Planet:
-    # internally we store all numbers in cgs units
+    # During initialization arguments will be in km and kg.
+    # Internally we'll store all numbers in CGS units (cm and g).
     hostObject = "Sun"     # class attribute (the same value for every class instance)
     def __init__(self, radius, mass):   # "constructor" sets the initial state of a newly created object
         self.radius = radius*1e5   # instance attribute, convert km -> cm
@@ -47,9 +48,9 @@ earth = Planet()
 earth.radius = 6371         # these are dynamic variables that we can redefine
 earth.mass = 5.972e24
 ```
-{{< /question >}}
+**Hint**: make it so that `Planet().radius` prints "nan" -- this can be set with `float('nan')`.
 
-<!-- Planet().radius      # prints 'nan' -->
+{{< /question >}}
 
 Let's add *inside our class* an instance method (with proper indentation):
 

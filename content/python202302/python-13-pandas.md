@@ -249,8 +249,8 @@ df['grade'] = np.random.choice(['A', 'B', 'C', 'D'], size)
 df.head()
 ```
 
-Let's built a new column with an alphabetic grade based on the numeric grade column. Let's start by processing
-a row:
+Let's built a new column `outcome` containing *"pass"* or *"fail"* based on the numeric grade column. Let's
+start by processing a row:
 
 ```py
 def result(row):
@@ -259,7 +259,7 @@ def result(row):
     return 'fail'
 ```
 
-We can apply this function to each row in a loop:
+(1) We can apply this function to each row in a loop:
 
 ```py
 %%timeit
@@ -268,7 +268,7 @@ for index, row in df.iterrows():
 ```
 <!-- => 290 ms -->
 
-We can use `df.apply()` to apply this function to each row:
+(2) We can use `df.apply()` to apply this function to each row:
 
 ```py
 %%timeit
@@ -276,7 +276,7 @@ df['outcome'] = df.apply(result, axis=1)   # axis=1 applies the function to each
 ```
 <!-- => 30.8 ms -->
 
-Or we could use a mask to only assign `pass` to rows with `A`:
+(3) Or we could use a mask to only assign `pass` to rows with `A`:
 
 ```py
 %%timeit
@@ -294,9 +294,9 @@ df.loc[df['grade'] == 'A', 'outcome'] = 'pass'
 Let's say we want to read several files in data-python/. We can use **for** to loop through their list:
 
 ```py
-for filename in ['data-python/gapminder_gdp_africa.csv', 'data-python/gapminder_gdp_asia.csv']:
-    data = pd.read_csv(filename, index_col='country')
-    print(filename, data.min())   # print min for each column
+for name in ['africa.csv', 'asia.csv']:
+    data = pd.read_csv('data-python/gapminder_gdp_'+name, index_col='country')
+    print(name+'\n', data.min(), sep='')   # print min for each column
 ```
 
 If we have many (10s or 100s) files, we want to specify them with a pattern:
@@ -316,11 +316,11 @@ for filename in glob('data-python/gapminder*.csv'):
 ```
 
 {{< question num=19 >}}
-Which of these files is not matched by the expression `glob('data/*as*.csv')`?
+Which of these files is not matched by the expression `glob('data-python/*as*.csv')`?
 ```txt
-A. data/gapminder_gdp_africa.csv
-B. data/gapminder_gdp_americas.csv
-C. data/gapminder_gdp_asia.csv
+A. data-python/gapminder_gdp_africa.csv
+B. data-python/gapminder_gdp_americas.csv
+C. data-python/gapminder_gdp_asia.csv
 D. 1 and 2 are not matched
 ```
 {{< /question >}}
@@ -329,11 +329,19 @@ D. 1 and 2 are not matched
 Modify this program so that it prints the number of records in the file that has the fewest records.
 ```py
 fewest = ____
-for filename in glob('data/*.csv'):
+for filename in glob('data-python/*.csv'):
     fewest = ____
 print('smallest file has', fewest, 'records')
 ```
 {{< /question >}}
+
+<!-- ```py -->
+<!-- fewest = 1e9 -->
+<!-- for filename in glob('data-python/*.csv'): -->
+<!--     print(pd.read_csv(filename).shape[0]) -->
+<!--     fewest = min(fewest, pd.read_csv(filename).shape[0]) -->
+<!-- print('smallest file has', fewest, 'records') -->
+<!-- ``` -->
 
 <!-- **[Exercise](./solar.md):** add a curve for New Zealand. -->
 <!-- **[Exercise](./solas.md):** do a scatter plot of Australia vs. New Zealand. -->

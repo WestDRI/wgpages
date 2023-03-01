@@ -4,9 +4,9 @@ slug = "python-16-scripts"
 weight = 16
 +++
 
-In this lesson we'll work with bash command line, instead of the Jupyter notebook. We want to write a python script
-'read.py' that takes a set of gapminder_gdp_*.csv files (one/few/many) as an argument and prints out various statistic
-(min, max, mean) for each year for all countries in that file:
+In this lesson we'll work with bash command line, instead of the Jupyter notebook. We want to write a python
+script `read.py` that takes a set of `gapminder_gdp_*.csv` files (one/few/many) as an argument and prints out
+various statistic (min, max, mean) for each year for all countries in that file:
 
 ```sh
 $ ./read.py --min data-python/gapminder_gdp_{americas,europe}.csv   # minimum for each year
