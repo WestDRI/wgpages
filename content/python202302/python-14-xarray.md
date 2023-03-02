@@ -60,14 +60,15 @@ data[:,-1]    # last column
 
 In addition, xarray provides these functions:
 
-- isel() selects by index, could be replaced by [index1] or [index1,...]
-- sel() selects by coordinate value
-- interp() interpolates by value
+- `isel()` selects by coordinate index, could be replaced by [index1] or [index1,...]
+- `sel()` selects by coordinate value
+- `interp()` interpolates by coordinate value
 
 ```py
 data.isel()      # same as `data`
 data.isel(y=1)   # second row
-data.isel(y=0, x=[-2,-1])    # first row, last two columns
+data.isel(x=2)   # third column
+data.isel(y=0, x=[-2,-1])   # first row, last two columns
 ```
 
 ```py
@@ -85,8 +86,8 @@ spatialMean = data.mean()
 spatialMean = data.mean(dim=['x','y'])   # same
 ```
 
-Finally, we can interpolate. However, this requires `scipy` library and currently throws some warnings, so use at your
-own risk:
+Finally, we can interpolate. However, this requires `scipy` library and might throw some warnings, so use at
+your own risk:
 
 ```py
 data.interp(x=10.5, y=10)    # first row, between 1st and 2nd columns
@@ -99,18 +100,18 @@ data.interp(x=10.5, y=15)    # between 1st and 2nd rows, between 1st and 2nd col
 Matplotlib is integrated directly into xarray:
 
 ```py
-data.plot(size=8)                         # 2D heatmap
-data.isel(x=0).plot(marker="o", size=8)   # 1D line plot
+data.plot(size=5)                         # 2D heatmap
+data.isel(x=0).plot(marker="o", size=5)   # 1D line plot
 ```
 
 ## Vectorized operations
 
-You can perform element-wise operations on xarray.DataArray like with numpy.ndarray:
+You can perform element-wise operations on `xarray.DataArray` like with `numpy.ndarray`:
 
 ```py
 data + 100                           # element-wise like numpy arrays
 (data - data.mean()) / data.std()    # normalize the data
-data - data[0,:]      # use numpy broadcasting => subtract first row from all rows
+data - data[0,:]      # use numpy broadcasting → subtract first row from all rows
 ```
 
 ## Split your data into multiple independent groups

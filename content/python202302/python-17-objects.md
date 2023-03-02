@@ -8,10 +8,10 @@ weight = 17
 <!-- have little to no knowledge of the object-oriented programming concepts that underpin Python. For example, classes, -->
 <!-- class methods, inheritance, etc. will likely be foreign to most people at CCCma. -->
 
-Object-oriented programming is a way of programming in which you bundle related variables and functions into objects,
-and then manipulate and use these objects as a whole. We already saw many examples of objects on Python, e.g. lists,
-dictionaries, numpy arrays, that have both variables and methods inside them. In this section we will learn how to
-create our own objects.
+Object-oriented programming is a way of programming in which you bundle related variables and functions into
+objects, and then manipulate and use these objects as a whole. We already saw many examples of objects on
+Python -- e.g. lists, dictionaries, numpy arrays, dataframes -- that have both variables and methods inside
+them. In this section we will learn how to create our own objects.
 
 You can think of:
 
@@ -45,10 +45,10 @@ How can we define an instance without passing the values? E.g., I would like to 
 attribute values separately like this:
 ```py
 earth = Planet()
-earth.radius = 6371         # these are dynamic variables that we can redefine
-earth.mass = 5.972e24
+earth.radius = 6371e5   # these are dynamic variables that we can redefine
+earth.mass = 5.972e27
 ```
-**Hint**: make it so that `Planet().radius` prints "nan" -- this can be set with `float('nan')`.
+**Hint**: make it so that `Planet().radius` returns "nan" -- this can be set with `float('nan')`.
 
 {{< /question >}}
 
@@ -250,12 +250,12 @@ a = square('12345')
 
 # Programming Style and Wrap-Up
 
-* comment your code as much as possible
-* use meaningful variable names
-* very good idea to break complex programs into blocks using functions
-* change one thing at a time, then test
-* use revision control
-* use docstrings to provide online help
+* Comment your code as much as possible.
+* Use meaningful variable names.
+* Very good idea to break complex programs into blocks using functions.
+* Change one thing at a time, then test.
+* Use version control.
+* Use docstrings to provide online help:
 
 ```py
 def average(values):
@@ -278,7 +278,7 @@ def moreComplexFunction(values):
 help(moreComplexFunction)
 ```
 
-* very good idea to add assertions to your code to check things
+* Very good idea to add assertions to your code to check input:
 
 ```py
 assert n > 0., 'Data should only contain positive values'
@@ -293,17 +293,16 @@ if n <= 0.:
     sys.exit(1)
 ```
 
-* Python 3 documentation https://docs.python.org/3
-* Matplotlib gallery http://matplotlib.org/gallery.html
-* NumPy is a scientific computing package http://www.numpy.org
-* SciPy is a rich collection of scientific utilities http://www.scipy.org/scipylib
-* Python Data Analysis Library http://pandas.pydata.org
+# Links
 
+* {{<a "https://docs.python.org/3" "Python 3 documentation">}}
+* {{<a "http://matplotlib.org/gallery.html" "Matplotlib gallery">}}
+* {{<a "http://www.numpy.org" "NumPy">}} scientific computing package
+* {{<a "http://www.scipy.org" "SciPy">}} collection of scientific utilities
+* {{<a "http://pandas.pydata.org" "Pandas">}} library
+* {{<a "https://docs.xarray.dev" "Xarray documentation">}}
 
-
-
-
-
+<!-- {{<a "link" "text">}} -->
 
 
 

@@ -157,8 +157,15 @@ cat input.py | ./input.py           # print itself from standard input
 tail -1 input.py | ./input.py       # print its own last line
 ```
 
-Let's add support for Unix standard input to `read.py`. Delete 'print('\n', f[26:-4].capitalize())' and change the last
-two lines to:
+Let's add support for Unix standard input to `read.py`. Delete `print('\n', f[26:-4].capitalize())` and change the last
+two lines in `read.py` from:
+
+```py
+for f in filenames:
+    process(f, action)
+```
+
+to:
 
 ```py
 if len(filenames) == 0:
@@ -168,6 +175,9 @@ else:
         print('\n', f[26:-4].capitalize())
         process(f,action)
 ```
+
+Now `sys.stdin` acts as if it was the name of a file containing whatever was passed as standard input.
+
 ```sh
 $ python read.py --mean data-python/gapminder_gdp_europe.csv
 $ python read.py --mean < data-python/gapminder_gdp_europe.csv    # anyone knows why this could be useful?
