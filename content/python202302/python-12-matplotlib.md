@@ -120,11 +120,13 @@ plt.plot(x, y, 'bo-', label='one')
 ax.set_ylim(-1.5, 1.5)
 plt.xlabel('x')
 plt.ylabel('f1')
+plt.legend(loc='lower right')
 
 fig.add_subplot(122)   # on 1x2 layout create plot #2
 plt.plot(x+0.2, 2*sin(10*x), 'r-', label='two')
 plt.xlabel('x')
 plt.ylabel('f2')
+plt.legend(loc='lower right')
 ```
 
 There is also an option to specify absolute coordinates of each plot with `fig.add_axes()`:
