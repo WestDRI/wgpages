@@ -28,10 +28,10 @@ computers SSH is usually pre-installed (try typing `ssh` in a terminal to make s
 <!-- {{< toc >}} -->
 
 {{<cor>}}Zoom{{</cor>}} {{<s>}} {{<cgr>}}10:00am-12:00pm Pacific{{</cgr>}} \
-{{<linktitle url="../apptainer/01-intro" text="What is Singularity / Apptainer">}} \
-{{<linktitle url="../apptainer/02-build" text="Creating container images">}} \
-{{<linktitle url="../apptainer/03-run" text="More on running containers">}} \
-{{<linktitle url="../apptainer/04-advanced" text="Advanced Singularity usage">}}
+{{<linktitle url="../apptainer20230330/01-intro" text="What is Singularity / Apptainer">}} \
+{{<linktitle url="../apptainer20230330/02-build" text="Creating container images">}} \
+{{<linktitle url="../apptainer20230330/03-run" text="More on running containers">}} \
+{{<linktitle url="../apptainer20230330/04-advanced" text="Advanced Singularity usage">}}
 
 ## Links
 
