@@ -235,28 +235,105 @@ pd.DataFrame({'a': col1, 'b': col2}, index=['a1','a2','a3'])
 
 <!-- idea from https://youtu.be/SAFmrTnEHLg -->
 
-Let's create a simple dataframe from scratch:
+
+
+
+
+
+
+<!-- Let's create a simple dataframe from scratch: -->
+
+<!-- ```py -->
+<!-- import pandas as pd -->
+<!-- import numpy as np -->
+
+<!-- df = pd.DataFrame() -->
+<!-- size = 10_000 -->
+<!-- df['studentID'] = np.arange(1, size+1) -->
+<!-- df['grade'] = np.random.choice(['A', 'B', 'C', 'D'], size) -->
+
+<!-- df.head() -->
+<!-- ``` -->
+
+<!-- Let's built a new column `outcome` containing *"pass"* or *"fail"* based on the numeric grade column. Let's -->
+<!-- start by processing a row: -->
+
+<!-- ```py -->
+<!-- def result(row): -->
+<!--     if row['grade'] == 'A': -->
+<!--         return 'pass' -->
+<!--     return 'fail' -->
+<!-- ``` -->
+
+<!-- (1) We can apply this function to each row in a loop: -->
+
+<!-- ```py -->
+<!-- %%timeit -->
+<!-- for index, row in df.iterrows(): -->
+<!--     df.loc[index, 'outcome'] = result(row) -->
+<!-- ``` -->
+<!-- <\!-- => 290 ms -\-> -->
+
+<!-- (2) We can use `df.apply()` to apply this function to each row: -->
+
+<!-- ```py -->
+<!-- %%timeit -->
+<!-- df['outcome'] = df.apply(result, axis=1)   # axis=1 applies the function to each row -->
+<!-- ``` -->
+<!-- <\!-- => 30.8 ms -\-> -->
+
+<!-- (3) Or we could use a mask to only assign `pass` to rows with `A`: -->
+
+<!-- ```py -->
+<!-- %%timeit -->
+<!-- df['outcome'] = 'fail' -->
+<!-- df.loc[df['grade'] == 'A', 'outcome'] = 'pass' -->
+<!-- ``` -->
+<!-- <\!-- => 473 µs -\-> -->
+
+
+
+
+
+
+
+
+Fizz buzz is a children's game to practice divisions. Players take turn counting out loud while replacing:
+- any number divisible by 3 with the word "Fizz",
+- any number divisible by 5 with the word "Buzz",
+- any number divisible by both 3 and 5 with the word "FizzBuzz".
+
+Let's implement this in pandas! First, create a simple dataframe from scratch:
 
 ```py
 import pandas as pd
-import numpy as np
-
 df = pd.DataFrame()
 size = 10_000
-df['studentID'] = np.arange(1, size+1)
-df['grade'] = np.random.choice(['A', 'B', 'C', 'D'], size)
-
-df.head()
+df['number'] = np.arange(1, size+1)
 ```
 
-Let's built a new column `outcome` containing *"pass"* or *"fail"* based on the numeric grade column. Let's
-start by processing a row:
+Define for pretty printing:
 
 ```py
-def result(row):
-    if row['grade'] == 'A':
-        return 'pass'
-    return 'fail'
+def show(frame):
+    print(df.tail(15).to_string(index=False))   # print last 15 rows without the row index
+
+show(df)
+```
+
+Let's built a new column `response` containing either *"Fizz"* or *"Buzz"* or *"FizzBuzz"* or the original
+number, based on the `number` value in that row. Let's start by processing a row:
+
+```py
+def count(row):
+    if (row['number'] % 3 == 0) and (row['number'] % 5 == 0):
+        return 'FizzBuzz'
+    elif row['number'] % 3 == 0:
+        return 'Fizz'
+    elif row['number'] % 5 == 0:
+      return 'Buzz'
+    else:
+      return row['number']
 ```
 
 (1) We can apply this function to each row in a loop:
@@ -264,26 +341,43 @@ def result(row):
 ```py
 %%timeit
 for index, row in df.iterrows():
-    df.loc[index, 'outcome'] = result(row)
+    df.loc[index, 'response'] = count(row)
 ```
-<!-- => 290 ms -->
+413 ms ± 11.1 ms per loop (mean ± std. dev. of 7 runs, 1 loop each)
+```py
+show(df)
+```
 
 (2) We can use `df.apply()` to apply this function to each row:
 
 ```py
 %%timeit
-df['outcome'] = df.apply(result, axis=1)   # axis=1 applies the function to each row
+df['response'] = df.apply(count, axis=1)
 ```
-<!-- => 30.8 ms -->
+69.1 ms ± 380 µs per loop (mean ± std. dev. of 7 runs, 10 loops each)
+```py
+show(df)
+```
 
-(3) Or we could use a mask to only assign `pass` to rows with `A`:
+(3) Or we could use a mask to only assign correct responses to the corresponding rows:
 
 ```py
 %%timeit
-df['outcome'] = 'fail'
-df.loc[df['grade'] == 'A', 'outcome'] = 'pass'
+df['response'] = df['number']
+df.loc[df['number'] % 3==0, 'response'] = 'Fizz'
+df.loc[df['number'] % 5==0, 'response'] = 'Buzz'
+df.loc[(df['number'] % 3==0) & (df['number'] % 5==0), 'response'] = 'FizzBuzz'
 ```
-<!-- => 473 µs -->
+718 µs ± 10.6 µs per loop (mean ± std. dev. of 7 runs, 1,000 loops each)
+```py
+show(df)
+```
+
+
+
+
+
+
 
 
 
