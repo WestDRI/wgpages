@@ -8,7 +8,80 @@ weight = 18
 
 <!-- more on this at https://wiki.python.org/moin/PythonDecoratorLibrary#Memoize -->
 
-Consider a top-down (and thus very inefficient) Fibonacci number calculation:
+### Simple example
+
+Consider the following function:
+
+```py
+import time
+def slow(x):
+    time.sleep(1) # mimicking some heavy computation
+    return x
+```
+
+Calling it 20 times will result in a 20-sec wait:
+
+```py
+%%time
+for i in range(10):
+    slow(2)
+    slow(3)
+```
+Wall time: 20.1 s
+
+In reality there are only 2 functions calls: `slow(2)` and `slow(3)`, and everything else is just a repeat.
+
+Now let's cache our function calls with a *decorator*:
+
+```py
+import collections
+import functools
+
+class memoized(object):
+   '''Decorator. Caches a function's return value each time it is called.
+   If called later with the same arguments, the cached value is returned
+   (not reevaluated).
+   '''
+   def __init__(self, func):
+      self.func = func
+      self.cache = {}
+   def __call__(self, *args):
+      if not isinstance(args, collections.abc.Hashable):
+         # uncacheable. a list, for instance.
+         # better to not cache than blow up.
+         return self.func(*args)
+      if args in self.cache:
+         return self.cache[args]
+      else:
+         value = self.func(*args)
+         self.cache[args] = value
+         return value
+   def __repr__(self):
+      '''Return the function's docstring.'''
+      return self.func.__doc__
+   def __get__(self, obj, objtype):
+      '''Support instance methods.'''
+      return functools.partial(self.__call__, obj)
+
+@memoized
+def fast(x):
+    time.sleep(1) # mimicking some heavy computation
+    return x
+```
+
+The function will be called twice, and the other 18 times it'll reuse previously computed results:
+
+```py
+%%time
+for i in range(10):
+    fast(2)
+    fast(3)
+```
+Wall time: 2.01 s
+
+### Badly-coded Fibonacci problem
+
+Consider a top-down (and thus terribly inefficient) Fibonacci number calculation:
 
 ```py
 def fibonacci(n):
@@ -72,6 +145,11 @@ def fastFibonacci(n):
 fastFibonacci(30)
 ```
 268 ns ± 1.23 ns per loop (mean ± std. dev. of 7 runs, 1,000,000 loops each)
+
+We have a speedup by a factor of 675,000! This is even better than the anticipated speedup of $2,692,537/30
+\approx 89,751$ (from the reduction in the number of function calls) which probably tells us something about
+the overhead of managing many thousands of simultaneous nested function calls in Python in the first place.
+
 
 
 
