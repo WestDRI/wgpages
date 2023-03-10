@@ -98,39 +98,10 @@ fibonacci(30)
 181 ms ± 2.85 ms per loop (mean ± std. dev. of 7 runs, 1 loop each)
 
 The total number of `fibonacci()` calls in this example is 2,692,537, and it scales exponentially towards
-lower `n`, e.g. `f(1)` is evaluated 832,040 times. It turns out it is possible to store previous function
-calls and only compute new ones using the following *decorator*.
+lower `n`, e.g. `f(1)` is evaluated 832,040 times. It turns out it is possible to reuse previous function
+calls and only compute new ones using the *decorator* defined earlier:
 
 ```py
-import collections
-import functools
-
-class memoized(object):
-   '''Decorator. Caches a function's return value each time it is called.
-   If called later with the same arguments, the cached value is returned
-   (not reevaluated).
-   '''
-   def __init__(self, func):
-      self.func = func
-      self.cache = {}
-   def __call__(self, *args):
-      if not isinstance(args, collections.abc.Hashable):
-         # uncacheable. a list, for instance.
-         # better to not cache than blow up.
-         return self.func(*args)
-      if args in self.cache:
-         return self.cache[args]
-      else:
-         value = self.func(*args)
-         self.cache[args] = value
-         return value
-   def __repr__(self):
-      '''Return the function's docstring.'''
-      return self.func.__doc__
-   def __get__(self, obj, objtype):
-      '''Support instance methods.'''
-      return functools.partial(self.__call__, obj)
-
 @memoized
 def fastFibonacci(n):
     if n == 0:
