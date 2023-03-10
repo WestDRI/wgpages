@@ -4,7 +4,7 @@ slug = "python-18-other"
 weight = 18
 +++
 
-# Caching intermediate results ("memoization")
+# Caching function calls ("memoization")
 
 <!-- more on this at https://wiki.python.org/moin/PythonDecoratorLibrary#Memoize -->
 
