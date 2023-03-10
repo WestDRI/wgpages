@@ -52,12 +52,14 @@ functions, lists, dictionaries).
 <!-- {{<nolinktitle>}}Multidimensional labeled arrays and datasets with xarray{{</nolinktitle>}} \ -->
 <!-- {{<nolinktitle>}}Running Python scripts from the command line{{</nolinktitle>}} \ -->
 <!-- {{<nolinktitle>}}Basics of object-oriented programming in Python{{</nolinktitle>}} -->
+<!-- {{<nolinktitle>}}Other topics{{</nolinktitle>}} -->
 
 {{<linktitle url="../python202302/python-12-matplotlib" text="Plotting with matplotlib">}} \
 {{<linktitle url="../python202302/python-13-pandas" text="Pandas dataframes">}} \
 {{<linktitle url="../python202302/python-14-xarray" text="Multidimensional labeled arrays and datasets with xarray">}} \
 {{<linktitle url="../python202302/python-16-scripts" text="Running Python scripts from the command line">}} (additional material) \
-{{<linktitle url="../python202302/python-17-objects" text="Basics of object-oriented programming in Python">}} (additional material)
+{{<linktitle url="../python202302/python-17-objects" text="Basics of object-oriented programming in Python">}} (additional material) \
+{{<linktitle url="../python202302/python-18-other" text="Other topics">}}
 
 
 
