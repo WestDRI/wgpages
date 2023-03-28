@@ -237,19 +237,19 @@ git log    # this particular dataset's history (none of our commands show here: 
 cd ..
 ```
 
-Let's try cloning from another GitHub repository:
+<!-- Let's try cloning from another GitHub repository: -->
 
-```sh
-datalad clone --dataset . https://github.com/razoumov/sharedSnippets sharedSnippets
-cd sharedSnippets
-datalad status --annex all   # does not show anything, since it has no annexed files
-ls
-```
+<!-- ```sh -->
+<!-- datalad clone --dataset . https://github.com/razoumov/sharedSnippets sharedSnippets -->
+<!-- cd sharedSnippets -->
+<!-- datalad status --annex all   # does not show anything, since it has no annexed files -->
+<!-- ls -->
+<!-- ``` -->
 
-This one downloaded all the files, i.e. none of them are annexed. Why?
+<!-- This one downloaded all the files, i.e. none of them are annexed. Why? -->
 
-Well, this is how this new dataset is structured, and it is organized this way because it was created with the
-`text2git` configuration too, keeping all text files outside the annex.
+<!-- Well, this is how this new dataset is structured, and it is organized this way because it was created with the -->
+<!-- `text2git` configuration too, keeping all text files outside the annex. -->
 
 #### Running scripts
 
@@ -911,17 +911,20 @@ datalad clone --dataset . https://github.com/razoumov/sharedSnippets projects/sh
 git log   # can see those two new subdatasets
 ```
 
-Go into one of these subdatasets, modify a file, and push it back to GitHub:
+Go into one of these subdatasets, modify a file, and commit it to GitHub:
+
+<!-- #   datalad create -f   # convert this Git repo to a dataset -->
 
 ```sh
 cd projects/sharedSnippets
-datalad create -f   # convert this Git repo to a dataset
 >>> add an empty line to mpiContainer.md
-datalad status
+git status
 git add mpiContainer.md
-git commit -m "small edit in mpiContainer.md"
+git commit -m "added another line to mpiContainer.md"
 git push
 ```
+
+This directory is still a pure GitHub repository, i.e. there no DalaLad files.
 
 Let's clone out entire dataset to another location:
 
@@ -930,14 +933,17 @@ cd ~/tmp
 datalad install --description "copy of envelope" -r -s envelope copy   # `clone` has no recursive option
 cd copy
 cd projects/sharedSnippets
-git log   # cloned as of the moment of that dataset's creation; no recent updates there yet
+git log   # cloned as of the moment of that dataset's creation; no recent update there yet
 ```
 
 Recursively update all child Git repositories:
 
 ```sh
-cd ../..   # to ~/tmp/copy
-datalad update -s origin --how=merge --recursive   # pull recent changes from origin
+git remote -v     # remote is origin = GitHub
+cd ../..          # to ~/tmp/copy
+git remote -v     # remote is origin = ../envelope
+ # pull recent changes from "proper origin" for each subdataset
+datalad update -s origin --how=merge --recursive
 cd projects/sharedSnippets
 git log
 ```
@@ -946,6 +952,8 @@ git log
 
 
 
+<!-- git reset --hard HEAD~1 -->
+<!-- git push --force -->
 
 
 
