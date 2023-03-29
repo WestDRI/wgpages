@@ -40,6 +40,7 @@ computers SSH is usually pre-installed (try typing `ssh` in a terminal to make s
 - Official {{<a "https://docs.sylabs.io/guides/3.7/user-guide/index.html" "Singularity user guide">}}
 - Compute Canada / the Alliance's {{<a "https://docs.alliancecan.ca/wiki/Singularity" "Singularity wiki page">}}
 - Recent webinars:
+  - {{<a "https://training.westdri.ca/tools/virtual#manyFilesInOverlays" "Hiding large numbers of files in container overlays">}} by Alex Razoumov (SFU) recorded on January 17th, 2023
   - {{<a "https://www.youtube.com/watch?v=bpmrfVqBowY" "Apptainer">}} by Paul Preney (SHARCNET) recorded on
     April 6th, 2022: many best practices and a couple of complete workflows on our clusters using
     `/localscratch`, setting `$APPTAINER_CACHEDIR` and `$APPTAINER_TMPDIR` for best performance, using

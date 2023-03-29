@@ -1,11 +1,10 @@
 +++
-title = "What is Singularity / Apptainer"
+title = "What is Apptainer (formerly Singularity)"
 slug = "01-intro"
 weight = 1
 +++
 
 {{< toc >}}
-
 
 <!-- Paul Preney on 2022-Dec-19: For a course, describe how to use Apptainer v1.0. In January I will be -->
 <!-- teaching an Apptainer course. I will focus on v1.0 features and methodology. As you've seen Apptainer v1.1 has -->
@@ -28,13 +27,14 @@ weight = 1
 <!-- idea how big the images will be that they are building really. Small images will typically build. Increasingly -->
 <!-- larger images increasingly encounter issues. Sigh. (edited) -->
 
+Until recently Apptainer was called Singularity. In November 2021 the guidance of parts of Singularity was
+transferred to the [Linux Foundation](https://www.linuxfoundation.org), and that fully open-source component
+has been renamed *Apptainer*, while the commercial fork is still called *Singularity*.
 
+Apptainer:
 
-
-Apptainer (until recently called Singularity):
-
-- is an open-source project developed within the research community since 2015, first by the Lawrence Berkeley
-  National Lab
+- is an open-source project developed within the research community since 2015, started at the Lawrence
+  Berkeley National Lab
 - goal: create a portable system to run Linux applications on HPC clusters independently of the specific host
   Linux version and distro, i.e. distribute software and **its compute environment**
 - creates a custom, secure virtual Linux environment (a **container**) that is different from the host Linux
@@ -46,15 +46,15 @@ Apptainer (until recently called Singularity):
   - you can install any system packages and all dependencies for your software as packages inside the container
 - quickly became a way to package and deploy scientific software and its dependencies to different HPC systems
 - is different from Docker, as it does not require `root` access on the host system to *run* it
-  - specifically designed for running containers on multi-user HPC cluster s
+  - specifically designed for running containers on multi-user HPC clusters
 - on a Linux host is very lightweight compared to a full virtual machine (**VM**)
-- on Mac or Windows can be deployed inside a VM (still requires a Linux host layer &nbsp;➜&nbsp; a VM)
+- on Mac or Windows hosts can be deployed inside a VM (still requires a Linux host layer &nbsp;➜&nbsp; a VM)
 - from the technical standpoint, uses:
   - <u>kernel namespaces</u> to virtualize and isolate OS resources (CPU, memory access, disk I/O, network
     access, user/group namespaces), so that processes inside the container see only a specific, virtualized
     set of resources
   - Linux control groups (<u>cgroups</u>) to control and limit the use of these resources
-  - <u>overlay filesystems</u> to enable the appearance of writing to otherwise read-only filesystems
+  - <u>overlay images</u> to enable writable filesystems in otherwise read-only containers
 
 ## Why use a container
 
@@ -64,23 +64,26 @@ software environment**.
 Why:
 1. avoid compiling complex software chains from scratch for the host's Linux OS
 1. run software in the environment where it might not be available as a package, or run older software
-1. use a familiar software environment everywhere where you can run Singularity, e.g. across different HPC centres
+1. use a familiar software environment everywhere where you can run Apptainer, e.g. across different HPC centres
    - create a consistent testing environment independently of the underlying system
    - transfer pipelines from a test environment to a production environment
 1. popular, but somewhat dubious reason: data reproducibility (use the same software environment as the
    authors &nbsp;➜&nbsp; same result)
 
-## Installing/running Singularity on your own computer
+## Installing/running Apptainer on your own computer
 
-1. on a Linux system (we will install Singularity as a package inside our VM from Tuesday)
+Apptainer was really developed for use on HPC cluster, but there are ways to run it on your own computer:
+
+1. on a Linux system (when running a longer version of this course after a Cloud course, we install Apptainer
+   as a package inside our VM)
 1. in a VM running Linux (on any host OS)
 1. within Vagrant for Windows (WSL) or MacOS
-1. inside Docker (download a Docker image with Singularity installed)
+1. inside Docker (download a Docker image with Apptainer installed)
 
 ## Glossary
 
 An **image** is a bundle of files including an operating system, software and potentially data and other
-application-related files. Singularity uses the Singularity Image Format (SIF), and images are provided as
+application-related files. Apptainer uses the Singularity Image Format (SIF), and images are provided as
 single `.sif` files.
 
 A **container** is a virtual environment that is based on an image. You can start multiple container instances
@@ -111,9 +114,8 @@ management between different VMs on a given node, very popular with software dev
 on HPC systems (no `root` or `sudo` possible for users on clusters + cgroups resource management will conflict
 with HPC resource managers).
 
-**Singularity**: run containers entirely in user space, as a user, can use existing Docker containers
-(Singularity will convert them to proper Singularity containers for you), works seamlessly with the
-schedulers.
+**Apptainer**: run containers entirely in user space, as a user, can use existing Docker containers (Apptainer
+will convert them to proper SIF images for you), works seamlessly with the schedulers.
 
 There are few other container engines focusing on specific features.
 
@@ -122,10 +124,16 @@ There are few other container engines focusing on specific features.
 
 
 
-## Singularity on HPC systems
+## Apptainer on HPC systems
+
+{{<note>}}
+We will now distribute usernames and passwords for our training cluster.
+{{</note>}}
+
+Let's log in to the training cluster `container.c3.ca` and try loading Apptainer:
 
 ```sh
-module load apptainer/1.1.3
+module load apptainer/1.1.6
 apptainer --version
 apptainer             # see the list of available commands
 ```

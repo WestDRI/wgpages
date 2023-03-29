@@ -12,7 +12,7 @@ If you have not done so already, let's pull the latest Ubuntu container from Doc
 
 ```sh
 # cd ~/tmp
-module load apptainer/1.1.3
+module load apptainer/1.1.6
 # salloc --cpus-per-task=1 --time=3:00:0 --mem-per-cpu=3600
 apptainer pull ubuntu.sif docker://ubuntu
 ```
@@ -26,7 +26,7 @@ We already saw some of these commands:
 Apptainer matches users between the container and the host. For example, if you run a container that needs
 to be root, you also need to be root outside the container.
 
-## Running a single command
+#### 1. Running a single command
 
 ```sh
 apptainer exec ubuntu.sif ls /
@@ -35,19 +35,19 @@ apptainer exec ubuntu.sif bash -c "ls /; whoami"   # probably a safer way
 apptainer exec ubuntu.sif cat /etc/os-release
 ```
 
-## Running a default script
+#### 2. Running a default script
 
 We've already done this! If there is no default script, Apptainer will give you the shell to type in your
 commands.
 
-## Starting a shell
+#### 3. Starting a shell
 
 We've already done this!
 
 ```sh
 $ apptainer shell ubuntu.sif
 Apptainer> whoami   # same username as in the host system
-Apptainer> groups   # same groups as on the host system
+Apptainer> groups   # tries to match groups as on the host system
 ```
 
 At startup Apptainer simply copied the relevant user and group lines from the host system to files
@@ -143,7 +143,7 @@ You can have more granular control (e.g. specifying read only) with the `--mount
 official
 [Bind Paths and Mounts documentation](https://sylabs.io/guides/latest/user-guide/bind_paths_and_mounts.html).
 
-> ## Key points
+> ### Key points
 > 1. Your current directory and home directory are usually available by default in a container.
 > 1. You have the same username and permissions in a container as on the host system.
 > 1. You can specify additional host system directories to be available in the container.
