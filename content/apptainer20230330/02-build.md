@@ -17,8 +17,7 @@ The `apptainer build <imagePath> <buildSpec>` command is a versatile tool that l
    (`docker://`), [Singularity Hub](https://singularityhub.github.io) (`shub://`), and the [Container
    Library](https://cloud.sylabs.io) (`library://` - no longer supported by default),
 1. create a container from scratch using an Apptainer definition file customized to your needs,
-1. convert containers between different formats supported by Apptainer,
-1. create a container from a sandbox.
+1. convert containers between different formats supported by Apptainer, e.g. create a container from a sandbox.
 
 <!-- You can create an image from: -->
 <!-- - a recipe/definition file (similar to Dockerfile for Docker images) -->
