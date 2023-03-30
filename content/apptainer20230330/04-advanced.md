@@ -259,10 +259,11 @@ Apptainer>  touch /data/test.txt    # error: read-only file system
 Into the same container at the same time, you can mount many read-only overlays, but only one writable overlay.
 {{</note>}}
 
-To see the help page on overlays:
+To see the help page on overlays (these two commands are equivalent):
 
 ```sh
 apptainer help overlay create
+apptainer overlay create --help
 ```
 
 #### Sparse overlay images
