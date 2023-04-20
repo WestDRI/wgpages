@@ -36,8 +36,7 @@ training cluster. No need to install Julia on your computer.
 {{<cor>}}Zoom{{</cor>}} {{<s>}} {{<cgr>}}Week 1 - 10:00am-12:00pm Pacific{{</cgr>}} \
 {{<linktitle url="../julia20230420/julia-01-intro-language" text="Introduction to Julia language">}}\
 {{<linktitle url="../julia20230420/julia-02-intro-parallel" text="Intro to parallelism">}}\
-{{<linktitle url="../julia20230420/julia-03-threads-slow-series" text="Multi-threading with Base.Threads (slow series)">}} \
-{{<linktitle url="../julia20230420/julia-04-threadsx-slow-series" text="Multi-threading with ThreadsX (slow series)">}}
+{{<linktitle url="../julia20230420/julia-03-threads-slow-series" text="Multi-threading with Base.Threads (slow series)">}}
 
 <!-- {{<cor>}}Zoom{{</cor>}} {{<s>}} {{<cgr>}}Week 1 - 10:00am-12:00pm Pacific{{</cgr>}} \ -->
 <!-- {{<nolinktitle>}}Introduction to Julia language{{</nolinktitle>}} \ -->
@@ -51,12 +50,14 @@ training cluster. No need to install Julia on your computer.
 
 
 <!-- {{<cor>}}Zoom{{</cor>}} {{<s>}} {{<cgr>}}Week 2 - 10:00am-12:00pm Pacific{{</cgr>}} \ -->
+<!-- {{<linktitle url="../julia20230420/julia-04-threadsx-slow-series" text="Multi-threading with ThreadsX (slow series)">}} -->
 <!-- {{<linktitle url="../julia20230420/julia-05-threads-julia-set" text="Parallelizing the Julia set with Base.Threads">}}\ -->
 <!-- {{<linktitle url="../julia20230420/julia-06-threadsx-julia-set" text="Parallelizing the Julia set with ThreadsX">}} \ -->
 <!-- {{<linktitle url="../julia20230420/julia-07-distributed1" text="Distributed.jl: basics">}}\ -->
 <!-- {{<linktitle url="../julia20230420/julia-08-distributed2" text="Distributed.jl: three scalable versions of the slow series">}} -->
 
 {{<cor>}}Zoom{{</cor>}} {{<s>}} {{<cgr>}}Week 2 - 10:00am-12:00pm Pacific{{</cgr>}} \
+{{<nolinktitle>}}Multi-threading with ThreadsX (slow series){{</nolinktitle>}} \
 {{<nolinktitle>}}Parallelizing the Julia set with Base.Threads{{</nolinktitle>}} \
 {{<nolinktitle>}}Parallelizing the Julia set with ThreadsX{{</nolinktitle>}} \
 {{<nolinktitle>}}Distributed.jl: basics{{</nolinktitle>}} \
