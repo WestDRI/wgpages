@@ -140,7 +140,7 @@ end
 ## Other parallel functions
 
 ThreadsX provides various parallel functions for sorting. Sorting is intrinsically hard to parallelize, so do not expect
-100% parallel efficiency. Let's take a look at `sort!()`:
+100% parallel efficiency. Let's take a look at `sort()` and `sort!()`:
 
 ```jl
 n = Int64(1e8)
