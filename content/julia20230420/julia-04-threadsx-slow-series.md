@@ -4,9 +4,9 @@ slug = "julia-04-threadsx-slow-series"
 weight = 4
 +++
 
-{{<note>}}
-Note: the times cited in this chapter were measured on Apple's M1 Pro processor, not on the training cluster.
-{{</note>}}
+<!-- {{<note>}} -->
+<!-- Note: the times cited in this chapter were measured on Apple's M1 Pro processor, not on the training cluster. -->
+<!-- {{</note>}} -->
 
 As you saw in the previous section, Base.Threads does not have a built-in parallel reduction. You can implement it
 yourself by hand, but all solutions are somewhat awkward, and you can run into problems with thread safety and
