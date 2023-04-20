@@ -56,10 +56,11 @@ code is **thread-safe**.
 Let's initialize a large floating array:
 
 ```julia
-nthreads()       # still running 4 threads
-n = Int64(1e8)   # integer number
+nthreads()        # still running 4 threads
+n = Int64(1e8)    # integer number
+n = 100_000_000   # another way of doing this
 a = zeros(n);
-typeof(a)        # how much memory does this array take?
+typeof(a)         # how much memory does this array take?
 ```
 
 and then fill it with values using a single thread, and time this operation:
@@ -122,8 +123,8 @@ to finish updating the variable, so with 4 threads and one variable there should
 
 ## Benchmarking in Julia
 
-We already know that we can use `@time` macro for timing our code. Let's do summation of integers from 1 to `Int64(1e8)`
-using a serial code:
+We already know that we can use `@time` macro for timing our code. Let's do summation of integers from 1 to
+`Int64(1e8)` using a serial code:
 
 ```julia
 n = Int64(1e8)
@@ -142,9 +143,11 @@ code.
 ```julia
 using BenchmarkTools
 n = Int64(1e8)
-total = Int128(0)   # 128-bit for the result!
-@btime for i in 1:n
-	global total += i
+@btime begin
+    total = Int128(0)   # 128-bit for the result!
+	for i in 1:n
+	    total += i
+	end
 end
 println("total = ", total)
 ```
@@ -170,7 +173,7 @@ end
 ```
 
 In all these cases we see ~2 ns running time -- this can't be correct! What is going on here? It turns out
-that Julia is replacing the summation with the exact formula $n(n+1)/2$!
+that Julia is replacing the summation with the exact formula $$\frac{n(n+1)}{2}.$$
 
 We want to:
 1. force computation $~\Rightarrow~$ we'll compute something more complex than simple integer summation, so
@@ -270,7 +273,8 @@ end
 With one thread I measured 2.838 s. The runtime stayed essentially the same (now we are using `atomic_add()`) which
 makes sense: with one thread there is no waiting for the variable to be released.
 
-With four threads, I measured 5.261 s -- let's discuss! Is this what we expected?
+- With 2 threads, I measured XXX -- let's discuss! Is this what we expected?
+- With 4 threads, I measured YYY -- let's discuss! Is this what we expected?
 
 > ### <font style="color:blue">Exercise "Threads.2"</font>
 > Let's run the previous exercise as a batch job with `sbatch`.  **Hint**: you will need to go to the login
@@ -499,7 +503,7 @@ numsubs will be rounded up to the next power of 2,
 i.e. setting numsubs=5 will effectively use numsubs=8
 """ ->
 function slow(n::Int64, digits::Int, a::Int64, b::Int64, numsubs=16)
-    if b-a > n/numsubs
+    if b-a > n/numsubs    # (n/numsubs) is our iteration target per thread
         mid = (a+b)>>>1   # shift by 1 bit to the right
         finish = @spawn slow(n, digits, a, mid, numsubs)
         t2 = slow(n, digits, mid+1, b, numsubs)

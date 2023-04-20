@@ -11,8 +11,7 @@ weight = 1
   read–eval–print loop, and can also be run in Jupyter), i.e. tries to **combine the advantages of both
   compiled and interpreted languages**
 - Built-in package manager
-- Lots of interesting design decisions, e.g. macros, support for Unicode, etc -- covered in
-  {{<a "../../programming_julia/" "our introductory Julia course">}}
+- Lots of interesting design decisions, e.g. macros, support for Unicode, etc
 - **Support for parallel and distributed computing** via its Standard Library and many 3rd party packages
   - being added along the way, e.g. @threads were first introduced in v0.5
   - currently under active development, both in features and performance
@@ -21,7 +20,7 @@ weight = 1
 
 If you have Julia installed on your own computer, you can run it there: on a multi-core laptop/desktop you can launch multiple threads and processes and run them in parallel.
 
-If you want to install Julia later on, you can find it at {{<a "https://julialang.org/downloads" "here">}}.
+If you want to install Julia after this workshop, you can find it {{<a "https://julialang.org/downloads" "here">}}.
 
 ## Using Julia on supercomputers
 
@@ -30,13 +29,15 @@ If you want to install Julia later on, you can find it at {{<a "https://julialan
 Julia is among hundreds of software packages installed on the CC clusters. To use Julia on one of them, you would load the following module:
 
 ```bash
-$ module load julia
+$ module spider julia   # show the available versions
+$ module load julia     # load the default version
 ```
 
 #### Installing Julia packages on a production cluster
 
-By default, all Julia packages you install from REPL will go into `$HOME/.julia`. If you want to put packages into
-another location, you will need to (1) install inside your Julia session with (from within Julia):
+By default, all Julia packages you install from REPL will go into `$HOME/.julia`, and that we will count
+against your `/home` quota. If you want to put packages into another location, you will need to (1) install
+inside your Julia session with (from within Julia):
 
 ```jl
 empty!(DEPOT_PATH)
@@ -66,19 +67,18 @@ accounts.
 
 ### Julia on the training cluster for this workshop
 
-We have Julia on our training cluster *kandinsky.c3.ca*.
+We have Julia on our training cluster *parjul.c3.ca*.
 
 {{<note>}}
 Our training cluster has: <br><br>
-
-- one login node with 8 *"persistent"* cores and 30GB of memory, <br>
-- 60 compute nodes with 4 *"compute"* cores and 15GB of memory on each (240 cores in total)
+- one login node with 1 *"persistent"* core and 4GB of memory, <br>
+- 45 compute nodes with 4 *"compute"* cores and 15GB of memory on each (180 cores in total)
 <!-- - one GPU node with 4 *"compute"* cores, 1 vGPU (8GB) and 22GB of memory. -->
 {{</note>}}
 
-In our introductory Julia course we use Julia inside a Jupyter notebook. Today we will be starting multiple
-threads and processes, with the eventual goal of running our workflows as batch jobs on an HPC cluster, so
-we'll be using Julia from the command line.
+Normally in our introductory Julia course we would use Julia inside a Jupyter notebook. Today we will be
+starting multiple threads and processes, with the eventual goal of running our workflows as batch jobs on an
+HPC cluster, so we'll be using Julia from the command line.
 
 > **Pause**: We will now distribute accounts and passwords to connect to the cluster.
 
@@ -111,7 +111,7 @@ You could now technically launch a Julia REPL (Read-Eval-Print-Loop). However, t
 Instead, you will first launch an interactive job by running the Slurm command `salloc`:
 
 ```sh
-$ salloc --mem-per-cpu=3600M --time=1:0:0
+$ salloc --mem-per-cpu=3600M --time=2:0:0
 ```
 
 This puts you on a compute node for up to one hour.
@@ -120,19 +120,19 @@ Now you can launch the Julia REPL and try to run a couple of commands:
 
 ```sh
 $ julia
-_
+               _
    _       _ _(_)_     |  Documentation: https://docs.julialang.org
   (_)     | (_) (_)    |
    _ _   _| |_  __ _   |  Type "?" for help, "]?" for Pkg help.
   | | | | | | |/ _` |  |
-  | | |_| | | | (_| |  |  Version 1.7.0 (2021-11-30)
- _/ |\__'_|_|_|\__'_|  |  
+  | | |_| | | | (_| |  |  Version 1.8.5 (2023-01-08)
+ _/ |\__'_|_|_|\__'_|  |
 |__/                   |
 
 julia> using BenchmarkTools
 
-julia> @btime sqrt(2)
-  1.825 ns (0 allocations: 0 bytes)
+ julia> @btime sqrt(2)
+  1.310 ns (0 allocations: 0 bytes)
 1.4142135623730951
 ```
 
@@ -195,7 +195,7 @@ $ tmux
 $ source /project/def-sponsor00/shared/julia/config/loadJulia.sh
 
 # Step 2: launch an interactive job on a compute node
-$ salloc --mem-per-cpu=3600M --time=1:0:0
+$ salloc --mem-per-cpu=3600M --time=2:0:0
 
 # Step 3: launch the Julia REPL
 $ julia
@@ -211,7 +211,7 @@ So instead, you will run:
 $ source /project/def-sponsor00/shared/julia/config/loadJulia.sh
 
 # Request 2 CPUs per task from Slurm
-$ salloc --mem-per-cpu=3600M --cpus-per-task=2 --time=01:00:00
+$ salloc --mem-per-cpu=3600M --cpus-per-task=2 --time=2:0:0
 
 # Launch Julia on 2 threads
 $ julia -t 2
@@ -220,10 +220,10 @@ $ julia -t 2
 ## Running scripts
 
 Now, if we want to get an even bigger speedup, we could use even more CPUs per task. The problem is that our
-training cluster only has ~200 CPUs, so some of us would be left waiting for Slurm while the others can play
-with a bunch of CPUs for an hour. This is not an efficient approach. This is equally true on production
-clusters: if you want to run an interactive job using a lot of resources, you might have to wait for a long
-time.
+training cluster only has ~180 compute cores, so some of us would be left waiting for Slurm while the others
+can play with a bunch of CPUs for an hour. This is not an efficient approach. This is equally true on
+production clusters: if you want to run an interactive job using a lot of resources, you might have to wait
+for a long time.
 
 A much better approach is to put our Julia code in a Julia script and run it through a batch job by using the
 Slurm command `sbatch`.
@@ -280,11 +280,11 @@ Macros have a `@` prefix and are defined with a syntax similar to that of functi
 ### Fun fact
 
 {{<a "https://docs.julialang.org/en/v1/manual/unicode-input/" "Julia supports unicode">}}. In a Julia REPL,
-type <img src="/img/snail.png" alt="" width="72"/>, followed by the TAB key, and you get 🐌.
+type `\:snail:` followed by the TAB key, and you get 🐌.
 
-While assigning values to a "snail variable" might not be all that useful, a wide access to—for instance—Greek
-letters, makes Julia's code look nicely similar to the equations it represents. For instance, if you type TAB
-after each variable name, the following:
+While assigning values to a "snail variable" might not be all that useful, a wide access to -- for instance --
+Greek letters, would make Julia's code look nicely similar to the equations it represents. For instance, if
+you type TAB after each variable name, the following:
 
 ```{jl}
 \pgamma = ((\alpha \pi + \beta) / \delta) + \upepsilon
@@ -305,7 +305,8 @@ julia> 2π
 
 ### Additional basic information
 
-{{<a "../../programming_julia/" "Our introduction to Julia course">}} has, amongst others, sections on:
+Our beginner's {{<a "https://rcmodules22.netlify.app/programming_julia" "introduction to Julia course">}} has,
+amongst others, sections on:
 
 - {{<a "https://westgrid-julia.netlify.app/2022_modules/06_jl_pkg" "working with packages">}}
 - {{<a "https://westgrid-julia.netlify.app/2022_modules/08_jl_functions" "working with functions">}}

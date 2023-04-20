@@ -61,26 +61,29 @@ function slow(n::Int64, digits::Int)
     end
     return total
 end
-total = @btime slow(Int64(1e9), 9)
-println("total = ", total)   # total = 14.241913010384215
+total = @btime slow(Int64(1e8), 9)
+println("total = ", total)   # total = 13.277605949855294
 ```
 
-With 8 CPU cores, I see:
+With 4 CPU cores, I see:
 
 ```sh
-$ julia mapreduce.jl        # runtime with 1 thread: 5.255 s
-$ julia -t 8 mapreduce.jl   # runtime with 8 threads: 900.995 ms
+$ julia mapreduce.jl        # runtime with 1 thread: 2.200 s
+$ julia -t 4 mapreduce.jl   # runtime with 8 threads: 543.949 ms
 ```
 
 > ### <font style="color:blue">Exercise "ThreadsX.1"</font>
 > Using the compact (one-line) if-else notation, shorten this code by four lines. Time the new, shorter code
 > with one and several threads.
+> **Hint**: the syntax is `1 > 2 ? "1 is greater than 2" : "1 is not greater than 2"`
 
 ## Parallelizing the slow series with ThreadsX.sum
 
 ```jl
 ?sum
+sum(x->x^2, 1:10)
 ?Threads.sum
+Threads.sum(x->x^2, 1:10)
 ```
 
 The expression in the round brackets below is a generator. It generates a sequence on the fly without storing
@@ -92,30 +95,30 @@ collect(i for i in 1:10)   # construct a vector (this one takes more space)
 [i for i in 1:10]          # functionally the same (vector)
 ```
 
-Let's use a generator with $10^9$ elements to compute our slow series sum:
+Let's use a generator with $10^8$ elements to compute our slow series sum:
 
 ```jl
 using BenchmarkTools
-@btime sum(!digitsin(9, i) ? 1.0/i : 0 for i in 1:1_000_000_000)
-   # serial code: 5.061 s, prints 14.2419130103833
+@btime sum(!digitsin(9, i) ? 1.0/i : 0 for i in 1:100_000_000)
+   # serial code: 2.183 s, prints 13.277605949858103
 ```
 
 It is very easy to parallelize:
 
 ```jl
 using BenchmarkTools, ThreadsX
-@btime ThreadsX.sum(!digitsin(9, i) ? 1.0/i : 0 for i in 1:1_000_000_000)
-   # with 8 threads: 906.420 ms, prints 14.241913010381973
+@btime ThreadsX.sum(!digitsin(9, i) ? 1.0/i : 0 for i in 1:100_000_000)
+   # with 4 threads: 527.573 ms, prints 13.277605949854381
 ```
 
 > ### <font style="color:blue">Exercise "ThreadsX.2"</font>
 > The expression `[i for i in 1:10 if i%2==1]` produces an array of odd integers between 1 and 10. Using this
 > syntax, remove zero terms from the last generator, i.e. write a parallel code for summing the slow series
 > with a generator that contains only non-zero terms. It should run slightly faster than the code with the
-> original generator.
+> original generator. (I get 527.159 ms runtime.)
 
 <!-- ```jl -->
-<!-- @btime ThreadsX.sum(1.0/i for i in 1:1_000_000_000 if !digitsin(9, i)) -->
+<!-- @btime ThreadsX.sum(1.0/i for i in 1:100_000_000 if !digitsin(9, i)) -->
 <!-- ``` -->
 
 Finally, let's rewrite our code applying a function to all integers in a range:
@@ -124,14 +127,14 @@ Finally, let's rewrite our code applying a function to all integers in a range:
 function numericTerm(i)
     !digitsin(9, i) ? 1.0/i : 0
 end
-@btime ThreadsX.sum(numericTerm, 1:Int64(1e9))            # 890.466 ms, same result
+@btime ThreadsX.sum(numericTerm, 1:Int64(1e8))   # 571.915 ms, same result
 ```
 
 > ### <font style="color:blue">Exercise "ThreadsX.3"</font>
 > Rewrite the last code replacing `sum` with `mapreduce`. **Hint**: look up help for `mapreduce()`.
 
 <!-- ```jl -->
-<!-- @btime ThreadsX.mapreduce(numericTerm, +, 1:Int64(1e9))   # 912.552 ms, same result -->
+<!-- @btime ThreadsX.mapreduce(numericTerm, +, 1:Int64(1e8))   # 531.850 ms, same result -->
 <!-- ``` -->
 
 ## Other parallel functions
@@ -141,23 +144,25 @@ ThreadsX provides various parallel functions for sorting. Sorting is intrinsical
 
 ```jl
 n = Int64(1e8)
-r = rand(Float32, (n));
+r = rand(Float32, (n));   # random floats in [0, 1]
 r[1:10]      # first 20 elements, same as first(r,10)
 last(r,10)   # last 10 elements
 
 ?sort              # underneath uses QuickSort (for numeric arrays) or MergeSort
-@btime sort!(r);   # 1.391 s, serial sorting
+@btime sort(r);    # 10.421 s, serial sorting
+@btime sort!(r);   # 1.707 s, in-place serial sorting
 
 r = rand(Float32, (n));
-@btime ThreadsX.sort!(r);   # 586.541 ms, parallel sorting with 8 threads
+@btime ThreadsX.sort(r);    # 2.950 ms, parallel sorting with 4 threads
+@btime ThreadsX.sort!(r);   # 1.115 ms, in-place parallel sorting with 4 threads
 ?ThreadsX.sort!             # there is actually a good manual page
 
 # similar speedup for integers
 r = rand(Int32, (n));
-@btime sort!(r);   # 889.817 ms
+@btime sort!(r);   # 1.065 ms in serial
 
 r = rand(Int32, (n));
-@btime ThreadsX.sort!(r);   # 390.082 ms with 8 threads
+@btime ThreadsX.sort!(r);   # 1.058 ms with 4 threads
 ```
 
 Searching for extrema is much more parallel-friendly:
@@ -165,8 +170,8 @@ Searching for extrema is much more parallel-friendly:
 ```jl
 n = Int64(1e9)
 r = rand(Int32, (n));        # make sure we have enough memory
-@btime maximum(r)            # 288.200 ms
-@btime ThreadsX.maximum(r)   # 31.879 ms with 8 threads
+@btime maximum(r)            # 328.375 ms
+@btime ThreadsX.maximum(r)   # 82.562 ms with 4 threads
 ```
 
 Finally, another useful function is `ThreadsX.map()` without reduction -- we will take a closer look at it in one of the

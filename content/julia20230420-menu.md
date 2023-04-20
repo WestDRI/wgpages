@@ -20,8 +20,8 @@ Julia set. We will run examples on a multi-core laptop and an HPC cluster.
 
 **Instructors**: Alex Razoumov (SFU)
 
-**Prerequisites:** ideally, some familiarity with Compute Canada's HPC cluster environment, in particular, with
-the Slurm scheduler. No prior Julia programming experience needed.
+**Prerequisites:** Ideally, some familiarity with Compute Canada's HPC cluster environment, in particular, with
+the Slurm scheduler, and some previous serial Julia programming experience.
 
 **Software**: All attendees will need a remote secure shell (SSH) client installed on their computer in order
 to participate in course exercises. On Windows we recommend [the free Home Edition of
