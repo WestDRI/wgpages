@@ -1,6 +1,6 @@
 +++
 title = "Archiving and compressing"
-slug = "bash-04-tar-gzip"
+slug = "../../bash202302/bash-04-tar-gzip"
 weight = 4
 +++
 

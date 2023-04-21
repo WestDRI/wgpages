@@ -1,6 +1,6 @@
 +++
 title = "Text manipulation"
-slug = "bash-10-text-manipulation"
+slug = "../../bash202302/bash-10-text-manipulation"
 weight = 10
 +++
 

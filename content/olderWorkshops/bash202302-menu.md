@@ -1,6 +1,6 @@
 +++
 title = "Introduction to Bash command line"
-slug = "bash-in-february"
+slug = "../bash-in-february"
 +++
 
 {{<cor>}}Thursday, February 2nd{{</cor>}}\

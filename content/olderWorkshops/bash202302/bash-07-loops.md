@@ -1,6 +1,6 @@
 +++
 title = "Loops"
-slug = "bash-07-loops"
+slug = "../../bash202302/bash-07-loops"
 weight = 7
 +++
 

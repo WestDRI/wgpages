@@ -1,6 +1,6 @@
 +++
 title = "Introduction"
-slug = "bash-01-intro"
+slug = "../../bash202302/bash-01-intro"
 weight = 1
 +++
 

@@ -1,6 +1,6 @@
 +++
 title = "Creating, moving, and copying"
-slug = "bash-03-creating-moving-copying"
+slug = "../../bash202302/bash-03-creating-moving-copying"
 weight = 3
 +++
 

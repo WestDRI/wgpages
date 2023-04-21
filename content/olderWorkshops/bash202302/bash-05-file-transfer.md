@@ -1,6 +1,6 @@
 +++
 title = "File transfer"
-slug = "bash-05-file-transfer"
+slug = "../../bash202302/bash-05-file-transfer"
 weight = 5
 +++
 

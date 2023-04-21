@@ -1,6 +1,6 @@
 +++
 title = "Tapping the power of Unix"
-slug = "bash-06-wildcards-redirection-pipes"
+slug = "../../bash202302/bash-06-wildcards-redirection-pipes"
 weight = 6
 +++
 
