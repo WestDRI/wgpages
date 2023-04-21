@@ -33,16 +33,17 @@ training cluster. No need to install Julia on your computer.
 
 
 
-{{<cor>}}Zoom{{</cor>}} {{<s>}} {{<cgr>}}Week 1 - 10:00am-12:00pm Pacific{{</cgr>}} \
-{{<linktitle url="../julia20230420/julia-01-intro-language" text="Introduction to Julia language">}}\
-{{<linktitle url="../julia20230420/julia-02-intro-parallel" text="Intro to parallelism">}}\
-{{<linktitle url="../julia20230420/julia-03-threads-slow-series" text="Multi-threading with Base.Threads (slow series)">}}
-
 <!-- {{<cor>}}Zoom{{</cor>}} {{<s>}} {{<cgr>}}Week 1 - 10:00am-12:00pm Pacific{{</cgr>}} \ -->
 <!-- {{<nolinktitle>}}Introduction to Julia language{{</nolinktitle>}} \ -->
 <!-- {{<nolinktitle>}}Intro to parallelism{{</nolinktitle>}} \ -->
 <!-- {{<nolinktitle>}}Multi-threading with Base.Threads (slow series){{</nolinktitle>}} \ -->
 <!-- {{<nolinktitle>}}Multi-threading with ThreadsX (slow series){{</nolinktitle>}} -->
+
+{{<cor>}}Zoom{{</cor>}} {{<s>}} {{<cgr>}}Week 1 - 10:00am-12:00pm Pacific{{</cgr>}} \
+{{<linktitle url="../julia20230420/julia-01-intro-language" text="Introduction to Julia language">}}\
+{{<linktitle url="../julia20230420/julia-02-intro-parallel" text="Intro to parallelism">}}\
+{{<linktitle url="../julia20230420/julia-03-threads-slow-series" text="Multi-threading with Base.Threads (slow series)">}}
+
 
 
 
