@@ -8,16 +8,13 @@ slug = "bash-in-summer"
 
 <!-- Course materials will be added here shortly before the start of the course. -->
 
-Register for this course
-{{<a "https://docs.google.com/forms/d/e/1FAIpQLSep1lYVw8Ait3qzTI3WdyOutDcWgesl0uU5_GVpvvKWs9l_Ng/viewform" "here">}}.
-
 ---
 
 This is a hands-on introduction to the Linux command line and the interaction with a remote server. This
 course mixes <a href="https://software-carpentry.org" target="_blank">Software Carpentry</a> materials with
 our own custom training.
 
-**Instructors**: Alex Razoumov (week 1) and Marie-Helene Burle (week 2)
+**Instructor**: Alex Razoumov (SFU)
 
 **Prerequisites**: This is an introductory course, no previous experience is required. We will provide
 guest accounts to one of our Linux systems.
