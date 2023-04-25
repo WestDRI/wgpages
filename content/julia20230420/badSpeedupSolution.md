@@ -1,6 +1,6 @@
 +++
 title = "Fixing poor parallel scaling in the Julia set"
-slug = "bad-speedup-solution"
+slug = "../bad-speedup-solution"
 +++
 
 False sharing has no effect in this problem, as for most part individual threads are writing into array elements that
@@ -37,7 +37,7 @@ multi-threading.
 With the unbalanced load, it is possible to improve performance somewhat with dynamic scheduling using either channels
 (not covered in our workshop) or Threads.@spawn but it'll make the code a little bit more complex.
 
-The following asynchronous solution written by Jeremiah O'Neil (University of Ottawa)
+The following asynchronous solution was written by Jeremiah O'Neil (University of Ottawa):
 
 ```jl
 function juliaSet(height, width)

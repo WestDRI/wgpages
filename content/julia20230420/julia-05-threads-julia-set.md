@@ -148,5 +148,5 @@ potential problems:
 > ### <font style="color:blue">Take-home exercise "Fractal.3"</font>
 > Build a 3D cube based on the Julia set where the 3rd axis would be a slowly varying `c` constant. For
 > example, try to interpolate linearly between $c = 0.355 + 0.355i$ and $c = 1.34-0.45i$, or between any other
-> two complex values. Send us an animation traversing your volume once you are done. What cube resolution
-> did you achieve?
+> two complex values. Send us an animation traversing your volume once you are done. What highest cube
+> resolution could you achieve?

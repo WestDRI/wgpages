@@ -9,11 +9,11 @@ weight = 4
 <!-- {{</note>}} -->
 
 As you saw in the previous section, Base.Threads does not have a built-in parallel reduction. You can implement it
-yourself by hand, but all solutions are somewhat awkward, and you can run into problems with thread safety and
-performance (slow atomic variables, false sharing, etc) if you don't pay attention.
+yourself by hand, but all solutions are somewhat awkward, and you can run into problems with *thread safety* and
+*performance* (slow atomic variables, false sharing, etc) if you don't pay close attention.
 
-Enter ThreadsX, a multi-threaded Julia library that provides parallel versions of some of the Base functions. To see the
-list of supported functions, use the double-TAB feature inside REPL:
+Enter **ThreadsX**, a multi-threaded Julia library that provides parallel versions of some of the Base
+functions. To see the list of supported functions, use the double-TAB feature inside REPL:
 
 ```jl
 using ThreadsX
@@ -69,7 +69,8 @@ With 4 CPU cores, I see:
 
 ```sh
 $ julia mapreduce.jl        # runtime with 1 thread: 2.200 s
-$ julia -t 4 mapreduce.jl   # runtime with 8 threads: 543.949 ms
+$ julia -t 4 mapreduce.jl   # runtime with 4 threads: 543.949 ms
+$ julia -t 8 mapreduce.jl   # what should we expect?
 ```
 
 > ### <font style="color:blue">Exercise "ThreadsX.1"</font>

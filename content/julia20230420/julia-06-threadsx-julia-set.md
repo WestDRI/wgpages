@@ -4,8 +4,9 @@ slug = "julia-06-threadsx-julia-set"
 weight = 6
 +++
 
-So far with ThreadsX, most of our parallel codes featured reduction -- recall the functions `ThreadsX.mapreduce()` and
-`ThreadsX.sum()`. However, in the Julia set problem we want to process an array without reduction.
+So far with ThreadsX, most of our parallel codes featured reduction -- recall the functions
+`ThreadsX.mapreduce()` and `ThreadsX.sum()`. However, in the Julia set problem we want to fill an array
+without reduction.
 
 Let's first modify the serial code! We will use another function from Base library:
 

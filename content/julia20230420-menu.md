@@ -11,12 +11,13 @@ Course materials will be added here shortly before the start of the course.
 ---
 
 Julia is a high-level programming language well suited for scientific computing and data science. Just-in-time
-compilation, among other things, makes Julia really fast yet interactive. For heavy computations, Julia supports
-multi-threaded and multi-process parallelism, both natively and via a number of external packages. It also supports
-memory arrays distributed across multiple processes either on the same or different nodes. In this hands-on workshop, we
-will start with a quick review of Julia's multi-threading features but will focus primarily on Distributed standard
-library and its large array of tools. We will demo parallelization using two problems: a slowly converging series and a
-Julia set. We will run examples on a multi-core laptop and an HPC cluster.
+compilation, among other things, makes Julia really fast yet interactive. For heavy computations, Julia
+supports multi-threaded and multi-process parallelism, both natively and via a number of external packages. It
+also supports memory arrays distributed across multiple processes either on the same or different nodes. In
+this hands-on workshop, we will start with Julia's multi-threading features and then focus on Distributed
+multi-processing standard library and its large array of tools. We will demo parallelization using two
+problems: a slowly converging series and a Julia set. We will run examples on a multi-core laptop and an HPC
+cluster.
 
 **Instructors**: Alex Razoumov (SFU)
 
@@ -50,16 +51,16 @@ training cluster. No need to install Julia on your computer.
 
 
 {{<cor>}}Zoom{{</cor>}} {{<s>}} {{<cgr>}}Week 2 - 10:00am-12:00pm Pacific{{</cgr>}}
-<!-- {{<linktitle url="../julia20230420/julia-04-threadsx-slow-series" text="Multi-threading with ThreadsX (slow series)">}} -->
-<!-- {{<linktitle url="../julia20230420/julia-05-threads-julia-set" text="Parallelizing the Julia set with Base.Threads">}}\ -->
-<!-- {{<linktitle url="../julia20230420/julia-06-threadsx-julia-set" text="Parallelizing the Julia set with ThreadsX">}} \ -->
-<!-- {{<linktitle url="../julia20230420/julia-07-distributed1" text="Distributed.jl: basics">}}\ -->
-<!-- {{<linktitle url="../julia20230420/julia-08-distributed2" text="Distributed.jl: three scalable versions of the slow series">}} -->
-{{<nolinktitle>}}Multi-threading with ThreadsX (slow series){{</nolinktitle>}} \
-{{<nolinktitle>}}Parallelizing the Julia set with Base.Threads{{</nolinktitle>}} \
-{{<nolinktitle>}}Parallelizing the Julia set with ThreadsX{{</nolinktitle>}} \
-{{<nolinktitle>}}Distributed.jl: basics{{</nolinktitle>}} \
-{{<nolinktitle>}}Distributed.jl: three scalable versions of the slow series{{</nolinktitle>}}
+<!-- {{<nolinktitle>}}Multi-threading with ThreadsX (slow series){{</nolinktitle>}} \ -->
+<!-- {{<nolinktitle>}}Parallelizing the Julia set with Base.Threads{{</nolinktitle>}} \ -->
+<!-- {{<nolinktitle>}}Parallelizing the Julia set with ThreadsX{{</nolinktitle>}} \ -->
+<!-- {{<nolinktitle>}}Distributed.jl: basics{{</nolinktitle>}} \ -->
+<!-- {{<nolinktitle>}}Distributed.jl: three scalable versions of the slow series{{</nolinktitle>}} -->
+{{<linktitle url="../julia20230420/julia-04-threadsx-slow-series" text="Multi-threading with ThreadsX (slow series)">}} \
+{{<linktitle url="../julia20230420/julia-05-threads-julia-set" text="Parallelizing the Julia set with Base.Threads">}} \
+{{<linktitle url="../julia20230420/julia-06-threadsx-julia-set" text="Parallelizing the Julia set with ThreadsX">}} \
+{{<linktitle url="../julia20230420/julia-07-distributed1" text="Distributed.jl: basics">}}\
+{{<linktitle url="../julia20230420/julia-08-distributed2" text="Distributed.jl: three scalable versions of the slow series">}}
 
 
 
