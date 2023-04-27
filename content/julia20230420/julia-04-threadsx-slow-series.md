@@ -47,7 +47,8 @@ series.
 
 ## Parallelizing the slow series with ThreadsX.mapreduce
 
-In this and other examples we assume that you have already defined `digitsin()`. Save the following as `mapreduce.jl`:
+In this and other examples we assume that you have already defined `digitsin()`. Save the following as
+`mapreduce.jl`:
 
 ```jl
 using BenchmarkTools, ThreadsX
@@ -76,6 +77,7 @@ $ julia -t 8 mapreduce.jl   # what should we expect?
 > ### <font style="color:blue">Exercise "ThreadsX.1"</font>
 > Using the compact (one-line) if-else notation, shorten this code by four lines. Time the new, shorter code
 > with one and several threads.
+>
 > **Hint**: the syntax is `1 > 2 ? "1 is greater than 2" : "1 is not greater than 2"`
 
 ## Parallelizing the slow series with ThreadsX.sum
@@ -87,13 +89,13 @@ sum(x->x^2, 1:10)
 Threads.sum(x->x^2, 1:10)
 ```
 
-The expression in the round brackets below is a generator. It generates a sequence on the fly without storing
-individual elements, thus taking very little memory.
+The expression in the round brackets below is a *generator*. It generates a sequence on the fly without
+storing individual elements, thus taking very little memory.
 
 ```jl
 (i for i in 1:10)
 collect(i for i in 1:10)   # construct a vector (this one takes more space)
-[i for i in 1:10]          # functionally the same (vector)
+[i for i in 1:10]          # functionally the same (vector via an array comprehension)
 ```
 
 Let's use a generator with $10^8$ elements to compute our slow series sum:

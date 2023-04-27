@@ -142,8 +142,8 @@ potential problems:
 
 > ### <font style="color:blue">Take-home exercise "Fractal.2"</font>
 > How would you fix this issue? If you manage to get a speedup closer to 8X with Base.Threads on 8 cores, we
-> would love to hear your solution! Please only check the {{<a "/bad-speedup-solution" "solution">}} once you
-> work on the problem yourself.
+> would love to hear your solution! Please only check the {{<a "/bad-speedup-solution" "solution">}} once you have
+> worked on the problem yourself.
 
 > ### <font style="color:blue">Take-home exercise "Fractal.3"</font>
 > Build a 3D cube based on the Julia set where the 3rd axis would be a slowly varying `c` constant. For
