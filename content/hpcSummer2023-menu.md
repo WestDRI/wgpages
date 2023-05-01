@@ -234,7 +234,7 @@ Are there questions on any of the topics that we covered today? You can type you
 
 
 
-## Introductory videos
+## Videos: introduction
 
 - [Introduction](https://www.youtube.com/watch?v=dVMNSp98yRA) (3 min)
 - [Cluster hardware overview](https://www.youtube.com/watch?v=pLy3m9Nq4rM) (17 min)
@@ -253,7 +253,7 @@ Are there questions on any of the topics that we covered today? You can type you
   [our documentation](https://docs.alliancecan.ca) and support system.
 1. New systems were added (e.g. Narval in Calcul Québec), and some older systems were upgraded.
 
-## Overview of parallel programming frameworks
+## Videos: overview of parallel programming frameworks
 
 Here we give you a brief overview of various parallel programming tools. Our goal here is not to learn how to
 use these tools, but rather tell you at a high level what these tools do, so that you understand the
@@ -270,7 +270,7 @@ Feel free to skip some of these videos if you are not interested in parallel pro
 - [Other essential tools](https://www.youtube.com/watch?v=Ncwmx80zlGE) (5 min)
 - [Python and R on clusters](https://www.youtube.com/watch?v=hqdvNMAaegI) (6 min)
 
-## Slurm job scheduler
+## Videos: Slurm job scheduler
 
 - [Slurm intro](https://www.youtube.com/watch?v=Qd39UkdajwQ) (8 min)
 - [Job billing with core equivalents](https://www.youtube.com/watch?v=GjI8Fmzo20A) (2 min)
