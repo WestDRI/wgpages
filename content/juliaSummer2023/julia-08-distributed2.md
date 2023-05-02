@@ -1,6 +1,6 @@
 +++
 title = "Distributed.jl - part 2"
-slug = "julia-08-distributed2"
+slug = "../summer/julia-08-distributed2"
 weight = 8
 katex = true
 +++

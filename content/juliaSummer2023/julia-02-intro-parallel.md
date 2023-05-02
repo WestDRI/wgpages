@@ -1,6 +1,6 @@
 +++
 title = "Parallel Julia"
-slug = "julia-02-intro-parallel"
+slug = "../summer/julia-02-intro-parallel"
 weight = 2
 katex = true
 +++

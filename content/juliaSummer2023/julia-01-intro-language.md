@@ -1,6 +1,6 @@
 +++
 title = "Introduction to Julia language"
-slug = "julia-01-intro-language"
+slug = "../summer/julia-01-intro-language"
 weight = 1
 +++
 

@@ -1,6 +1,6 @@
 +++
 title = "Parallelizing N-body"
-slug = "julia-12-nbody"
+slug = "../summer/julia-12-nbody"
 weight = 12
 katex = true
 +++
