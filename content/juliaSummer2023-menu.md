@@ -51,7 +51,7 @@ training cluster. No need to install Julia on your computer.
 <!-- {{<nolinktitle>}}Parallelizing the additive Schwarz method{{</nolinktitle>}} (supplemental material) -->
 
 
-
+{{<cor>}}Part 1{{</cor>}} \
 {{<linktitle url="../summer/julia-01-intro-language" text="Introduction to Julia language">}}\
 {{<linktitle url="../summer/julia-02-intro-parallel" text="Intro to parallelism">}}\
 {{<linktitle url="../summer/julia-03-threads-slow-series" text="Multi-threading with Base.Threads (slow series)">}} \
@@ -59,6 +59,7 @@ training cluster. No need to install Julia on your computer.
 {{<linktitle url="../summer/julia-05-threads-julia-set" text="Parallelizing the Julia set with Base.Threads">}} \
 {{<linktitle url="../summer/julia-06-threadsx-julia-set" text="Parallelizing the Julia set with ThreadsX">}}
 
+{{<cor>}}Part 2{{</cor>}} \
 {{<linktitle url="../summer/julia-07-distributed1" text="Distributed.jl: basics">}} \
 {{<linktitle url="../summer/julia-08-distributed2" text="Distributed.jl: three scalable versions of the slow series">}} \
 {{<linktitle url="../summer/julia-09-distributed-arrays" text="DistributedArrays.jl">}} \
