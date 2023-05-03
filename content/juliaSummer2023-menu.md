@@ -35,44 +35,31 @@ training cluster. No need to install Julia on your computer.
 
 
 
-{{<cor>}}Zoom{{</cor>}} {{<s>}} {{<cgr>}}Week 1 - 10:00am-12:00pm Pacific{{</cgr>}}
+
 <!-- {{<nolinktitle>}}Introduction to Julia language{{</nolinktitle>}} \ -->
 <!-- {{<nolinktitle>}}Intro to parallelism{{</nolinktitle>}} \ -->
 <!-- {{<nolinktitle>}}Multi-threading with Base.Threads (slow series){{</nolinktitle>}} \ -->
-{{<linktitle url="../summer/julia-01-intro-language" text="Introduction to Julia language">}}\
-{{<linktitle url="../summer/julia-02-intro-parallel" text="Intro to parallelism">}}\
-{{<linktitle url="../summer/julia-03-threads-slow-series" text="Multi-threading with Base.Threads (slow series)">}}
-
-
-
-
-
-
-
-
-{{<cor>}}Zoom{{</cor>}} {{<s>}} {{<cgr>}}Week 2 - 10:00am-12:00pm Pacific{{</cgr>}}
 <!-- {{<nolinktitle>}}Multi-threading with ThreadsX (slow series){{</nolinktitle>}} \ -->
 <!-- {{<nolinktitle>}}Parallelizing the Julia set with Base.Threads{{</nolinktitle>}} \ -->
 <!-- {{<nolinktitle>}}Parallelizing the Julia set with ThreadsX{{</nolinktitle>}} \ -->
 <!-- {{<nolinktitle>}}Distributed.jl: basics{{</nolinktitle>}} \ -->
-{{<linktitle url="../summer/julia-04-threadsx-slow-series" text="Multi-threading with ThreadsX (slow series)">}} \
-{{<linktitle url="../summer/julia-05-threads-julia-set" text="Parallelizing the Julia set with Base.Threads">}} \
-{{<linktitle url="../summer/julia-06-threadsx-julia-set" text="Parallelizing the Julia set with ThreadsX">}} \
-{{<linktitle url="../summer/julia-07-distributed1" text="Distributed.jl: basics">}}
-
-
-
-
-
-
-
-{{<cor>}}Zoom{{</cor>}} {{<s>}} {{<cgr>}}Week 3 - 10:00am-12:00pm Pacific{{</cgr>}}
 <!-- {{<nolinktitle>}}Distributed.jl: three scalable versions of the slow series{{</nolinktitle>}} \ -->
 <!-- {{<nolinktitle>}}DistributedArrays.jl{{</nolinktitle>}} \ -->
 <!-- {{<nolinktitle>}}Parallelizing the Julia set with DistributedArrays{{</nolinktitle>}} \ -->
 <!-- {{<nolinktitle>}}SharedArrays.jl{{</nolinktitle>}} \ -->
 <!-- {{<nolinktitle>}}Parallelizing the N-body problem{{</nolinktitle>}} (supplemental material)\ -->
 <!-- {{<nolinktitle>}}Parallelizing the additive Schwarz method{{</nolinktitle>}} (supplemental material) -->
+
+
+
+{{<linktitle url="../summer/julia-01-intro-language" text="Introduction to Julia language">}}\
+{{<linktitle url="../summer/julia-02-intro-parallel" text="Intro to parallelism">}}\
+{{<linktitle url="../summer/julia-03-threads-slow-series" text="Multi-threading with Base.Threads (slow series)">}} \
+{{<linktitle url="../summer/julia-04-threadsx-slow-series" text="Multi-threading with ThreadsX (slow series)">}} \
+{{<linktitle url="../summer/julia-05-threads-julia-set" text="Parallelizing the Julia set with Base.Threads">}} \
+{{<linktitle url="../summer/julia-06-threadsx-julia-set" text="Parallelizing the Julia set with ThreadsX">}}
+
+{{<linktitle url="../summer/julia-07-distributed1" text="Distributed.jl: basics">}} \
 {{<linktitle url="../summer/julia-08-distributed2" text="Distributed.jl: three scalable versions of the slow series">}} \
 {{<linktitle url="../summer/julia-09-distributed-arrays" text="DistributedArrays.jl">}} \
 {{<linktitle url="../summer/julia-10-distributed-julia-set" text="Parallelizing the Julia set with DistributedArrays">}} \
