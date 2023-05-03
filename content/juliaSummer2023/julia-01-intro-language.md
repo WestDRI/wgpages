@@ -24,7 +24,7 @@ If you want to install Julia after this workshop, you can find it {{<a "https://
 
 ## Using Julia on supercomputers
 
-### Julia on Compute Canada production clusters
+### Julia on the Alliance production clusters
 
 Julia is among hundreds of software packages installed on the CC clusters. To use Julia on one of them, you would load the following module:
 
@@ -58,7 +58,7 @@ accounts.
 
 **Note**: Some Julia packages rely on precompiled bits that developers think would work on all architectures,
   but they don't. For example, `Plots` package comes with several precompiled libraries, it installs without
-  problem on Compute Canada clusters, but then at runtime you will see an error about "GLIBC_2.18 not
+  problem on the Alliance clusters, but then at runtime you will see an error about "GLIBC_2.18 not
   found". The proper solution would be to recompile the package on the cluster, but it is not done correctly
   in Julia packaging, and the error persists even after "recompilation". There is a solution for this, and you
   can always contact us at support@tech.alliancecan.ca and ask for help. Another example if Julia's `NetCDF`
@@ -67,7 +67,7 @@ accounts.
 
 ### Julia on the training cluster for this workshop
 
-We have Julia on our training cluster *parjul.c3.ca*.
+We have Julia on our training cluster *gigi.c3.ca*.
 
 {{<note>}}
 Our training cluster has: <br><br>

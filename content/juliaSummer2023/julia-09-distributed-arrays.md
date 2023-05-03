@@ -16,14 +16,15 @@ to achieve parallelism for large problems.
 - Each worker can *write only to the part that it owns* $~\Rightarrow~$ automatic parallelism and safe
   execution
 
-DistributedArrays is not part of the standard library, so usually you need to install it yourself (it will
-typically write into `~/.julia/environments/versionNumber` directory):
+DistributedArrays is not part of the standard library, so -- if running on your own computer -- you would
+usually need to install it yourself:
 
 ```julia
-] add DistributedArrays
+] add DistributedArrays   # typically installs into `~/.julia/environments/versionNumber`
 ```
 
-We need to load DistributedArrays on every worker:
+We have DistributedArrays already installed on our training cluster. To use it, we need to load this package
+on every worker:
 
 ```julia
 using Distributed
@@ -183,7 +184,7 @@ d11 = @spawnat 2 tridiagonal(4)
 d12 = @spawnat 3 lowerLeft(4)
 d21 = @spawnat 4 upperRight(4)
 d22 = @spawnat 5 tridiagonal(4)
-d = DArray(reshape([d11 d12 d21 d22],(2,2)))   # create a distributed 8x8 matrix on a 2x2 process grid
+d = DArray(reshape([d11 d12 d21 d22],(2,2)));   # create a distributed 8x8 matrix on a 2x2 process grid
 d
 ```
 

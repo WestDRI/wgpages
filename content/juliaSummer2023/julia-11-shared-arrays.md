@@ -40,6 +40,7 @@ You can use a function to initialize an array, however, pay attention to the res
 
 ```julia
 b = SharedArray{Int64}((1000), init = x -> x .= 0);    # use a function to initialize `b`
+length(b)
 b = SharedArray{Int64}((1000), init = x -> x .+= 1)   # each worker updates the entire array in-place!
 ```
 
@@ -74,9 +75,9 @@ Let's initialize a 2D SharedArray:
 
 ```julia
 a = SharedArray{Float64}(100,100);
-@distributed for i in 1:100     # parallel for loop split across all workers
+@distributed for i in 1:100   # parallel for loop split across all workers
     for j in 1:100
-	    a[i,j] = myid()           # ID of the worker that initialized this element
+	    a[i,j] = myid()       # ID of the worker that initialized this element
     end
 end
 for i in workers()
