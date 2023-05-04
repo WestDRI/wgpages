@@ -41,67 +41,6 @@ end
    take distributed arrays. How do we convert a distributed array to a local array to pass to one of these functions?
 7. Is your parallel code faster?
 
-To get the full script, click on "Solution" below.
-
-{{< solution >}}
-```jl
-using Distributed, BenchmarkTools
-@everywhere using DistributedArrays
-
-@everywhere function pixel(z)
-    c = 0.355 + 0.355im
-    z *= 1.2   # zoom out
-    for i = 1:255
-        z = z^2 + c
-        if abs(z) >= 4
-            return i
-        end
-    end
-    return 255
-end
-
-@everywhere function fillLocalBlock(stability)
-    height, width = size(stability)
-    h, w = localindices(stability)
-    for iGlobal in collect(h)
-        iLocal = iGlobal - h.start + 1
-        y = 2*(iGlobal-0.5)/height - 1
-        for jGlobal in collect(w)
-            jLocal = jGlobal - w.start + 1
-            point = (2*(jGlobal-0.5)/width-1) + (y)im # rescale to -1:1 in the complex plane
-            @inbounds stability.localpart[iLocal,jLocal] = pixel(point)
-        end
-    end
-end
-
-height, width = repeat([2_000],2)   # 2000^2 image
-
-println("Computing Julia set ...")
-stability = dzeros(Int32, height, width);   # distributed 2D array of 0's
-@btime @sync for w in workers()
-    @spawnat w fillLocalBlock(stability)
-end
-
-println("Plotting to PNG ...")
-using Plots
-gr()                       # initialize the gr backend
-ENV["GKSwstype"] = "100"   # operate in headless mode
-fname = "$(height)x$(width)"
-nonDistributed = zeros(Int32, height, width);
-nonDistributed[:,:] = stability[:,:];   # ncwrite does not accept DArray type
-png(heatmap(nonDistributed, size=(width,height), color=:gist_ncar), fname)
-
-println("Writing NetCDF ...")
-using NetCDF
-filename = "test.nc"
-isfile(filename) && rm(filename)
-nccreate(filename, "stability", "x", collect(1:height), "y", collect(1:width), t=NC_INT, mode=NC_NETCDF4, compress=9);
-nonDistributed = zeros(Int32, height, width);
-nonDistributed[:,:] = stability[:,:];   # ncwrite does not accept DArray type
-ncwrite(nonDistributed, filename, "stability");
-```
-{{< /solution >}}
-
 ### Results for 1000^2
 
 Finally, here are my timings on (some old iteration of) the training cluster:
