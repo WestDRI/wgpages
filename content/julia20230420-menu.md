@@ -67,18 +67,19 @@ training cluster. No need to install Julia on your computer.
 
 
 {{<cor>}}Zoom{{</cor>}} {{<s>}} {{<cgr>}}Week 3 - 10:00am-12:00pm Pacific{{</cgr>}}
-<!-- {{<linktitle url="../julia20230420/julia-08-distributed2" text="Distributed.jl: three scalable versions of the slow series">}} -->
-<!-- {{<linktitle url="../julia20230420/julia-09-distributed-arrays" text="DistributedArrays.jl">}}\ -->
-<!-- {{<linktitle url="../julia20230420/julia-10-distributed-julia-set" text="Parallelizing the Julia set with DistributedArrays">}}\ -->
-<!-- {{<linktitle url="../julia20230420/julia-11-shared-arrays" text="SharedArrays.jl">}}\ -->
-<!-- {{<linkoptional url="../julia20230420/julia-12-nbody" text="Parallelizing the N-body problem">}} (supplemental material)\ -->
-<!-- {{<linkoptional url="../julia20230420/julia-13-asm" text="Parallelizing the additive Schwarz method">}} (supplemental material) -->
-{{<nolinktitle>}}Distributed.jl: three scalable versions of the slow series{{</nolinktitle>}} \
-{{<nolinktitle>}}DistributedArrays.jl{{</nolinktitle>}} \
-{{<nolinktitle>}}Parallelizing the Julia set with DistributedArrays{{</nolinktitle>}} \
-{{<nolinktitle>}}SharedArrays.jl{{</nolinktitle>}} \
-{{<nolinktitle>}}Parallelizing the N-body problem{{</nolinktitle>}} (supplemental material)\
-{{<nolinktitle>}}Parallelizing the additive Schwarz method{{</nolinktitle>}} (supplemental material)
+<!-- {{<nolinktitle>}}Distributed.jl: three scalable versions of the slow series{{</nolinktitle>}} \ -->
+<!-- {{<nolinktitle>}}DistributedArrays.jl{{</nolinktitle>}} \ -->
+<!-- {{<nolinktitle>}}Parallelizing the Julia set with DistributedArrays{{</nolinktitle>}} \ -->
+<!-- {{<nolinktitle>}}SharedArrays.jl{{</nolinktitle>}} \ -->
+<!-- {{<nolinktitle>}}Parallelizing the N-body problem{{</nolinktitle>}} (supplemental material)\ -->
+<!-- {{<nolinktitle>}}Parallelizing the additive Schwarz method{{</nolinktitle>}} (supplemental material) -->
+{{<linktitle url="../julia20230420/julia-08-distributed2" text="Distributed.jl: three scalable versions of the slow series">}} \
+{{<linktitle url="../julia20230420/julia-09-distributed-arrays" text="DistributedArrays.jl">}}\
+{{<linktitle url="../julia20230420/julia-10-distributed-julia-set" text="Parallelizing the Julia set with DistributedArrays">}}\
+{{<linktitle url="../julia20230420/julia-11-shared-arrays" text="SharedArrays.jl">}}\
+{{<linkoptional url="../julia20230420/julia-12-nbody" text="Parallelizing the N-body problem">}} (supplemental material)\
+{{<linkoptional url="../julia20230420/julia-13-asm" text="Parallelizing the additive Schwarz method">}} (supplemental material)\
+{{<linkoptional url="../julia20230420/julia-14-linear-algebra" text="Distributed linear algebra in Julia">}} (supplemental material)
 
 
 

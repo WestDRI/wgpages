@@ -1,6 +1,6 @@
 +++
 title = "Fixing poor parallel scaling in the Julia set"
-slug = "../bad-speedup-solution"
+slug = "bad-speedup-solution"
 +++
 
 False sharing has no effect in this problem, as for most part individual threads are writing into array elements that
