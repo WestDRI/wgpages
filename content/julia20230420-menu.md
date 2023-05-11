@@ -72,7 +72,8 @@ training cluster. No need to install Julia on your computer.
 <!-- {{<nolinktitle>}}Parallelizing the Julia set with DistributedArrays{{</nolinktitle>}} \ -->
 <!-- {{<nolinktitle>}}SharedArrays.jl{{</nolinktitle>}} \ -->
 <!-- {{<nolinktitle>}}Parallelizing the N-body problem{{</nolinktitle>}} (supplemental material)\ -->
-<!-- {{<nolinktitle>}}Parallelizing the additive Schwarz method{{</nolinktitle>}} (supplemental material) -->
+<!-- {{<nolinktitle>}}Parallelizing the additive Schwarz method{{</nolinktitle>}} (supplemental material)\ -->
+<!-- {{<nolinktitle>}}Distributed linear algebra in Julia{{</nolinktitle>}} (supplemental material) -->
 {{<linktitle url="../julia20230420/julia-08-distributed2" text="Distributed.jl: three scalable versions of the slow series">}} \
 {{<linktitle url="../julia20230420/julia-09-distributed-arrays" text="DistributedArrays.jl">}}\
 {{<linktitle url="../julia20230420/julia-10-distributed-julia-set" text="Parallelizing the Julia set with DistributedArrays">}}\
