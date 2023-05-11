@@ -63,8 +63,7 @@ For these cases I receive:
 
 ### Distributed solvers
 
-There seem to have been several projects that use Distributed.jl to implement parallel dense and/or sparse
-linear solvers:
+There are few projects that use Distributed.jl to implement parallel dense and/or sparse linear solvers:
 
 {{<emph_big>}}ParallelLinalg.jl{{</emph_big>}}
 {{<a "https://juliapackages.com/p/parallellinalg" "ParallelLinalg.jl">}} implements distributed dense linear
@@ -186,14 +185,14 @@ addprocs(man);
 ```
 
 In this example storage and computation happen on all worker processes. You can monitor all Julia processes
-with:
+with the following command on the compute node that is running them:
 
 ```sh
 htop -p $(echo $(pgrep julia) | sed 's/ /,/g')
 ```
 
-I had trouble printing this array from a single process or printing its subsections from all processes, but I
-probably just used the wrong syntax. I have not tried scaling to bigger problems and more CPU cores.
+I had trouble printing the array `b` from a single process or printing its subsections from all processes, but
+I probably just used wrong syntax. I have not tried scaling to bigger problems and to more CPU cores.
 
 <!-- DimensionMismatch: output array is the wrong size; expected (Base.OneTo(10),), got (10, 1) -->
 
