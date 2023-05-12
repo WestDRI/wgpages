@@ -209,14 +209,14 @@ It turns out that integer exclusion is ∼4X faster (thanks to Paul Schrimpf fro
 for this code!):
 
 ```julia
-function digitsin(digits::Int, num)   # decimal representation of `digits` has N digits
+function digitsin(digitSequence::Int, num)   # decimal representation of `digitSequence` has N digits
     base = 10
-    while (digits ÷ base > 0)   # `digits ÷ base` is same as `floor(Int, digits/base)`
+    while (digitSequence ÷ base > 0)   # `digitSequence ÷ base` is same as `floor(Int, digitSequence/base)`
         base *= 10
     end
-    # `base` is now the first Int power of 10 above `digits`, used to pick last N digits from `num`
+    # `base` is now the first Int power of 10 above `digitSequence`, used to pick last N digits from `num`
     while num > 0
-        if (num % base) == digits     # last N digits in `num` == digits
+        if (num % base) == digitSequence     # last N digits in `num` == digitSequence
             return true
         end
         num ÷= 10                     # remove the last digit from `num`
@@ -231,10 +231,10 @@ end
 Let's now do the timing of our serial summation code with 1e8 terms:
 
 ```julia
-function slow(n::Int64, digits::Int)
+function slow(n::Int64, digitSequence::Int)
     total = Float64(0)    # this time 64-bit is sufficient!
     for i in 1:n
-        if !digitsin(digits, i)
+        if !digitsin(digitSequence, i)
             total += 1.0 / i
         end
 	end
@@ -252,10 +252,10 @@ of waiting involved, and the code should be relatively slow.
 ```jl
 using Base.Threads
 using BenchmarkTools
-function slow(n::Int64, digits::Int)
+function slow(n::Int64, digitSequence::Int)
 	total = Atomic{Float64}(0)
     @threads for i in 1:n
-        if !digitsin(digits, i)
+        if !digitsin(digitSequence, i)
             atomic_add!(total, 1.0 / i)
 		end
     end
@@ -289,10 +289,10 @@ this code faster?
 ```jl
 using Base.Threads
 using BenchmarkTools
-function slow(n::Int64, digits::Int)
+function slow(n::Int64, digitSequence::Int)
     total = zeros(Float64, nthreads())
     @threads for i in 1:n
-        if !digitsin(digits, i)
+        if !digitsin(digitSequence, i)
             total[threadid()] += 1.0 / i
         end
     end
@@ -319,14 +319,14 @@ elements so that data from different threads do not end up in the same cache lin
 using Base.Threads
 using BenchmarkTools
 
-function digitsin(digits::Int, num)   # decimal representation of `digits` has N digits
+function digitsin(digitSequence::Int, num)   # decimal representation of `digitSequence` has N digits
     base = 10
-    while (digits ÷ base > 0)   # `digits ÷ base` is same as `floor(Int, digits/base)`
+    while (digitSequence ÷ base > 0)   # `digitSequence ÷ base` is same as `floor(Int, digitSequence/base)`
         base *= 10
     end
-    # `base` is now the first Int power of 10 above `digits`, used to pick last N digits from `num`
+    # `base` is now the first Int power of 10 above `digitSequence`, used to pick last N digits from `num`
     while num > 0
-        if (num % base) == digits     # last N digits in `num` == digits
+        if (num % base) == digitSequence     # last N digits in `num` == digitSequence
             return true
         end
         num ÷= 10                     # remove the last digit from `num`
@@ -335,10 +335,10 @@ function digitsin(digits::Int, num)   # decimal representation of `digits` has N
 end
 
  # Our initial function:
-function slow(n::Int64, digits::Int)
+function slow(n::Int64, digitSequence::Int)
     total = zeros(Float64, nthreads())
     @threads for i in 1:n
-        if !digitsin(digits, i)
+        if !digitsin(digitSequence, i)
             total[threadid()] += 1.0 / i
         end
     end
@@ -346,11 +346,11 @@ function slow(n::Int64, digits::Int)
 end
 
  # Function optimized to prevent false sharing:
-function space(n::Int64, digits::Int)
+function space(n::Int64, digitSequence::Int)
     space = 8 # assume a 64-byte cache line, hence 8 Float64 elements per cache line
     total = zeros(Float64, nthreads()*space)
     @threads for i in 1:n
-        if !digitsin(digits, i)
+        if !digitsin(digitSequence, i)
             total[threadid()*space] += 1.0 / i
         end
     end
@@ -395,7 +395,7 @@ individual thread. For each thread we explicitly compute the `start` and `finish
 ```jl
 using Base.Threads
 using BenchmarkTools
-function slow(n::Int64, digits::Int)
+function slow(n::Int64, digitSequence::Int)
     numthreads = nthreads()
     threadSize = floor(Int64, n/numthreads)   # number of terms per thread (except last thread)
     total = zeros(Float64, numthreads);
@@ -404,7 +404,7 @@ function slow(n::Int64, digits::Int)
         local finish = threadid < numthreads ? (threadid-1)*threadSize+threadSize : n
         println("thread $threadid: from $start to $finish");
         for i in start:finish
-            if !digitsin(digits, i)
+            if !digitsin(digitSequence, i)
                 total[threadid] += 1.0 / i
             end
         end
@@ -482,13 +482,13 @@ using Base.Threads
 import Base.Threads: @spawn
 using BenchmarkTools
 
-function digitsin(digits::Int, num)
+function digitsin(digitSequence::Int, num)
     base = 10
-    while (digits ÷ base > 0)
+    while (digitSequence ÷ base > 0)
         base *= 10
     end
     while num > 0
-        if (num % base) == digits
+        if (num % base) == digitSequence
             return true
         end
         num ÷= 10
@@ -502,17 +502,17 @@ numsubs is the number of subintervals, each will be assigned to a thread;
 numsubs will be rounded up to the next power of 2,
 i.e. setting numsubs=5 will effectively use numsubs=8
 """ ->
-function slow(n::Int64, digits::Int, a::Int64, b::Int64, numsubs=16)
+function slow(n::Int64, digitSequence::Int, a::Int64, b::Int64, numsubs=16)
     if b-a > n/numsubs    # (n/numsubs) is our iteration target per thread
         mid = (a+b)>>>1   # shift by 1 bit to the right
-        finish = @spawn slow(n, digits, a, mid, numsubs)
-        t2 = slow(n, digits, mid+1, b, numsubs)
+        finish = @spawn slow(n, digitSequence, a, mid, numsubs)
+        t2 = slow(n, digitSequence, mid+1, b, numsubs)
         return fetch(finish) + t2
     end
     t = Float64(0)
 	println("computing on thread ", threadid())
     for i in a:b
-        if !digitsin(digits, i)
+        if !digitsin(digitSequence, i)
             t += 1.0 / i
         end
     end

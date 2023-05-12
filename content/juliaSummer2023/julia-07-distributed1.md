@@ -226,13 +226,13 @@ Let's restart Julia with `julia -p 2` (control process + 2 workers). We'll start
 using Distributed
 using BenchmarkTools
 
-@everywhere function digitsin(digits::Int, num)
+@everywhere function digitsin(digitSequence::Int, num)
     base = 10
-    while (digits ÷ base > 0)
+    while (digitSequence ÷ base > 0)
         base *= 10
     end
     while num > 0
-        if (num % base) == digits
+        if (num % base) == digitSequence
             return true
         end
         num ÷= 10
@@ -240,10 +240,10 @@ using BenchmarkTools
     return false
 end
 
-@everywhere function slow(n::Int64, digits::Int)
+@everywhere function slow(n::Int64, digitSequence::Int)
     total = Int64(0)
     for i in 1:n
-        if !digitsin(digits, i)
+        if !digitsin(digitSequence, i)
             total += 1.0 / i
         end
     end
@@ -299,11 +299,11 @@ workers()
 We need to redefine `digitsin()` everywhere, and then let's modify `slow()` to compute a partial sum:
 
 ```jl
-@everywhere function slow(n::Int, digits::Int, taskid, ntasks)   # two additional arguments
+@everywhere function slow(n::Int, digitSequence::Int, taskid, ntasks)   # two additional arguments
     println("running on worker ", myid())
     total = 0.0
     @time for i in taskid:ntasks:n   # partial sum with a stride `ntasks`
-        if !digitsin(digits, i)
+        if !digitsin(digitSequence, i)
             total += 1.0 / i
         end
     end

@@ -47,9 +47,9 @@ Unlike the **Base.Threads** module, **Distributed** provides a parallel loop wit
 implement a parallel loop for computing the sum. Let's write `parallelFor.jl` with this version of the function:
 
 ```julia
-function slow(n::Int64, digits::Int)
+function slow(n::Int64, digitSequence::Int)
     @time total = @distributed (+) for i in 1:n
-        !digitsin(digits, i) ? 1.0 / i : 0
+        !digitsin(digitSequence, i) ? 1.0 / i : 0
     end
     println("total = ", total);
 end
@@ -118,11 +118,11 @@ julia -p $SLURM_NTASKS parallelFor.jl
 Let's write `mappingArguments.jl` with a new version of `slow()` that will compute partial sum on each worker:
 
 ```julia
-@everywhere function slow((n, digits, taskid, ntasks))   # the argument is now a tuple
+@everywhere function slow((n, digitSequence, taskid, ntasks))   # the argument is now a tuple
     println("running on worker ", myid())
 	total = 0.0
 	@time for i in taskid:ntasks:n   # partial sum with a stride `ntasks`
-        !digitsin(digits, i) && (total += 1.0 / i)   # compact if statement (similar to bash)
+        !digitsin(digitSequence, i) && (total += 1.0 / i)   # compact if statement (similar to bash)
     end
     return(total)
 end

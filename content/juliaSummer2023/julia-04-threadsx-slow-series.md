@@ -52,9 +52,9 @@ In this and other examples we assume that you have already defined `digitsin()`.
 
 ```jl
 using BenchmarkTools, ThreadsX
-function slow(n::Int64, digits::Int)
+function slow(n::Int64, digitSequence::Int)
     total = ThreadsX.mapreduce(+,1:n) do i
-		if !digitsin(digits, i)
+		if !digitsin(digitSequence, i)
 			1.0 / i
 		else
 			0.0
