@@ -3,7 +3,7 @@ title = "Introduction to Bash command line"
 slug = "bash-in-summer"
 +++
 
-{{<cor>}}Monday, May 1st{{</cor>}}\
+{{<cor>}}Monday, June 19th{{</cor>}}\
 {{<cgr>}}9:00am-noon Pacific Time{{</cgr>}}
 
 <!-- Course materials will be added here shortly before the start of the course. -->

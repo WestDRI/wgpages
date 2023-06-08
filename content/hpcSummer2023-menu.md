@@ -3,7 +3,7 @@ title = "Intro to high-performance computing (HPC)"
 slug = "hpc-in-summer"
 +++
 
-{{<cor>}}Monday, May 1st{{</cor>}}\
+{{<cor>}}Monday, June 19th{{</cor>}}\
 {{<cgr>}}2:00pm–5:00pm Pacific Time{{</cgr>}}
 
 <!-- Course materials will be added here shortly before the start of the course. -->

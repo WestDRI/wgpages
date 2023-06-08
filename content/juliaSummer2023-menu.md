@@ -3,7 +3,7 @@ title = "Parallel computing in Julia"
 slug = "julia-in-summer"
 +++
 
-{{<cor>}}Wednesday, May 3rd{{</cor>}}\
+{{<cor>}}Wednesday, June 21st{{</cor>}}\
 {{<cgr>}}9:00am-noon and 2pm-5pm Pacific Time{{</cgr>}}
 
 <!-- Course materials will be added here shortly before the start of the course. -->
