@@ -12,7 +12,7 @@ do. Saving a list of commands to a file is called a "shell script". These shell 
 whenever we want, and are a great way to automate our work.
 
 ```sh
-$ cd ~/Desktop/data-shell/molecules
+$ cd /path/to/data-shell/molecules
 $ nano process.sh
 	#!/bin/bash         # this is called sha-bang; can be omitted for generic (bash/csh/tcsh) commands
 	echo Looking into file octane.pdb

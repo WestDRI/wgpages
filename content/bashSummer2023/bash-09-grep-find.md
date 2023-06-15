@@ -7,7 +7,7 @@ weight = 9
 ## Searching inside files with `grep`
 
 ```sh
-$ cd ~/Desktop/data-shell/writing
+$ cd /path/to/data-shell/writing
 $ more haiku.txt
 ```
 
@@ -73,7 +73,7 @@ You can {{<a "https://youtu.be/mbZ8nB-V4zQ" "watch a video for this topic">}} af
 Now on to finding files:
 
 ```sh
-cd ~/Desktop/data-shell/writing
+cd /path/to/data-shell/writing
 $ find . -type d     # search for directories inside current directory
 $ find . -type f     # search for files inside current directory
 $ find . -maxdepth 1 -type f     # depth 1 is the current directory

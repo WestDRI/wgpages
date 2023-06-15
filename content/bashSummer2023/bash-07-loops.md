@@ -7,7 +7,7 @@ weight = 7
 # Bash loops
 
 ```sh
-$ cd ~/Desktop/data-shell/creatures
+$ cd /path/to/data-shell/creatures
 $ ls   # shows basilisk.dat unicorn.dat -- let's pretend there are several hundred files here
 ```
 
@@ -73,7 +73,7 @@ numbers/letters.
 ```sh
 $ echo {1..10}    # this is called brace expansion
 $ echo {1,2,5}    # very useful for loops or for including into large paths with multiple items, e.g.
-$ cd ~/Desktop/data-shell/creatures
+$ cd /path/to/data-shell/creatures
 $ ls -l ../molecules/{ethane,methane,pentane}.pdb
 $ echo {a..z}    # can also use letters
 $ echo {a..z}{1..10}   # this will produce 260 items

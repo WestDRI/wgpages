@@ -14,7 +14,7 @@ frequency of all dictionary words in the novel "The Invisible Man" by Herbert We
 domain). First, let's apply our knowledge of grep to this text:
 
 ```sh
-$ cd ~/Desktop/data-shell
+$ cd /path/to/data-shell
 $ ls   # shows wellsInvisibleMan.txt
 $ wc wellsInvisibleMan.txt                          # number of lines, words, characters
 $ grep invisible wellsInvisibleMan.txt              # see the invisible man
@@ -113,7 +113,7 @@ need to type any answer)
 ## Column-based text processing with `awk` scripting language
 
 ```sh
-cd .../data-shell/writing
+cd /path/to/data-shell/writing
 cat haiku.txt   # 11 lines
 ```
 
