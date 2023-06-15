@@ -9,20 +9,20 @@ weight = 5
 To copy a single file to/from the cluster, we can use `scp`:
 
 ```sh
-[local]$ scp /path/to/local/file.txt userXXX@gigi.c3.ca:/path/on/remote/computer
-[local]$ scp local-file.txt userXXX@gigi.c3.ca:   # will put into your remote home
-[local]$ scp userXXX@gigi.c3.ca:/path/on/remote/computer/file.txt /path/to/local/
+[local]$ scp /path/to/local/file.txt userXXX@sfu23.c3.ca:/path/on/remote/computer
+[local]$ scp local-file.txt userXXX@sfu23.c3.ca:   # will put into your remote home
+[local]$ scp userXXX@sfu23.c3.ca:/path/on/remote/computer/file.txt /path/to/local/
 ```
 To recursively copy a directory, we just add the `-r` (recursive) flag:
 
 ```sh
-[local]$ scp -r some-local-folder/ userXXX@gigi.c3.ca:target-directory/
+[local]$ scp -r some-local-folder/ userXXX@sfu23.c3.ca:target-directory/
 ```
 
 You can also use wildcards to transfer multiple files:
 
 ```sh
-[local]$ scp centos@gigi.c3.ca:start*.sh .
+[local]$ scp userXXX@sfu23.c3.ca:start*.sh .
 ```
 
 With MobaXterm in Windows, you can actually copy files by dragging them between your desktop and the left
@@ -46,7 +46,7 @@ we're simply not sure which files we want to transfer yet. `sftp` is an interact
 and uploading files. Let's connect to a cluster with `sftp`:
 
 ```sh
-[local]$ sftp userXXX@gigi.c3.ca
+[local]$ sftp userXXX@sfu23.c3.ca
 ```
 
 This will start what appears to be a shell with the prompt `sftp>`. However, we only have access to a
