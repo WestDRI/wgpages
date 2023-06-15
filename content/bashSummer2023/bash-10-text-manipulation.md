@@ -178,23 +178,16 @@ awk 'NR>1 && NR < 5' haiku.txt   # print lines 2-4
 
 **Quick reference:**
 ```sh
-ls -l | awk 'NR>3 {print $5 "  " $9}'   # print 5th and 9th columns starting with line 4
-awk 'NR>1 && NR < 5' haiku.txt          # print lines 2-4
-awk '/Yesterday|Today/' haiku.txt       # print lines that contain Yesterday or Today
+ls -l | awk 'NR>3 {print $5 "  " $9}'     # print 5th and 9th columns starting with line 4
+awk 'NR>1 && NR < 5' haiku.txt            # print lines 2-4
+awk 'NR>1 && NR < 5 {print $1}' haiku.txt # print lines 2-4, column 1
+awk '/Yesterday|Today/' haiku.txt         # print lines that contain Yesterday or Today
 ```
 
-{{< question num=41a >}}
+{{< question num=41 >}}
 Write a one-line command that finds 5 largest files in the current directory and prints only their names and file sizes
 in the human-readable format (indicating bytes, kB, MB, GB, ...) in the decreasing file-size order. Hint: use `find`,
 `xargs`, and `awk`.
-{{< /question >}}
-
-{{< question num=42 >}}
-Let's study together these commands:
-```sh
-$ source ~/projects/def-sponsor00/shared/fzf/.fzf.bash
-$ kill -9 `/bin/ps aux | fzf | awk '{print $2}'`
-```
 {{< /question >}}
 
 
