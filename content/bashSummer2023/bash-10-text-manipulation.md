@@ -25,53 +25,52 @@ $ grep -i invisible wellsInvisibleMan.txt | wc -l   # returns 176 (includes: inv
 Let's sidetrack for a second and see how we can use the "stream editor" `sed`:
 
 ```sh
-$ sed 's/[iI]nvisible/supervisible/g' wellsInvisibleMan.txt > visibleMan.txt   # make him visible
-$ cat wellsInvisibleMan.txt | sed 's/[iI]nvisible/supervisible/g' > visibleMan.txt   # this also works (standard input)
-$ grep supervisible visibleMan.txt   # see what happened to the now visible man
-$ grep -i invisible visibleMan.txt   # see what was not converted
+$ sed 's/[iI]nvisible/visible/g' wellsInvisibleMan.txt > visible.txt   # make him visible
+$ cat wellsInvisibleMan.txt | sed 's/[iI]nvisible/visible/g' > visible.txt   # this also works (standard input)
+$ grep -i invisible visible.txt   # see what was not converted
 $ man sed
 ```
 
 Now let's remove punctuation from the original file using "tr" (translate) command:
 
 ```sh
-$ cat wellsInvisibleMan.txt | tr -d "[:punct:]" > invisibleNoPunct.txt    # tr only takes standard input
+$ cat wellsInvisibleMan.txt | tr -d "[:punct:]" > nopunct.txt    # tr only takes standard input
 $ tail wellsInvisibleMan.txt
-$ tail invisibleNoPunct.txt
+$ tail nopunct.txt
 ```
 
 Next convert all upper case to lower case:
 
 ```sh
-$ cat invisibleNoPunct.txt | tr '[:upper:]' '[:lower:]' > invisibleClean.txt
-$ tail invisibleClean.txt
+$ cat nopunct.txt | tr '[:upper:]' '[:lower:]' > clean.txt
+$ tail clean.txt
 ```
 
 Next replace spaces with new lines:
 
 ```sh
-$ cat invisibleClean.txt | sed 's/ /\'$'\n/g' > invisibleList.txt   # \'$'\n is a shortcut for a new line
-$ more invisibleList.txt
+$ cat clean.txt | sed 's/ /\'$'\n/g' > words.txt   # \'$'\n is a shortcut for a new line
+$ more words.txt
 ```
 
 Next remove empty lines:
 
 ```sh
-$ sed '/^$/d' invisibleList.txt  > invisibleCompact.txt
+$ sed '/^$/d' words.txt  > compact.txt
 ```
 
 Next sort the list alphabetically, count each word's occurrence, and remove duplicate words:
 
 ```sh
-$ cat invisibleCompact.txt | sort | uniq -c > invisibleWords.txt
-$ more invisibleWords.txt
+$ cat compact.txt | sort | uniq -c > dictionary.txt
+$ more dictionary.txt
 ```
 
 Next sort the list into most frequent words:
 
 ```sh
-$ cat invisibleWords.txt | sort -gr > invisibleFrequencyList.txt   # use 'man sort'
-$ more invisibleFrequencyList.txt
+$ cat dictionary.txt | sort -gr > frequency.txt   # use 'man sort'
+$ more frequency.txt
 ```
 
 <!-- > **Exercise:** write a script 'countWords.sh' that takes a text file name as an argument, and returns -->
@@ -89,13 +88,13 @@ sed 's/pattern1/pattern2/' filename    # replace pattern1 with pattern2, one per
 sed 's/pattern1/pattern2/g' filename   # same but multiple per line
 sed 's|pattern1|pattern2|g' filename   # same
 
-cat wellsInvisibleMan.txt | tr -d "[:punct:]" > invisibleNoPunct.txt       # remove punctuation; tr only takes standard input
-cat invisibleNoPunct.txt | tr '[:upper:]' '[:lower:]' > invisibleClean.txt # convert all upper case to lower case:
-cat invisibleClean.txt | sed 's/ /\'$'\n/g' > invisibleList.txt            # replace spaces with new lines;
+cat wellsInvisibleMan.txt | tr -d "[:punct:]" > nopunct.txt       # remove punctuation; tr only takes standard input
+cat nopunct.txt | tr '[:upper:]' '[:lower:]' > clean.txt # convert all upper case to lower case:
+cat clean.txt | sed 's/ /\'$'\n/g' > words.txt            # replace spaces with new lines;
                                                                            # \'$'\n is a shortcut for a new line
-sed '/^$/d' invisibleList.txt  > invisibleCompact.txt   # remove empty lines
-cat invisibleCompact.txt | sort | uniq -c > invisibleWords.txt   # sort the list alphabetically, count each word's occurrence
-cat invisibleWords.txt | sort -gr > invisibleFrequencyList.txt   # sort the list into most frequent words
+sed '/^$/d' words.txt  > compact.txt   # remove empty lines
+cat compact.txt | sort | uniq -c > dictionary.txt   # sort the list alphabetically, count each word's occurrence
+cat dictionary.txt | sort -gr > frequency.txt   # sort the list into most frequent words
 ```
 
 {{< question num=39a >}}
