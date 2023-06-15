@@ -88,19 +88,30 @@ sed 's/pattern1/pattern2/' filename    # replace pattern1 with pattern2, one per
 sed 's/pattern1/pattern2/g' filename   # same but multiple per line
 sed 's|pattern1|pattern2|g' filename   # same
 
-cat wellsInvisibleMan.txt | tr -d "[:punct:]" > nopunct.txt       # remove punctuation; tr only takes standard input
-cat nopunct.txt | tr '[:upper:]' '[:lower:]' > clean.txt # convert all upper case to lower case:
-cat clean.txt | sed 's/ /\'$'\n/g' > words.txt            # replace spaces with new lines;
-                                                                           # \'$'\n is a shortcut for a new line
-sed '/^$/d' words.txt  > compact.txt   # remove empty lines
+cat wellsInvisibleMan.txt | tr -d "[:punct:]" > nopunct.txt # remove punctuation; tr only takes standard input
+cat nopunct.txt | tr '[:upper:]' '[:lower:]' > clean.txt    # convert all upper case to lower case
+cat clean.txt | sed 's/ /\'$'\n/g' > words.txt              # replace spaces with new lines
+sed '/^$/d' words.txt  > compact.txt                # remove empty lines
 cat compact.txt | sort | uniq -c > dictionary.txt   # sort the list alphabetically, count each word's occurrence
-cat dictionary.txt | sort -gr > frequency.txt   # sort the list into most frequent words
+cat dictionary.txt | sort -gr > frequency.txt       # sort the list into most frequent words
 ```
 
+
+
 {{< question num=39a >}}
+Can you shorten our novel-manipulation workflow into a single command using pipes?
+{{< /question >}}
+
+<!-- ```sh -->
+<!-- cat wellsInvisibleMan.txt | tr -d "[:punct:]" | tr '[:upper:]' '[:lower:]' | \ -->
+<!--   sed 's/ /\'$'\n/g' | sed '/^$/d' | sort | uniq -c | sort -gr > frequency.txt -->
+<!-- ``` -->
+
+
+
+{{< question num=39b >}}
 Write a script that takes an English-language file and print the list of its 100 most common words, along with the word
-count. Hint: use the workflow from the text manipulation video. Finally, convert this script into a bash function. (no
-need to type any answer)
+count. Hint: use the workflow from the text manipulation video. Finally, convert this script into a bash function.
 {{< /question >}}
 
 
