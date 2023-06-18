@@ -82,7 +82,7 @@ contents. A number of 3rd-party tools can add indexing to `tar`. However, there 
 - DAR can detect corruption in both headers and saved data and recover with minimal data loss,
 
 and so on. Learning DAR is not part of this course. In the future, if you want to know more about working with
-DAR, please watch our {{<a "https://westgrid.github.io/trainingMaterials/tools/rdm" "DAR webinar">}} (scroll
+DAR, please watch our {{<a "https://training.westdri.ca/tools/rdm#dar" "DAR webinar">}} (scroll
 down to see it), or check our {{<a "https://docs.alliancecan.ca/wiki/Dar" "DAR documentation page">}}.
 
 

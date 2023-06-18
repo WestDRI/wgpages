@@ -39,34 +39,34 @@ $ tail wellsInvisibleMan.txt
 $ tail nopunct.txt
 ```
 
-Next convert all upper case to lower case:
+Next, convert all upper case to lower case:
 
 ```sh
-$ cat nopunct.txt | tr '[:upper:]' '[:lower:]' > clean.txt
-$ tail clean.txt
+$ cat nopunct.txt | tr '[:upper:]' '[:lower:]' > lower.txt
+$ tail lower.txt
 ```
 
-Next replace spaces with new lines:
+Next, replace spaces with new lines:
 
 ```sh
-$ cat clean.txt | sed 's/ /\'$'\n/g' > words.txt   # \'$'\n is a shortcut for a new line
+$ cat lower.txt | sed 's/ /\'$'\n/g' > words.txt   # \'$'\n is a shortcut for a new line
 $ more words.txt
 ```
 
-Next remove empty lines:
+Next, remove empty lines:
 
 ```sh
 $ sed '/^$/d' words.txt  > compact.txt
 ```
 
-Next sort the list alphabetically, count each word's occurrence, and remove duplicate words:
+Next, sort the list alphabetically, count each word's occurrence, and remove duplicate words:
 
 ```sh
 $ cat compact.txt | sort | uniq -c > dictionary.txt
 $ more dictionary.txt
 ```
 
-Next sort the list into most frequent words:
+Next, sort the list into most frequent words:
 
 ```sh
 $ cat dictionary.txt | sort -gr > frequency.txt   # use 'man sort'
@@ -89,8 +89,8 @@ sed 's/pattern1/pattern2/g' filename   # same but multiple per line
 sed 's|pattern1|pattern2|g' filename   # same
 
 cat wellsInvisibleMan.txt | tr -d "[:punct:]" > nopunct.txt # remove punctuation; tr only takes standard input
-cat nopunct.txt | tr '[:upper:]' '[:lower:]' > clean.txt    # convert all upper case to lower case
-cat clean.txt | sed 's/ /\'$'\n/g' > words.txt              # replace spaces with new lines
+cat nopunct.txt | tr '[:upper:]' '[:lower:]' > lower.txt    # convert all upper case to lower case
+cat lower.txt | sed 's/ /\'$'\n/g' > words.txt              # replace spaces with new lines
 sed '/^$/d' words.txt  > compact.txt                # remove empty lines
 cat compact.txt | sort | uniq -c > dictionary.txt   # sort the list alphabetically, count each word's occurrence
 cat dictionary.txt | sort -gr > frequency.txt       # sort the list into most frequent words
@@ -98,8 +98,8 @@ cat dictionary.txt | sort -gr > frequency.txt       # sort the list into most fr
 
 
 
-{{< question num=39a >}}
-Can you shorten our novel-manipulation workflow into a single command using pipes?
+{{< question num=39 >}}
+Can you shorten our novel-manipulation workflow putting it into a single line using pipes?
 {{< /question >}}
 
 <!-- ```sh -->
@@ -109,9 +109,9 @@ Can you shorten our novel-manipulation workflow into a single command using pipe
 
 
 
-{{< question num=39b >}}
-Write a script that takes an English-language file and print the list of its 100 most common words, along with the word
-count. Hint: use the workflow from the text manipulation video. Finally, convert this script into a bash function.
+{{< question num=40 >}}
+Write a script that takes an English-language file and print the list of its 100 most common words, along with
+the word count. Hint: use the workflow we just studied. Next, convert this script into a bash function.
 {{< /question >}}
 
 
