@@ -31,7 +31,7 @@ $ for filename in basilisk.dat unicorn.dat     # filename is the loop variable h
 > done
 ```
 
-$filename is equivalent to ${filename}
+<!-- $filename is equivalent to ${filename} -->
 
 Let's simplify the previous loop:
 ```sh
