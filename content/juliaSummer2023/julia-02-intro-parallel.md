@@ -18,8 +18,8 @@ execution). All threads in a Unix process share the virtual memory address space
 threads can update the same variable, whether it is safe to do so or not (we'll talk about thread-safe
 programming in this course). Context switching between threads of the same process is less expensive.
 
-![Alt text here](/img/threads.png "Image copied from
-https://www.backblaze.com/blog/whats-the-diff-programs-processes-and-threads")
+{{< figure src="/img/threads.png" title="">}}
+<!-- "Image copied from https://www.backblaze.com/blog/whats-the-diff-programs-processes-and-threads"  -->
 
 - Threads within a process communicate via shared memory, so **multi-threading** is always limited to shared
   memory within one node.
@@ -30,7 +30,9 @@ https://www.backblaze.com/blog/whats-the-diff-programs-processes-and-threads")
   abstractions.
 
 In Julia you can parallelize your code with multiple threads, or with multiple processes, or both (hybrid
-parallelization).
+parallelization) -- see an example below:
+
+{{< figure src="/img/hybridParallelism.png" title="">}}
 
 > ### Discussion
 > What are the benefits of each: threads vs. processes? Consider (1) context switching, e.g. starting and
