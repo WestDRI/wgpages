@@ -67,7 +67,7 @@ accounts.
 
 ### Julia on the training cluster for this workshop
 
-We have Julia on our training cluster *gigi.c3.ca*.
+We have Julia on our training cluster *sfu23.c3.ca*.
 
 {{<note>}}
 Our training cluster has: <br><br>
