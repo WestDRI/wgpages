@@ -85,8 +85,7 @@ $ julia -t 8 mapreduce.jl   # what should we expect?
 ```jl
 ?sum
 sum(x->x^2, 1:10)
-?Threads.sum
-Threads.sum(x->x^2, 1:10)
+ThreadsX.sum(x->x^2, 1:10)
 ```
 
 The expression in the round brackets below is a *generator*. It generates a sequence on the fly without
