@@ -71,8 +71,8 @@ We have Julia on our training cluster *gigi.c3.ca*.
 
 {{<note>}}
 Our training cluster has: <br><br>
-- one login node with 1 *"persistent"* core and 4GB of memory, <br>
-- 45 compute nodes with 4 *"compute"* cores and 15GB of memory on each (180 cores in total)
+- one login node with 8 *"compute"* core and 30GB of memory, <br>
+- 35 compute nodes with 2 *"compute"* cores and 7.5GB of memory on each (70 cores in total)
 <!-- - one GPU node with 4 *"compute"* cores, 1 vGPU (8GB) and 22GB of memory. -->
 {{</note>}}
 
