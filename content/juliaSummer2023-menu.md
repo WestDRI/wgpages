@@ -27,11 +27,19 @@ cluster.
 **Prerequisites:** Ideally, some familiarity with Compute Canada's HPC cluster environment, in particular, with
 the Slurm scheduler, and some previous serial Julia programming experience.
 
-**Software**: All attendees will need a remote secure shell (SSH) client installed on their computer in order
-to participate in course exercises. On Windows we recommend [the free Home Edition of
-MobaXterm](https://mobaxterm.mobatek.net/download.html). On Mac and Linux computers SSH is usually
-pre-installed (try typing `ssh` in a terminal to make sure it is there). We will provide guest accounts on our
-training cluster. No need to install Julia on your computer.
+**Software**: There are 3 options:
+
+1. You can work on our remote training cluster through an SSH client. You will need a remote secure shell
+(SSH) client installed on your computer in order to participate in course exercises. On Windows we recommend
+[the free Home Edition of MobaXterm](https://mobaxterm.mobatek.net/download.html). On Mac and Linux computers
+SSH is usually pre-installed (try typing `ssh` in a terminal to make sure it is there). We will provide guest
+accounts on our training cluster. No need to install Julia on your computer.
+
+2. You can work on our remote training cluster via JupyterHub | Terminal. In this case you will want to ask
+   for 2-4 CPU cores and 3 hours. This is the easiest option (nothing to install on your computer), as you
+   will work entirely through a browser.
+
+3. You can use Julia on your own computer (if installed).
 
 
 
