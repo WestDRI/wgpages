@@ -1,6 +1,6 @@
 +++
 title = "Parallelizing Julia set"
-slug = "julia-10-distributed-julia-set"
+slug = "../20230420/julia-10-distributed-julia-set"
 weight = 10
 katex = true
 +++

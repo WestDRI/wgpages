@@ -1,6 +1,6 @@
 +++
 title = "Parallelizing the Julia set with ThreadsX"
-slug = "julia-06-threadsx-julia-set"
+slug = "../20230420/julia-06-threadsx-julia-set"
 weight = 6
 +++
 

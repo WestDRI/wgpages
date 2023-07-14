@@ -39,9 +39,9 @@ training cluster. No need to install Julia on your computer.
 <!-- {{<nolinktitle>}}Introduction to Julia language{{</nolinktitle>}} \ -->
 <!-- {{<nolinktitle>}}Intro to parallelism{{</nolinktitle>}} \ -->
 <!-- {{<nolinktitle>}}Multi-threading with Base.Threads (slow series){{</nolinktitle>}} \ -->
-{{<linktitle url="../julia20230420/julia-01-intro-language" text="Introduction to Julia language">}}\
-{{<linktitle url="../julia20230420/julia-02-intro-parallel" text="Intro to parallelism">}}\
-{{<linktitle url="../julia20230420/julia-03-threads-slow-series" text="Multi-threading with Base.Threads (slow series)">}}
+{{<linktitle url="../20230420/julia-01-intro-language" text="Introduction to Julia language">}}\
+{{<linktitle url="../20230420/julia-02-intro-parallel" text="Intro to parallelism">}}\
+{{<linktitle url="../20230420/julia-03-threads-slow-series" text="Multi-threading with Base.Threads (slow series)">}}
 
 
 
@@ -55,10 +55,10 @@ training cluster. No need to install Julia on your computer.
 <!-- {{<nolinktitle>}}Parallelizing the Julia set with Base.Threads{{</nolinktitle>}} \ -->
 <!-- {{<nolinktitle>}}Parallelizing the Julia set with ThreadsX{{</nolinktitle>}} \ -->
 <!-- {{<nolinktitle>}}Distributed.jl: basics{{</nolinktitle>}} \ -->
-{{<linktitle url="../julia20230420/julia-04-threadsx-slow-series" text="Multi-threading with ThreadsX (slow series)">}} \
-{{<linktitle url="../julia20230420/julia-05-threads-julia-set" text="Parallelizing the Julia set with Base.Threads">}} \
-{{<linktitle url="../julia20230420/julia-06-threadsx-julia-set" text="Parallelizing the Julia set with ThreadsX">}} \
-{{<linktitle url="../julia20230420/julia-07-distributed1" text="Distributed.jl: basics">}}
+{{<linktitle url="../20230420/julia-04-threadsx-slow-series" text="Multi-threading with ThreadsX (slow series)">}} \
+{{<linktitle url="../20230420/julia-05-threads-julia-set" text="Parallelizing the Julia set with Base.Threads">}} \
+{{<linktitle url="../20230420/julia-06-threadsx-julia-set" text="Parallelizing the Julia set with ThreadsX">}} \
+{{<linktitle url="../20230420/julia-07-distributed1" text="Distributed.jl: basics">}}
 
 
 
@@ -74,13 +74,13 @@ training cluster. No need to install Julia on your computer.
 <!-- {{<nolinktitle>}}Parallelizing the N-body problem{{</nolinktitle>}} (supplemental material)\ -->
 <!-- {{<nolinktitle>}}Parallelizing the additive Schwarz method{{</nolinktitle>}} (supplemental material)\ -->
 <!-- {{<nolinktitle>}}Distributed linear algebra in Julia{{</nolinktitle>}} (supplemental material) -->
-{{<linktitle url="../julia20230420/julia-08-distributed2" text="Distributed.jl: three scalable versions of the slow series">}} \
-{{<linktitle url="../julia20230420/julia-09-distributed-arrays" text="DistributedArrays.jl">}}\
-{{<linktitle url="../julia20230420/julia-10-distributed-julia-set" text="Parallelizing the Julia set with DistributedArrays">}}\
-{{<linktitle url="../julia20230420/julia-11-shared-arrays" text="SharedArrays.jl">}}\
-{{<linkoptional url="../julia20230420/julia-12-nbody" text="Parallelizing the N-body problem">}} (supplemental material)\
-{{<linkoptional url="../julia20230420/julia-13-asm" text="Parallelizing the additive Schwarz method">}} (supplemental material)\
-{{<linkoptional url="../julia20230420/julia-14-linear-algebra" text="Distributed linear algebra in Julia">}} (supplemental material)
+{{<linktitle url="../20230420/julia-08-distributed2" text="Distributed.jl: three scalable versions of the slow series">}} \
+{{<linktitle url="../20230420/julia-09-distributed-arrays" text="DistributedArrays.jl">}}\
+{{<linktitle url="../20230420/julia-10-distributed-julia-set" text="Parallelizing the Julia set with DistributedArrays">}}\
+{{<linktitle url="../20230420/julia-11-shared-arrays" text="SharedArrays.jl">}}\
+{{<linkoptional url="../20230420/julia-12-nbody" text="Parallelizing the N-body problem">}} (supplemental material)\
+{{<linkoptional url="../20230420/julia-13-asm" text="Parallelizing the additive Schwarz method">}} (supplemental material)\
+{{<linkoptional url="../20230420/julia-14-linear-algebra" text="Distributed linear algebra in Julia">}} (supplemental material)
 
 
 

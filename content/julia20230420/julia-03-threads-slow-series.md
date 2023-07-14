@@ -1,6 +1,6 @@
 +++
 title = "Multi-threading with Base.Threads"
-slug = "julia-03-threads-slow-series"
+slug = "../20230420/julia-03-threads-slow-series"
 weight = 3
 katex = true
 +++

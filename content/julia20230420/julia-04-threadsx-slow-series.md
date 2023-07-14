@@ -1,6 +1,6 @@
 +++
 title = "Multi-threading with ThreadsX"
-slug = "julia-04-threadsx-slow-series"
+slug = "../20230420/julia-04-threadsx-slow-series"
 weight = 4
 +++
 
