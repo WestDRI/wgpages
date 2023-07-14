@@ -522,41 +522,47 @@ end
 n = Int64(1e8)
 @btime slow(n, 9, 1, n, 1)    # run the code in serial (one interval, use one thread)
 @btime slow(n, 9, 1, n, 4)    # 4 intervals, each scheduled to run on 1 of the threads
-@btime slow(n, 9, 1, n, 16)   # 16 intervals, each scheduled to run on 1 of the threads
 ```
 
-With four threads and `numsubs=4`, in one of my tests the runtime went down from 2.986 s (serial) to 726.044
-ms. However, depending on the number of subintervals, Julia might decide not to use all four threads!
-Consider this:
+There are two important considerations here:
 
-```sh
-julia> nthreads()
-4
+1. Depending on the number of subintervals, Julia might decide not to use all four threads! To ensure best
+   load balancing, consider using a very large number of subintervals, to fully saturate all cores,
+   e.g. `numsubs=128` with 4 threads.
+2. The `println` line might significantly slow down the code (depending on your processor architecture), as
+   all threads write into an output buffer and -- with many threads -- take turns doing this, with some
+   waiting involved. You might want to comment out `println` to get the best performance.
 
-julia> n = Int64(1e9)
-1000000000
+With these two points in mind, try to get 100% parallel efficiency.
 
-julia> @btime slow(n, 9, 1, n, 1)    # serial run (one interval, use one thread)
-computing on thread 1
-computing on thread 1
-computing on thread 1
-computing on thread 1
-  29.096 s (12 allocations: 320 bytes)
-14.2419130103833
+<!-- ```sh -->
+<!-- julia> nthreads() -->
+<!-- 4 -->
 
-julia> @btime slow(n, 9, 1, n, 4)    # 4 intervals
-computing on thread 1 - this line was printed 4 times
-computing on thread 2 - this line was printed 5 times
-computing on thread 3 - this line was printed 6 times
-computing on thread 4 - this line was printed once
-  14.582 s (77 allocations: 3.00 KiB)
-14.2419130103818
+<!-- julia> n = Int64(1e9) -->
+<!-- 1000000000 -->
 
-julia> @btime slow(n, 9, 1, n, 128)    # 128 intervals
-computing on thread 1 - this line was printed 132 times
-computing on thread 2 - this line was printed 130 times
-computing on thread 3 - this line was printed 131 times
-computing on thread 4 - this line was printed 119 times
-  11.260 s (2514 allocations: 111.03 KiB)
-14.24191301038047
-```
+<!-- julia> @btime slow(n, 9, 1, n, 1)    # serial run (one interval, use one thread) -->
+<!-- computing on thread 1 -->
+<!-- computing on thread 1 -->
+<!-- computing on thread 1 -->
+<!-- computing on thread 1 -->
+<!--   29.096 s (12 allocations: 320 bytes) -->
+<!-- 14.2419130103833 -->
+
+<!-- julia> @btime slow(n, 9, 1, n, 4)    # 4 intervals -->
+<!-- computing on thread 1 - this line was printed 4 times -->
+<!-- computing on thread 2 - this line was printed 5 times -->
+<!-- computing on thread 3 - this line was printed 6 times -->
+<!-- computing on thread 4 - this line was printed once -->
+<!--   14.582 s (77 allocations: 3.00 KiB) -->
+<!-- 14.2419130103818 -->
+
+<!-- julia> @btime slow(n, 9, 1, n, 128)    # 128 intervals -->
+<!-- computing on thread 1 - this line was printed 132 times -->
+<!-- computing on thread 2 - this line was printed 130 times -->
+<!-- computing on thread 3 - this line was printed 131 times -->
+<!-- computing on thread 4 - this line was printed 119 times -->
+<!--   11.260 s (2514 allocations: 111.03 KiB) -->
+<!-- 14.24191301038047 -->
+<!-- ``` -->
