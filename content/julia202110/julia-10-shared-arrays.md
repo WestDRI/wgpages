@@ -1,6 +1,6 @@
 +++
 title = "SharedArrays.jl"
-slug = "../../julia202110/julia-10-shared-arrays"
+slug = "../202110/julia-10-shared-arrays"
 weight = 10
 +++
 

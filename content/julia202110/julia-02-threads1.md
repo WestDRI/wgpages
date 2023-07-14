@@ -1,6 +1,6 @@
 +++
 title = "Multi-threading - part 1"
-slug = "../../julia202110/julia-02-threads1"
+slug = "../202110/julia-02-threads1"
 weight = 2
 katex = true
 +++

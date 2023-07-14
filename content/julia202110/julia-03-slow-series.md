@@ -1,14 +1,14 @@
 +++
 title = "Slowly convergent series"
-slug = "../../julia202110/julia-03-slow-series"
+slug = "../202110/julia-03-slow-series"
 weight = 3
 katex = true
 +++
 
-We could replace integer summation $~~\sum_{i=1}^\infty i~~$ with the harmonic series, however, the traditional harmonic
-series $~~\sum\limits_{k=1}^\infty{1\over k}~~$ diverges. It turns out that if we omit the terms whose denominators in
-decimal notation contain any _digit_ or _string of digits_, it converges, albeit very slowly (Schmelzer & Baillie 2008),
-e.g.
+We could replace integer summation $\sum_{i=1}^\infty i$ with the harmonic series, however, the traditional
+harmonic series $\sum\limits_{k=1}^\infty{1\over k}$ diverges. It turns out that if we omit the terms whose
+denominators in decimal notation contain any _digit_ or _string of digits_, it converges, albeit very slowly
+(Schmelzer & Baillie 2008), e.g.
 
 {{< figure src="/img/slow.png" >}}
 

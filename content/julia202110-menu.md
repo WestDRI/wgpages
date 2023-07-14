@@ -1,6 +1,6 @@
 +++
 title = "Parallel computing in Julia"
-slug = "../parallel_julia_oct21"
+slug = "parallel_julia_oct21"
 +++
 
 {{<cor>}}October 18-19, 2021{{</cor>}}
@@ -33,12 +33,12 @@ free Home Edition of MobaXterm](https://mobaxterm.mobatek.net/download.html). On
 pre-installed (try typing `ssh` in a terminal to make sure it is there).
 
 {{<cor>}}Zoom{{</cor>}} {{<s>}} {{<cgr>}}Day 1: Oct-18 4:00pm-7:00pm Paris time{{</cgr>}} \
-{{<linktitle url="../julia202110/julia-01-intro" text="Introduction to parallel Julia">}} \
-{{<linktitle url="../julia202110/julia-02-threads1" text="Base.Threads (part 1)">}} \
-{{<linktitle url="../julia202110/julia-03-slow-series" text="Slow series">}} \
-{{<linktitle url="../julia202110/julia-04-threads2" text="Base.Threads (part 2)">}} \
-{{<linktitle url="../julia202110/julia-05-distributed1" text="Distributed.jl (part 1: basics)">}} \
-{{<linktitle url="../julia202110/julia-06-distributed2" text="Distributed.jl (part 2: three scalable versions of parallel slow series)">}}
+{{<linktitle url="../202110/julia-01-intro" text="Introduction to parallel Julia">}} \
+{{<linktitle url="../202110/julia-02-threads1" text="Base.Threads (part 1)">}} \
+{{<linktitle url="../202110/julia-03-slow-series" text="Slow series">}} \
+{{<linktitle url="../202110/julia-04-threads2" text="Base.Threads (part 2)">}} \
+{{<linktitle url="../202110/julia-05-distributed1" text="Distributed.jl (part 1: basics)">}} \
+{{<linktitle url="../202110/julia-06-distributed2" text="Distributed.jl (part 2: three scalable versions of parallel slow series)">}}
 
 <!-- In the afternoon Zoom session you'll be working on one of two projects: parallelizing Julia set (I recommend to do this -->
 <!-- with distributed arrays) and parallelizing the N-body code (I recommend to do this with shared arrays). **Note:** we -->
@@ -46,8 +46,8 @@ pre-installed (try typing `ssh` in a terminal to make sure it is there).
 <!-- goal is to build your own! -->
 
 {{<cor>}}Zoom{{</cor>}} {{<s>}} {{<cgr>}}Day 2: Oct-19 4:00pm-7:00pm Paris time{{</cgr>}} \
-{{<linktitle url="../julia202110/julia-07-distributed-arrays" text="DistributedArrays.jl">}} \
-{{<linktitle url="../julia202110/julia-08-julia-set" text="Parallelizing Julia set">}} \
-{{<linktitle url="../julia202110/julia-09-asm" text="Parallelizing additive Schwarz method">}} \
-{{<linktitle url="../julia202110/julia-10-shared-arrays" text="SharedArrays.jl">}} \
-{{<linktitle url="../julia202110/julia-11-nbody" text="Parallelizing N-body">}}
+{{<linktitle url="../202110/julia-07-distributed-arrays" text="DistributedArrays.jl">}} \
+{{<linktitle url="../202110/julia-08-julia-set" text="Parallelizing Julia set">}} \
+{{<linktitle url="../202110/julia-09-asm" text="Parallelizing additive Schwarz method">}} \
+{{<linktitle url="../202110/julia-10-shared-arrays" text="SharedArrays.jl">}} \
+{{<linktitle url="../202110/julia-11-nbody" text="Parallelizing N-body">}}
