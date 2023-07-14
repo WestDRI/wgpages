@@ -1,6 +1,6 @@
 +++
 title = "Introduction to parallel Julia"
-slug = "julia-01-intro"
+slug = "../../julia202110/julia-01-intro"
 weight = 1
 +++
 

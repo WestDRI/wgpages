@@ -1,6 +1,6 @@
 +++
 title = "Slowly convergent series"
-slug = "julia-03-slow-series"
+slug = "../../julia202110/julia-03-slow-series"
 weight = 3
 katex = true
 +++

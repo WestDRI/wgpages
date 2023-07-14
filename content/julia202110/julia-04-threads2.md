@@ -1,6 +1,6 @@
 +++
 title = "Multi-threading - part 2"
-slug = "julia-04-threads2"
+slug = "../../julia202110/julia-04-threads2"
 weight = 4
 +++
 

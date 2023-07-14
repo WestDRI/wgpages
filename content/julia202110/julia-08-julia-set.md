@@ -1,6 +1,6 @@
 +++
 title = "Parallelizing Julia set "
-slug = "julia-08-julia-set"
+slug = "../../julia202110/julia-08-julia-set"
 weight = 8
 katex = true
 +++

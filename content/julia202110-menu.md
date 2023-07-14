@@ -1,6 +1,6 @@
 +++
 title = "Parallel computing in Julia"
-slug = "parallel_julia_oct21"
+slug = "../parallel_julia_oct21"
 +++
 
 {{<cor>}}October 18-19, 2021{{</cor>}}

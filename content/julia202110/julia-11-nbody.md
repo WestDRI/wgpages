@@ -1,6 +1,6 @@
 +++
 title = "Parallelizing N-body"
-slug = "julia-11-nbody"
+slug = "../../julia202110/julia-11-nbody"
 weight = 11
 katex = true
 +++
