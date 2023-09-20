@@ -267,13 +267,13 @@ Macros have a `@` prefix and are defined with a syntax similar to that of functi
 
 {{<a "https://docs.julialang.org/en/v1/manual/unicode-input/" "Julia supports unicode">}}. In a Julia REPL, type the following, followed by the TAB key:
 
-```{jl}
+```jl
 \:snail:
 ```
 
 and you get:
 
-```{jl}
+```jl
 🐌
 ```
 
@@ -285,7 +285,7 @@ While assigning values to a "snail variable" might not be all that useful, a wid
 
 looks like:
 
-```{jl}
+```jl
 ɣ = ((α π + β) / δ) + ε
 ```
 
