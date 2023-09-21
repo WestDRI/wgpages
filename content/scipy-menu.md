@@ -3,13 +3,13 @@ title = "Scientific Python"
 slug = "scientificpython"
 +++
 
-{{<cor>}}Thursdays, February 23rd and March 2nd{{</cor>}}\
+{{<cor>}}Thursdays, September 28th and October 5th{{</cor>}}\
 {{<cgr>}}10:00am-noon Pacific Time{{</cgr>}}
 
 <!-- Course materials will be added here shortly before the start of the course. -->
 
 Register for this course
-{{<a "https://docs.google.com/forms/d/e/1FAIpQLScTvlacToFHiYj0O1E5Dam283vEu-4ZgvKE7LlqMxxHGoUMsw/viewform" "here">}}.
+{{<a "https://docs.google.com/forms/d/e/1FAIpQLSc5u2bwaPWW53D9kijqQxyqRSoFqUTx55iWjPJpzjMFAR3Dag/viewform" "here">}}.
 
 ---
 
@@ -38,15 +38,27 @@ functions, lists, dictionaries).
 {{<cor>}}Zoom session (week 1){{</cor>}} \
 {{<cgr>}}10:00am-noon Pacific{{</cgr>}}
 
+
+
+
+
 <!-- {{<nolinktitle>}}Libraries, virtual environments and packaging{{</nolinktitle>}} \ -->
 <!-- {{<nolinktitle>}}Numpy{{</nolinktitle>}} \ -->
 <!-- {{<nolinktitle>}}Plotting with matplotlib{{</nolinktitle>}} -->
 
-{{<linktitle url="../python202302/python-10-libraries" text="Libraries, virtual environments and packaging">}} \
-{{<linktitle url="../python202302/python-11-numpy" text="Numpy">}}
+{{<linktitle url="../scipy/python-10-libraries" text="Libraries, virtual environments and packaging">}} \
+{{<linktitle url="../scipy/python-11-numpy" text="Numpy">}}
+
+
+
+
 
 {{<cor>}}Zoom session (week 2){{</cor>}} \
 {{<cgr>}}10:00am-noon Pacific{{</cgr>}}
+
+
+
+
 
 <!-- {{<nolinktitle>}}Pandas dataframes{{</nolinktitle>}} \ -->
 <!-- {{<nolinktitle>}}Multidimensional labeled arrays and datasets with xarray{{</nolinktitle>}} \ -->
@@ -54,15 +66,16 @@ functions, lists, dictionaries).
 <!-- {{<nolinktitle>}}Basics of object-oriented programming in Python{{</nolinktitle>}} -->
 <!-- {{<nolinktitle>}}Other topics{{</nolinktitle>}} -->
 
-{{<linktitle url="../python202302/python-12-matplotlib" text="Plotting with matplotlib">}} \
-{{<linktitle url="../python202302/python-13-pandas" text="Pandas dataframes">}} \
-{{<linktitle url="../python202302/python-14-xarray" text="Multidimensional labeled arrays and datasets with xarray">}} \
-{{<linktitle url="../python202302/python-16-scripts" text="Running Python scripts from the command line">}} (additional material) \
-{{<linktitle url="../python202302/python-17-objects" text="Basics of object-oriented programming in Python">}} (additional material) \
-{{<linktitle url="../python202302/python-18-other" text="Other topics">}}
+{{<linktitle url="../scipy/python-12-matplotlib" text="Plotting with matplotlib">}} \
+{{<linktitle url="../scipy/python-13-pandas" text="Pandas dataframes">}} \
+{{<linktitle url="../scipy/python-14-xarray" text="Multidimensional labeled arrays and datasets with xarray">}} \
+{{<linktitle url="../scipy/python-16-scripts" text="Running Python scripts from the command line">}} (additional material) \
+{{<linktitle url="../scipy/python-17-objects" text="Basics of object-oriented programming in Python">}} (additional material) \
+{{<linktitle url="../scipy/python-18-other" text="Other topics">}}
+
 
 
 
 
 <!-- <\!-- {{<nolinktitle>}}Plotting with cartopy (additional material){{</nolinktitle>}} \ -\-> -->
-<!-- <\!-- {{<linktitle url="../python202302/python-15-cartopy" text="Plotting with cartopy">}} (additional material) \ -\-> -->
+<!-- <\!-- {{<linktitle url="../scipy/python-15-cartopy" text="Plotting with cartopy">}} (additional material) \ -\-> -->
