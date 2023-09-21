@@ -46,8 +46,8 @@ functions, lists, dictionaries).
 <!-- {{<nolinktitle>}}Numpy{{</nolinktitle>}} \ -->
 <!-- {{<nolinktitle>}}Plotting with matplotlib{{</nolinktitle>}} -->
 
-{{<linktitle url="../scipy/python-10-libraries" text="Libraries, virtual environments and packaging">}} \
-{{<linktitle url="../scipy/python-11-numpy" text="Numpy">}}
+{{<linktitle url="../python/python-10-libraries" text="Libraries, virtual environments and packaging">}} \
+{{<linktitle url="../python/python-11-numpy" text="Numpy">}}
 
 
 
@@ -66,16 +66,16 @@ functions, lists, dictionaries).
 <!-- {{<nolinktitle>}}Basics of object-oriented programming in Python{{</nolinktitle>}} -->
 <!-- {{<nolinktitle>}}Other topics{{</nolinktitle>}} -->
 
-{{<linktitle url="../scipy/python-12-matplotlib" text="Plotting with matplotlib">}} \
-{{<linktitle url="../scipy/python-13-pandas" text="Pandas dataframes">}} \
-{{<linktitle url="../scipy/python-14-xarray" text="Multidimensional labeled arrays and datasets with xarray">}} \
-{{<linktitle url="../scipy/python-16-scripts" text="Running Python scripts from the command line">}} (additional material) \
-{{<linktitle url="../scipy/python-17-objects" text="Basics of object-oriented programming in Python">}} (additional material) \
-{{<linktitle url="../scipy/python-18-other" text="Other topics">}}
+{{<linktitle url="../python/python-12-matplotlib" text="Plotting with matplotlib">}} \
+{{<linktitle url="../python/python-13-pandas" text="Pandas dataframes">}} \
+{{<linktitle url="../python/python-14-xarray" text="Multidimensional labeled arrays and datasets with xarray">}} \
+{{<linktitle url="../python/python-16-scripts" text="Running Python scripts from the command line">}} (additional material) \
+{{<linktitle url="../python/python-17-objects" text="Basics of object-oriented programming in Python">}} (additional material) \
+{{<linktitle url="../python/python-18-other" text="Other topics">}}
 
 
 
 
 
 <!-- <\!-- {{<nolinktitle>}}Plotting with cartopy (additional material){{</nolinktitle>}} \ -\-> -->
-<!-- <\!-- {{<linktitle url="../scipy/python-15-cartopy" text="Plotting with cartopy">}} (additional material) \ -\-> -->
+<!-- <\!-- {{<linktitle url="../python/python-15-cartopy" text="Plotting with cartopy">}} (additional material) \ -\-> -->
