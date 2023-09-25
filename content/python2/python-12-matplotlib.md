@@ -145,7 +145,7 @@ fig = plt.figure(figsize=(8,8)); ax = plt.axes()
 Shortly we will see that we can pass additional flags to `fig.add_subplot()` and `plt.axes()` for more coordinate system
 control.
 
-{{< question num=11b >}}
+{{< question num=8 >}}
 Break the plot into two subplots, the fist taking 1/3 of the space on the left, the second one 2/3 of the space on the
 right.
 {{< /question >}}
@@ -234,12 +234,12 @@ for i in range(len(months)):
                        ha="center", va="center", color="w", fontsize=14, weight='bold')
 ```
 
-{{< question num=11c >}}
+{{< question num=9 >}}
 Change the text colour to black in the brightest (green) rows and columns. You can do this either by specifying
 rows/columns explicitly, or (better) by setting a threshold background colour.
 {{< /question >}}
 
-{{< question num=11d >}}
+{{< question num=10 >}}
 This is a take-home exercise. Modify the code to display only 4 seasons instead of the individual months.
 {{< /question >}}
 
@@ -285,7 +285,7 @@ surf = ax.plot_surface(x, y, z, facecolors=rgb, linewidth=0, antialiased=False, 
 <!-- **Note**: If you absolutely cannot locate your downloaded data file, you can also find it in the shared folder at -->
 <!-- `/project/def-sponsor00/shared/astro/data/mt_bruno_elevation.csv`. -->
 
-{{< question num=11e >}}
+{{< question num=11 >}}
 Replace `fig, ax = plt.subplots()` with `fig = plt.figure()` followed by `ax = fig.add_subplot()`. Don't forget about
 the `3d` projection. This one is a little tricky -- feel free to google the problem, or even better use our
 earlier examples.

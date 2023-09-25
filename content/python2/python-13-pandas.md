@@ -38,7 +38,7 @@ data.info()   # info is a *member method inside data*
 
 
 
-{{< question num=11f >}}
+{{< question num=12 >}}
 Try reading a much bigger Jeopardy dataset from
 `https://raw.githubusercontent.com/razoumov/publish/master/jeopardy.csv`. There are two ways to do this:
 1. you can first download it using `wget` and then read a local file, or
@@ -65,23 +65,23 @@ print(data.T)     # this will transpose the dataframe; curously this is a variab
 data.describe()   # will print some statistics of numerical columns (very useful for 1000s of rows!)
 ```
 
-{{< question num=12a >}}
+{{< question num=13 >}}
 Quick question: how would you list all country names?
 
 **Hint**: try data.T.columns
 {{< /question >}}
 
-{{< question num=12b >}}
+{{< question num=14 >}}
 Read the data in `gapminder_gdp_americas.csv` (which should be in the same directory as `gapminder_gdp_oceania.csv`)
 into a variable called `americas` and display its summary statistics.
 {{< /question >}}
 
-{{< question num=13 >}}
+{{< question num=15 >}}
 Write a command to display the first three rows of the `americas` data frame. What about the last three columns of this
 data frame?
 {{< /question >}}
 
-{{< question num=14 >}}
+{{< question num=16 >}}
 The data for your current project is stored in a file called `microbes.csv`, which is located in a folder called
 `field_data`. You are doing analysis in a notebook called `analysis.ipynb` in a sibling folder called `thesis`:
 ```txt
@@ -94,7 +94,7 @@ your_home_directory
 What value(s) should you pass to `read_csv()` to read `microbes.csv` in `analysis.ipynb`?
 {{< /question >}}
 
-{{< question num=15 >}}
+{{< question num=17 >}}
 As well as the `pd.read_csv()` function for reading data from a file, Pandas provides a `to_csv()` function to
 write data frames to files. Applying what you've learned about reading from files, write one of your data
 frames to a file called `processed.csv`. You can use help to get information on how to use `to_csv()`.
@@ -188,7 +188,7 @@ subset[mask].describe()
 subset[mask].max()
 ```
 
-{{< question num=16 >}}
+{{< question num=18 >}}
 Assume Pandas has been imported into your notebook and the Gapminder GDP data for Europe has been loaded:
 ```py
 df = pd.read_csv('data-python/gapminder_gdp_europe.csv', index_col='country')
@@ -196,7 +196,7 @@ df = pd.read_csv('data-python/gapminder_gdp_europe.csv', index_col='country')
 Write an expression to find the per capita GDP of Serbia in 2007.
 {{< /question >}}
 
-{{< question num=17 >}}
+{{< question num=19 >}}
 Explain what each line in the following short program does, e.g. what is in the variables `first`, `second`, ...:
 ```py
 first = pd.read_csv('data-python/gapminder_all.csv', index_col='country')
@@ -206,7 +206,7 @@ fourth = third.drop('continent', axis = 1)
 fourth.to_csv('result.csv')
 {{< /question >}}
 
-{{< question num=18 >}}
+{{< question num=20 >}}
 Explain in simple terms what `idxmin()` and `idxmax()` do in the short program below. When would you use these methods?
 ```py
 data = pd.read_csv('data-python/gapminder_gdp_europe.csv', index_col='country')
@@ -409,7 +409,7 @@ for filename in glob('data-python/gapminder*.csv'):
     print(filename, data.gdpPercap_1952.min())
 ```
 
-{{< question num=19 >}}
+{{< question num=21 >}}
 Which of these files is not matched by the expression `glob('data-python/*as*.csv')`?
 ```txt
 A. data-python/gapminder_gdp_africa.csv
@@ -419,7 +419,7 @@ D. 1 and 2 are not matched
 ```
 {{< /question >}}
 
-{{< question num=20 >}}
+{{< question num=22 >}}
 Modify this program so that it prints the number of records in the file that has the fewest records.
 ```py
 fewest = ____

@@ -174,7 +174,7 @@ new = xr.open_dataset("test.nc")   # try reading it
 
 We can even try opening this 2D dataset in ParaView - select (y,x) and deselect Spherical.
 
-{{< question num=21 >}}
+{{< question num=23 >}}
 Recall the 2D function we plotted when we were talking about numpy's array broadcasting. Let's scale it to a unit square
 x,y∈[0,1]:
 ```py
@@ -291,7 +291,7 @@ ds.lat.attrs["units"] = "degrees_north"   # this line is important to adhere to 
 ds.lon.attrs["units"] = "degrees_east"    # this line is important to adhere to CF convention
 ```
 
-{{< question num=22 >}}
+{{< question num=24 >}}
 Let's do it! Create a small (one-degree horizontal + some vertical resolution), stationary (no time dependency) dataset
 in spherical geometry with one 3D variable and write it to `spherical.nc`. Load it into ParaView to make sure the
 geometry is spherical.
