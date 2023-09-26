@@ -51,7 +51,7 @@ for number in range(10):
 print(total)
 ```
 
-{{< question num=3a >}}
+{{< question num=4 >}}
 Write a Python code to revert a string, e.g. 'computer' should become 'retupmoc'.
 {{< /question >}}
 
@@ -74,11 +74,11 @@ Write a Python code to revert a string, e.g. 'computer' should become 'retupmoc'
 <!-- 'computer'[::-1] -->
 <!-- ``` -->
 
-{{< question num=3b >}}
+{{< question num=5 >}}
 Print a difference between two lists, e.g. [1, 2, 3, 4] and [1, 2, 5].
 {{< /question >}}
 
-{{< question num=3c >}}
+{{< question num=6 >}}
 Write a script to get the frequency of the elements in the list `a = [77, 9, 23, 67, 73, 21, 23, 9]`. You can google
 this problem :)
 {{< /question >}}
@@ -165,11 +165,11 @@ The syntax is:
 [something(i) for i in list1 if i [not] in list2 if i [not] in list3 ...]
 ```
 
-{{< question num=4a >}}
+{{< question num=7 >}}
 Write a one-line code to sum up the squares of numbers from 1 to 100.
 {{< /question >}}
 
-{{< question num=4b >}}
+{{< question num=8 >}}
 Write a script to build a list of words that are shorter than `n` from a given list of words
 `['red', 'green', 'white', 'black', 'pink', 'yellow']`.
 {{< /question >}}

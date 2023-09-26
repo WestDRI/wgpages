@@ -58,7 +58,7 @@ dayOfTheWeek(2022, 11, 10)   # 'Thu'
 
 
 
-{{< question num=5 >}}
+{{< question num=10 >}}
 Write a function to convert from Fahrenheit to Celsius, e.g. typing `celsius(77)` would produce 25.
 <!-- ```sh -->
 <!-- def celsius(f): -->
@@ -66,12 +66,12 @@ Write a function to convert from Fahrenheit to Celsius, e.g. typing `celsius(77)
 <!-- ``` -->
 {{< /question >}}
 
-{{< question num=6 >}}
+{{< question num=11 >}}
 Write a function to convert from Celsius to Fahrenheit. Test it with celcius(), e.g. by converting Fahrenheit → Celsius
 → Fahrenheit, or Celsius → Fahrenheit → Celsius.
 {{< /question >}}
 
-{{< question num=7 >}}
+{{< question num=12 >}}
 Now modify celsius() to take a list of Fahrenheit temperatures, e.g., `celcius([70,80,90,100])`, to return a list of
 Celsius temperatures.
 <!-- ```py -->

@@ -105,6 +105,11 @@ except (RuntimeError, TypeError, NameError):
 
 Write the rest of the mortgage calculation code.
 
+> Note: You can also implement this code setting `payment = None` for a missing variable, and then placing the
+> code under `if payment == None` condition. Alternatively, you can put everything into a function with
+> optional arguments that default to None unless assigned values. I personally like the implementation with
+> the exception handling, as this way you don't have to assign the missing variable at all.
+
 
 
 

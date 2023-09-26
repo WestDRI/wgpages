@@ -7,12 +7,6 @@ weight = 10
 <!-- <u>For Day 2</u>, we will switch to running inside Jupyter Notebook -- please see option 2 in -->
 <!-- [the Setup section](../python-01-setup#starting-python). -->
 
-> There are many ways to run Python: in the shell, via scripts, in a Jupyter notebook. Today we'll be running
-> Python via JupyterHub on our training cluster. Point your browser to https://oc.c3.ca, log in with
-> your username and password, then launch a JupyterHub server with time = ***3 hours***, **1 CPU core**,
-> memory = ***3600 MB***, GPU configuration = ***None***, user interface = ***JupyterLab***. Finally, start a
-> new Python 3 notebook.
-
 Most of the power of a programming language is in its libraries. This is especially true for Python which is an
 interpreted language and is therefore very slow (compared to compiled languages). However, the libraries are often
 compiled (can be written in compiled languages such as C/C++) and therefore offer much faster performance than native
@@ -46,21 +40,21 @@ import math as m
 print m.pi
 ```
 
-{{< question num=8 >}}
+{{< question num=13 >}}
 What function from the math library can you use to calculate a square root without using `sqrt`?
 {{< /question >}}
 
-{{< question num=9 >}}
+{{< question num=14 >}}
 You want to select a random character from the string `bases='ACTTGCTTGAC'`. What standard library would you most expect
 to help? Which function would you select from that library? Are there alternatives?
 {{< /question >}}
 
-{{< question num=10 >}}
+{{< question num=15 >}}
 A colleague of yours types `help(math)` and gets an error: `NameError: name 'math' is not defined`. What has your
 colleague forgotten to do?
 {{< /question >}}
 
-{{< question num=11 >}}
+{{< question num=16 >}}
 Convert the angle 0.3 rad to degrees using the math library.
 {{< /question >}}
 

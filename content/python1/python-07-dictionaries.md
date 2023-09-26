@@ -77,7 +77,7 @@ for k in sorted(favs):
 sorted(favs.values())         # returns the sorted list of values
 ```
 
-{{< question num=4c >}}
+{{< question num=9 >}}
 Write a script to print the full dictionary sorted by the value.
 
 **Hint**: create a list comprehension looping through all (key,value) pairs and then try sorting the result.

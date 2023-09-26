@@ -103,7 +103,7 @@ To create a Python environment (you do this only once):
 
 ```sh
 module avail python               # several versions available
-module load python/3.8.10
+module load python/3.10.2
 virtualenv --no-download astro    # install Python tools in your $HOME/astro
 source astro/bin/activate
 pip install --no-index --upgrade pip
