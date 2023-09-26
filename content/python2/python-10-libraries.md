@@ -85,23 +85,23 @@ running your Jupyter notebooks, open the terminal and type:
 (**Important**: on a cluster you must do this on the login node, not inside the JupyterLab terminal.)
 
 ```sh
-module load python/3.9.6    # specific to HPC clusters
+module load python/3.10.2          # specific to HPC clusters
 pip install virtualenv
 virtualenv --no-download climate   # create a new virtual environment in your current directory
 source climate/bin/activate
 which python && which pip
 pip install --no-index netcdf4 ...
-pip install --no-index ipykernel    # install ipykernel (IPython kernel for Jupyter) into this environment
+pip install --no-index ipykernel   # install ipykernel (IPython kernel for Jupyter) into this environment
 python -m ipykernel install --user --name=climate --display-name "My climate project"   # add your environment to Jupyter
 ...
 deactivate
 ```
 
-Quit all your currently running Jupyter notebooks and the Jupyter dashboard. If running on syzygy.ca, logout from your
-session and then log back in.
+Quit all your currently running Jupyter notebooks and the Jupyter dashboard. Reopen the notebook dashboard,
+and one of the options in `New` below `Python 3` should be `climate`.
 
-Whether running locally or on syzygy.ca, open the notebook dashboard, and one of the options in `New` below `Python 3`
-should be `climate`.
+<!-- If running on syzygy.ca, logout from your -->
+<!-- session and then log back in. -->
 
 To delete the environment, in the terminal type:
 
