@@ -46,5 +46,5 @@ functions, lists, dictionaries).
 {{<linktitle url="../python1/python-06-loops" text="Loops">}} \
 {{<linktitle url="../python1/python-07-dictionaries" text="Dictionaries">}} \
 {{<linktitle url="../python1/python-08-functions" text="Writing functions">}} \
-{{<linktitle url="../python1/python-09-scope" text="Variable scope">}} \
+{{<linktitle url="../python1/python-09-scope" text="Variable scope and other topics">}} \
 {{<linktitle url="../python1/python-10-libraries" text="Libraries, virtual environments and packaging">}}

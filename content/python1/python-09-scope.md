@@ -1,5 +1,5 @@
 +++
-title = "Variable scope"
+title = "Variable scope and other topics"
 slug = "python-09-scope"
 weight = 9
 +++
@@ -37,6 +37,79 @@ def add():
 add()
 print(a)          # []
 ```
+
+## Handling exceptions
+
+Let's say we want to write a code to calculate mortgage payments. For a fixed interest rate in percent, we
+have two of the following three variables: the principal amount, the term in years, and a monthly payment. Our
+code will calculate the third variable, based on the other two. There are three scenarios:
+
+(1) If we have the the principal amount and the term in years, here is how you would calculate the monthly
+payment:
+
+```py
+r = rate / 1200
+q = (1 + r)**(12*term)
+payment = principal * r * q / (q - 1)
+```
+
+(2) If we have the monthly payment and the principal amount, here is how you would calculate the term in years:
+
+```py
+r = rate / 1200
+q =  payment / (payment - principal * r)
+if q < 0.:
+    print("you will never pay it off ...")
+    exit(1)
+term = log(q) / (log(1+r)*12)
+```
+
+(3) If we have the term in years and the monthly payment, here is how you would calculate the principal amount:
+
+```py
+r = rate / 1200
+q = (1 + r)**(12*term)
+principal = payment * (q - 1) / (r * q)
+```
+
+How can we tell the code to decide on the fly which variable it needs to compute, based on the two existing ones?
+
+We would like to do something like this (not actual Python code):
+
+```py
+if payment is not defined:
+    use formula 1
+if term is not defined:
+    use formula 2
+if principal is not defined:
+    use formula 3
+```
+
+Consider this syntax:
+
+```py
+try:
+    payment           # here is what we try to do
+except NameError:
+    payment = 1       # if that produces NameError, don't show it, but do this instead
+	print(payment)
+```
+
+And you can combine multiple error codes, e.g.
+
+```py
+...
+except (RuntimeError, TypeError, NameError):
+...
+```
+
+Write the rest of the mortgage calculation code.
+
+
+
+
+
+
 
 ## If we have time
 
