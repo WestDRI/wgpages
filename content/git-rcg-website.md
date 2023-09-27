@@ -79,21 +79,22 @@ Set up your access token:
 ## Workflow via PRs (no direct access)
 
 1. Fork the website repository on GitHub
-1. Clone your folk to your computer
+1. Clone your fork to your computer
 1. To keep up with the main repository, pull the changes from it through your Git upstream config
-1. Push your changes to a branch in the forked repository -- could be the main branch, could be a separate
-   branch for each PR
-1. Create a PR to the website repository repository from your forked repository
+1. Edit the code, commit locally
+1. Push your changes to a branch in the forked repository -- ideally a separate branch for each PR (but could
+   be the main branch)
+1. Create a PR to the website repository from your forked repository
 
-Create your own folk of https://github.sfu.ca/its/rcg-website. Let's assume the folk is called
-https://github.sfu.ca/<username>/rcg-website.git. You will have write access to your folk, but not to the main
+Create your own fork of https://github.sfu.ca/its/rcg-website. Let's assume the fork is called
+https://github.sfu.ca/username/rcg-website.git. You will have write access to your fork, but not to the main
 repository.
 
-Clone your folk to your computer:
+Clone your fork to your computer:
 
 ```sh
 >>> make sure you are not inside any Git repo
-git clone https://github.sfu.ca/<username>/rcg-website.git
+git clone https://github.sfu.ca/username/rcg-website.git
 cd rcg-website
 hugo serve   # assuming you have Hugo installed locally https://gohugo.io/installation
 ```
@@ -102,7 +103,7 @@ Add the website repository as an upstream:
 
 <!-- cd /path/to/rcg-website -->
 ```sh
-git remote -v    # shows only origin = your folk
+git remote -v    # shows only origin = your fork
 git remote add upstream https://github.sfu.ca/its/rcg-website
 git remote -v    # now shows both origin and upstream
 ```
@@ -113,7 +114,7 @@ consider these two options.
 
 ### Working from the main branch
 
-This is not a universally approved practice: it can break things for complex edits, and your folk's main
+This is not a universally approved practice: it can break things for complex edits, and your fork's main
 branch can diverge from the upstream if your PR is not approved right away and in its entirety, e.g. because
 of compatibility issues or other conflicts.
 
@@ -125,7 +126,7 @@ git push              # upload to origin
 
 - Open https://github.sfu.ca/its/rcg-website in your web browser
 - Pull requests | New pull request | compare across forks
-- Compare `base repository: its/rcg-website``base:main` to `<username>/rcg-website``compare:main`
+- Compare &nbsp; `base repository: its/rcg-website` `base:main` &nbsp; to &nbsp; `username/rcg-website` `compare:main`
 - Create pull request
 - Describe your changes
 
@@ -140,12 +141,12 @@ git push origin idea
 
 - Open https://github.sfu.ca/its/rcg-website in your web browser
 - Pull requests | New pull request | compare across forks
-- Compare `base repository: its/rcg-website``base:main` to `<username>/rcg-website``compare:idea`
+- Compare &nbsp; `base repository: its/rcg-website` `base:main` &nbsp; to &nbsp; `username/rcg-website` `compare:idea`
 - Create pull request
 - Describe your changes
 
 Back on your computer, at some point you want to merge `idea` into `main`. Rather than doing it locally, a
-good practice is to wait to your PR to be approved and then pull into your folk:
+good practice is to wait to your PR to be approved and then pull into your fork:
 
 ```sh
 git checkout main
