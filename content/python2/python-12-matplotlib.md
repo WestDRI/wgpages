@@ -336,10 +336,16 @@ ax.view_init(20, 30)
 surf = ax.plot_surface(x, y, z, facecolors=rgb, linewidth=0, antialiased=False, shade=False)
 ```
 
+{{< question num=11b >}}
+Create an animation in which you change the light source position.
+{{< /question >}}
+
 ## More examples
 
 For more 3D examples in matplotlib, click on any example in the
 {{<a "https://matplotlib.org/stable/gallery/mplot3d/index.html" "3D gallery">}} to see the code behind that
 plot. Try pasting it into your Jupyter notebook and running it, and try to modify the code.
+
+- {{<a "https://matplotlib.org/cheatsheets" "Matplotlib cheatsheets and handouts">}}
 
 <!-- {{<a "link" "text">}} -->
