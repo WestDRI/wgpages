@@ -14,11 +14,11 @@ katex = true
 ## Links
 
 - RCG website https://www.rcg.sfu.ca
-- Main repo https://github.sfu.ca/its/rcg-website
+  - main repo https://github.sfu.ca/its/rcg-website
+  - my fork https://github.sfu.ca/alexeir/rcg-website.git
 - Marie's excellent [Git course](https://mint.westdri.ca/git/top_intro)
 - [Some reading](https://devopscube.com/set-git-upstream-respository-branch) on the GitHub's pull requests
   workflow
-<!-- - my fork https://github.sfu.ca/alexeir/rcg-website.git -->
 
 ## Local Git primer
 
@@ -154,6 +154,8 @@ git pull upstream main
 >>> make sure your suggested edits have been merged
 git branch -d idea   # delete your local branch
 ```
+
+- Open https://github.sfu.ca/username/rcg-website/branches and delete `idea` branch
 
 ### Working directly on GitHub for small edits
 
