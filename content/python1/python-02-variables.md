@@ -44,7 +44,8 @@ initial = "right"
 With simple variables in Python, assigning `var2 = var1` will create a new object in memory `var2`. Here we have two
 distinct objects in memory: `initial` and `position`.
 
-> Note: With more complex objects, its name could be a pointer. E.g. when we study lists, we'll see that `initial` and
+> Note: With more complex (mutable) objects, its name could be a pointer. E.g. when we study lists, we'll see
+> that `initial` and
 > `new` below really point to the same list in memory:
 > ```
 > initial = [1,2,3]
@@ -62,10 +63,6 @@ element = 'helium'
 print(element[0])     # single character
 print(element[0:3])   # a substring
 ```
-
-{{< question num=2 >}}
-If you assign `a=123`, what happens if you try to get the second digit of `a`?
-{{< /question >}}
 
 * Python is case-sensitive
 * use meaningful variable names
@@ -89,3 +86,6 @@ print(1+'a')        # cannot add strings and numbers
 print(str(1)+'a')   # this works
 print(1+int('2'))   # this works
 ```
+
+{{< question num=2 >}} If you assign some arbitrary integer value to `a`, e.g. `a=123` or `a=87236`, write a
+code to get the second digit of `a`.  {{< /question >}}

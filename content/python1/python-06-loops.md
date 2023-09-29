@@ -47,7 +47,8 @@ Let's sum numbers 1 to 10:
 ```py
 total = 0
 for number in range(10):
-    total = total + (number + 1)   # what's the other way to sum numbers 1 to 10? how about range(1,11)?
+    total += (number + 1)   # 1. what's the other way to sum numbers 1 to 10? how about range(1,11)?
+	                        # 2. can you rewrite this entire code as a one-liner?
 print(total)
 ```
 

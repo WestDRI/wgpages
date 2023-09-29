@@ -35,14 +35,24 @@ else:
 Add an `elif` statement:
 
 ```py
-x = 5
-if x > 0:
-    print(x, 'is positive')
-elif x < 0:
-    print(x, 'is negative')
+year = 1500
+if year > 1450:
+    print('year', year, 'falls into the modern era')
+elif year > 476:
+    print('year', year, 'falls into the medieval era')
 else:
-    print(x, 'is zero')
+    print('year', year, 'falls into the classical antiquity period')
 ```
+
+<!-- ```py -->
+<!-- x = 5 -->
+<!-- if x > 0: -->
+<!--     print(x, 'is positive') -->
+<!-- elif x < 0: -->
+<!--     print(x, 'is negative') -->
+<!-- else: -->
+<!--     print(x, 'is zero') -->
+<!-- ``` -->
 
 What is the problem with the following code?
 
