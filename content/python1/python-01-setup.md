@@ -44,9 +44,28 @@ There are many ways to run Python commands:
 
 Today's options:
 
-1. **First option**: In the Bash course you used a remote cluster via SSH. You can run Python in the command
-   line inside an interactive job there (<u>important</u>: do not run Python on the login node). To do this,
-   log in to `oc.c3.ca` and start a serial interactive job:
+1. **Local option**: if you have Python + Jupyter installed locally on your computer, and you know what you
+are doing, you can start a Jupyter notebook locally in your browser by typing `jupyter notebook` or `jupyter
+lab` in your shell. For this to work, you will need to install `jupyter` or `jupyterlab` (see below).
+
+For the extended version of this workshop (covering Scientific Python) you will also need the following Python
+packages installed on your computer: `numpy`, `matplotlib`, `pandas`, `scikit-image`, `xarray`,
+`nc-time-axis`, `netcdf4`.
+
+Installing packages locally can be tricky -- details depend on the OS and your preferred Python installation
+method. For example, as of September 2023, if you are on a Mac and install Python via Homebrew, you will need
+to downgrade your `jupyterlab` to avoid a bug in Homebrew:
+
+```sh
+pip uninstall jupyterlab
+pip install jupyterlab==3.6.3
+jupyter lab build
+jupyter notebook   # or `jupyter lab`
+```
+
+2. **Remote option**: You can run Python in the command line inside an interactive job on our training cluster
+   (<u>important</u>: do not run Python on the login node). To do this, log in to `oc.c3.ca` via SSH and start
+   a serial interactive job:
 
 ```sh
 $ salloc --time=03:00:00 --mem=3600
@@ -63,14 +82,14 @@ Working in the terminal, you won't have access to all the bells and whistles of 
 to plot matplotlib graphics into remote PNG files and then download them to view locally on your computer. On the other
 hand, this option most closely resembles working in the terminal on a remote HPC cluster.
 
-2. **Second option** is the GUI version of the previous option: use JupyterHub on our training cluster. Point
+3. **Remote option** is the GUI version of the previous option: use JupyterHub on our training cluster. Point
    your browser to https://oc.c3.ca, log in with your username and password, then launch a JupyterHub
    server with time = ***4 hours***, **1 CPU core**, memory = ***3600 MB***, GPU configuration = ***None***,
    user interface = ***JupyterLab***. Finally, start a new Python 3 notebook.
-   
-![Submissions form](/img/jupyterlab.png)
 
-3. **Third option**: use syzygy.ca with one of the following accounts:
+{{< figure src="/img/jupyterlab.png" height=650 >}}
+
+4. **Community cloud option**: use syzygy.ca with one of the following accounts:
     - if you have a university computer ID &nbsp;&rarr;&nbsp; go to <a href="https://syzygy.ca"
       target="_blank">syzygy.ca</a>, under Launch select your institution, then log in with your university credentials
     - if you have a Google account &nbsp;&rarr;&nbsp; go to <a href="https://syzygy.ca" target="_blank">syzygy.ca</a>,
@@ -84,11 +103,6 @@ After you log in, start a new Python 3 notebook.
 
 Note that syzygy.ca is a free community service run on the Alliance cloud and used heavily for undergraduate
 teaching, with no uptime guarantees. In other words, it usually works, but it could be unstable or down.
-
-4. **Local option**, for more advanced users: if you have Python + Jupyter installed locally on your computer,
-and you know what you are doing, you can start a Jupyter notebook locally from your shell by typing `jupyter
-notebook`. If running locally, for this workshop you will need the following Python packages installed on your
-computer: numpy, matplotlib, pandas, scikit-image, xarray, nc-time-axis, netcdf4.
 
 <!-- cartopy -->
 

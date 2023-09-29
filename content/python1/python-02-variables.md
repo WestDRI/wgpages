@@ -8,8 +8,8 @@ weight = 2
 
 - Python is a dynamically typed language: all variables have types, but types can change on the fly
 - possible names for variables
-  - don't use built-in function names for variables, e.g. declaring `sum` will prevent you from using sum(), same for
-    `print`
+  - don't use built-in function names for variables, e.g. setting a `sum` variable will prevent you from using
+    the built-in `sum()` function
 - Python is case-sensitive
 
 ```py
