@@ -47,6 +47,10 @@ Today's options:
 1. **Local option**: if you have Python + Jupyter installed locally on your computer, and you know what you
 are doing, you can start a Jupyter notebook locally in your browser by typing `jupyter notebook` or `jupyter
 lab` in your shell. For this to work, you will need to install `jupyter` or `jupyterlab` (see below).
+    - **Local method 1**: (1) Install Python from https://www.python.org/downloads, (2) make sure to check the
+      option "Add Python to PATH" during the installation, (3) install Jupyter Notebook via the Command Prompt
+      `pip install jupyter`, and then (4) launch Jupyter Notebook via `jupyter notebook`.
+    - **Local method 2**: Install Python and the packages via Anaconda from https://www.anaconda.com/download.
 
 For the extended version of this workshop (covering Scientific Python) you will also need the following Python
 packages installed on your computer: `numpy`, `matplotlib`, `pandas`, `scikit-image`, `xarray`,
