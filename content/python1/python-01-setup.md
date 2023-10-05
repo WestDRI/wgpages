@@ -52,6 +52,8 @@ lab` in your shell. For this to work, you will need to install `jupyter` or `jup
       `pip install jupyter`, and then (4) launch Jupyter Notebook via `jupyter notebook`.
     - **Local method 2**: Install Python and the packages via Anaconda from https://www.anaconda.com/download.
 
+<!-- Windows installation details https://noteable.io/jupyter-notebook/install-jupyter-notebook/#install-win -->
+
 For the extended version of this workshop (covering Scientific Python) you will also need the following Python
 packages installed on your computer: `numpy`, `matplotlib`, `pandas`, `scikit-image`, `xarray`,
 `nc-time-axis`, `netcdf4`.

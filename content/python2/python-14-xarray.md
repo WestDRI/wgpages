@@ -117,7 +117,8 @@ data - data[0,:]      # use numpy broadcasting → subtract first row from all r
 ## Split your data into multiple independent groups
 
 ```py
-data.groupby("x")   # 3 groups with labels 10, 11, 12; each column becomes a group
+data.groupby("x")       # 3 groups with labels 10, 11, 12; each column becomes a group
+data.groupby("x")[10]   # specific group (first column)
 data.groupby("x").map(lambda v: v-v.min())   # apply separately to each group
             # from each column (fixed x) subtract the smallest value in that column
 ```
@@ -198,7 +199,7 @@ e.g. `pd.to_datetime("2020-09-10")` would produce a timestamp. To produce a time
 
 ```py
 import pandas as pd
-time = pd.date_range("2000-01-01", freq="D", periods=365*3+1)    # 2000-Jan to 2002-Dec (3 full years)
+time = pd.date_range("2000-01-01", freq="D", periods=365*3+1) # 2000-Jan-01 to 2002-Dec-31 (3 full years)
 time
 time.shape    # 1096 days
 time.month    # same length (1096), but each element is replaced by the month number

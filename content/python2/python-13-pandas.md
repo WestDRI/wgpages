@@ -333,7 +333,7 @@ def count(row):
     elif row['number'] % 5 == 0:
       return 'Buzz'
     else:
-      return row['number']
+      return str(row['number'])
 ```
 
 (1) We can apply this function to each row in a loop:
@@ -363,7 +363,7 @@ show(df)
 
 ```py
 %%timeit
-df['response'] = df['number']
+df['response'] = df['number'].astype(str)
 df.loc[df['number'] % 3==0, 'response'] = 'Fizz'
 df.loc[df['number'] % 5==0, 'response'] = 'Buzz'
 df.loc[(df['number'] % 3==0) & (df['number'] % 5==0), 'response'] = 'FizzBuzz'
@@ -385,7 +385,7 @@ show(df)
 
 ## Looping over data sets
 
-Let's say we want to read several files in data-python/. We can use **for** to loop through their list:
+Let's say we want to read several files in `data-python/`. We can use **for** to loop through their list:
 
 ```py
 for name in ['africa.csv', 'asia.csv']:

@@ -50,6 +50,16 @@ earth.mass = 5.972e27
 ```
 **Hint**: make it so that `Planet().radius` returns "nan" -- this can be set with `float('nan')`.
 
+<!-- ```py -->
+<!-- class Planet: -->
+<!--     # During initialization arguments will be in km and kg. -->
+<!--     # Internally we'll store all numbers in CGS units (cm and g). -->
+<!--     hostObject = "Sun"     # class attribute (the same value for every class instance) -->
+<!--     def __init__(self, radius=float('nan'), mass=float('nan')): -->
+<!--         self.radius = radius*1e5   # instance attribute, convert km -> cm -->
+<!--         self.mass = mass*1.e3      # instance attribute, convert kg->g -->
+<!-- ``` -->
+
 {{< /question >}}
 
 Let's add *inside our class* an instance method (with proper indentation):
