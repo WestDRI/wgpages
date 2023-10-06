@@ -3,8 +3,8 @@ title = "Introduction to Python"
 slug = "intropython"
 +++
 
-{{<cor>}}Friday, September 29th{{</cor>}}\
-{{<cgr>}}1:30pm - 3:00pm{{</cgr>}}
+{{<cor>}}Friday, October 6th{{</cor>}}\
+{{<cgr>}}1:00pm - 2:30pm{{</cgr>}}
 
 <!-- Course materials will be added here shortly before the start of the course. -->
 
@@ -35,8 +35,8 @@ functions, lists, dictionaries).
 
 
 
-{{<cor>}}Interactive session{{</cor>}} \
-{{<cgr>}}10:00am-noon Pacific{{</cgr>}}
+{{<cor>}}Interactive session{{</cor>}}
+<!-- {{<cgr>}}10:00am-noon Pacific{{</cgr>}} -->
 
 {{<linktitle url="../python1/python-01-setup" text="Setup and running Jupyter notebooks">}} \
 {{<linktitle url="../python1/python-02-variables" text="Variables and data types">}} \
