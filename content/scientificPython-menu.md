@@ -3,13 +3,13 @@ title = "Scientific Python"
 slug = "scientificpython"
 +++
 
-{{<cor>}}Thursdays, September 28th and October 5th{{</cor>}}\
-{{<cgr>}}10:00am-noon Pacific Time{{</cgr>}}
+{{<cor>}}Friday, October 20th{{</cor>}}\
+{{<cgr>}}1:30pm-3:00pm Pacific Time{{</cgr>}}
 
 <!-- Course materials will be added here shortly before the start of the course. -->
 
-Register for this course
-{{<a "https://docs.google.com/forms/d/e/1FAIpQLSc5u2bwaPWW53D9kijqQxyqRSoFqUTx55iWjPJpzjMFAR3Dag/viewform" "here">}}.
+<!-- Register for this course -->
+<!-- {{<a "https://docs.google.com/forms/d/e/1FAIpQLSc5u2bwaPWW53D9kijqQxyqRSoFqUTx55iWjPJpzjMFAR3Dag/viewform" "here">}}. -->
 
 ---
 
