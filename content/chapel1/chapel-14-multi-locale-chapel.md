@@ -106,7 +106,8 @@ Let us test our multi-locale Chapel environment by launching the following code:
 writeln(Locales);
 ```
 ```sh
-$ source /home/razoumov/shared/syncHPC/startMultiLocale.sh   # on the training cluster
+$ source /project/def-sponsor00/shared/syncHPC/startMultiLocale.sh   # on the training cluster
+$ # module load chapel-ofi/1.31.0   # on Cedar; may or may not work on the training cluster
 $ chpl test.chpl -o test
 $ sbatch distributed.sh
 $ cat solution.out
@@ -161,14 +162,14 @@ We can print few other attributes of each locale. Here it is actually useful to 
 `for` so that the print statements appear in order:
 
 ```chpl
-use Memory.Diagnostics;
+use MemDiagnostics;
 for loc in Locales do
   on loc {
 	writeln("locale #", here.id, "...");
 	writeln("  ...is named: ", here.name);
 	writeln("  ...has ", here.numPUs(), " processor cores");
 	writeln("  ...has ", here.physicalMemory(unit=MemUnits.GB, retType=real), " GB of memory");
-	writeln("  ...has ", here.maxTaskPar, " maximum parallelism");
+	writeln("  ...has ", here.maxTaskPar, " maximum parallelism to expect");
   }
 ```
 ```sh

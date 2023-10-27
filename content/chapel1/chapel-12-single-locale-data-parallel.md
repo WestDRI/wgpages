@@ -60,7 +60,7 @@ If we have not done so, let's write a script `shared.sh` for submitting single-l
 ```
 
 ```sh
-$ source /home/razoumov/shared/syncHPC/startMultiLocale.sh   # on the training cluster
+$ source /project/def-sponsor00/shared/syncHPC/startSingleLocale.sh   # on the training cluster
 $ chpl forall.chpl -o forall
 $ sbatch shared.sh
 $ cat solution.out

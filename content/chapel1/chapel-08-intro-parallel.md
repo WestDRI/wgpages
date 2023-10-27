@@ -86,7 +86,7 @@ Make sure you have loaded the single-locale Chapel environment:
 <!-- ``` -->
 
 ```sh
-source /home/razoumov/shared/syncHPC/startSingleLocale.sh
+source /project/def-sponsor00/shared/syncHPC/startSingleLocale.sh
 ```
 
 In this lesson, we'll be running on several cores on one node with a script `shared.sh`:

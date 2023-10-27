@@ -53,35 +53,14 @@ participants. No need to install Chapel on your computer.
 
 
 
-<!-- <\!-- {{<cor>}}Zoom{{</cor>}} {{<s>}} {{<cgr>}}Week 1{{</cgr>}}\ -\-> -->
-<!-- <\!-- {{<cor>}}Zoom{{</cor>}} {{<s>}} {{<cgr>}}Week 2{{</cgr>}}\ -\-> -->
-<!-- <\!-- {{<cor>}}Zoom{{</cor>}} {{<s>}} {{<cgr>}}Day 3: March-11 9:30am-12:30pm Pacific time{{</cgr>}}\ -\-> -->
-
-<!-- {{<cor>}}Zoom{{</cor>}} {{<s>}} {{<cgr>}}Week 1{{</cgr>}} \ -->
-<!-- {{<linktitle url="../chapel202203/chapel-01-base" text="Basic language features">}} \ -->
-<!-- {{<linktitle url="../chapel202203/chapel-02-task-parallelism" text="Task parallelism">}} \ -->
-<!-- {{<linktitle url="../chapel202203/chapel-03-domain-parallelism" text="Data parallelism">}} -->
-
-<!-- <\!-- {{<nolinktitle>}}Basic language features{{</nolinktitle>}} -\-> -->
-<!-- <\!-- {{<nolinktitle>}}Task parallelism{{</nolinktitle>}} -\-> -->
-<!-- <\!-- {{<nolinktitle>}}Data parallelism{{</nolinktitle>}} -\-> -->
-
-
-
-
-
-
-
 
 <!-- {{<nolinktitle>}}Introduction to Chapel{{</nolinktitle>}} \ -->
 <!-- {{<nolinktitle>}}Basic syntax and variables{{</nolinktitle>}} \ -->
 <!-- {{<nolinktitle>}}Ranges and arrays{{</nolinktitle>}} \ -->
 <!-- {{<nolinktitle>}}Conditional statements{{</nolinktitle>}} \ -->
 <!-- {{<nolinktitle>}}Getting started with loops{{</nolinktitle>}} \ -->
+<!-- {{<nolinktitle>}}Using command-line arguments{{</nolinktitle>}} \ -->
 <!-- {{<nolinktitle>}}Measuring code performance{{</nolinktitle>}} \ -->
-<!-- {{<nolinktitle>}}Intro to parallel computing{{</nolinktitle>}} \ -->
-<!-- {{<nolinktitle>}}Fire-and-forget tasks{{</nolinktitle>}} \ -->
-<!-- {{<nolinktitle>}}Synchronization of threads{{</nolinktitle>}} -->
 
 {{<cor>}}Part 1: basic language features{{</cor>}} {{<s>}} {{<cgr>}}{{</cgr>}} \
 {{<linktitle url="../chapel1/chapel-01-intro" text="Introduction to Chapel">}} \
@@ -92,17 +71,22 @@ participants. No need to install Chapel on your computer.
 {{<linktitle url="../chapel1/chapel-06-command-line-arguments" text="Using command-line arguments">}} \
 {{<linktitle url="../chapel1/chapel-07-timing" text="Measuring code performance">}}
 
+<!-- {{<nolinktitle>}}Intro to parallel computing{{</nolinktitle>}} \ -->
+<!-- {{<nolinktitle>}}Fire-and-forget tasks{{</nolinktitle>}} \ -->
+<!-- {{<nolinktitle>}}Synchronization of threads{{</nolinktitle>}} -->
+<!-- {{<nolinktitle>}}Task-parallelizing the heat transfer solver{{</nolinktitle>}} \ -->
+
 {{<cor>}}Part 2: task parallelism{{</cor>}} {{<s>}} {{<cgr>}}{{</cgr>}} \
 {{<linktitle url="../chapel1/chapel-08-intro-parallel" text="Intro to parallel computing">}} \
 {{<linktitle url="../chapel1/chapel-09-fire-and-forget-tasks" text="Fire-and-forget tasks">}} \
 {{<linktitle url="../chapel1/chapel-10-synchronising-threads" text="Synchronization of threads">}} \
 {{<linktitle url="../chapel1/chapel-11-task-parallel-heat-transfer" text="Task-parallelizing the heat transfer solver">}}
 
-<!-- {{<nolinktitle>}}Task-parallelizing the heat transfer solver{{</nolinktitle>}} \ -->
 <!-- {{<nolinktitle>}}Single-locale data parallelism{{</nolinktitle>}} \ -->
 <!-- {{<nolinktitle>}}Parallelizing the Julia set problem{{</nolinktitle>}} \ -->
 <!-- {{<nolinktitle>}}Multi-locale Chapel{{</nolinktitle>}} \ -->
 <!-- {{<nolinktitle>}}Domains and data parallelism{{</nolinktitle>}} -->
+<!-- {{<nolinktitle>}}Heat transfer solver on distributed domains{{</nolinktitle>}} -->
 
 {{<cor>}}Part 3: data parallelism{{</cor>}} {{<s>}} {{<cgr>}}{{</cgr>}} \
 {{<linktitle url="../chapel1/chapel-12-single-locale-data-parallel" text="Single-locale data parallelism">}} \
@@ -110,6 +94,7 @@ participants. No need to install Chapel on your computer.
 {{<linktitle url="../chapel1/chapel-14-multi-locale-chapel" text="Multi-locale Chapel">}} \
 {{<linktitle url="../chapel1/chapel-15-domains-and-data-parallel" text="Domains and data parallelism">}} \
 {{<linktitle url="../chapel1/chapel-16-distributed-heat-transfer" text="Heat transfer solver on distributed domains">}}
+
 
 
 
@@ -125,6 +110,7 @@ You can find the solutions [here](../../solutions-chapel).
 
 - {{<a "https://chapel-lang.org" "Chapel homepage">}}
 - {{<a "https://developer.hpe.com/platform/chapel/home" "What is Chapel?">}} (HPE Developer Portal)
+- [2023 Introducing Chapel slides](https://chapel-lang.org/presentations/ChapelForLinuxCon-presented.pdf) (PDF)
 - {{<a "https://chapel-for-python-programmers.readthedocs.io/basics.html" "Getting started guide for Python programmers">}}
 - {{<a "https://learnxinyminutes.com/docs/chapel" "Learn X=Chapel in Y minutes">}}
 - {{<a "https://stackoverflow.com/questions/tagged/chapel" "Chapel on StackOverflow">}}

@@ -17,24 +17,29 @@ katex = true
 <!-- - library of standard domain maps provided by chapel -->
 <!-- - users can write their own domain maps -->
 
-## Language for parallel computing on large-scale systems
+## Chapel: a language for parallel computing on large-scale systems
 
-- Chapel is a modern, **open-source parallel programming language** developed at _Cray Inc._ (acquired by
-  Hewlett Packard Enterprise in 2019).
-- Chapel offers simplicity and readability of scripting languages such as Python or Matlab: "Python for
-  parallel programming".
-- Chapel is a compiled language $\Rightarrow$ provides the **speed and performance** of Fortran and C.
-- Chapel supports high-level abstractions for data distribution and **data parallel processing**, and for
-  **task parallelism**.
-- Chapel provides optimization for **data-driven placement of computations**.
+- Modern, **open-source parallel programming language** developed at _Cray Inc._ (acquired by Hewlett Packard
+  Enterprise in 2019).
+- Offers simplicity and readability of scripting languages such as Python or Matlab: "Python for parallel
+  programming".
+- Compiled language $\Rightarrow$ provides the **speed and performance** of Fortran and C.
+- Supports high-level abstractions for data distribution and **data parallel processing**, and for **task
+  parallelism**.
+- Based on the **PGAS** (Partitioned Global Address space) programming model: can access variables in global
+  address space from each node, a lot of behind-the-scenes work to reduce/buffer remote memory access.
+- Provides **data-driven placement of computations**.
   <!-- - allow users to express parallel computations in a natural, almost intuitive, manner -->
-- Chapel was designed around a **multi-resolution** philosophy: users can incrementally add more detail to
-  their original code, to bring it as close to the machine as required, at the same time they can achieve
-  anything you can normally do with MPI and OpenMP.
+- Designed around a **multi-resolution** philosophy: users can incrementally add more detail to their original
+  code, to bring it as close to the machine as required, at the same time they can achieve anything you can
+  normally do with MPI and OpenMP.
+
+
+
 
 <!-- - has its source code stored in text files with the extension `.chpl` -->
 
-The Chapel community is fairly small: too few people know/use Chapel &nbsp;⇄&nbsp; relatively few
+The Chapel community is fairly small: relatively few people know/use Chapel &nbsp;⇄&nbsp; too few
 libraries. However, you can use functions/libraries written in other languages:
 
 1. Direct calls will always be serial.
@@ -87,21 +92,36 @@ $ ./test -nl 8
 
 You can find more information at https://chapel-lang.org/install-docker.html
 
+## Running single-locale Chapel in MacOS
+
+You can compile and run Chapel codes in MacOS. Multi-locale codes (e.g. containing distributed arrays) will
+compile but will run only as single-locale.
+
+```sh
+brew install chapel
+```
+
 ## Running Chapel codes on the training cluster
 
 {{<note>}} Now we will distribute the usernames and passwords. Once you have these, log in to the training
 cluster and (1) try loading single-locale Chapel and compiling a simple code, (2) write a makefile for
 compiling Chapel codes, and (3) submit a serial job script to run Chapel on a compute node. {{</note>}}
 
-Our Chapel setup on the training cluster is different from the production clusters. On the training cluster,
-you can start single-locale Chapel with:
+Depending on where our training cluster is deployed, its Chapel setup might (or not) be different from the
+production clusters. On the training cluster, you can start single-locale Chapel with either
 
 <!-- ```sh -->
 <!-- $ module load arch/avx2 gcc/9.3.0 chapel-multicore -->
 <!-- ``` -->
 
 ```sh
-source /home/razoumov/shared/syncHPC/startSingleLocale.sh
+module load gcc/9.3.0 chapel-multicore/1.31.0
+```
+
+or
+
+```sh
+source /project/def-sponsor00/shared/syncHPC/startSingleLocale.sh
 ```
 
 Let's write a simple Chapel code, compile and run it:
