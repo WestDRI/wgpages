@@ -115,7 +115,8 @@ production clusters. On the training cluster, you can start single-locale Chapel
 <!-- ``` -->
 
 ```sh
-module load gcc/9.3.0 chapel-multicore/1.31.0
+$ module load arch/avx2   # not necessary, unless you land on an avx512 node
+$ module load gcc/9.3.0 chapel-multicore
 ```
 
 or
@@ -148,10 +149,10 @@ for the given architecture.
 <!-- offered by Chapel. -->
 
 Depending on the code, it might utilize one / several / all cores on the current node. The command above
-implies that you are allowed to utilize all cores. This might not be the case on an HPC cluster, where a
-login node is shared by many people at the same time, and where it might not be a good idea to occupy all
-cores on a login node with CPU-intensive tasks. Therefore, we'll be running test Chapel codes inside
-submitted jobs on compute nodes.
+implies that you are allowed to utilize all cores. This might not be the case on an HPC cluster, where a login
+node is shared by many people at the same time, and where it might not be a good idea to occupy all cores on a
+login node with CPU-intensive tasks. Therefore, we'll be running test Chapel codes inside submitted jobs on
+compute nodes.
 
 Let's write the job script `serial.sh`:
 
@@ -183,7 +184,7 @@ $ salloc --time=3:0:0 --mem-per-cpu=1000
 <!-- - 8 compute nodes with 16 "c"-type cores and 60GB memory each, for the total of 128 cores. -->
 
 {{<note>}}
-Even though each node effectively has 3.75GB of memory, we highly recommend to use `--mem-per-cpu=1000` (and
+Even though each node effectively has 3GB of memory, we highly recommend to use `--mem-per-cpu=1000` (and
 not more) throughout this workshop. Some memory is being used for the operating system, drivers, system
 utilities, MPI buffers and the like. Unfortunately, unlike the production clusters, the training cluster does
 not have safeguards when its nodes run out of memory, shutting down some system utilities and leading to

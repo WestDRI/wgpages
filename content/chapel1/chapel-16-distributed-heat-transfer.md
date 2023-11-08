@@ -300,7 +300,7 @@ for i in 1..rows do T[i,cols+1] = 80.0*i/rows;   // right-side boundary
 for j in 1..cols do T[rows+1,j] = 80.0*j/cols;   // bottom-side boundary
 writeln('Temperature at iteration ', 0, ': ', T[iout,jout]);
 delta = tolerance*10;   // some safe initial large value
-var watch: Timer;
+var watch: stopwatch;
 watch.start();
 while (count < niter && delta >= tolerance) do {
   count += 1;

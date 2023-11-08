@@ -60,7 +60,8 @@ If we have not done so, let's write a script `shared.sh` for submitting single-l
 ```
 
 ```sh
-$ source /project/def-sponsor00/shared/syncHPC/startSingleLocale.sh   # on the training cluster
+$ module load arch/avx2   # not necessary, unless you land on an avx512 node
+$ module load gcc/9.3.0 chapel-multicore
 $ chpl forall.chpl -o forall
 $ sbatch shared.sh
 $ cat solution.out

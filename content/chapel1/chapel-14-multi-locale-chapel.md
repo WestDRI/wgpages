@@ -106,8 +106,8 @@ Let us test our multi-locale Chapel environment by launching the following code:
 writeln(Locales);
 ```
 ```sh
-$ source /project/def-sponsor00/shared/syncHPC/startMultiLocale.sh   # on the training cluster
-$ # module load chapel-ofi/1.31.0   # on Cedar; may or may not work on the training cluster
+$ module load arch/avx2   # not necessary, unless you land on an avx512 node
+$ module load gcc/9.3.0 chapel-ofi/1.31.0
 $ chpl test.chpl -o test
 $ sbatch distributed.sh
 $ cat solution.out

@@ -41,12 +41,12 @@ need. This process is called **_instrumentation of the code_**.
 An easy way to instrument our code with Chapel is by using the module `Time`. **_Modules_** in Chapel are
 libraries of useful functions and methods that can be used in our code once the module is loaded. To load
 a module we use the keyword `use` followed by the name of the module. Once the Time module is loaded we
-can create a variable of the type `Timer`, and use the methods `start`, `stop`and `elapsed` to instrument
+can create a variable of the type `stopwatch`, and use the methods `start`, `stop`and `elapsed` to instrument
 our code.
 
 ```chpl
 use Time;
-var watch: Timer;
+var watch: stopwatch;
 watch.start();
 while (count < niter && delta >= tolerance) do {
   ...

@@ -48,7 +48,7 @@ proc pixel(z0) {
 }
 
 const height, width = 2_000;   // 2000^2 image
-var point: complex, y: real, watch: Timer;
+var point: complex, y: real, watch: stopwatch;
 
 writeln("Computing Julia set ...");
 var stability: [1..height,1..width] c_int;
@@ -80,8 +80,8 @@ proc cdfError(e) {
 var ncid, xDimID, yDimID, varID: c_int;
 var dimIDs: [0..1] c_int;   // two elements
 cdfError(nc_create("test.nc", NC_NETCDF4, ncid));       // const NC_NETCDF4 => file in netCDF-4 standard
-cdfError(nc_def_dim(ncid, "x", width: size_t, xDimID)); // define the dimensions
-cdfError(nc_def_dim(ncid, "y", height: size_t, yDimID));
+cdfError(nc_def_dim(ncid, "x", width, xDimID)); // define the dimensions
+cdfError(nc_def_dim(ncid, "y", height, yDimID));
 dimIDs = [xDimID, yDimID];                              // set up dimension IDs array
 cdfError(nc_def_var(ncid, "stability", NC_INT, 2, dimIDs[0], varID));   // define the 2D data variable
 cdfError(nc_def_var_deflate(ncid, varID, NC_SHUFFLE, deflate=1, deflate_level=9)); // compress 0=no 9=max

@@ -110,7 +110,7 @@ You can find the solutions [here](../../solutions-chapel).
 
 - {{<a "https://chapel-lang.org" "Chapel homepage">}}
 - {{<a "https://developer.hpe.com/platform/chapel/home" "What is Chapel?">}} (HPE Developer Portal)
-- [2023 Introducing Chapel slides](https://chapel-lang.org/presentations/ChapelForLinuxCon-presented.pdf) (PDF)
+- LinuxCon 2023 [Introducing Chapel slides](https://chapel-lang.org/presentations/ChapelForLinuxCon-presented.pdf) (PDF)
 - {{<a "https://chapel-for-python-programmers.readthedocs.io/basics.html" "Getting started guide for Python programmers">}}
 - {{<a "https://learnxinyminutes.com/docs/chapel" "Learn X=Chapel in Y minutes">}}
 - {{<a "https://stackoverflow.com/questions/tagged/chapel" "Chapel on StackOverflow">}}

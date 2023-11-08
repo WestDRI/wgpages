@@ -81,13 +81,14 @@ scenario.
 
 Make sure you have loaded the single-locale Chapel environment:
 
-<!-- ```sh -->
-<!-- $ module load arch/avx2 gcc/9.3.0 chapel-multicore -->
-<!-- ``` -->
-
 ```sh
-source /project/def-sponsor00/shared/syncHPC/startSingleLocale.sh
+$ module load arch/avx2   # not necessary, unless you land on an avx512 node
+$ module load gcc/9.3.0 chapel-multicore
 ```
+
+<!-- ```sh -->
+<!-- source /project/def-sponsor00/shared/syncHPC/startSingleLocale.sh -->
+<!-- ``` -->
 
 In this lesson, we'll be running on several cores on one node with a script `shared.sh`:
 
