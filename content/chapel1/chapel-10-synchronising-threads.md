@@ -105,8 +105,8 @@ var x: sync int;
 writeln('this is the main thread launching a new thread');
 begin {
   for i in 1..10 do
-	writeln('this is the new thread working: ', i);
-	x.writeEF(2);   // write the value, state changes from Empty to Full
+    writeln('this is the new thread working: ', i);
+  x.writeEF(2);   // write the value, state changes from Empty to Full
   writeln('New thread finished');
 }
 writeln('this is the main thread after launching new thread ... I will wait until x is full');
