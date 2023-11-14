@@ -3,7 +3,7 @@ title = "Intro to high-performance computing (HPC)"
 slug = "introhpc"
 +++
 
-{{<cor>}}Monday, June 19th{{</cor>}}\
+<!-- {{<cor>}}Monday, June 19th{{</cor>}}\ -->
 {{<cgr>}}9:00am–5:00pm Pacific Time{{</cgr>}}
 
 <!-- Course materials will be added here shortly before the start of the course. -->
