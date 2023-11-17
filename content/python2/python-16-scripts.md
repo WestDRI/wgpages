@@ -1,7 +1,7 @@
 +++
 title = "Python scripts from the command line"
 slug = "python-16-scripts"
-weight = 16
+weight = 7
 +++
 
 In this lesson we'll work with bash command line, instead of the Jupyter notebook. We want to write a python

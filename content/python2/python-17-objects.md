@@ -1,7 +1,7 @@
 +++
 title = "Basics of object-oriented programming"
 slug = "python-17-objects"
-weight = 17
+weight = 8
 +++
 
 <!-- Most notably, climate scientists have a very good handle on structured/procedural programming concepts, but generally -->

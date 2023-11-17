@@ -1,7 +1,7 @@
 +++
 title = "Multi-D arrays and datasets with xarray"
 slug = "python-14-xarray"
-weight = 14
+weight = 5
 +++
 
 Xarray library is built on top of numpy and pandas, and it brings the power of pandas to multidimensional arrays. There

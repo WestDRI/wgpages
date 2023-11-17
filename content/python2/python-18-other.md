@@ -1,7 +1,7 @@
 +++
 title = "Other topics"
 slug = "python-18-other"
-weight = 18
+weight = 9
 +++
 
 # Caching function calls ("memoization")

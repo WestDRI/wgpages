@@ -39,7 +39,7 @@ functions, lists, dictionaries).
 <!-- {{<cgr>}}10:00am-noon Pacific{{</cgr>}} -->
 
 
-{{<cor>}}Zoom session{{</cor>}}
+{{<cor>}}Interactive session {{</cor>}}
 
 
 

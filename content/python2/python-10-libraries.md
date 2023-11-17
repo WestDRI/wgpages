@@ -1,7 +1,7 @@
 +++
 title = "Libraries"
 slug = "python-10-libraries"
-weight = 10
+weight = 1
 +++
 
 <!-- <u>For Day 2</u>, we will switch to running inside Jupyter Notebook -- please see option 2 in -->

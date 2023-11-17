@@ -1,7 +1,7 @@
 +++
 title = "Numpy"
 slug = "python-11-numpy"
-weight = 11
+weight = 2
 +++
 
 As you saw before, Python is not statically typed, i.e. variables can change their type on the fly:

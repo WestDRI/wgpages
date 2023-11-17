@@ -1,7 +1,7 @@
 +++
 title = "Plotting with matplotlib"
 slug = "python-12-matplotlib"
-weight = 12
+weight = 3
 +++
 
 > Quick reminder that today we are running
@@ -310,6 +310,118 @@ And then we can create a movie in bash:
 ```sh
 ffmpeg -r 30 -i frame%04d.png -c:v libx264 -pix_fmt yuv420p -vf "scale=trunc(iw/2)*2:trunc(ih/2)*2" spin.mp4
 ```
+
+## Matplotlib's built-in animation
+
+Matplotlib can do live animation with one of its Animation classes:
+
+#### FuncAnimation class
+
+`FuncAnimation` creates an animation by repeatedly calling a function.
+
+```py
+import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib import animation
+
+fig = plt.figure(figsize=(8,5))
+ax = plt.subplot(111)
+
+ax.set_xlim(( 0, 2))            
+ax.set_ylim((-2, 2))
+ax.set_xlabel('time')
+ax.set_ylabel('magnitude')
+
+# create an empty title and 2 empty plots
+title = ax.set_title('')
+line1 = ax.plot([], [], 'b', lw=1)[0]   # `ax.plot` returns a list of 2D line objects
+line2 = ax.plot([], [], 'r', lw=2)[0]
+
+ax.legend(['sin','cos'])
+
+def drawframe(j):
+    x = np.linspace(0, 2, 100)
+    y1 = np.sin(2 * np.pi * (x-0.01*j))
+    y2 = np.cos(2 * np.pi * (x-0.01*j))
+    line1.set_data(x, y1)
+    line2.set_data(x, y2)
+    title.set_text('frame = {0:4d}'.format(j))
+    return (line1,line2)
+
+# blit=True re-draws only the parts that have changed, update every 20ms, calls drawframe() with j=0..99
+anim = animation.FuncAnimation(fig, drawframe, frames=100, interval=20, blit=True)
+
+# ---
+
+# Output option 1: Python shell, open a new window
+plt.show()
+
+# Output option 2: Jupyter notebook
+from IPython.display import HTML
+HTML(anim.to_html5_video())
+
+# Output option 3: save to a file
+anim.save("twoLines.mp4")
+
+# Output option 4: save to a file, more granular control
+writer = animation.FFMpegWriter(fps=15, metadata=dict(artist='Me'), bitrate=1800)
+anim.save("twoLines.mp4", writer=writer)
+```
+
+#### ArtistAnimation class
+	
+`ArtistAnimation` creates an animation by using a fixed set of Artist objects.
+
+```py
+import matplotlib.pyplot as plt
+import numpy as np
+from matplotlib import animation
+
+fig, ax = plt.subplots()
+
+def f(x, y):
+    return np.sin(x) + np.cos(y)
+
+x = np.linspace(0, 2 * np.pi, 120)
+y = np.linspace(0, 2 * np.pi, 100).reshape(-1, 1)
+
+ims = []   # list of rows, each row is a list of artists (images) to draw in the current frame
+for i in range(60):
+    x += np.pi / 15
+    y += np.pi / 30
+    im = ax.imshow(f(x, y), animated=True)
+    if i == 0:
+        ax.imshow(f(x, y))  # show an initial one first
+    ims.append([im])
+
+# blit=True re-draws only the parts that have changed, update every 50ms
+anim = animation.ArtistAnimation(fig, ims, interval=50, blit=True)
+
+# ---
+
+# Output option 1: Python shell, open a new window
+plt.show()
+
+# Output option 2: Jupyter notebook
+from IPython.display import HTML
+HTML(anim.to_html5_video())
+
+# Output option 3: save to a file
+anim.save("movingPlane.mp4")
+
+# Output option 4: save to a file, more granular control
+writer = animation.FFMpegWriter(fps=15, metadata=dict(artist='Me'), bitrate=1800)
+anim.save("movingPlane.mp4", writer=writer)
+
+```
+
+
+
+
+
+
+
+
 
 ## 3D parametric plot
 

@@ -1,7 +1,7 @@
 +++
 title = "Pandas dataframes"
 slug = "python-13-pandas"
-weight = 13
+weight = 4
 +++
 
 ## Reading tabular data into dataframes
