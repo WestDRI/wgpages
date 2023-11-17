@@ -4,11 +4,11 @@ slug = "python-12-matplotlib"
 weight = 3
 +++
 
-> Quick reminder that today we are running
-> Python via JupyterHub on our training cluster. Point your browser to https://oc.c3.ca, log in with
-> your username and password from last week, then launch a JupyterHub server with time = ***3 hours***, **1 CPU core**,
-> memory = ***3600 MB***, GPU configuration = ***None***, user interface = ***JupyterLab***. Finally, start a
-> new Python 3 notebook.
+<!-- > Quick reminder that today we are running -->
+<!-- > Python via JupyterHub on our training cluster. Point your browser to https://oc.c3.ca, log in with -->
+<!-- > your username and password from last week, then launch a JupyterHub server with time = ***3 hours***, **1 CPU core**, -->
+<!-- > memory = ***3600 MB***, GPU configuration = ***None***, user interface = ***JupyterLab***. Finally, start a -->
+<!-- > new Python 3 notebook. -->
 
 There are hundreds of Python visualization packages. Check out this {{<a
 "https://raw.githubusercontent.com/rougier/python-visualization-landscape/master/landscape-colors.png"
@@ -18,11 +18,12 @@ packages at the time (and only barely mentions 3D sci-vis packages). For 3D exam
 
 - {{<a "https://matplotlib.org" "Matplotlib">}} - plotting into static images
 - {{<a "https://plotly.com/python" "Plotly">}} - plotting into interactive HTML5
+- {{<a "https://demo.bokeh.org" "Bokeh">}} - also plotting into interactive HTML5
 - {{<a "https://plotnine.readthedocs.io" "plotnine">}} - Python clone of R's ggplot2 (based on the "Grammar of
   Graphics")
 
 One of the most widely used Python plotting libraries is matplotlib. Matplotlib is open source and produces
-static images.
+static images (and non-interactive animations).
 
 ## Simple line/scatter plots
 
