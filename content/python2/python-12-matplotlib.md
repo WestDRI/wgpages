@@ -37,8 +37,8 @@ y = sin(1/x)
 plt.plot(x, y, 'bo-')
 plt.xlabel('x', fontsize=18)
 plt.ylabel('f(x)', fontsize=18)
- # plt.show()       # not needed inside the Jupyter notebook
- # plt.savefig('tmp.png')
+# plt.show()       # not needed inside the Jupyter notebook
+# plt.savefig('tmp.png')
 ```
 
 {{< figure src="/img/styles.png" height=350 >}}
@@ -347,7 +347,7 @@ def drawframe(j):
     line1.set_data(x, y1)
     line2.set_data(x, y2)
     title.set_text('frame = {0:4d}'.format(j))
-    return (line1,line2)
+    return (line1,line2,title)   # the animation function must return a sequence of Artist objects
 
 # blit=True re-draws only the parts that have changed, update every 20ms, calls drawframe() with j=0..99
 anim = animation.FuncAnimation(fig, drawframe, frames=100, interval=20, blit=True)
