@@ -1,6 +1,6 @@
 +++
 title = "Grep and find"
-slug = "../bash23/bash-09-grep-find"
+slug = "../bash/bash-09-grep-find"
 weight = 9
 +++
 

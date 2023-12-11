@@ -1,10 +1,11 @@
 +++
 title = "Introduction to Bash command line"
-slug = "bash-in-summer"
+slug = "bash"
+aliases = ["bash-in-summer", "bash-in-february"]
 +++
 
-{{<cor>}}Monday, June 19th{{</cor>}}\
-{{<cgr>}}9:00am-noon Pacific Time{{</cgr>}}
+{{<cor>}}December 14th and 21st{{</cor>}}\
+{{<cgr>}}10:00am-noon Pacific Time{{</cgr>}}
 
 <!-- Course materials will be added here shortly before the start of the course. -->
 
@@ -25,12 +26,12 @@ to participate in the course exercises. On Windows we recommend {{<a
 computers SSH is usually pre-installed (try typing `ssh` in a terminal to make sure it is there).
 
 {{<cor>}}Part 1{{</cor>}} \
-{{<linktitle url="../bash23/bash-01-intro" text="Introduction">}} \
-{{<linktitle url="../bash23/bash-02-filesystem" text="Navigating the filesystem">}} \
-{{<linktitle url="../bash23/bash-03-creating-moving-copying" text="Creating, moving and copying things">}} \
-{{<linktitle url="../bash23/bash-04-tar-gzip" text="Archives and compression">}} \
-{{<linktitle url="../bash23/bash-05-file-transfer" text="Transferring files to/from remote computers">}} \
-{{<linktitle url="../bash23/bash-06-wildcards-redirection-pipes" text="Wildcards, redirection, pipes, and aliases">}}
+{{<linktitle url="../bash/bash-01-intro" text="Introduction">}} \
+{{<linktitle url="../bash/bash-02-filesystem" text="Navigating the filesystem">}} \
+{{<linktitle url="../bash/bash-03-creating-moving-copying" text="Creating, moving and copying things">}} \
+{{<linktitle url="../bash/bash-04-tar-gzip" text="Archives and compression">}} \
+{{<linktitle url="../bash/bash-05-file-transfer" text="Transferring files to/from remote computers">}} \
+{{<linktitle url="../bash/bash-06-wildcards-redirection-pipes" text="Wildcards, redirection, pipes, and aliases">}}
 
 <!-- {{<nolinktitle>}}Introduction{{</nolinktitle>}} \ -->
 <!-- {{<nolinktitle>}}Navigating the filesystem{{</nolinktitle>}} \ -->
@@ -40,11 +41,11 @@ computers SSH is usually pre-installed (try typing `ssh` in a terminal to make s
 <!-- {{<nolinktitle>}}Wildcards, redirection, pipes, and aliases{{</nolinktitle>}} -->
 
 {{<cor>}}Part 2{{</cor>}} \
-{{<linktitle url="../bash23/bash-07-loops" text="Loops">}} \
-{{<linktitle url="../bash23/bash-08-scripts-functions" text="Bash scripts and functions, and variables">}} \
-{{<linktitle url="../bash23/bash-09-grep-find" text="Finding things with `grep` and `find`">}} \
-{{<linktitle url="../bash23/bash-10-text-manipulation" text="Text manipulation">}} \
-{{<nolinktitle>}}Advanced tools{{</nolinktitle>}}
+{{<linktitle url="../bash/bash-07-loops" text="Loops">}} \
+{{<linktitle url="../bash/bash-08-scripts-functions" text="Bash scripts and functions, and variables">}} \
+{{<linktitle url="../bash/bash-09-grep-find" text="Finding things with `grep` and `find`">}} \
+{{<linktitle url="../bash/bash-10-text-manipulation" text="Text manipulation">}} \
+{{<linktitle url="../bash/bash-11-other" text="Other topics">}}
 
 <!-- {{<cor>}}Zoom: afternoon session (Marie){{</cor>}} \ -->
 <!-- {{<cgr>}}1:30pm-4:30pm Pacific{{</cgr>}} \ -->

@@ -1,6 +1,6 @@
 +++
 title = "Other topics"
-slug = "bash-11-other"
+slug = "../bash/bash-11-other"
 weight = 11
 +++
 

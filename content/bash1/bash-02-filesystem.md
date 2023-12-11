@@ -1,6 +1,6 @@
 +++
 title = "Filesystem"
-slug = "../bash23/bash-02-filesystem"
+slug = "../bash/bash-02-filesystem"
 weight = 2
 +++
 

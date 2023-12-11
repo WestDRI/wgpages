@@ -1,6 +1,6 @@
 +++
 title = "Text manipulation"
-slug = "../../bash202302/bash-10-text-manipulation"
+slug = "../bash/bash-10-text-manipulation"
 weight = 10
 +++
 
@@ -14,7 +14,7 @@ frequency of all dictionary words in the novel "The Invisible Man" by Herbert We
 domain). First, let's apply our knowledge of grep to this text:
 
 ```sh
-$ cd ~/Desktop/data-shell
+$ cd /path/to/data-shell
 $ ls   # shows wellsInvisibleMan.txt
 $ wc wellsInvisibleMan.txt                          # number of lines, words, characters
 $ grep invisible wellsInvisibleMan.txt              # see the invisible man
@@ -25,53 +25,52 @@ $ grep -i invisible wellsInvisibleMan.txt | wc -l   # returns 176 (includes: inv
 Let's sidetrack for a second and see how we can use the "stream editor" `sed`:
 
 ```sh
-$ sed 's/[iI]nvisible/supervisible/g' wellsInvisibleMan.txt > visibleMan.txt   # make him visible
-$ cat wellsInvisibleMan.txt | sed 's/[iI]nvisible/supervisible/g' > visibleMan.txt   # this also works (standard input)
-$ grep supervisible visibleMan.txt   # see what happened to the now visible man
-$ grep -i invisible visibleMan.txt   # see what was not converted
+$ sed 's/[iI]nvisible/visible/g' wellsInvisibleMan.txt > visible.txt   # make him visible
+$ cat wellsInvisibleMan.txt | sed 's/[iI]nvisible/visible/g' > visible.txt   # this also works (standard input)
+$ grep -i invisible visible.txt   # see what was not converted
 $ man sed
 ```
 
 Now let's remove punctuation from the original file using "tr" (translate) command:
 
 ```sh
-$ cat wellsInvisibleMan.txt | tr -d "[:punct:]" > invisibleNoPunct.txt    # tr only takes standard input
+$ cat wellsInvisibleMan.txt | tr -d "[:punct:]" > nopunct.txt    # tr only takes standard input
 $ tail wellsInvisibleMan.txt
-$ tail invisibleNoPunct.txt
+$ tail nopunct.txt
 ```
 
-Next convert all upper case to lower case:
+Next, convert all upper case to lower case:
 
 ```sh
-$ cat invisibleNoPunct.txt | tr '[:upper:]' '[:lower:]' > invisibleClean.txt
-$ tail invisibleClean.txt
+$ cat nopunct.txt | tr '[:upper:]' '[:lower:]' > lower.txt
+$ tail lower.txt
 ```
 
-Next replace spaces with new lines:
+Next, replace spaces with new lines:
 
 ```sh
-$ cat invisibleClean.txt | sed 's/ /\'$'\n/g' > invisibleList.txt   # \'$'\n is a shortcut for a new line
-$ more invisibleList.txt
+$ cat lower.txt | sed 's/ /\'$'\n/g' > words.txt   # \'$'\n is a shortcut for a new line
+$ more words.txt
 ```
 
-Next remove empty lines:
+Next, remove empty lines:
 
 ```sh
-$ sed '/^$/d' invisibleList.txt  > invisibleCompact.txt
+$ sed '/^$/d' words.txt  > compact.txt
 ```
 
-Next sort the list alphabetically, count each word's occurrence, and remove duplicate words:
+Next, sort the list alphabetically, count each word's occurrence, and remove duplicate words:
 
 ```sh
-$ cat invisibleCompact.txt | sort | uniq -c > invisibleWords.txt
-$ more invisibleWords.txt
+$ cat compact.txt | sort | uniq -c > dictionary.txt
+$ more dictionary.txt
 ```
 
-Next sort the list into most frequent words:
+Next, sort the list into most frequent words:
 
 ```sh
-$ cat invisibleWords.txt | sort -gr > invisibleFrequencyList.txt   # use 'man sort'
-$ more invisibleFrequencyList.txt
+$ cat dictionary.txt | sort -gr > frequency.txt   # use 'man sort'
+$ more frequency.txt
 ```
 
 <!-- > **Exercise:** write a script 'countWords.sh' that takes a text file name as an argument, and returns -->
@@ -89,19 +88,30 @@ sed 's/pattern1/pattern2/' filename    # replace pattern1 with pattern2, one per
 sed 's/pattern1/pattern2/g' filename   # same but multiple per line
 sed 's|pattern1|pattern2|g' filename   # same
 
-cat wellsInvisibleMan.txt | tr -d "[:punct:]" > invisibleNoPunct.txt       # remove punctuation; tr only takes standard input
-cat invisibleNoPunct.txt | tr '[:upper:]' '[:lower:]' > invisibleClean.txt # convert all upper case to lower case:
-cat invisibleClean.txt | sed 's/ /\'$'\n/g' > invisibleList.txt            # replace spaces with new lines;
-                                                                           # \'$'\n is a shortcut for a new line
-sed '/^$/d' invisibleList.txt  > invisibleCompact.txt   # remove empty lines
-cat invisibleCompact.txt | sort | uniq -c > invisibleWords.txt   # sort the list alphabetically, count each word's occurrence
-cat invisibleWords.txt | sort -gr > invisibleFrequencyList.txt   # sort the list into most frequent words
+cat wellsInvisibleMan.txt | tr -d "[:punct:]" > nopunct.txt # remove punctuation; tr only takes standard input
+cat nopunct.txt | tr '[:upper:]' '[:lower:]' > lower.txt    # convert all upper case to lower case
+cat lower.txt | sed 's/ /\'$'\n/g' > words.txt              # replace spaces with new lines
+sed '/^$/d' words.txt  > compact.txt                # remove empty lines
+cat compact.txt | sort | uniq -c > dictionary.txt   # sort the list alphabetically, count each word's occurrence
+cat dictionary.txt | sort -gr > frequency.txt       # sort the list into most frequent words
 ```
 
-{{< question num=39a >}}
-Write a script that takes an English-language file and print the list of its 100 most common words, along with the word
-count. Hint: use the workflow from the text manipulation video. Finally, convert this script into a bash function. (no
-need to type any answer)
+
+
+{{< question num=39 >}}
+Can you shorten our novel-manipulation workflow putting it into a single line using pipes?
+{{< /question >}}
+
+<!-- ```sh -->
+<!-- cat wellsInvisibleMan.txt | tr -d "[:punct:]" | tr '[:upper:]' '[:lower:]' | \ -->
+<!--   sed 's/ /\'$'\n/g' | sed '/^$/d' | sort | uniq -c | sort -gr > frequency.txt -->
+<!-- ``` -->
+
+
+
+{{< question num=40 >}}
+Write a script that takes an English-language file and print the list of its 100 most common words, along with
+the word count. Hint: use the workflow we just studied. Next, convert this script into a bash function.
 {{< /question >}}
 
 
@@ -113,7 +123,7 @@ need to type any answer)
 ## Column-based text processing with `awk` scripting language
 
 ```sh
-cd .../data-shell/writing
+cd /path/to/data-shell/writing
 cat haiku.txt   # 11 lines
 ```
 
@@ -168,23 +178,16 @@ awk 'NR>1 && NR < 5' haiku.txt   # print lines 2-4
 
 **Quick reference:**
 ```sh
-ls -l | awk 'NR>3 {print $5 "  " $9}'   # print 5th and 9th columns starting with line 4
-awk 'NR>1 && NR < 5' haiku.txt          # print lines 2-4
-awk '/Yesterday|Today/' haiku.txt       # print lines that contain Yesterday or Today
+ls -l | awk 'NR>3 {print $5 "  " $9}'     # print 5th and 9th columns starting with line 4
+awk 'NR>1 && NR < 5' haiku.txt            # print lines 2-4
+awk 'NR>1 && NR < 5 {print $1}' haiku.txt # print lines 2-4, column 1
+awk '/Yesterday|Today/' haiku.txt         # print lines that contain Yesterday or Today
 ```
 
-{{< question num=41a >}}
+{{< question num=41 >}}
 Write a one-line command that finds 5 largest files in the current directory and prints only their names and file sizes
 in the human-readable format (indicating bytes, kB, MB, GB, ...) in the decreasing file-size order. Hint: use `find`,
 `xargs`, and `awk`.
-{{< /question >}}
-
-{{< question num=42 >}}
-Let's study together these commands:
-```sh
-$ source ~/projects/def-sponsor00/shared/fzf/.fzf.bash
-$ kill -9 `/bin/ps aux | fzf | awk '{print $2}'`
-```
 {{< /question >}}
 
 

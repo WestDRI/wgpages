@@ -1,6 +1,6 @@
 +++
 title = "Scripts, functions, and variables"
-slug = "../bash23/bash-08-scripts-functions"
+slug = "../bash/bash-08-scripts-functions"
 weight = 8
 +++
 
