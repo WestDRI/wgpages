@@ -1,6 +1,7 @@
 +++
 title = "Parallel computing in Julia"
-slug = "julia-in-summer"
+slug = "julia"
+aliases = ["julia-in-summer", "parallel_julia", "parallel_julia_oct21"]
 +++
 
 <!-- {{<cor>}}Wednesday, June 21st{{</cor>}}\ -->
@@ -79,7 +80,7 @@ accounts on our training cluster. No need to install Julia on your computer.
 {{<linktitle url="../summer/julia-11-shared-arrays" text="SharedArrays.jl">}} \
 {{<linkoptional url="../summer/julia-12-nbody" text="Parallelizing the N-body problem">}} (supplemental material) \
 {{<linkoptional url="../summer/julia-13-asm" text="Parallelizing the additive Schwarz method">}} (supplemental material)\
-{{<linkoptional url="../julia20230420/julia-14-linear-algebra" text="Distributed linear algebra in Julia">}} (supplemental material)
+{{<linkoptional url="../summer/julia-14-linear-algebra" text="Distributed linear algebra in Julia">}} (supplemental material)
 
 
 

@@ -286,13 +286,13 @@ While assigning values to a "snail variable" might not be all that useful, a wid
 Greek letters, would make Julia's code look nicely similar to the equations it represents. For instance, if
 you type TAB after each variable name, the following:
 
-```{jl}
+```jl
 \pgamma = ((\alpha \pi + \beta) / \delta) + \upepsilon
 ```
 
 looks like:
 
-```{jl}
+```jl
 ɣ = ((α π + β) / δ) + ε
 ```
 
