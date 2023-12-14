@@ -28,17 +28,17 @@ computers SSH is usually pre-installed (try typing `ssh` in a terminal to make s
 {{<cor>}}Part 1{{</cor>}} \
 {{<linktitle url="../bash/bash-01-intro" text="Introduction">}} \
 {{<linktitle url="../bash/bash-02-filesystem" text="Navigating the filesystem">}} \
-{{<linktitle url="../bash/bash-03-creating-moving-copying" text="Creating, moving and copying things">}} \
+{{<linktitle url="../bash/bash-03-creating-moving-copying" text="Creating, moving and copying things, and aliases">}} \
 {{<linktitle url="../bash/bash-04-tar-gzip" text="Archives and compression">}} \
 {{<linktitle url="../bash/bash-05-file-transfer" text="Transferring files to/from remote computers">}} \
-{{<linktitle url="../bash/bash-06-wildcards-redirection-pipes" text="Wildcards, redirection, pipes, and aliases">}}
+{{<linktitle url="../bash/bash-06-wildcards-redirection-pipes" text="Wildcards, redirection, pipes">}}
 
 <!-- {{<nolinktitle>}}Introduction{{</nolinktitle>}} \ -->
 <!-- {{<nolinktitle>}}Navigating the filesystem{{</nolinktitle>}} \ -->
-<!-- {{<nolinktitle>}}Creating, moving and copying things{{</nolinktitle>}} \ -->
+<!-- {{<nolinktitle>}}Creating, moving and copying things, and aliases{{</nolinktitle>}} \ -->
 <!-- {{<nolinktitle>}}Archives and compression{{</nolinktitle>}} \ -->
 <!-- {{<nolinktitle>}}Transferring files to/from remote computers{{</nolinktitle>}} \ -->
-<!-- {{<nolinktitle>}}Wildcards, redirection, pipes, and aliases{{</nolinktitle>}} -->
+<!-- {{<nolinktitle>}}Wildcards, redirection, pipes{{</nolinktitle>}} -->
 
 {{<cor>}}Part 2{{</cor>}} \
 {{<linktitle url="../bash/bash-07-loops" text="Loops">}} \

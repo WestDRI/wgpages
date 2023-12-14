@@ -96,11 +96,12 @@ Aliases are one-line shortcuts/abbreviations to avoid typing a longer command, e
 $ alias ls='ls -AFh'
 $ alias pwd='pwd -P'
 $ alias hi='history'
-$ alias top='top -o cpu -s 10 -stats "pid,command,cpu,mem,threads,state,user"'
+$ alias top='top -o cpu -s 10 -stats "pid,command,cpu,mem,threads,state,user"' # MacOS only
+$ alias top='top -b -n 1 -o %CPU | head -n 20'                                 # Linux
 $ alias cedar='ssh -Y cedar.computecanada.ca'
 $ alias weather='curl wttr.in/vancouver'
 $ alias cal='cal -m'                  # starts on Monday
-$ alias cal='gcal --starting-day=1'   # if you use gcal instead
+$ alias cal='gcal --starting-day=1'   # if you use gcal instead; need gcal installed
 ```
 
 Now, instead of typing `ssh -Y cedar.computecanada.ca`, you can simply type `cedar`. To see all your
