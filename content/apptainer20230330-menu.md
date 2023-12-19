@@ -1,9 +1,10 @@
 +++
 title = "Introduction to Apptainer (Singularity) containers"
-slug = "containers"
+slug = "apptainer"
+aliases = ["containers"]
 +++
 
-{{<cor>}}Thursday, March 30{{</cor>}}\
+{{<cor>}}Thursday, January 25{{</cor>}}\
 {{<cgr>}}10am–noon Pacific Time{{</cgr>}}
 
 **Instructor**: Alex Razoumov (SFU)
