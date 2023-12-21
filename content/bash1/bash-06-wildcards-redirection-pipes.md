@@ -53,10 +53,6 @@ this?
 4. `wc -l * | sort -n | head -3`
 {{< /question >}}
 
-{{< question num="`ps`" >}}
-Use `ps` command to see how many processes you are running on the training cluster. Explore its flags.
-{{< /question >}}
-
 {{< question num=18 >}}
 Using Unix pipes, write a one-line command to show the name of the longest `.pdb` file (by the number of lines). Paste
 your answer into the chat.

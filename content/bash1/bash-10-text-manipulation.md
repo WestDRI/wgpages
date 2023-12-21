@@ -197,6 +197,11 @@ in the human-readable format (indicating bytes, kB, MB, GB, ...) in the decreasi
 `xargs`, and `awk`.
 {{< /question >}}
 
+{{< question num="`ps`" >}}
+Use `ps` command to see how many processes you are running on the training cluster. Explore its flags. Write
+commands to reduce `ps` output to a few essential columns.
+{{< /question >}}
+
 
 
 
