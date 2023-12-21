@@ -41,7 +41,7 @@ Running `ls -F` in `~/Desktop/Shell/Users/nelle/sugars` results in:
 ```sh
 analyzed/  glucose.dat  mannose.dat  sucrose.dat  fructose.dat  maltose.dat  raw/
 ```
-What code would you use to move all the `.dat` files into the analyzed sub-directory?
+What code would you use to move all the `.dat` files into the `analyzed` subdirectory?
 {{< /question >}}
 
 {{< question num=11 >}}

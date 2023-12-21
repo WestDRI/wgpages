@@ -172,9 +172,16 @@ awk 'NR>1{print $0}' haiku.txt   # last command expanded
 awk 'NR>1 && NR < 5' haiku.txt   # print lines 2-4
 ```
 
-> **Exercise:** write a awk script to process `cities.csv` to print only town/city names and their
-> population and store it in a separate file `populations.csv`. Try to do everything in a single-line
-> command.
+{{< question num=41a >}}
+Write an awk script to process `cities.csv` to print only town/city names and their
+population and store it in a separate file `populations.csv`. Try to do everything in a single-line
+command.
+{{< /question >}}
+
+{{< question num=41b >}}
+Write an awk script that prints every 10th line from `cities.csv` starting from line 2. **Hint**: use `NR`
+variable.
+{{< /question >}}
 
 **Quick reference:**
 ```sh
@@ -184,7 +191,7 @@ awk 'NR>1 && NR < 5 {print $1}' haiku.txt # print lines 2-4, column 1
 awk '/Yesterday|Today/' haiku.txt         # print lines that contain Yesterday or Today
 ```
 
-{{< question num=41 >}}
+{{< question num=41c >}}
 Write a one-line command that finds 5 largest files in the current directory and prints only their names and file sizes
 in the human-readable format (indicating bytes, kB, MB, GB, ...) in the decreasing file-size order. Hint: use `find`,
 `xargs`, and `awk`.
