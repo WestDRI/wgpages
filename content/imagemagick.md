@@ -1,5 +1,5 @@
 +++
-title = "ImageMagick"
+title = "Command-line image processing with ImageMagick"
 slug = "imagemagick"
 +++
 
@@ -81,7 +81,7 @@ size forest.jpg
 
 ```sh
 convert forest.jpg forest.png
-identify -list format   # see the list of support image formats
+convert -list format   # see the list of support image formats
 
 convert forest.jpg forest.avif   # modern open-source image format released in 2019-Feb
                                  # by the Alliance for Open Media (lossless and lossy)
@@ -123,8 +123,12 @@ convert forest.avif -resize 50% f1.avif
 
 ## Cropping and regions
 
+To crop to a single smaller image, you must specify an offset:
+
 ```sh
-convert forest.avif -crop 500x500+800+1050 f1.avif   # crop a 500x500 region at a specific location
+convert forest.avif -crop 500x500+800+1050 f1.avif   # crop a 500x500 region at a specific offset
+convert forest.avif -crop +800+1050 f1.avif   # crop starting at an offset to the lower right corner
+convert forest.avif -crop 2656x1254+0+0 f1.avif   # crop from the upper left corner to +2656+1254
 ```
 
 {{< bigQuestion >}}
@@ -133,7 +137,7 @@ solution somewhere [on this page](https://wgpages.netlify.app/pytables), but che
 your own script.
 {{< /bigQuestion >}}
 
-`crop` can also be used to segment the original image:
+Without an offset, `crop` will segment the original image:
 
 ```sh
 convert -crop 30%x100% forest.avif pieces.png    # crop the image into 30%+30%+30%+10% pieces
@@ -141,7 +145,11 @@ convert -crop 30%x100% forest.avif pieces.avif   # all four images get written t
 convert -crop 30% forest.avif pieces.avif        # will use 30%+30%+30%+10% in both dimensions => 16 images
 convert -crop 512x512 forest.avif pieces.avif    # crop into 512x512 pieces => 35 images
 convert -crop 512x forest.avif pieces.avif       # crop horizontally only => 7 images
+```
 
+You can apply operators to a portion of an image:
+
+```sh
 convert forest.avif -negate f1.avif   # negate the entire image
 convert forest.avif -gravity Center -region 300x300 -negate f1.avif   # negate a 300x300 region
                                                              # in the center (order is important!)
@@ -183,6 +191,10 @@ mogrify -background "#d3d3d3" -format png hybridParallelism.svg   # set the back
 mogrify -transparent "#d3d3d3" hybridParallelism.png              # make the background transparent
 mogrify -background none -format png hybridParallelism.svg        # PNG without a background
 ```
+
+The end result is the same in both cases (`-transparent "#d3d3d3"` and `-background none`), but the image with
+the transparent background has more information in it (check with `ls -l`) which is hidden by the alpha
+(opacity) channel. We'll explore this when we talk about channels.
 
 ## Joining images
 
