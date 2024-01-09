@@ -201,6 +201,7 @@ the transparent background has more information in it (check with `ls -l`) which
 ### Joining horizontally:
 
 ```sh
+size desert.avif forest.avif
 montage -geometry x1200 desert.avif forest.avif mosaic1.avif   # create a composite image from two AVIFs
 convert -geometry x1200 desert.avif forest.avif +append mosaic2.avif   # same but without a gap
 convert -geometry x1200 -border 30 desert.avif forest.avif +append mosaic2.avif   # add border around each image
@@ -293,14 +294,21 @@ Let's place `desert.avif` into a new 520x300 canvas:
 
 ```sh
 convert desert.avif -resize 10% -gravity center -background white -extent 520x300 overlap.avif
-convert desert.avif -resize 10% -bordercolor white -border 51x37 overlap.avif   # exactly the same result
 ```
 
-Now let's add a second image using \( ... \) to apply resize only to second image
+Alternatively, you can obtain exactly the same result with a border:
+
+```sh
+convert desert.avif -resize 10% -bordercolor white -border 51x37 overlap.avif
+```
+
+Now let's add a second image using `\\( ... \\)` to apply resize only to the second image:
 
 ```sh
 convert overlap.avif \( forest.avif -resize 100x100 \) -gravity northeast -composite overlap.avif
 ```
+
+> Note that without `\\( ... \\)` the flag `-resize 100x100` would apply to both images.
 
 Alternatively, we can start with an empty canvas and add images one-by-one:
 
@@ -312,6 +320,7 @@ convert overlap.avif \( ocean.avif -resize 100x100 \) -geometry +100+220 -compos
 convert overlap.avif hills.avif -geometry 100x100+250+220 -composite overlap.avif   # use -geometry for both size and position
 ```
 							
+The flag `-geometry 100x100+250+220` applies only to the preceding (second) image, so no need for the brackets.
 
 
 
@@ -328,7 +337,7 @@ just a few shorter commands. For more examples see https://imagemagick.org/Usage
 In these examples `xc:<colour>` produces a window fill colour:
 
 ```sh
-magick -size 500x300 xc:skyblue empty.avif   # create an empty canvas
+magick -size 500x300 xc:skyblue empty.avif   # recall: creates an empty canvas
 magick -size 500x300 xc:skyblue -fill blue -stroke black -strokewidth 5 \
 	   -draw "line 180,180 390,170" -draw "line 160,130 370,210" drawing.avif
 
