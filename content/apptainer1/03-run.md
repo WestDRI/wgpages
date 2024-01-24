@@ -12,7 +12,7 @@ If you have not done so already, let's pull the latest Ubuntu container from Doc
 
 ```sh
 # cd ~/tmp
-module load apptainer/1.1.6
+module load apptainer/1.1.8
 # salloc --cpus-per-task=1 --time=3:00:0 --mem-per-cpu=3600
 apptainer pull ubuntu.sif docker://ubuntu
 ```
@@ -26,7 +26,7 @@ We already saw some of these commands:
 Apptainer matches users between the container and the host. For example, if you run a container that needs
 to be root, you also need to be root outside the container.
 
-#### 1. Running a single command
+### 1. Running a single command
 
 ```sh
 apptainer exec ubuntu.sif ls /
@@ -35,12 +35,12 @@ apptainer exec ubuntu.sif bash -c "ls /; whoami"   # probably a safer way
 apptainer exec ubuntu.sif cat /etc/os-release
 ```
 
-#### 2. Running a default script
+### 2. Running a default script
 
 We've already done this! If there is no default script, Apptainer will give you the shell to type in your
 commands.
 
-#### 3. Starting a shell
+### 3. Starting a shell
 
 We've already done this!
 

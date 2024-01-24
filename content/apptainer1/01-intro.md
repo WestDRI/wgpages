@@ -31,25 +31,25 @@ Until recently Apptainer was called Singularity. In November 2021 the guidance o
 transferred to the [Linux Foundation](https://www.linuxfoundation.org), and that fully open-source component
 has been renamed *Apptainer*, while the commercial fork is still called *Singularity*.
 
-Apptainer:
-
-- is an open-source project developed within the research community since 2015, started at the Lawrence
-  Berkeley National Lab
-- goal: create a portable system to run Linux applications on HPC clusters independently of the specific host
-  Linux version and distro, i.e. distribute software and **its compute environment**
-- creates a custom, secure virtual Linux environment (a **container**) that is different from the host Linux
-  system
+- Apptainer is an open-source project developed within the research community since 2015, started at the
+  Lawrence Berkeley National Lab
+- Its goal: create a portable system to run Linux applications on HPC clusters independently of the specific
+  host Linux version and distro, i.e. distribute software and **its compute environment**
+- Apptainer creates a custom, secure virtual Linux environment (a **container**) that is different from the
+  host Linux system
   - e.g., on a CentOS/Rocky Linux machine you can create a virtual Ubuntu system where you can install any
-    packaged software from the Ubuntu repositories
+    precompiled packaged software from the Ubuntu repositories
   - in a sense, gives you control of your software environment without being `root` on the host system (with a
     catch: creating containers from scratch usually requires `root`)
   - you can install any system packages and all dependencies for your software as packages inside the container
-- quickly became a way to package and deploy scientific software and its dependencies to different HPC systems
-- is different from Docker, as it does not require `root` access on the host system to *run* it
+- Apptainer quickly became a way to package and deploy scientific software and its dependencies to different
+  HPC systems
+- Apptainer is different from Docker, as it does not require `root` access on the host system to *run* it
   - specifically designed for running containers on multi-user HPC clusters
-- on a Linux host is very lightweight compared to a full virtual machine (**VM**)
-- on Mac or Windows hosts can be deployed inside a VM (still requires a Linux host layer &nbsp;➜&nbsp; a VM)
-- from the technical standpoint, uses:
+- On a Linux host Apptainer is very lightweight compared to a full virtual machine (**VM**)
+- On MacOS or Windows hosts Apptainer can be deployed inside a VM (still requires a Linux host layer
+  &nbsp;➜&nbsp; a VM)
+- From the technical standpoint, Apptainer uses:
   - <u>kernel namespaces</u> to virtualize and isolate OS resources (CPU, memory access, disk I/O, network
     access, user/group namespaces), so that processes inside the container see only a specific, virtualized
     set of resources
@@ -130,10 +130,10 @@ There are few other container engines focusing on specific features.
 We will now distribute usernames and passwords for our training cluster.
 {{</note>}}
 
-Let's log in to the training cluster `container.c3.ca` and try loading Apptainer:
+Let's log in to the training cluster `lecarre.c3.ca` and try loading Apptainer:
 
 ```sh
-module load apptainer/1.1.6
+module load apptainer/1.1.8
 apptainer --version
 apptainer             # see the list of available commands
 ```

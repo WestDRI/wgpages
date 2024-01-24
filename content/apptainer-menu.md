@@ -16,7 +16,10 @@ aliases = ["containers"]
 **Prerequisites**: none
 <!-- [Introduction to Compute Canada cloud](../cloud_cloud) course -->
 
-This course is a hands-on introduction to working with Singularity/Apptainer containers in an HPC environment.
+This course is a hands-on introduction to working with Singularity/Apptainer containers in an HPC
+environment. Apptainer/Singularity is a great tool to create custom Linux environments and run off-the-shelf
+Docker containers on an HPC cluster. We will look at creating new container images, modifying existing images
+and installing software into them, and -- if time permits -- running parallel codes inside a container.
 
 <!-- We will be running Docker inside virtual machines (VMs) in Compute Canada cloud, so you must be familiar -->
 <!-- with setting up a blank Ubuntu server in a cloud VM before attending this course. -->

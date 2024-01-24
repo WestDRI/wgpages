@@ -104,7 +104,7 @@ mpirun -np $SLURM_NTASKS apptainer exec -B ... --pwd ... container.sif ./mpicode
 <!-- may or may not work. -->
 <!-- {{</note>}} -->
 
-#### Example: hybrid-mode MPI
+### Example: hybrid-mode MPI
 
 For this course I have already built an MPI container that can talk to MPI on the training cluster. For those
 interested, you can find the detailed instructions
@@ -114,20 +114,19 @@ definition file that:
 1. bootstraps from docker://ubuntu:22.04
 1. installs the necessary fabric and PMI packages, Slurm client, few others requirements
 
-and then used it to build `mpi.sif` which I copied over to the training cluster into
-`/project/def-sponsor00/shared`.
+and then used it to build `mpi.sif` which I copied over to the training cluster into `/home/user149/shared`.
 
-<!-- scp mpi.sif user01@container.c3.ca:/project/def-sponsor00/shared -->
+<!-- scp mpi.sif user01@lecarre.c3.ca:/project/def-sponsor00/shared -->
 
 ```sh
 cd ~/tmp
-module load openmpi apptainer/1.1.6
-unzip /project/def-sponsor00/shared/introHPC.zip codes/distributedPi.c
+module load openmpi apptainer/1.1.8
+unzip ~user149/shared/introHPC.zip codes/distributedPi.c
 cd codes
 mkdir -p ~/.openmpi
 echo "btl_vader_single_copy_mechanism=none" >> ~/.openmpi/mca-params.conf
 export PMIX_MCA_psec=native   # allow mpirun to use host's PMI
-export CONTAINER=/project/def-sponsor00/shared/mpi.sif
+export CONTAINER=~user149/shared/mpi.sif
 apptainer exec $CONTAINER mpicc -O2 distributedPi.c -o distributedPi
 salloc --ntasks=4 --time=0:5:0 --mem-per-cpu=1200
 mpirun -np $SLURM_NTASKS apptainer exec $CONTAINER ./distributedPi
@@ -206,7 +205,7 @@ running Rocky Linux 8.5 or later.
 ```sh
 cd ~/tmp
 apptainer pull ubuntu.sif docker://ubuntu:latest
-module load apptainer/1.1.6
+module load apptainer/1.1.8
 salloc --time=0:30:0 --mem-per-cpu=3600
 apptainer overlay create --size 512 small.img   # create a 0.5GB overlay image file
 apptainer shell --overlay small.img ubuntu.sif
@@ -266,10 +265,10 @@ apptainer help overlay create
 apptainer overlay create --help
 ```
 
-#### Sparse overlay images
+### Sparse overlay images
 
-Sparse images use disk more efficiently when blocks allocated to them are mostly empty. Let's create a sparse
-overlay image:
+Sparse images use disk more efficiently when blocks allocated to them are mostly empty. As you add more data
+to a sparse image, it can grow (*but not shrink!*) in size. Let's create a sparse overlay image:
 
 ```sh
 apptainer overlay create --size 512 --sparse sparse.img
@@ -298,36 +297,37 @@ Be careful using sparse images: not all tools (e.g. backup/restore, scp, sftp, g
 ⇒ this can potentially lead to very bad things ...
 {{</note>}}
 
-#### Example: installing Conda into an overlay
+### Example: installing Conda into an overlay
 
 - native Anaconda on HPC clusters is a [bad idea](https://docs.alliancecan.ca/wiki/Anaconda/en) for a number
   of reasons
-- installing Conda into an overlay image takes a couple of minutes, results in >17,000 files
-- no need for root, as you don't modify the container
-- still might not be the most efficient use of resources (non-optimized binaries)
+- suggested solution: transition from Conda to `virtualenv`
+- alternatively, can install Conda into an overlay image
+  - takes a couple of minutes, results in 22k+ files that are hidden from the host
+  - no need for root, as you don't modify the container
+  - still might not be the most efficient use of resources (non-optimized binaries)
 
 Here is how you would install Conda into an overlay image:
 
 ```sh
 cd ~/tmp
 apptainer pull ubuntu.sif docker://ubuntu:latest
-apptainer overlay create --size 550 conda.img   # create a 550MB overlay image
-wget https://repo.anaconda.com/miniconda/Miniconda3-py39_4.12.0-Linux-x86_64.sh
+apptainer overlay create --size 800 conda.img   # create a 800M overlay image
+wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
 
 apptainer shell --overlay conda.img -B /home ubuntu.sif
 
 Apptainer> mkdir /conda && cd /conda
 Apptainer> df -kh .
-Apptainer> bash /home/user001/tmp/Miniconda3-py39_4.12.0-Linux-x86_64.sh
+Apptainer> bash /home/${USER}/tmp/miniconda.sh
   agree to the license
   use /conda/miniconda3 for the installation path
   no to initialize Miniconda3
-Apptainer> find /conda/miniconda3/ -type f | wc -l        # 17,722 files
-
-du -h conda.img   # uses ~470M
+Apptainer> find /conda/miniconda3/ -type f | wc -l   # 22,039 files
+Apptainer> df -kh .                                  # uses ~612M
 ```
 
-These 17k+ files appear as a single file to the Lustre metadata server (which is great!).
+These 22k+ files appear as a single file to the Lustre metadata server (which is great!).
 
 ```sh
 apptainer shell ubuntu.sif
@@ -335,7 +335,8 @@ Apptainer> ls /conda                            # no such file or directory
 
 apptainer shell --overlay conda.img ubuntu.sif
 Apptainer> source /conda/miniconda3/bin/activate
-Apptainer> python         # works
+(base) Apptainer> type python   # /conda/miniconda3/bin/python
+(base) Apptainer> python        # works
 ```
 
 If you want to install large Python packages, you probably want to resize the image:
@@ -350,13 +351,13 @@ Next mount the resized overlay into the container, and make sure to pass the `-C
 files locally (and not to the host):
 
 ```sh
-apptainer shell -C --overlay conda.img ubuntu.sif
+apptainer shell -C --overlay conda.img ubuntu.sif   # /home/$USER won't be available
 
 Apptainer> cd /conda/miniconda3
 Apptainer> source bin/activate
-Apptainer> conda install numpy
-Apptainer> du -skh .    # used 1.6G
-Apptainer> python
+(base) Apptainer> conda install numpy
+(base) Apptainer> df -kh .   # so far used 1.8G out of 2.0G
+(base) Apptainer> python
 >>> import numpy as np
 >>> np.pi
 ```
@@ -373,16 +374,16 @@ Apptainer> python
 
 ## The importance of temp space when running large workflows
 
-By default, for its internal use Apptainer allocates some temporary space in `/tmp` which is often in RAM
-and is very limited. When it becomes full, Apptainer will stop working, so it is important to give it
-another, larger temporary space via the `-W` flag. In practice, this would mean doing something like:
+By default, for its internal use Apptainer allocates some temporary space in `/tmp` which is often in RAM and
+is very limited. When it becomes full, Apptainer will stop working, so you might want to give it another,
+larger temporary space via the `-W` flag. In practice, this would mean doing something like:
 
-- on a personal machine or a login node
+- on your own computer or on a production cluster's login node:
 ```sh
 apptainer shell/exce/run ... -W /localscratch <image.sif>
 apptainer shell/exce/run ... -W /localscratch/tmp <image.sif>
 ```
-- inside a Slurm job
+- inside a Slurm job:
 ```sh
 apptainer shell/exce/run ... -W $SLURM_TMPDIR <image.sif>
 ```
@@ -401,11 +402,12 @@ you start the container.
 
 ## Running container instances
 
-You can also run backgrounded processes within your container. You can start/terminate these with
-`instance start`/`instance stop`. All these processes will terminate once your job ends.
+You can also run backgrounded processes within your container while *not being* inside your container. You can
+start/terminate these with `instance start`/`instance stop`. All these processes will terminate once your job
+ends.
 
 ```sh
-module load apptainer/1.1.6
+module load apptainer/1.1.8
 salloc --cpus-per-task=1 --time=0:30:0 --mem-per-cpu=3600
 apptainer instance start ubuntu.sif test01     # start a container instance test01
 apptainer shell instance://test01   # start an interactive shell in that instance
@@ -428,7 +430,7 @@ apptainer instance stop test01
 
 - Useful if Chapel is not installed natively at your HPC centre.
 - Somewhat tricky for multi-locale Chapel due to its dependence on the cluster's parallel launcher and interconnect.
-- Piece of cake for single-locale Chapel and for *simulated* multi-locale Chapel.
+- Piece of cake for single-locale Chapel and for *emulated* multi-locale Chapel.
 
 
 

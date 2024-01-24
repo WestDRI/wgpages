@@ -3,14 +3,24 @@ title = "Intro to high-performance computing (HPC)"
 slug = "introhpc"
 +++
 
-<!-- {{<cor>}}Monday, June 19th{{</cor>}}\ -->
-{{<cgr>}}9:00am–5:00pm Pacific Time{{</cgr>}}
+{{<cor>}}January 11th (Part 1) and 18th (Part 2){{</cor>}}\
+{{<cgr>}}Both days 10:00am - noon Pacific Time{{</cgr>}}
 
 <!-- Course materials will be added here shortly before the start of the course. -->
 
 ---
 
 This course is an introduction to High-Performance Computing on the Alliance clusters.
+
+<!-- Abstract: This course is an introduction to High-Performance Computing (HPC) on the Alliance clusters. We
+will start with the cluster hardware overview, then talk about some basic tools and the software environment
+on our clusters. Next we'll give a quick tour of various parallel programming frameworks such as OpenMP, MPI,
+Python Dask, newer parallel languages such as Chapel and Julia, and we'll try to compile some serial,
+shared-memory and distributed-memory codes using makefiles. We'll then proceed to working with the Slurm
+scheduler, submitting and benchmarking our previously compiled codes. We will learn about batch and
+interactive cluster usage, best practices for submitting a large number of jobs, estimating your job's
+resource requirements, and managing file permissions in shared cluster filesystems. There will be many demos
+and hands-on exercises on our training cluster. -->
 
 **Instructor**: Alex Razoumov (SFU)
 
