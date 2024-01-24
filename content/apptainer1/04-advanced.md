@@ -369,37 +369,6 @@ Apptainer> source bin/activate
 
 
 
-
-
-
-## The importance of temp space when running large workflows
-
-By default, for its internal use Apptainer allocates some temporary space in `/tmp` which is often in RAM and
-is very limited. When it becomes full, Apptainer will stop working, so you might want to give it another,
-larger temporary space via the `-W` flag. In practice, this would mean doing something like:
-
-- on your own computer or on a production cluster's login node:
-```sh
-apptainer shell/exce/run ... -W /localscratch <image.sif>
-apptainer shell/exce/run ... -W /localscratch/tmp <image.sif>
-```
-- inside a Slurm job:
-```sh
-apptainer shell/exce/run ... -W $SLURM_TMPDIR <image.sif>
-```
-
-{{<note>}}
-Regard `/tmp` inside the container as temporary space. Any files you put there will disappear the next time
-you start the container.
-{{</note>}}
-
-
-
-
-
-
-
-
 ## Running container instances
 
 You can also run backgrounded processes within your container while *not being* inside your container. You can
@@ -419,6 +388,69 @@ apptainer shell instance://test01                   # poke around the instance
 apptainer instance list
 apptainer instance stop test01
 ```
+
+
+
+
+
+
+## Best practices on production clusters
+
+### Do not build containers on networked filesystems
+
+Don't use `/home` or `/scratch` or `/project` to build a container -- instead, always use a local disk,
+e.g. `/localscratch` on login nodes or $SLURM_TMPDIR inside a Slurm job. After having built it, you can move
+the container to a regular filesystem.
+
+### The importance of temp space when running large workflows
+
+By default, for its internal use Apptainer allocates some temporary space in `/tmp` which is often in RAM and
+is very limited. When it becomes full, Apptainer will stop working, so you might want to give it another,
+larger temporary space via the `-W` flag. In practice, this would mean doing something like:
+
+- on your own computer or on a production cluster's login node:
+```sh
+mkdir /localscratch/tmp
+apptainer shell/exce/run ... -W /localscratch/tmp <image.sif>
+```
+- inside a Slurm job:
+```sh
+mkdir $SLURM_TMPDIR/tmp
+apptainer shell/exce/run ... -W $SLURM_TMPDIR/tmp <image.sif>
+```
+
+{{<note>}}
+Regard `/tmp` inside the container as temporary space. Any files you put there will disappear the next time
+you start the container.
+{{</note>}}
+
+You can use an environment variable in lieu of `-W`:
+
+```sh
+export APPTAINER_TMPDIR=$SLURM_TMPDIR/tmp
+apptainer shell/exce/run ... <image.sif>
+```
+
+### Sample job submission script
+
+Of all clusters in the Alliance only Cedar has Internet access from compute nodes -- this might limit your
+options of where to build a container. You can move your SIF file to other clusters after having built it.
+
+```sh
+#!/bin/bash
+#SBATCH --time=...
+#SBATCH --mem=...
+cd $SLURM_TMPDIR
+mkdir -p tmp cache
+export APPTAINER_TMPDIR=${PWD}/tmp
+export APPTAINER_CACHEDIR=${PWD}/cache   # replaces default `$HOME/.apptainer/cache`
+<build the container in this directory>  # run on Cedar if docker:// access is needed
+<run your workflow inside the container>
+<copy out your results>
+```
+
+
+
 
 
 

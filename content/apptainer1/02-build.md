@@ -409,7 +409,7 @@ as described in {{<a "https://apptainer.org/docs/user/latest/definition_files.ht
 > Apptainer definition files are used to define the build process and configuration for an image.
 
 > ### <font style="color:blue">Discussion</font>
-> How do we install additional packages into this new container? There are several options.
+> At this point, how do we install additional packages into this new container? There are several options.
 
 
 
