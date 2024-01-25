@@ -79,9 +79,9 @@ ls /project/def-sponsor00/$USER
 You can mount host directories to specific paths inside the container, e.g.
 
 ```sh
-apptainer shell -B /project/def-sponsor00/${USER}:/project,$SCRATCH:/scratch ubuntu.sif
-ls /project
-ls /scratch
+apptainer shell -B /project/def-sponsor00/$USER:/myproject,/home/$USER/scratch:/myscratch ubuntu.sif
+Apptainer> ls /myproject
+Apptainer> ls /myscratch
 ```
 
 Note that by default Apptainer typically mounts some of the host's directories. The flag `-C` will hide the
@@ -89,7 +89,7 @@ host's filesystems and environment variables, but then you need to explicitly bi
 store results), e.g.
 
 ```sh
-apptainer shell -C -B /scratch ubuntu.sif   # inside see only /scratch
+apptainer shell -C -B /scratch ubuntu.sif   # from the host see only /scratch
 ```
 
 <!-- The reason is that it needs some space to store temporary files that get generated along the way, access some -->
@@ -105,31 +105,25 @@ cd     # no such file or directory
 Alternatively, you can disable mounting `/home` with the `--no-home` flag. And you can disable multiple mounts
 with something like `--no-mount tmp,sys,dev`.
 
-
-
-
-
-
 In general, without `-C`, Apptainer inherits all environment variables from the build/pull time. You can add
 the `-e` flag to remove only the host's environment variables from your container, to start in a *cleaner*
 environment:
 
 ```sh
+$ echo $USER $PYTHONPATH            # defined
 $ apptainer shell -e -B /home,/project,/scratch ubuntu.sif
-Apptainer> echo $USER
-Apptainer> $(whoami)
+Apptainer> echo $USER $PYTHONPATH   # not defined
+Apptainer> echo $APPTAINER_NAME     # defined
+Apptainer> echo $<hit TAB twice to see all defined variables>
 ```
 
-On the other hand, you can pass variables environment variables to your container by prefixing their names:
+On the other hand, you can pass variables to your container by prefixing their names:
 
 ```sh
 $ APPTAINERENV_HI=hello apptainer shell mpi.sif
 Apptainer> echo $HI
 hello
 ```
-
-
-
 
 Finally, you don't have to pass the same bind (`-B`) flags every time -- instead you can put them into a
 variable (that can be stored in your `~/.bashrc` file):

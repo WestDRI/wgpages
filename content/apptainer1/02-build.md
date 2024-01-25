@@ -102,7 +102,7 @@ clusters, we highly recommend doing this inside Slurm jobs in `$SLURM_TMPDIR` (S
 
 
 
-## Running pre-packaged containers
+## Running pre-packaged containers (without modifying them)
 
 Run the "Lolcow" container by Apptainer developers:
 
@@ -175,8 +175,9 @@ apptainer inspect -d /path/to/SIF/file   # short for --deffile
 
 
 
+## Modifying containers
 
-## Demo: building a development container in a sandbox as root
+### Demo: building a development container in a sandbox as root
 
 {{<note>}}
 You need to be root in this section. For this reason, in this section I will run a demo on a machine with root
@@ -278,7 +279,7 @@ apptainer shell ~user149/shared/ubuntu.sif
 
 
 
-## Fakeroot in a sandbox: no need for root!
+### Fakeroot in a sandbox: no need for root!
 
 {{<note>}}
 You need an Apptainer 1.1 or later in this section, as well as `fakeroot-sysv` utility on the host preceding
@@ -341,7 +342,7 @@ Apptainer> ...
 
 
 
-## Building a development container from a definition file: root or not
+### Building a development container from a definition file: root or not
 
 {{<note>}}
 Depending on your Apptainer installation, you may or may no need to be root in this section. Try to follow
@@ -405,10 +406,10 @@ More advanced definition files may have these sections:
 
 as described in {{<a "https://apptainer.org/docs/user/latest/definition_files.html#sections" "the user guide">}}.
 
-> ### Key point
+> #### Key point
 > Apptainer definition files are used to define the build process and configuration for an image.
 
-> ### <font style="color:blue">Discussion</font>
+> #### <font style="color:blue">Discussion</font>
 > At this point, how do we install additional packages into this new container? There are several options.
 
 
@@ -416,7 +417,7 @@ as described in {{<a "https://apptainer.org/docs/user/latest/definition_files.ht
 
 
 
-## Remote builder: no need for root!
+### Remote builder: no need for root!
 
 If you have access to a platform with Apptainer installed but you don't have root access to create
 containers, you may be able to use the Remote Builder functionality to offload the process of building an
@@ -462,7 +463,7 @@ You can find more information on remote endpoints in the
 
 
 
-## Converting a Docker image to Apptainer as regular user
+## Running more useful Docker images via Apptainer as regular user
 ### Running client-server ParaView from a container
 
 You can pull a Docker image from [Docker Hub](https://hub.docker.com) and convert it to an Apptainer
@@ -530,7 +531,7 @@ apptainer pull ubuntu.sif docker://ubuntu:19.04   # specific older version
 
 
 
-> ### <font style="color:blue">Exercise 1</font>
+> ### <font style="color:blue">Exercise 1: latest Python image</font>
 > Pull the latest Python image from Docker Hub into an Apptainer image. It should take few minutes to build it.
 > 1. How large is the resulting image?
 > 1. Run container's Python with the `exec` command. Which version of Python did it install?
@@ -544,7 +545,7 @@ apptainer pull ubuntu.sif docker://ubuntu:19.04   # specific older version
 > ```
 > <!-- docker://python -->
 
-> ### <font style="color:blue">Exercise 2</font>
+> ### <font style="color:blue">Exercise 2: CPU-based PyTorch image</font>
 > Pull a recent <b>CPU-based</b> PyTorch image from Docker Hub into an Apptainer image.
 > ```sh
 > module load apptainer/1.1.8
