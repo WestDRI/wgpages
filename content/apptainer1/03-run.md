@@ -105,16 +105,22 @@ cd     # no such file or directory
 Alternatively, you can disable mounting `/home` with the `--no-home` flag. And you can disable multiple mounts
 with something like `--no-mount tmp,sys,dev`.
 
-In general, without `-C`, Apptainer inherits all environment variables from the build/pull time. You can add
-the `-e` flag to remove only the host's environment variables from your container, to start in a *cleaner*
-environment:
+In general, without `-C`, Apptainer inherits all environment variables and default bind-mounted
+filesystems. You can add the `-e` flag to remove only the host's environment variables from your container but
+keep the default bind-mounted filesystems, to start in a *cleaner* environment:
 
 ```sh
-$ echo $USER $PYTHONPATH            # defined
-$ apptainer shell -e -B /home,/project,/scratch ubuntu.sif
-Apptainer> echo $USER $PYTHONPATH   # not defined
-Apptainer> echo $APPTAINER_NAME     # defined
-Apptainer> echo $<hit TAB twice to see all defined variables>
+apptainer shell ubuntu.sif
+Apptainer> echo $USER $PYTHONPATH         # defined from the host
+Apptainer> ls /home/user149               # shows my $HOME content on the host
+
+apptainer shell -C ubuntu.sif
+Apptainer> echo $USER $PYTHONPATH         # not defined
+Apptainer> ls /home/user149               # nothing
+
+apptainer shell -e ubuntu.sif
+Apptainer> echo $USER $PYTHONPATH         # not defined
+Apptainer> ls /home/user149               # shows my $HOME content on the host
 ```
 
 On the other hand, you can pass variables to your container by prefixing their names:
