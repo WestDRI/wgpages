@@ -28,8 +28,9 @@ cluster.
 
 **Instructors**: Alex Razoumov (SFU)
 
-**Prerequisites:** Ideally, some familiarity with Compute Canada's HPC cluster environment, in particular, with
-the Slurm scheduler, and some previous serial Julia programming experience.
+**Prerequisites:** Ideally, some familiarity with Compute Canada's HPC cluster environment, in particular,
+with the Slurm scheduler. Ideally, having some previous serial Julia programming experience would help, but we
+will start slowly so you will be able to follow up even if you are new to Julia.
 
 **Software**: There are 3 options:
 
