@@ -35,8 +35,11 @@ parallelization) -- see an example below:
 {{< figure src="/img/hybridParallelism.png" title="">}}
 
 > ### Discussion
-> What are the benefits of each: threads vs. processes? Consider (1) context switching, e.g. starting and
-> terminating or concurrent execution, (2) communication, (3) scaling up.
+> What are the benefits of each type of parallelism: multi-threading vs. multi-processing?
+> Consider:
+> 1. context switching, e.g. starting and terminating or concurrent execution on the same CPU core,
+> 1. communication,
+> 1. scaling up.
 
 ## Parallelism in Julia
 

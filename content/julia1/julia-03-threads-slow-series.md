@@ -15,15 +15,17 @@ using Base.Threads   # otherwise would have to preface all functions/macros with
 nthreads()           # by default, Julia starts with a single thread of execution
 ```
 
-If instead we start with `julia -t 4` (or prior to v1.5 with `JULIA_NUM_THREADS=4 julia`):
+If instead we start with `julia -t 2` (or prior to v1.5 with `JULIA_NUM_THREADS=2 julia`):
 
 ```julia
 using Base.Threads
-nthreads()           # now we have access to 4 threads
+nthreads()           # now we have access to 2 threads
 ```
 
-When launched from this interface, these four threads will run on several CPU cores on a compute node -- likely a
-combination of concurrent and parallel execution, especially considering the restrictions from your `salloc` job.
+When launched from this interface, these two threads will run on two CPU cores on a compute node.
+
+<!-- likely a combination of concurrent and parallel execution, especially considering the restrictions from your -->
+<!-- `salloc` job -->
 
 Let's run our first multi-threaded code:
 
@@ -33,8 +35,10 @@ Let's run our first multi-threaded code:
 end
 ```
 
-This would split the loop between 4 threads running on two CPU cores: each core would be taking turns running
-two of your threads (and maybe threads from other users).
+This would split the loop between 2 threads running on two CPU cores: each core would be running one thread.
+
+<!-- taking turns running -->
+<!-- two of your threads (and maybe threads from other users). -->
 
 Let's now fill an array with values in parallel:
 
@@ -56,36 +60,27 @@ code is **thread-safe**.
 Let's initialize a large floating array:
 
 ```julia
-nthreads()        # still running 4 threads
+nthreads()        # still running 2 threads
 n = Int64(1e8)    # integer number
 n = 100_000_000   # another way of doing this
 a = zeros(n);
 typeof(a)         # how much memory does this array take?
 ```
 
-and then fill it with values using a single thread, and time this operation:
+and then fill it with values using two threads and time the loop:
 
 ```julia
-@time for i in 1:n
-    a[i] = log10(i)
-end
-```
-
-On the training cluster I get 14.38s, 14.18s, 14.98s with one thread.
-
-> **Note:** There is also `@btime` from BenchmarkTools package that has several advantages over `@time`. We
-> will switch to it soon.
-
-Let's now time parallel execution with 4 threads on 2 CPU cores:
-
-```julia
-using Base.Threads
 @time @threads for i in 1:n
     a[i] = log10(i)
 end
 ```
 
-On the training cluster I get 6.57s, 6.19s, 6.10s -- this is ~2X speedup, as expected.
+On the training cluster I get 2.25s, 2.33s, 2.20s.
+
+> **Note:** There is also `@btime` from BenchmarkTools package that has several advantages over `@time`. We
+> will switch to it soon.
+
+If I restart Julia and run the same code on a single thread, I will get ~2X runtime.
 
 ## Let's add reduction
 
@@ -118,7 +113,7 @@ println("total = ", total[])   # need to use [] to access atomic variable's valu
 ```
 
 Now every time we get the same result. This code is supposed to be much slower: threads are waiting for others
-to finish updating the variable, so with 4 threads and one variable there should be a lot of waiting
+to finish updating the variable, so with let's say 4 threads and one variable there should be a lot of waiting
 ... Atomic variables were not really designed for this type of usage ... Let's do some benchmarking!
 
 ## Benchmarking in Julia
@@ -520,8 +515,8 @@ function slow(n::Int64, digitSequence::Int, a::Int64, b::Int64, numsubs=16)
 end
 
 n = Int64(1e8)
-@btime slow(n, 9, 1, n, 1)    # run the code in serial (one interval, use one thread)
-@btime slow(n, 9, 1, n, 4)    # 4 intervals, each scheduled to run on 1 of the threads
+@btime slow(n, 9, 1, n, 1)   # run the code in serial (one interval, use one thread)
+@btime slow(n, 9, 1, n, 4)   # 4 intervals, all but one spawned on one of `nthreads()` threads
 ```
 
 There are two important considerations here:

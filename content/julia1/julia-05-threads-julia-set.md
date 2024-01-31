@@ -141,12 +141,18 @@ potential problems:
 1. Some CPU cores are lower efficiency, and they are slowing down the whole calculation.
 
 > ### <font style="color:blue">Take-home exercise "Fractal.2"</font>
-> How would you fix this issue? If you manage to get a speedup closer to 8X with Base.Threads on 8 cores, we
-> would love to hear your solution! Please only check the {{<a "/bad-speedup-solution" "solution">}} once you have
+> How would you fix this issue? If you manage to get close to 100% parallel efficiency with Base.Threads on
+> multiple cores, we
+> would love to see your solution! Please only check the {{<a "/bad-speedup-solution" "solution">}} once you have
 > worked on the problem yourself.
 
 > ### <font style="color:blue">Take-home exercise "Fractal.3"</font>
 > Build a 3D cube based on the Julia set where the 3rd axis would be a slowly varying `c` constant. For
 > example, try to interpolate linearly between $c = 0.355 + 0.355i$ and $c = 1.34-0.45i$, or between any other
 > two complex values. Send us an animation traversing your volume once you are done. What highest cube
-> resolution could you achieve?
+> resolution could you compute?
+
+{{<note>}} Note: You can also generate a truly 3D fractal in Julia. Check out 
+{{<a "https://ccvis.netlify.app/gallery/mandelbulb" "this dataset">}} which was computed in Julia and
+visualized in ParaView (both on a laptop).
+{{</note>}}

@@ -1,5 +1,5 @@
 +++
-title = "Distributed.jl - part 2"
+title = "Distributed.jl - three scalable slow-series codes"
 slug = "../summer/julia-08-distributed2"
 weight = 8
 katex = true

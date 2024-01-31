@@ -71,9 +71,8 @@ We have Julia on our training cluster *lecarre.c3.ca*.
 
 {{<note>}}
 Our training cluster has: <br><br>
-- one login node with 8 *"compute"* core and 30GB of memory, <br>
-- 35 compute nodes with 2 *"compute"* cores and 7.5GB of memory on each (70 cores in total)
-<!-- - one GPU node with 4 *"compute"* cores, 1 vGPU (8GB) and 22GB of memory. -->
+- one fairly small login node, <br>
+- 15 compute nodes with 4 *"compute"* cores and 15GB of memory on each &nbsp;→&nbsp; 60 cores in total and 3.75GB/core
 {{</note>}}
 
 Normally in our introductory Julia course we would use Julia inside a Jupyter notebook. Today we will be
@@ -106,15 +105,16 @@ Note that you can still install additional packages if you want. These will inst
 
 ### Where to run the REPL
 
-You could now technically launch a Julia REPL (Read-Eval-Print-Loop). However, this would launch it on the login node and if everybody does this at the same time, we would probably stall our training cluster.
+You could now technically launch a Julia REPL (Read-Eval-Print-Loop). However, this would launch it on the
+login node and if everybody does this at the same time, we would probably crash our training cluster.
 
 Instead, you will first launch an interactive job by running the Slurm command `salloc`:
 
 ```sh
-$ salloc --mem-per-cpu=3600M --time=2:0:0
+$ salloc --mem-per-cpu=3600M --cpus-per-task=2 --time=2:0:0
 ```
 
-This puts you on a compute node for up to one hour.
+This puts you on a compute node and gives you 2 CPU cores for up to 2 hours.
 
 Now you can launch the Julia REPL and try to run a couple of commands:
 
@@ -195,24 +195,15 @@ $ tmux
 $ source /project/def-sponsor00/shared/julia/config/loadJulia.sh
 
 # Step 2: launch an interactive job on a compute node
-$ salloc --mem-per-cpu=3600M --time=2:0:0
+$ salloc --mem-per-cpu=3600M --cpus-per-task=2 --time=2:0:0
 
 # Step 3: launch the Julia REPL
 $ julia
 ```
 
-This is great to run serial work.
-
-When we will run parallel work however, we will want to use multiple CPUs per task in order to see a speedup.
-
-So instead, you will run:
+This will launch Julia in serial. To use multiple threads, you want to pass the `-t` flag when starting Julia:
 
 ```sh
-$ source /project/def-sponsor00/shared/julia/config/loadJulia.sh
-
-# Request 2 CPUs per task from Slurm
-$ salloc --mem-per-cpu=3600M --cpus-per-task=2 --time=2:0:0
-
 # Launch Julia on 2 threads
 $ julia -t 2
 ```
@@ -220,13 +211,13 @@ $ julia -t 2
 ## Running scripts
 
 Now, if we want to get an even bigger speedup, we could use even more CPUs per task. The problem is that our
-training cluster only has ~180 compute cores, so some of us would be left waiting for Slurm while the others
-can play with a bunch of CPUs for an hour. This is not an efficient approach. This is equally true on
-production clusters: if you want to run an interactive job using a lot of resources, you might have to wait
-for a long time.
+training cluster only has ~60 compute cores, so if we use `--cpus-per-task=4` some of us could be left waiting
+for Slurm while the others play with several CPUs for two hours. This is not an efficient approach. This is
+equally true on production clusters: if you want to run an interactive job using a lot of resources, you might
+have to wait for a long time.
 
-A much better approach is to put our Julia code in a Julia script and run it through a batch job by using the
-Slurm command `sbatch`.
+On production clusters, a much better approach is to put our Julia code in a Julia script and run it through a
+batch job by using the Slurm command `sbatch`.
 
 <!-- You can run a Julia script with `julia julia_script.jl`. -->
 
@@ -252,6 +243,8 @@ Then we submit our job script:
 ```sh
 $ sbatch job_script.sh
 ```
+
+In this session, we continue using `salloc --cpus-per-task=2 ...`
 
 ## Serial Julia features worth noting in 10 mins
 

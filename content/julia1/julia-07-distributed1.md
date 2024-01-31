@@ -1,5 +1,5 @@
 +++
-title = "Distributed.jl - part 1"
+title = "Distributed.jl - basics"
 slug = "../summer/julia-07-distributed1"
 weight = 7
 katex = true

@@ -86,14 +86,15 @@ $ julia -t 8 mapreduce.jl   # what should we expect?
 ?sum
 sum(x->x^2, 1:10)
 ThreadsX.sum(x->x^2, 1:10)
+ThreadsX.sum(x^2 for x in 1:10)   # alternative syntax
 ```
 
-The expression in the round brackets below is a *generator*. It generates a sequence on the fly without
+The expression in the last round brackets is a *generator*. It generates a sequence on the fly without
 storing individual elements, thus taking very little memory.
 
 ```jl
-(i for i in 1:10)
-collect(i for i in 1:10)   # construct a vector (this one takes more space)
+(i for i in 1:10)          # generator
+collect(i for i in 1:10)   # construct a vector (this one takes more space) from it
 [i for i in 1:10]          # functionally the same (vector via an array comprehension)
 ```
 
