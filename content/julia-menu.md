@@ -26,13 +26,13 @@ multi-processing standard library and its large array of tools. We will demo par
 problems: a slowly converging series and a Julia set. We will run examples on a multi-core laptop and an HPC
 cluster.
 
-**Instructors**: Alex Razoumov (SFU)
+**Instructor**: Alex Razoumov (SFU)
 
 **Prerequisites:** Ideally, some familiarity with the Alliance's HPC cluster environment, in particular, with
 the Slurm scheduler. Having some previous serial Julia programming experience would help, but we will start
 slowly so you will be able to follow up even if you are new to Julia.
 
-**Software**: There are 3 options:
+**Software**: There are a couple of options:
 
 1. You can work on our remote training cluster through an SSH client. You will need a remote secure shell
 (SSH) client installed on your computer in order to participate in course exercises. On Windows we recommend
@@ -40,15 +40,11 @@ slowly so you will be able to follow up even if you are new to Julia.
 SSH is usually pre-installed (try typing `ssh` in a terminal to make sure it is there). We will provide guest
 accounts on our training cluster. No need to install Julia on your computer.
 
-2. You can work on our remote training cluster via JupyterHub | Terminal. In this case you will want to ask
-   for 2-4 CPU cores and 3 hours. This is the easiest option (nothing to install on your computer), as you
-   will work entirely through a browser.
+2. You can use Julia on your own computer (if already installed).
 
-3. You can use Julia on your own computer (if installed).
-
-
-
-
+<!-- 3. You can work on our remote training cluster via JupyterHub | Terminal. In this case you will want to ask -->
+<!--    for 2-4 CPU cores and 3 hours. This is the easiest option (nothing to install on your computer), as you -->
+<!--    will work entirely through a browser. -->
 
 
 
@@ -66,6 +62,8 @@ accounts on our training cluster. No need to install Julia on your computer.
 <!-- {{<nolinktitle>}}Parallelizing the N-body problem{{</nolinktitle>}} (supplemental material)\ -->
 <!-- {{<nolinktitle>}}Parallelizing the additive Schwarz method{{</nolinktitle>}} (supplemental material)\ -->
 <!-- {{<nolinktitle>}}Distributed linear algebra in Julia{{</nolinktitle>}} (supplemental material) -->
+
+
 
 
 {{<cor>}}Part 1{{</cor>}} \
