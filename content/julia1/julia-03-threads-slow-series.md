@@ -57,30 +57,47 @@ code is **thread-safe**.
 > @threads does not have any data reduction built-in, which is a serious omission that will likely be
 > addressed in future versions.
 
-Let's initialize a large floating array:
+Let's initialize a large floating array and fill it with values in serial and time the loop. We'll package the
+code into a function to get more accurate timing with/without `@threads`.
 
 ```julia
-nthreads()        # still running 2 threads
-n = Int64(1e8)    # integer number
-n = 100_000_000   # another way of doing this
-a = zeros(n);
-typeof(a)         # how much memory does this array take?
-```
+n = Int64(1e8)     # integer number
+n = 100_000_000    # another way of doing this
 
-and then fill it with values using two threads and time the loop:
-
-```julia
-@time @threads for i in 1:n
-    a[i] = log10(i)
+function test(n)   # serial code
+    a = zeros(n);
+    for i in 1:n
+        a[i] = log10(i)
+    end
 end
+
+@time test(n)
 ```
 
-On the training cluster I get 2.25s, 2.33s, 2.20s.
+On the training cluster in three runs I get 2.52s, 2.45s, 2.43s.
+
+The multi-threaded code performs faster:
+
+```julia
+using Base.Threads
+nthreads()         # still running 2 threads
+
+function test(n)   # multi-threaded code
+    a = zeros(n);
+    @threads for i in 1:n
+        a[i] = log10(i)
+    end
+end
+
+@time test(n)
+
+```
+
+-- on the same cluster I see 1.49s, 1.54s, 1.41s. If I reschedule the job with `--cpus-per-task=4` and use
+`julia -t 4`, the times change to 0.84s, 0.93s, 0.79s.
 
 > **Note:** There is also `@btime` from BenchmarkTools package that has several advantages over `@time`. We
 > will switch to it soon.
-
-If I restart Julia and run the same code on a single thread, I will get ~2X runtime.
 
 ## Let's add reduction
 
