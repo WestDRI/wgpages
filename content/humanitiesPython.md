@@ -124,7 +124,7 @@ known issue that you can solve by running this command instead:
 jupyter lab --app-dir /opt/homebrew/share/jupyter/lab
 ```
 
-However you start your Jupyter session, the interface should quite intuitive:
+However you start your Jupyter session, the interface should be quite intuitive:
 
 - File | Save As - to rename your notebook
 - File | Download - download the notebook to your computer
@@ -211,7 +211,7 @@ You can search inside a list:
 
 ```py
 'Venus' in a[-1]       # returns True
-'Pluto' in a[-1]       # returns Falsecolours = ['red', 'green', 'white', 'black', 'pink', 'yellow']
+'Pluto' in a[-1]       # returns False
 
 a[-1].index('Venus')   # returns 1 (position index)
 planets = a[-1]
@@ -242,7 +242,7 @@ for i in b:
         print(i, "is not in a")
 ```
 
-Very often you can have multiple solutions to the same problem in Python. E.g., let's write a script to get
+In Python very often you can have multiple solutions to the same problem. E.g., let's write a script to get
 the frequency of all elements in a given list:
 
 **Solution 1:**
@@ -274,16 +274,29 @@ As you just saw, Python's **lists** are ordered sets of objects that you access 
 position/index. **Dictionaries** are unordered sets in which the objects are accessed via their keys. In other
 words, dictionaries are unordered key-value pairs.
 
-```py
-favs = {'mary': 'orange', 'john': 'green', 'eric': 'blue'}
-favs
-favs['john']      # returns 'green'
-favs['mary']      # returns 'orange'
-for key in favs:
-    print(key)            # will print the names (keys)
-    print(favs[key])      # will print the colours (values)
+Consider two lists:
 
-list(favs.values()).index('blue')     # will return the index of the first value 'blue'
+```py
+names = ['Mary', 'John', 'Eric', 'Jeff']       # people
+colours = ['orange', 'green', 'blue', 'red']   # and their respective favourite colours
+```
+
+There is nothing connecting these two lists, as far as figuring a person's favourite colour goes. You could do
+something like this using indices:
+
+```py
+colours[names.index('Eric')]
+```
+
+but this is a little too convoluted ... A dictionary can help you connect the two datasets:
+
+```py
+favs = {'Mary': 'orange', 'John': 'green', 'Eric': 'blue', 'Jeff': 'red'}
+favs
+favs['John']      # returns 'green'
+favs['Mary']      # returns 'orange'
+for key in favs:
+    print(key, favs[key])   # will print the names (keys) and the colours (values)
 ```
 
 Now let's see how to add items to a dictionary:
@@ -307,8 +320,8 @@ Values can also be numerical:
 
 ```py
 grades = {}
-grades['mary'] = 5
-grades['john'] = 4.5
+grades['Mary'] = 5
+grades['John'] = 4.5
 grades
 ```
 
