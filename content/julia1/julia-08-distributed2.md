@@ -115,7 +115,25 @@ julia -p $SLURM_NTASKS parallelFor.jl
 
 ### Solution 3: use `pmap` to map arguments to processes
 
-Let's write `mappingArguments.jl` with a new version of `slow()` that will compute partial sum on each worker:
+The `pmap()` function provides another mechanism to launch a function on all available workers:
+
+```julia
+@everywhere function showid(message)   # define the function everywhere
+    println(message, myid())           # this function returns nothing
+end
+showid("I am ")   # on control process
+pmap(showid, ["my id = ", "and mine = ", "reporting", "here we go: "]);
+```
+
+These two syntaxes are equivalent:
+
+```julia
+sum(pmap(slow, args))
+sum(pmap(x->slow(x), args))
+```
+
+Let's apply this mapping tool to our slow series. We'll start `mappingArguments.jl` with a new version of
+`slow()` that will compute partial sum on each worker:
 
 ```julia
 @everywhere function slow((n, digitSequence, taskid, ntasks))   # the argument is now a tuple
@@ -135,13 +153,6 @@ slow((10, 9, 1, 1))   # package arguments in a tuple; serial run
 nw = nworkers()
 args = [(Int64(1e8), 9, j, nw) for j in 1:nw]   # array of tuples to be mapped to workers
 println("total = ", sum(pmap(slow, args)))      # launch the function on each worker and sum the results
-```
-
-These two syntaxes are equivalent:
-
-```julia
-sum(pmap(slow, args))
-sum(pmap(x->slow(x), args))
 ```
 
 We see the following times from individual processes:

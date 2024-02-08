@@ -51,20 +51,24 @@ for i in workers()
 end
 ```
 
+You can assign `localindices()` output to variables:
+
 ```julia
 rows, cols = @fetchfrom 3 localindices(data)
 println(rows)     # the rows owned by worker 3
 ```
 
-We can only write into `data` from its "owner" workers using local indices on these workers:
+If we try to write into our distributed array on the control process, e.g. `data[6,1] = 1`, we'll get an
+error! We can only write into `data` from its "owner" workers using local indices on these workers:
+
 
 ```julia
 @everywhere function fillLocalBlock(data)
-    h, w = localindices(data)
-    for iGlobal in h                         # or collect(h)
-        iLoc = iGlobal - h.start + 1         # always starts from 1
-        for jGlobal in w                     # or collect(w)
-            jLoc = jGlobal - w.start + 1     # always starts from 1
+    h, w = localindices(data)   # indices of locally stored elements in global units
+    for iGlobal in h                       # or collect(h) to iterate through a vector
+        iLoc = iGlobal - h.start + 1       # convert to local units; always start from 1
+        for jGlobal in w                   # or collect(w) to iterate through a vector
+            jLoc = jGlobal - w.start + 1   # convert to local units; always start from 1
             data.localpart[iLoc,jLoc] = iGlobal + jGlobal
         end
     end

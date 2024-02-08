@@ -216,7 +216,11 @@ You can also spawn computation on *any* available worker:
 ```jl
 r = @spawnat :any log10(a)   # start running on one of the workers
 fetch(r)
+
+[@spawnat :any showid() for i in 1:10]   # using array comprehension
 ```
+
+
 
 ### Back to the slow series: serial code
 
@@ -253,7 +257,7 @@ end
 @btime slow(Int64(1e8), 9)     # serial run: total = 13.277605949858103
 ```
 
-For me this serial run takes 3.192 s on the training cluster. Next, let's run it on 3 (control + 2 workers)
+For me this serial run takes 2.225 on the training cluster. Next, let's run it on 3 (control + 2 workers)
 cores simultaneously:
 
 ```jl
@@ -261,8 +265,9 @@ cores simultaneously:
 @everywhere @btime slow(Int64(1e8), 9)   # runs on 3 (control + 2 workers) cores simultaneously
 ```
 
-Here we are being silly: this code is serial, so each core performs the same calculation ... I see the following times
-printed on my screen: 3.220 s, 2.927 s, 3.211 s—each is from a separate process running the code in a serial fashion.
+Here we are being silly: this code is serial, so each core performs the same calculation ... I see the
+following times printed on my screen: 3.220s, 2.927s, 3.211s -- each is from a separate process running the
+code in a serial fashion.
 
 <!-- When I try to run this code on my laptop (2 CPU cores), and I switch to timing with `@time` (resulting in only one run -->
 <!-- per process): -->
