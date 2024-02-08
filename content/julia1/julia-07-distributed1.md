@@ -74,7 +74,7 @@ Inside this job, start Julia with `julia` (single control process).
 ```jl
 using Distributed
 addprocs(4)   # add 4 worker processes; this might take a while on the training cluster
-println("number of cores = ", nprocs())       # 5 cores
+println("number of processes = ", nprocs())   # control process + 4 workers
 println("number of workers = ", nworkers())   # 4 workers
 workers()                                     # list worker IDs
 ```

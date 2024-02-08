@@ -76,14 +76,25 @@ precompile(slow, (Int, Int))
 slow(Int64(1e8), 9)   # total = 13.277605949855722
 ```
 
-> ### <font style="color:blue">Exercise "Distributed.5"</font>
-> Switch from using `@time` to using `@btime` in this code. What changes did you have to make?
+<!-- > ### <font style="color:blue">Exercise "Distributed.5"</font> -->
+<!-- > Switch from using `@time` to using `@btime` in this code. What changes did you have to make? -->
 
-<!-- 1. remove `@time` from inside `slow()` definition, add `@btime` when calling the function -->
-<!-- 1. replace printing `total` with `return total` -->
-<!-- 1. now don't have to precompile the function -->
+**Note**: the two macros `@btime` and `@distributed` do not work nicely with each other. If you try to replace
+`@time` with `@btime` inside `slow()`, you will run into weird errors, so best to combine `@distributed` with
+`@time` when doing this in the same line. However, you can use `@btime` when calling the function:
 
-This will produce the single time for the entire parallel loop (1.498s in my case).
+```julia
+function slow(n::Int64, digitSequence::Int)
+    total = @distributed (+) for i in 1:n
+        !digitsin(digitSequence, i) ? 1.0 / i : 0
+    end
+    return(total)
+end
+@btime slow(Int64(1e8), 9)
+```
+
+In either case -- whether using `@time` or `@btime` -- we'll get the single time for the entire parallel loop
+(1.498s in my case).
 
 > ### <font style="color:blue">Exercise "Distributed.6"</font>
 > Repeat on 8 CPU cores. Did your timing improve?
@@ -125,11 +136,12 @@ showid("I am ")   # on control process
 pmap(showid, ["my id = ", "and mine = ", "reporting", "here we go: "]);
 ```
 
-These two syntaxes are equivalent:
+There are two `pmap()` syntaxes:
 
 ```julia
-sum(pmap(slow, args))
-sum(pmap(x->slow(x), args))
+pmap(slow, args)
+pmap(x->x^2, [1,2,3,4])   # anonymous/lambda function
+pmap(x->println("I am worker ", myid()), workers())
 ```
 
 Let's apply this mapping tool to our slow series. We'll start `mappingArguments.jl` with a new version of
