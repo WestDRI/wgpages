@@ -168,8 +168,8 @@ help(print)
 
 ## High-level data collections
 
-Python has a number of built-in data structures: tuples, lists, sets, dictionaries. Here we take a look at
-*lists* and *dictionaries*.
+Python has a number of built-in composite data structures: tuples, lists, sets, dictionaries. Here we take a
+look at *lists* and *dictionaries*.
 
 ### Lists
 
@@ -277,8 +277,8 @@ words, dictionaries are unordered key-value pairs.
 Consider two lists:
 
 ```py
-names = ['Mary', 'John', 'Eric', 'Jeff']       # people
-colours = ['orange', 'green', 'blue', 'red']   # and their respective favourite colours
+names = ['Mary', 'John', 'Eric', 'Jeff', 'Anne']       # people
+colours = ['orange', 'green', 'blue', 'burgundy', 'turquoise']   # and their respective favourite colours
 ```
 
 There is nothing connecting these two lists, as far as figuring a person's favourite colour goes. You could do
@@ -288,18 +288,22 @@ something like this using indices:
 colours[names.index('Eric')]
 ```
 
-but this is a little too convoluted ... A dictionary can help you connect the two datasets:
+but this is a little too convoluted ... A dictionary can help you connect the two datasets directly:
 
 ```py
-favs = {'Mary': 'orange', 'John': 'green', 'Eric': 'blue', 'Jeff': 'red'}
-favs
+favs = {}  # start with an empty dictionary
+for name, colour in zip(names, colours):   # go through both lists simultaneously
+    favs[name] = colour
+
+favs   # {'Mary': 'orange', 'John': 'green', 'Eric': 'blue', 'Jeff': 'burgundy', 'Anne': 'turquoise'}
+
 favs['John']      # returns 'green'
 favs['Mary']      # returns 'orange'
 for key in favs:
     print(key, favs[key])   # will print the names (keys) and the colours (values)
 ```
 
-Now let's see how to add items to a dictionary:
+You can see where *dictionary* got its name:
 
 ```py
 concepts = {}
@@ -344,9 +348,11 @@ grades
 
 ```py
 event = "HSS Winter Series"
-event.<hit TAB twice>
+event.<hit TAB twice>   # strings can access a number of methods = functions
 event.capitalize()
 event.count("S")
+event.find("W")
+event.find("hello")   # -1 = not found
 event = event.replace("HSS", "Humanities and Social Sciences")
 event += " 2024"
 event.lower()
@@ -359,6 +365,15 @@ We can do all of this manipulation in one line:
 event = "HSS Winter Series"
 (event.replace("HSS", "Humanities and Social Sciences")+" 2024").upper()
 ```
+
+At this point you might ask about finding all occurrences of "S" inside `events`. One possible solution:
+
+```py
+import re   # regular expressions library
+[m.start() for m in re.finditer("S", event)]   # [1, 2, 11]
+```
+
+Let's now split our string:
 
 ```py
 words = event.split()   # split into words
@@ -682,7 +697,8 @@ local.tm_isdst    # Daylight Saving Time 1=on or 0=off
 
 You can find many more examples {{<a "https://realpython.com/python-time-module" "here">}}.
 
-
+<!-- abc -->
+<!-- Pendulum https://pendulum.eustace.io -->
 
 
 
@@ -824,3 +840,9 @@ free-of-charge support should you require help with these tools.
 - YouTube channel {{<a "https://www.youtube.com/c/pythontutorialsfordigitalhumanities" "Python Tutorials for Digital Humanities">}} by William Mattingly
 
 <!-- {{<a "link" "text">}} -->
+
+
+
+
+<!-- ## Other possible topics -->
+<!-- - working with text files -->
