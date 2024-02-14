@@ -21,8 +21,9 @@ after the 2024 HSS Winter Series.
 
 The goal of today's workshop is to demo some Python functionality, to give you a taste of the language's
 capabilities. We are not learning Python today, and we will not be doing any hands-on exercises, so please
-relax and watch the presentation. The three followup sessions on February 26-28 will teach you Python with
-many hands-on exercises (6 hours in total).
+relax and watch the presentation. The 
+{{<a "https://hss24.netlify.app/program/#february-26-28" "three followup sessions">}}
+on February 26-28 will teach you Python with many hands-on exercises (6 hours in total).
 
 ## Why Python?
 
@@ -291,17 +292,78 @@ colours[names.index('Eric')]
 but this is a little too convoluted ... A dictionary can help you connect the two datasets directly:
 
 ```py
-favs = {}  # start with an empty dictionary
+fav = {}  # start with an empty dictionary
 for name, colour in zip(names, colours):   # go through both lists simultaneously
-    favs[name] = colour
+    fav[name] = colour
 
-favs   # {'Mary': 'orange', 'John': 'green', 'Eric': 'blue', 'Jeff': 'burgundy', 'Anne': 'turquoise'}
+fav   # {'Mary': 'orange', 'John': 'green', 'Eric': 'blue', 'Jeff': 'burgundy', 'Anne': 'turquoise'}
 
-favs['John']      # returns 'green'
-favs['Mary']      # returns 'orange'
-for key in favs:
-    print(key, favs[key])   # will print the names (keys) and the colours (values)
+fav['John']      # returns 'green'
+fav['Mary']      # returns 'orange'
+for key in fav:
+    print(key, fav[key])   # will print the names (keys) and the colours (values)
 ```
+
+
+
+
+
+
+
+There are other ways to organize the same information using dictionaries. For example, you can create a list
+of dictionaries, one dictionary per person:
+
+```py
+names = ['Mary', 'John', 'Eric', 'Jeff', 'Anne']                 # people names
+colours = ['orange', 'green', 'blue', 'burgundy', 'turquoise']   # and their respective favourite colours
+ages = [25, 23, 27, 32, 26]                                       # let's include a third attribute
+
+data = []
+for name, colour, age in zip(names, colours, ages):   # go through both lists simultaneously
+    data.append({'name': name, 'colour': colour, 'age': age})
+
+person = data[0]
+print(person)
+print(person["name"], person["colour"])
+```
+
+The benefit of this approach is that you can have many more attributes per person, that just `name` and
+`colour`, and this is very common way to organize structured and/or hierarchical data in Python. The downside
+is that -- to search for by name -- you have to do it explicitly:
+
+```py
+for person in data:
+    if person["name"]=="Jeff": print(person["colour"], person["age"])
+```
+
+or in a single line:
+
+```py
+[(person["colour"], person["age"]) for person in data if person["name"]=="Jeff"]
+```
+
+Finally, if you want **performance**, this will be the fastest way:
+
+```py
+list(filter(lambda person: person["name"] == "Jeff", data))
+```
+
+<!-- Here we apply the anonymous "lambda" function `lambda person: person["name"] == "Jeff"` to each item in the -->
+<!-- collection `data` and return an *iterator* yielding only those items in `data` that evaluate to `true` when -->
+<!-- applying the lambda funtion. -->
+
+Here we:
+1. apply the anonymous "lambda" function `lambda person: person["name"] == "Jeff"` to each item in the
+   collection `data`; it returns True or False,
+2. create an *iterator* yielding only those items in `data` that produced True, and
+3. create a list from this iterator, in this case containing only one element.
+
+
+
+
+
+
+
 
 You can see where *dictionary* got its name:
 
@@ -348,10 +410,10 @@ grades
 
 ```py
 event = "HSS Winter Series"
-event.<hit TAB twice>   # strings can access a number of methods = functions
+event.<hit TAB once or twice>   # strings can access a number of methods = functions
 event.capitalize()
 event.count("S")
-event.find("W")
+event.find("S")       # the first occurrence
 event.find("hello")   # -1 = not found
 event = event.replace("HSS", "Humanities and Social Sciences")
 event += " 2024"
@@ -388,9 +450,10 @@ str(sentence)        # this is not what we want ...
 " ".join(sentence)   # this works!
 ```
 
-For more complex text manipulation, consider attending tomorrow's [*"3D
-Visualization"*](/vis) course where I will show how to compute differences in
-vocabularies between texts and them visualize these vocabularies as 3D scatter plots and 3D graphs.
+For more complex text manipulation, consider attending tomorrow's
+{{<a "https://hss24.netlify.app/program/#february-16" "3D Visualization workshop">}}
+where I will show how to compute differences in vocabularies between texts and them visualize these
+vocabularies as 3D scatter plots and graphs.
 
 
 
@@ -404,9 +467,9 @@ vocabularies between texts and them visualize these vocabularies as 3D scatter p
 
 ## Libraries
 
-A library is a collection of functions that can be used by other programs. Python's *standard library* includes many
-functions we worked with before (print, int, round, ...) and is included with Python. There are many other additional
-modules in the standard library such as math:
+A library is a collection of functions that can be used by other programs. Python's *standard library*
+includes many functions we worked with before (`print`, `list`, ...) and is included with Python. There are
+many other additional modules in the standard library such as math:
 
 ```py
 print('pi is', pi)
@@ -429,7 +492,7 @@ You can also create an alias from the library:
 
 ```py
 import math as m
-print m.pi
+print(m.pi)
 ```
 
 
@@ -550,7 +613,7 @@ numpy that could be used in HSS.
 
 ## Pandas
 
-Let's try reading some public-domain data about Jeopardy questions with `pandas`:
+Let's try reading some public-domain data about Jeopardy questions with `pandas` (31MB file, so it might take a while):
 
 ```py
 import pandas as pd
@@ -561,6 +624,8 @@ data.tail()     # last 5 rows
 data.iloc[2:5]  # rows 2-4
 data.columns    # names of the columns
 
+data['Category']
+data['Category']=='HISTORY'
 data.loc[data['Category']=='HISTORY'].shape   # 349 matches
 data.loc[data['Category']=='HISTORY'].to_csv("history.csv")   # write to a file
 ```
@@ -597,15 +662,16 @@ take a look at the latter.
 ```py
 from skimage import io   # scikit-image is a collection of algorithms for image processing
 image = io.imread(fname="https://raw.githubusercontent.com/razoumov/publish/master/grids.png")
-image.shape              # 1024^2 image, with three colour (RGB) channels
+type(image)   # numpy array
+image.shape   # 1024^2 image, with three colour (RGB) channels
 ```
 
 Let's plot this image using matplotlib:
 
 ```py
 io.imshow(image)
-io.show()
-io.imsave("tmp.png", image)
+# io.show()   # only if working in a terminal
+# io.imsave("tmp.png", image)
 ```
 
 Using numpy, you can easily manipulate pixels, e.g.
@@ -697,8 +763,7 @@ local.tm_isdst    # Daylight Saving Time 1=on or 0=off
 
 You can find many more examples {{<a "https://realpython.com/python-time-module" "here">}}.
 
-<!-- abc -->
-<!-- Pendulum https://pendulum.eustace.io -->
+<!-- could also cover Pendulum library https://pendulum.eustace.io -->
 
 
 
@@ -746,7 +811,7 @@ tag:
 </div>
 ```
 
-Let's search for all `<div>` tags with `class="list-title ..."`
+Let's search for all `<div>` tags with an attribute `class` starting with "list-title":
 
 ```py
 divs = mainpage.findAll("div", attrs={'class':'list-title'})
@@ -823,6 +888,20 @@ through several popular choices:
 If you want more advanced 3D rendering, in Python there are libraries to create
 {{<a "https://ccvis.netlify.app" "3D scientific visualizations">}}, and in the Alliance federation we provide
 free-of-charge support should you require help with these tools.
+
+In tomorrow's {{<a "https://hss24.netlify.app/program/#february-16" "3D Visualization workshop">}} I will demo
+using Python for analyzing a set of texts, building a global dictionary for all these texts, positioning each
+paragraph in this dictionary, and then visualizing differences between these paragraphs' vocabularies as a 3D
+scatter plot:
+
+{{< figure src="/img/withGospels.png" title="Four English and four Greek texts, each node representing a paragraph" width=600 >}}
+
+and as a 3D graph:
+
+{{< figure src="/img/a5.png" title="Lines connect paragraphs with at least 15 words in common" width=800 >}}
+
+
+
 
 
 
