@@ -278,8 +278,8 @@ words, dictionaries are unordered key-value pairs.
 Consider two lists:
 
 ```py
-names = ['Mary', 'John', 'Eric', 'Jeff', 'Anne']       # people
-colours = ['orange', 'green', 'blue', 'burgundy', 'turquoise']   # and their respective favourite colours
+names = ['Mary', 'John', 'Eric', 'Jeff', 'Anne']               # people
+colours = ['orange', 'green', 'blue', 'burgundy', 'turquoise'] # and their respective favourite colours
 ```
 
 There is nothing connecting these two lists, as far as figuring a person's favourite colour goes. You could do
@@ -450,10 +450,8 @@ str(sentence)        # this is not what we want ...
 " ".join(sentence)   # this works!
 ```
 
-For more complex text manipulation, consider attending tomorrow's
-{{<a "https://hss24.netlify.app/program/#february-16" "3D Visualization workshop">}}
-where I will show how to compute differences in vocabularies between texts and them visualize these
-vocabularies as 3D scatter plots and graphs.
+In tomorrow's {{<a "https://hss24.netlify.app/program/#february-16" "3D Visualization workshop">}} you will
+see some more complex text manipulation.
 
 
 
@@ -752,7 +750,7 @@ from time import *
 gmtime(0)   # show the starting epoch on my system (typically 1970-Jan-01 on Unix-like systems)
 time()      # number of seconds since then = current time
 ctime(time())   # convert that to human-readable time
-ctime()         # same
+ctime()         # same = current time
 
 local = localtime()   # convert current date/time to a structure
 local.tm_year, local.tm_mon, local.tm_mday
