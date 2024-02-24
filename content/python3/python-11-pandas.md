@@ -111,7 +111,7 @@ clean.loc[:,'Value'] = clean['Value'].apply(lambda x: int(x.replace('$','').repl
 clean
 ```
 
-{{< question num=20 >}}
+{{< question num=11.1 >}}
 Explain in simple terms what `idxmin()` and `idxmax()` do in the short program below. When would you use these
 methods?
 ```py

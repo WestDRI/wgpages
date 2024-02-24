@@ -56,7 +56,7 @@ nestedList = [a, b, c]
 print(nestedList)
 ```
 
-{{< question num="2: double subsetting" >}}
+{{< question num="5.1: double subsetting" >}}
 How would you extract element "Earth" from `nestedList`?
 {{< /question >}}
 
@@ -76,7 +76,7 @@ b.sort()
 b             # returns ['Earth', 'Mercury', 'Venus']
 ```
 
-{{< question num=3 >}}
+{{< question num=5.2 >}}
 Write a script to find the second largest number in the list [77,9,23,67,73,21].
 {{< /question >}}
 
