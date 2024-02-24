@@ -23,19 +23,22 @@ matplotlib, and few others.
 **Software**: We will be using Python on our training cluster, so no need to install it on your computer. However, in
   the long run you would probably benefit from Python on your computer, so you might want to look into this.
 
-{{<cor>}}Interactive session, split between three days{{</cor>}}
-
+{{<cor>}}Day 1{{</cor>}} \
 {{<linktitle url="../python3/python-01-setup" text="Setup and running Jupyter notebooks">}} \
 {{<linktitle url="../python3/python-02-variables" text="Variables and data types">}} \
 {{<linktitle url="../python3/python-03-builtin" text="Built-in functions and help">}} \
 {{<linktitle url="../python3/python-04-conditionals" text="Conditionals">}} \
 {{<linktitle url="../python3/python-05-lists" text="Lists">}} \
-{{<linktitle url="../python3/python-06-loops" text="Loops">}} \
+{{<linktitle url="../python3/python-06-loops" text="Loops">}}
+
+{{<cor>}}Day 2{{</cor>}} \
 {{<linktitle url="../python3/python-07-dictionaries" text="Dictionaries">}} \
 {{<linktitle url="../python3/python-08-functions" text="Writing functions">}} \
 {{<linktitle url="../python3/python-09-scope" text="Working with strings, variable scope, exceptions">}} \
 {{<linktitle url="../python3/python-10-libraries" text="Libraries, virtual environments and packaging">}} \
-{{<linktitle url="../python3/python-11-pandas" text="Pandas dataframes">}} \
+{{<linktitle url="../python3/python-11-pandas" text="Pandas dataframes">}}
+
+{{<cor>}}Day 3{{</cor>}} \
 {{<linktitle url="../python3/python-12-images" text="Image manipulation, hierarchical data, time">}} \
 {{<linktitle url="../python3/python-13-scraping" text="Web scraping">}} \
 {{<linktitle url="../python3/python-14-matplotlib" text="Plotting with matplotlib">}}
