@@ -6,6 +6,22 @@ slug = "intropython"
 {{<cor>}}Friday, October 6th{{</cor>}}\
 {{<cgr>}}1:00pm - 2:30pm{{</cgr>}}
 
+
+
+
+
+
+
+
+<!-- http://localhost:1313/3daypython contains an updated version of this material, so might want to update it here -->
+
+
+
+
+
+
+
+
 <!-- Course materials will be added here shortly before the start of the course. -->
 
 <!-- Register for this course -->

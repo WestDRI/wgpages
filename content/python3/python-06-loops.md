@@ -76,7 +76,7 @@ Write a Python code to revert a string, e.g. 'computer' should become 'retupmoc'
 <!-- ``` -->
 
 {{< question num=5 >}}
-Print a difference between two lists, e.g. [1, 2, 3, 4] and [1, 2, 5].
+Print a difference between two lists, e.g. [1, 2, 3, 4, 6, 10] and [1, 2, 5, 10].
 {{< /question >}}
 
 {{< question num=6 >}}
@@ -135,7 +135,7 @@ for i, j in enumerate(b):    # creates a list of tuples with an iterator as the 
 <!-- input = [(2, 5), (1, 2), (4, 4), (2, 3), (2, 1)] should result in -->
 <!-- [(2, 1), (1, 2), (2, 3), (4, 4), (2, 5)]. -->
 
-## List comprehensions
+### List comprehensions
 
 It's a compact way to create new lists based on existing lists/collections. Let's list squares of numbers
 from 1 to 10:
@@ -148,6 +148,12 @@ Of these, list only odd squares:
 
 ```py
 [x**2 for x in range(1,11) if x%2==1]
+```
+
+The first list in the previous section was also generated via a list comprehension:
+
+```py
+events = [random.randint(0,2024) for i in range(10)]
 ```
 
 You can also use list comprehensions to combine information from two or more lists:
@@ -171,6 +177,6 @@ Write a one-line code to sum up the squares of numbers from 1 to 100.
 {{< /question >}}
 
 {{< question num=8 >}}
-Write a script to build a list of words that are shorter than `n` from a given list of words
+Write a script to build a list of words that are shorter than `n` characters from a given list of words
 `['red', 'green', 'white', 'black', 'pink', 'yellow']`.
 {{< /question >}}

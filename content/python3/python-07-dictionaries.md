@@ -4,30 +4,100 @@ slug = "python-07-dictionaries"
 weight = 7
 +++
 
-**Lists** in Python are ordered sets of objects that you access via their position/index. **Dictionaries** are unordered
-sets in which the objects are accessed via their keys. In other words, dictionaries are unordered key-value pairs.
+As you just saw, Python's **lists** are ordered sets of objects that you access via their
+position/index. **Dictionaries** are unordered sets in which the objects are accessed via their keys. In other
+words, dictionaries are unordered key-value pairs.
+
+Consider two lists:
 
 ```py
-favs = {'mary': 'orange', 'john': 'green', 'eric': 'blue'}
-favs
-favs['john']      # returns 'green'
-favs['mary']      # returns 'orange'
-list(favs.values()).index('blue')     # will return the index of the first value 'blue'
+names = ['Mary', 'John', 'Eric', 'Jeff', 'Anne']               # people
+colours = ['orange', 'green', 'blue', 'burgundy', 'turquoise'] # and their respective favourite colours
 ```
 
+There is nothing connecting these two lists, as far as figuring a person's favourite colour goes. You could do
+something like this using indices:
+
 ```py
-for key in favs:
-	print(key)            # will print the names (keys)
-	print(favs[key])      # will print the colours (values)
-for k in favs.keys():
-	print(k, favs[k])     # the same as above
-for v in favs.values():
+colours[names.index('Eric')]
+```
+
+but this is a little too convoluted ... A dictionary can help you connect the two datasets directly:
+
+```py
+fav = {}  # start with an empty dictionary
+for name, colour in zip(names, colours):   # go through both lists simultaneously
+    fav[name] = colour
+
+fav   # {'Mary': 'orange', 'John': 'green', 'Eric': 'blue', 'Jeff': 'burgundy', 'Anne': 'turquoise'}
+
+fav['John']      # returns 'green'
+fav['Mary']      # returns 'orange'
+for key in fav:
+    print(key, fav[key])   # will print the names (keys) and the colours (values)
+```
+
+You can also cycle using `.keys()`, `.values()` and `.items()` methods:
+```py
+for k in fav.keys():
+	print(k, fav[k])     # the same as above
+
+for v in fav.values():
 	print(v)              # cycle through the values
-for i, j in favs.items():
+
+for i, j in fav.items():
 	print(i,j)            # both the names and the colours
 ```
 
-Now let's see how to add items to a dictionary:
+There are other ways to organize the same information using dictionaries. For example, you can create a list
+of dictionaries, one dictionary per person:
+
+```py
+names = ['Mary', 'John', 'Eric', 'Jeff', 'Anne']                 # people names
+colours = ['orange', 'green', 'blue', 'burgundy', 'turquoise']   # and their respective favourite colours
+ages = [25, 23, 27, 32, 26]                                      # let's include a third attribute
+
+data = []
+for name, colour, age in zip(names, colours, ages):   # go through both lists simultaneously
+    data.append({'name': name, 'colour': colour, 'age': age})
+
+person = data[0]
+print(person)
+print(person["name"], person["colour"])
+```
+
+The benefit of this approach is that you can have many more attributes per person, that just `name` and
+`colour`, and this is very common way to organize structured and/or hierarchical data in Python. The downside
+is that -- to search for by name -- you have to do it explicitly:
+
+```py
+for person in data:
+    if person["name"]=="Jeff": print(person["colour"], person["age"])
+```
+
+or in a single line:
+
+```py
+[(person["colour"], person["age"]) for person in data if person["name"]=="Jeff"]
+```
+
+Finally, if you want **performance**, this will be the fastest way:
+
+```py
+list(filter(lambda person: person["name"] == "Jeff", data))
+```
+
+<!-- Here we apply the anonymous "lambda" function `lambda person: person["name"] == "Jeff"` to each item in the -->
+<!-- collection `data` and return an *iterator* yielding only those items in `data` that evaluate to `true` when -->
+<!-- applying the lambda funtion. -->
+
+Here we:
+1. apply the anonymous "lambda" function `lambda person: person["name"] == "Jeff"` to each item in the
+   collection `data`; it returns True or False,
+2. create an *iterator* yielding only those items in `data` that produced True, and
+3. create a list from this iterator, in this case containing only one element.
+
+You can see where *dictionary* got its name:
 
 ```py
 concepts = {}
@@ -39,8 +109,8 @@ concepts
 Let's modify values:
 
 ```py
-concepts['list'] = 'simple: ' + concepts['list']
-concepts['dictionary'] = 'complex: ' + concepts['dictionary']
+concepts['list'] = concepts['list'] + ' - very simple'
+concepts['dictionary'] = concepts['dictionary'] + ' - used widely in Python'
 concepts
 ```
 
@@ -66,26 +136,29 @@ grades[1] = 2
 grades
 ```
 
-Sorting dictionary items:
+## Sorting dictionary items
 
 ```py
-favs = {'mary': 'orange', 'john': 'green', 'eric': 'blue', 'jane': 'orange'}
-sorted(favs)             # returns the sorted list of keys
-sorted(favs.keys())      # the same
-for k in sorted(favs):
-	print(k, favs[k])         # full dictionary sorted by key
-sorted(favs.values())         # returns the sorted list of values
+fav = {'mary': 'orange', 'john': 'green', 'eric': 'blue', 'jane': 'orange'}
+sorted(fav)             # returns the sorted list of keys
+sorted(fav.keys())      # the same
+for k in sorted(fav):
+	print(k, fav[k])         # full dictionary sorted by key
+
+sorted(fav.values())         # returns the sorted list of values
 ```
 
 {{< question num=9 >}}
-Write a script to print the full dictionary sorted by the value.
+Write a script to print the full dictionary (keys and values) sorted by the value.
 
 **Hint**: create a list comprehension looping through all (key,value) pairs and then try sorting the result.
 {{< /question >}}
 
 <!-- ```py -->
-<!-- sorted([(v,k) for (k,v) in favs.items()])   # notice the order-->
+<!-- sorted([(v,k) for (k,v) in fav.items()])   # notice the order-->
 <!-- ``` -->
+
+## Dictionary comprehensions
 
 Similar to list comprehensions, we can form a dictionary comprehension:
 

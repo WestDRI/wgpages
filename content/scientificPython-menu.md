@@ -6,6 +6,23 @@ slug = "scientificpython"
 {{<cor>}}Friday, October 27th{{</cor>}}\
 {{<cgr>}}1:00pm-2:30pm Pacific Time{{</cgr>}}
 
+
+
+
+
+
+
+
+<!-- http://localhost:1313/3daypython contains an updated version of this material, so might want to update it here -->
+
+
+
+
+
+
+
+
+
 <!-- Course materials will be added here shortly before the start of the course. -->
 
 <!-- Register for this course -->

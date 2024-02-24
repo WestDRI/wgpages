@@ -3,40 +3,27 @@ title = "Introduction to Python"
 slug = "3daypython"
 +++
 
-{{<cor>}}Friday, October 6th{{</cor>}}\
-{{<cgr>}}1:00pm - 2:30pm{{</cgr>}}
-
-<!-- Course materials will be added here shortly before the start of the course. -->
-
-<!-- Register for this course -->
-<!-- {{<a "https://docs.google.com/forms/d/e/1FAIpQLSc5u2bwaPWW53D9kijqQxyqRSoFqUTx55iWjPJpzjMFAR3Dag/viewform" "here">}}. -->
+{{<cor>}}February 26-28{{</cor>}}\
+{{<cgr>}}9:00am - 11:00am Pacific Time each day{{</cgr>}}
 
 ---
 
-Python is a popular language for scientific computing, and great for general-purpose programming as well. This
-introductory course will walk you through the basics of programming in Python. We will cover the main language
-features – variables and data types, conditionals, lists, for/while loops, list comprehensions, dictionaries,
-writing functions, and working with external libraries.
+**Description**: Python can be used in many humanities and social sciences workflows, and it is an easy and
+fun language to learn. This introductory 3-day, 6-hour course will walk you through the basics of programming
+in Python starting at the beginner's level. We will cover the main language features – variables and data
+types, conditionals, lists, for/while loops, list comprehensions, dictionaries, writing functions, and working
+with external libraries, doing many exercises along the way. In the second part we will take a look at some of
+the libraries in more details, including pandas for working with large tables, simple plotting with
+matplotlib, and few others.
 
-**Instructors**: Alex Razoumov
+**Instructor**: Alex Razoumov (SFU)
 
-**Prerequisites**: This course assumes some basic knowledge of Python (`for` loops, `if` statements, writing
-functions, lists, dictionaries).
+**Prerequisites**: None.
 
 **Software**: We will be using Python on our training cluster, so no need to install it on your computer. However, in
   the long run you would probably benefit from Python on your computer, so you might want to look into this.
-  
-<!-- During the workshop you will likely need a remote secure shell (SSH) client installed on your computer in -->
-<!-- order to participate in the course exercises. On Windows we recommend [the free Home Edition of -->
-<!-- MobaXterm](https://mobaxterm.mobatek.net/download.html). On Mac and Linux computers SSH is usually -->
-<!-- pre-installed (try typing `ssh` in a terminal to make sure it is there). -->
 
-
-
-
-
-{{<cor>}}Interactive session{{</cor>}}
-<!-- {{<cgr>}}10:00am-noon Pacific{{</cgr>}} -->
+{{<cor>}}Interactive session, split between three days{{</cor>}}
 
 {{<linktitle url="../python3/python-01-setup" text="Setup and running Jupyter notebooks">}} \
 {{<linktitle url="../python3/python-02-variables" text="Variables and data types">}} \
@@ -46,5 +33,23 @@ functions, lists, dictionaries).
 {{<linktitle url="../python3/python-06-loops" text="Loops">}} \
 {{<linktitle url="../python3/python-07-dictionaries" text="Dictionaries">}} \
 {{<linktitle url="../python3/python-08-functions" text="Writing functions">}} \
-{{<linktitle url="../python3/python-09-scope" text="Variable scope and other topics">}} \
-{{<linktitle url="../python3/python-10-libraries" text="Libraries, virtual environments and packaging">}}
+{{<linktitle url="../python3/python-09-scope" text="Working with strings, variable scope, exceptions">}} \
+{{<linktitle url="../python3/python-10-libraries" text="Libraries, virtual environments and packaging">}} \
+{{<linktitle url="../python3/python-11-pandas" text="Pandas dataframes">}} \
+{{<linktitle url="../python3/python-12-images" text="Image manipulation, hierarchical data, time">}} \
+{{<linktitle url="../python3/python-13-scraping" text="Web scraping">}} \
+{{<linktitle url="../python3/python-14-matplotlib" text="Plotting with matplotlib">}}
+
+<!-- - working with external libraries -->
+<!-- - add many new exercises -->
+<!-- - pandas for working with large tables -->
+<!-- - simple plotting with matplotlib -->
+<!-- - few others -->
+<!-- - cartopy? -->
+
+## Links
+
+- Workshop {{<a "https://wgpages.netlify.app/formats" "What format to choose to save your data">}} from November 2022
+- YouTube channel {{<a "https://www.youtube.com/c/pythontutorialsfordigitalhumanities" "Python Tutorials for Digital Humanities">}} by William Mattingly
+
+<!-- {{<a "link" "text">}} -->

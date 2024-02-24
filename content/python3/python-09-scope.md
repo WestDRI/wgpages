@@ -1,8 +1,64 @@
 +++
-title = "Variable scope and other topics"
+title = "Working with strings, variable scope, exceptions"
 slug = "python-09-scope"
 weight = 9
 +++
+
+## Working with strings
+
+A `string` object in Python has a number of built-in methods:
+
+```py
+event = "HSS Winter Series"
+event.<hit TAB once or twice>   # strings can access a number of methods = functions
+event.capitalize()
+event.count("S")
+event.find("S")       # the first occurrence
+event.find("hello")   # -1 = not found
+event = event.replace("HSS", "Humanities and Social Sciences")
+event += " 2024"
+event.lower()
+event.upper()
+```
+
+We can do all of this manipulation in one line:
+
+```py
+event = "HSS Winter Series"
+(event.replace("HSS", "Humanities and Social Sciences")+" 2024").upper()
+```
+
+At this point you might ask about finding all occurrences of "S" inside `events`. One possible solution:
+
+```py
+import re   # regular expressions library
+[m.start() for m in re.finditer("S", event)]   # [1, 2, 11]
+```
+
+Let's now split our string:
+
+```py
+words = event.split()   # split into words
+'_'.join(words)         # join these words into a string with the `-` separator
+```
+
+This `.join()` syntax is useful for many purposes, e.g. you can use it to convert a list to a string:
+
+```py
+sentence = ["Good", "morning"]
+str(sentence)        # this is not what we want ...
+" ".join(sentence)   # this works!
+```
+
+
+
+
+
+
+
+
+
+## Variable scope
 
 The scope of a variable is the part of a program that can see that variable.
 
@@ -11,7 +67,7 @@ a = 5
 def adjust(b):
 	sum = a + b
     return sum
-adjust(10)   # what will be the outcome?
+adjust(10)   # what will the outcome be?
 ```
 
 * `a` is the global variable &nbsp;⇨&nbsp; visible everywhere
@@ -37,6 +93,11 @@ def add():
 add()
 print(a)          # []
 ```
+
+
+
+
+
 
 ## Handling exceptions
 
@@ -109,6 +170,8 @@ Write the rest of the mortgage calculation code.
 > code under `if payment == None` condition. Alternatively, you can put everything into a function with
 > optional arguments that default to None unless assigned values. I personally like the implementation with
 > the exception handling, as this way you don't have to assign the missing variable at all.
+
+
 
 
 
