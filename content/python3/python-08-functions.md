@@ -83,6 +83,21 @@ Celsius temperatures.
 <!-- ``` -->
 {{< /question >}}
 
+
+
+
+
+abc
+Write a Python function that takes two lists and returns True if they have at least one common member.
+
+
+
+
+
+
+
+
+
 Function arguments in Python can take default values becoming optional:
 
 ```py

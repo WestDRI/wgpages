@@ -54,6 +54,18 @@ else:
 <!--     print(x, 'is zero') -->
 <!-- ``` -->
 
+
+abc
+name = input("Please enter your name.")
+if name.lower() == "bond":
+    print("Welcome on board 007")
+else:
+    print("Good morning " + name)
+
+
+
+
+
 What is the problem with the following code?
 
 ```py

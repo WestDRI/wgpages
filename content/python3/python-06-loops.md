@@ -135,6 +135,71 @@ for i, j in enumerate(b):    # creates a list of tuples with an iterator as the 
 <!-- input = [(2, 5), (1, 2), (4, 4), (2, 3), (2, 1)] should result in -->
 <!-- [(2, 1), (1, 2), (2, 3), (4, 4), (2, 5)]. -->
 
+
+
+abc
+Write a program to add two lists index-wise, e.g.
+`['M', 'na', 'i', 'Ke']` and
+`['y', 'me', 's', 'lly']` should produce
+`['My', 'name', 'is', 'Kelly']`.
+
+
+
+abc
+Remove empty strings from the list of strings, e.g. 
+`["Mike", "", "Emma", "Kelly", "", "Brad"]` should become 
+`["Mike", "Emma", "Kelly", "Brad"]`.
+
+
+
+abc
+Remove all occurrences of of a specific item, e.g. in this case number 20 from the list 
+`[5, 20, 15, 20, 25, 50, 20]`, so it'll become 
+`[5, 15, 25, 50]`.
+```py
+list1 = [5, 20, 15, 20, 25, 50, 20]
+while 20 in list1:
+    list1.remove(20)
+print(list1)
+```
+
+
+abc
+Write a Python program to remove duplicates from a list.
+
+
+abc
+Write a Python program to check if a list is empty or not.
+
+
+
+abc
+Write a Python program to flatten a nested list.
+
+
+
+
+abc
+Write a Python program to check whether two lists are circularly identical.
+
+
+
+
+abc
+Write a Python program to check whether a list contains a sublist.
+
+
+
+abc
+Write a Python program to convert a list of multiple integers into a single integer.
+Sample list: [11, 33, 50]
+Expected Output: 113350
+
+
+
+
+
+
 ### List comprehensions
 
 It's a compact way to create new lists based on existing lists/collections. Let's list squares of numbers
