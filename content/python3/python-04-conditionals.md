@@ -55,19 +55,26 @@ else:
 <!-- ``` -->
 
 
-abc
-name = input("Please enter your name.")
-if name.lower() == "bond":
-    print("Welcome on board 007")
-else:
-    print("Good morning " + name)
+
+
+{{< question num=4.1 >}}
+Complete this code:
+```sh
+name = input("Please enter your name")
+...
+```
+to print "Welcome on board 007" if you enter any combination of upper/lower case "Bond", otherwise do not
+print anything.
+{{< /question >}}
+<!-- name.lower() == "bond" -->
 
 
 
 
 
+
+{{< question num=4.2 >}}
 What is the problem with the following code?
-
 ```py
 grade = 85
 if grade >= 70:
@@ -77,3 +84,4 @@ elif grade >= 80:
 elif grade >= 90:
     print('grade is A')
 ```
+{{< /question >}}

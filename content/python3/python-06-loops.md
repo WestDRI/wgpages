@@ -115,6 +115,22 @@ while x > 1.:
     print(x)
 ```
 
+{{< question num=6.4 >}}
+Remove all occurrences of a specific item in a list, e.g. in this case number 20 in the list `[5, 20, 15, 20,
+25, 50, 20]`, so it becomes `[5, 15, 25, 50]`.
+
+**Hint**: use `while` to check if 20 is still in the list.
+{{< /question >}}
+
+<!-- ```py -->
+<!-- a = [5, 20, 15, 20, 25, 50, 20] -->
+<!-- while 20 in a: -->
+<!--     a.remove(20) -->
+<!-- ``` -->
+
+
+
+
 ## More on lists in loops
 
 You can also form a *zip* object of tuples from two lists of the same length:
@@ -137,63 +153,28 @@ for i, j in enumerate(b):    # creates a list of tuples with an iterator as the 
 
 
 
-abc
-Write a program to add two lists index-wise, e.g.
-`['M', 'na', 'i', 'Ke']` and
-`['y', 'me', 's', 'lly']` should produce
-`['My', 'name', 'is', 'Kelly']`.
 
 
 
-abc
-Remove empty strings from the list of strings, e.g. 
-`["Mike", "", "Emma", "Kelly", "", "Brad"]` should become 
-`["Mike", "Emma", "Kelly", "Brad"]`.
+{{< question num=6.5 >}}
+Write a program to add two lists index-wise, e.g. `['M', 'na', 'i', 'Ke']` and `['y', 'me', 's', 'lly']`
+should produce a single list `['My', 'name', 'is', 'Kelly']`.
+{{< /question >}}
 
-
-
-abc
-Remove all occurrences of of a specific item, e.g. in this case number 20 from the list 
-`[5, 20, 15, 20, 25, 50, 20]`, so it'll become 
-`[5, 15, 25, 50]`.
-```py
-list1 = [5, 20, 15, 20, 25, 50, 20]
-while 20 in list1:
-    list1.remove(20)
-print(list1)
-```
-
-
-abc
-Write a Python program to remove duplicates from a list.
-
-
-abc
-Write a Python program to check if a list is empty or not.
-
-
-
-abc
-Write a Python program to flatten a nested list.
+<!-- ```py -->
+<!-- a = ['M', 'na', 'i', 'Ke'] -->
+<!-- b = ['y', 'me', 's', 'lly'] -->
+<!-- c = [] -->
+<!-- for i, j, in zip(a,b): -->
+<!--     c.append(i+j) -->
+<!-- ``` -->
 
 
 
 
-abc
-Write a Python program to check whether two lists are circularly identical.
 
 
 
-
-abc
-Write a Python program to check whether a list contains a sublist.
-
-
-
-abc
-Write a Python program to convert a list of multiple integers into a single integer.
-Sample list: [11, 33, 50]
-Expected Output: 113350
 
 
 
@@ -237,11 +218,72 @@ The syntax is:
 [something(i) for i in list1 if i [not] in list2 if i [not] in list3 ...]
 ```
 
-{{< question num=6.4 >}}
+
+
+
+{{< question num=6.6 >}}
+Remove empty strings from the list of strings, e.g.  `["Mike", "", "Emma", "Kelly", "", "Brad"]` should become
+`["Mike", "Emma", "Kelly", "Brad"]`.
+{{< /question >}}
+
+<!-- ```py -->
+<!-- a = ["Mike", "", "Emma", "Kelly", "", "Brad"] -->
+<!-- [i for i in a if len(i)>1] -->
+<!-- ``` -->
+
+{{< question num=6.7 >}}
 Write a one-line code to sum up the squares of numbers from 1 to 100.
 {{< /question >}}
 
-{{< question num=6.5 >}}
+{{< question num=6.8 >}}
 Write a script to build a list of words that are shorter than `n` characters from a given list of words
 `['red', 'green', 'white', 'black', 'pink', 'yellow']`.
+{{< /question >}}
+
+
+
+
+
+
+<!-- abc -->
+<!-- Write a program to remove duplicates from a list. -->
+
+
+<!-- abc -->
+<!-- Write a program to check if a list is empty or not. -->
+
+
+
+{{< question num=6.9 >}}
+Write a program to flatten a nested list, e.g. `[[11, 21.0, 3.5], ['Mercury', 'Venus', 'Earth'], 'hello']`
+should become `[11, 21.0, 3.5, 'Mercury', 'Venus', 'Earth', 'hello']`.
+
+**Hint**: try nested list comprehensions, or two nested loops.
+{{< /question >}}
+
+<!-- ```py -->
+<!-- a = [[11, 21.0, 3.5], ['Mercury', 'Venus', 'Earth'], 'hello'] -->
+<!-- [j for i in a for j in i] -->
+<!-- ``` -->
+
+
+
+
+
+
+<!-- abc -->
+<!-- Write a program to check whether two lists are circularly identical. -->
+
+
+
+
+<!-- abc -->
+<!-- Write a program to check whether a list contains a sublist. -->
+
+
+
+
+{{< question num="6.10" >}}
+Write a program to convert a list of multiple integers into a single integer with all their digits combined,
+e.g. a list `[11, 33, 50]` should become 113350.
 {{< /question >}}

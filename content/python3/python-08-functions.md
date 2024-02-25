@@ -86,9 +86,10 @@ Celsius temperatures.
 
 
 
+{{< question num=8.4 >}}
+Write a function that takes two lists and returns True if they have at least one common member.
+{{< /question >}}
 
-abc
-Write a Python function that takes two lists and returns True if they have at least one common member.
 
 
 
