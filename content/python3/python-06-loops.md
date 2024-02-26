@@ -157,13 +157,13 @@ for i, j in enumerate(b):    # creates a list of tuples with an iterator as the 
 
 
 {{< question num=6.5 >}}
-Write a program to add two lists index-wise, e.g. `['M', 'na', 'i', 'Ke']` and `['y', 'me', 's', 'lly']`
-should produce a single list `['My', 'name', 'is', 'Kelly']`.
+Write a program to add two lists index-wise, e.g. `['M', 'na', 'i', 'Stu']` and `['y', 'me', 's', 'art']`
+should produce a single list `['My', 'name', 'is', 'Stuart']`.
 {{< /question >}}
 
 <!-- ```py -->
-<!-- a = ['M', 'na', 'i', 'Ke'] -->
-<!-- b = ['y', 'me', 's', 'lly'] -->
+<!-- a = ['M', 'na', 'i', 'Stu'] -->
+<!-- b = ['y', 'me', 's', 'art'] -->
 <!-- c = [] -->
 <!-- for i, j, in zip(a,b): -->
 <!--     c.append(i+j) -->
@@ -258,7 +258,7 @@ Write a script to build a list of words that are shorter than `n` characters fro
 Write a program to flatten a nested list, e.g. `[[11, 21.0, 3.5], ['Mercury', 'Venus', 'Earth'], 'hello']`
 should become `[11, 21.0, 3.5, 'Mercury', 'Venus', 'Earth', 'hello']`.
 
-**Hint**: try nested list comprehensions, or two nested loops.
+**Hint**: try two nested loops, or maybe extend two nested loops to a nested list comprehension.
 {{< /question >}}
 
 <!-- ```py -->

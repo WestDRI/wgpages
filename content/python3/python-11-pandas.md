@@ -111,6 +111,10 @@ clean.loc[:,'Value'] = clean['Value'].apply(lambda x: int(x.replace('$','').repl
 clean
 ```
 
+
+
+
+
 {{< question num=11.1 >}}
 Explain in simple terms what `idxmin()` and `idxmax()` do in the short program below. When would you use these
 methods?
@@ -123,10 +127,21 @@ clean.idxmax()
 clean.loc["Freddie And The Dreamers"]
 clean.loc["Suriname"]
 ```
-or use help pages.
+or use help pages. This simpler example could also help:
+```py
+col1 = ["1","a","A"]
+col2 = ["4","b","B"]
+data = pd.DataFrame({'a': col1, 'b': col2})   # dataframe from a dictionary
+data.idxmin()
+```
 {{< /question >}}
 
 <!-- These return the row names with min and max in each column. -->
+
+
+
+
+
 
 Finally, let's check what time period is covered by these data:
 
@@ -143,9 +158,16 @@ for y in range(100):
 
 This shows that this table covers years from 1984 to 2012.
 
+
+
+
+
+
+
 ## Creating a dataframe from scratch
 
-How do you create a dataframe from scratch? There are many ways; perhaps, the easiest is by defining columns:
+How do you create a dataframe from scratch? There are many ways; perhaps, the easiest is by defining columns
+(as you saw in the last exercise):
 
 ```py
 col1 = [1,2,3]
@@ -161,72 +183,12 @@ pd.DataFrame({'a': col1, 'b': col2}, index=['a1','a2','a3'])
 
 
 
+
+
+
 ## Three solutions to a classification problem
 
 <!-- idea from https://youtu.be/SAFmrTnEHLg -->
-
-
-
-
-
-
-
-<!-- Let's create a simple dataframe from scratch: -->
-
-<!-- ```py -->
-<!-- import pandas as pd -->
-<!-- import numpy as np -->
-
-<!-- df = pd.DataFrame() -->
-<!-- size = 10_000 -->
-<!-- df['studentID'] = np.arange(1, size+1) -->
-<!-- df['grade'] = np.random.choice(['A', 'B', 'C', 'D'], size) -->
-
-<!-- df.head() -->
-<!-- ``` -->
-
-<!-- Let's built a new column `outcome` containing *"pass"* or *"fail"* based on the numeric grade column. Let's -->
-<!-- start by processing a row: -->
-
-<!-- ```py -->
-<!-- def result(row): -->
-<!--     if row['grade'] == 'A': -->
-<!--         return 'pass' -->
-<!--     return 'fail' -->
-<!-- ``` -->
-
-<!-- (1) We can apply this function to each row in a loop: -->
-
-<!-- ```py -->
-<!-- %%timeit -->
-<!-- for index, row in df.iterrows(): -->
-<!--     df.loc[index, 'outcome'] = result(row) -->
-<!-- ``` -->
-<!-- <\!-- => 290 ms -\-> -->
-
-<!-- (2) We can use `df.apply()` to apply this function to each row: -->
-
-<!-- ```py -->
-<!-- %%timeit -->
-<!-- df['outcome'] = df.apply(result, axis=1)   # axis=1 applies the function to each row -->
-<!-- ``` -->
-<!-- <\!-- => 30.8 ms -\-> -->
-
-<!-- (3) Or we could use a mask to only assign `pass` to rows with `A`: -->
-
-<!-- ```py -->
-<!-- %%timeit -->
-<!-- df['outcome'] = 'fail' -->
-<!-- df.loc[df['grade'] == 'A', 'outcome'] = 'pass' -->
-<!-- ``` -->
-<!-- <\!-- => 473 µs -\-> -->
-
-
-
-
-
-
-
 
 Fizz buzz is a children's game to practice divisions. Players take turn counting out loud while replacing:
 - any number divisible by 3 with the word "Fizz",

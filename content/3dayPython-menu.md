@@ -28,10 +28,10 @@ matplotlib, and few others.
 {{<linktitle url="../python3/python-02-variables" text="Variables and data types">}} \
 {{<linktitle url="../python3/python-03-builtin" text="Built-in functions and help">}} \
 {{<linktitle url="../python3/python-04-conditionals" text="Conditionals">}} \
-{{<linktitle url="../python3/python-05-lists" text="Lists">}} \
-{{<linktitle url="../python3/python-06-loops" text="Loops">}}
+{{<linktitle url="../python3/python-05-lists" text="Lists">}}
 
 {{<cor>}}Day 2{{</cor>}} \
+{{<linktitle url="../python3/python-06-loops" text="Loops">}} \
 {{<linktitle url="../python3/python-07-dictionaries" text="Dictionaries">}} \
 {{<linktitle url="../python3/python-08-functions" text="Writing functions">}} \
 {{<linktitle url="../python3/python-09-scope" text="Working with strings, variable scope, exceptions">}} \

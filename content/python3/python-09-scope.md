@@ -101,11 +101,15 @@ print(a)          # []
 
 ## Handling exceptions
 
-Let's say we want to write a code to calculate mortgage payments. For a fixed interest rate in percent, we
-have two of the following three variables: the principal amount, the term in years, and a monthly payment. Our
-code will calculate the third variable, based on the other two. There are three scenarios:
+Putting some explicit logic into your code to deal with errors will make your code more robust. For example,
+if the input data are missing, you can have some printout to show the instructions to get the data at runtime.
 
-(1) If we have the the principal amount and the term in years, here is how you would calculate the monthly
+This error handling can be applied to calculations too. Let's say we want to write a code to calculate
+mortgage payments. For a fixed interest rate in percent, we have two of the following three variables: (1) the
+principal amount, (2) the term in years, or (3) a monthly payment. Our code will calculate the third variable,
+based on the other two. There are three scenarios:
+
+(1) If we have the **principal amount** and the **term in years**, here is how you would calculate the monthly
 payment:
 
 ```py
@@ -114,7 +118,8 @@ q = (1 + r)**(12*term)
 payment = principal * r * q / (q - 1)
 ```
 
-(2) If we have the monthly payment and the principal amount, here is how you would calculate the term in years:
+(2) If we have the **monthly payment** and the **principal amount**, here is how you would calculate the term
+in years:
 
 ```py
 r = rate / 1200
@@ -125,7 +130,8 @@ if q < 0.:
 term = log(q) / (log(1+r)*12)
 ```
 
-(3) If we have the term in years and the monthly payment, here is how you would calculate the principal amount:
+(3) If we have the **term in years** and the **monthly payment**, here is how you would calculate the
+principal amount:
 
 ```py
 r = rate / 1200
@@ -150,10 +156,10 @@ Consider this syntax:
 
 ```py
 try:
-    payment           # here is what we try to do
+    someUndefinedVariable       # here is what we try to do
 except NameError:
-    payment = 1       # if that produces NameError, don't show it, but do this instead
-	print(payment)
+    someUndefinedVariable = 1   # if that produces NameError, don't show it, but do this instead
+    print(someUndefinedVariable)
 ```
 
 And you can combine multiple error codes, e.g.
@@ -164,7 +170,18 @@ except (RuntimeError, TypeError, NameError):
 ...
 ```
 
+{{< question num=9.1 >}}
 Write the rest of the mortgage calculation code.
+{{< /question >}}
+
+<!-- ```sh -->
+<!-- try: -->
+<!--     payment -->
+<!-- except NameError: -->
+<!--     r = rateInPercent / 1200 -->
+<!--     q = (1 + r)**(12*termInYears) -->
+<!--     payment = principal * r * q / (q - 1) -->
+<!-- ``` -->
 
 > Note: You can also implement this code setting `payment = None` for a missing variable, and then placing the
 > code under `if payment == None` condition. Alternatively, you can put everything into a function with
@@ -179,17 +196,17 @@ Write the rest of the mortgage calculation code.
 
 
 
-## If we have time
+## Number crunching in Python: if we have time
 
 (1) How would you [explain](./solau.md) the following:
 
 ```py
-1 + 2 == 3              # returns True (makes sense!)
-0.1 + 0.2 == 0.3        # returns False -- be aware of this when you use conditionals
+1 + 2 == 3         # returns True (makes sense!)
+0.1 + 0.2 == 0.3   # returns False -- be aware of this when you use conditionals
 abs(0.1+0.2 - 0.3) < 1.e-8   # compare floats for almost equality
 import numpy as np
 np.isclose(0.1+0.2, 0.3, atol=1e-8)
 ```
 
-(2) More challening: write a code to solve x^3+4x^2-10=0 with a bisection method in the interval
-    [1.3, 1.4] with tolerance 1e-8.
+(2) More challening: write a code to solve $x^3+4x^2-10=0$ with a bisection method in the interval $[1.3,
+    1.4]$ with tolerance $10^{-8}$.
