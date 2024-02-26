@@ -4,11 +4,10 @@ slug = "python-14-matplotlib"
 weight = 14
 +++
 
-<!-- > Quick reminder that today we are running -->
-<!-- > Python via JupyterHub on our training cluster. Point your browser to https://oc.c3.ca, log in with -->
-<!-- > your username and password from last week, then launch a JupyterHub server with time = ***3 hours***, **1 CPU core**, -->
-<!-- > memory = ***3600 MB***, GPU configuration = ***None***, user interface = ***JupyterLab***. Finally, start a -->
-<!-- > new Python 3 notebook. -->
+<!-- > Quick reminder that today we are running Python via JupyterHub on our training cluster. Point your browser -->
+<!-- > to https://hss.c3.ca, log in with your username and password from last week, then launch a JupyterHub server -->
+<!-- > with time = ***2.5 hours***, **1 CPU core**, memory = ***3712 MB***, GPU configuration = ***None***, user -->
+<!-- > interface = ***JupyterLab***. Finally, start a new Python 3 notebook. -->
 
 There are hundreds of visualization libraries in Python. Check out this {{<a
 "https://raw.githubusercontent.com/rougier/python-visualization-landscape/master/landscape-colors.png"

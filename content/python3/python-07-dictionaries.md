@@ -66,9 +66,9 @@ print(person)
 print(person["name"], person["colour"])
 ```
 
-The benefit of this approach is that you can have many more attributes per person, that just `name` and
-`colour`, and this is very common way to organize structured and/or hierarchical data in Python. The downside
-is that -- to search for by name -- you have to do it explicitly:
+The benefit of this approach is that you can have many more attributes per person than just `name` and
+`colour`, and this is a very common way to organize structured and/or hierarchical data in Python. The
+downside is that -- to search for by name -- you have to do it explicitly:
 
 ```py
 for person in data:
