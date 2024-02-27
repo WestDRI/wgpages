@@ -4,8 +4,6 @@ slug = "python-13-scraping"
 weight = 13
 +++
 
-## Web scraping
-
 <!-- Marie's Web scraping with Python https://mint.westdri.ca/python/ws_webscraping -->
 
 *Web scraping* refers to extracting data from the web in a semi-automatic fashion. There is some programming
