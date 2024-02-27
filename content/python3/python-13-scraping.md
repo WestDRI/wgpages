@@ -90,3 +90,26 @@ Finally, let's filter articles based on a topic:
 mask = ["Machine Learning" in subject for subject in papers.subjects]
 papers[mask]
 ```
+
+{{< question num=13.1 >}}
+Create a list of abstracts from today's articles on https://arxiv.org/list/econ/new -- no titles, authors,
+keywords, just abstracts. Print the first 5 elements of this list. Paste the entire Python code to do this
+from start to finish.
+{{< /question >}}
+
+<!-- ```py -->
+<!-- import requests                 # to download the html data from a site -->
+<!-- from bs4 import BeautifulSoup   # to parse these html data -->
+<!-- import pandas as pd             # to store our data in a dataframe -->
+
+<!-- url = "https://arxiv.org/list/econ/new" -->
+<!-- r = requests.get(url) -->
+<!-- mainpage = BeautifulSoup(r.text, "html.parser") -->
+
+<!-- info = mainpage.findAll("p", attrs={'class':'mathjax'}) -->
+<!-- abstracts = [] -->
+<!-- for i in info: -->
+<!--     abstracts.append(i.text.strip().replace("\n", " ")) -->
+
+<!-- abstracts[:5] -->
+<!-- ``` -->

@@ -67,16 +67,28 @@ data['Category']         # exactly the same; single index refers to columns
 data.Category            # most compact notation; does not work with numerical-only names
 ```
 
+Combining `.iloc` and `.loc` -- let's say we want to retrieve a cell by its row number and its column name:
+
+```py
+data.iloc[0]     # returns a pandas series (with many rows) => use .loc to select its row
+data.iloc[0].loc["Question"]   # combining numbers and names
+data.iloc[0]["Question"]       # the same
+```
+
 Printing a range:
 ```py
+data.iloc[10:15]     # rows 10,11,12,13,14
 data.columns
-data.loc['Copernicus', 'Air Date':'Category']     # why so many lines?
+data.iloc[10:15].loc[:,'Category':'Question']     # rows 10-14, columns 'Category' - 'Question'
+data.iloc[10:15].loc[:,['Category','Question']]   # rows 10-14, columns 'Category' and 'Question'
+data.loc['Copernicus', 'Air Date':'Category']     # a range of columns ... why so many lines?
 data.loc['Copernicus', ['Air Date','Question']]   # print two selected columns
 ```
 
 ```py
 data['Category']              # many different categories, truncated output ...
-list(data['Category'])        # print all of categories
+list(data['Category'])        # print all categories ... huge list
+len(set(data['Category']))    # 27,983 unique categories
 data['Category']=='HISTORY'   # return either True or False for each row
 ```
 
@@ -93,30 +105,36 @@ Let's take a look at the value column:
 ```py
 list(data['Value'])   # some of these contain nan
 
-data.shape    # original table: 216,930 rows
-clean = data.dropna()
-clean.shape   # after dropping rows with missing values: 213,144 rows
+data.shape              # original table: 216,930 rows
+clean = data.dropna()   # drop rows with nan's
+clean.shape             # after dropping rows with missing values: 213,144 rows
 
 clean['Value']   # one column
 clean['Value'].apply(lambda x: type(x))   # show the type of each element (fixed for each column)
+clean['Value'].apply(lambda x: x.replace('$',''))   # remove all $ signs
 values = clean['Value'].apply(lambda x: int(x.replace('$','').replace(',','')))
-mask = values>1000
-clean[mask]    # only show rows with Value > $1000
+
+mask = values>5000
+clean[mask]         # only show rows with Value > $5000
+clean[mask].shape   # thera are 345 such rows
 ```
 
-Let's replace the "Values" column in-place:
+Let's replace the "Values" column in-place -- here using the same expression on the right-hand side as before:
 
 ```py
 clean.loc[:,'Value'] = clean['Value'].apply(lambda x: int(x.replace('$','').replace(',','')))
 clean
 ```
 
+Now `clean`'s `Value` column is all numerical.
+
+
 
 
 
 
 {{< question num=11.1 >}}
-Explain in simple terms what `idxmin()` and `idxmax()` do in the short program below. When would you use these
+Explain in simple terms what `.idxmin()` and `.idxmax()` do in the short program below. When would you use these
 methods?
 ```py
 clean.idxmin()
@@ -137,6 +155,15 @@ data.idxmin()
 {{< /question >}}
 
 <!-- These return the row names with min and max in each column. -->
+
+
+
+
+
+<!-- {{< question num=11.x >}} -->
+<!-- Explain in simple terms what `.describe()` does. -->
+<!-- {{< /question >}} -->
+
 
 
 
@@ -199,9 +226,10 @@ Let's implement this in pandas! First, create a simple dataframe from scratch:
 
 ```py
 import pandas as pd
+import numpy as np
 df = pd.DataFrame()
 size = 10_000
-df['number'] = np.arange(1, size+1)
+df['number'] = np.arange(1, size+1)   # create a column called "number" containing 1,2,...,size
 ```
 
 Define for pretty printing:
@@ -214,7 +242,7 @@ show(df)
 ```
 
 Let's built a new column `response` containing either *"Fizz"* or *"Buzz"* or *"FizzBuzz"* or the original
-number, based on the `number` value in that row. Let's start by processing a row:
+number, based on the `number` value in that row. Let's start by defining a function to process a row:
 
 ```py
 def count(row):
@@ -226,6 +254,13 @@ def count(row):
       return 'Buzz'
     else:
       return str(row['number'])
+```
+
+This is how you would use this function:
+
+```py
+count(df.iloc[2])    # returns 'Fizz'
+count(df.iloc[14])   # returns 'FizzBuzz'
 ```
 
 (1) We can apply this function to each row in a loop:
@@ -244,7 +279,7 @@ show(df)
 
 ```py
 %%timeit
-df['response'] = df.apply(count, axis=1)
+df['response'] = df.apply(count, axis=1)   # axis=1 means apply along the column
 ```
 69.1 ms ± 380 µs per loop (mean ± std. dev. of 7 runs, 10 loops each)
 ```py
