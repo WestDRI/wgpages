@@ -43,8 +43,8 @@ data.index   # row names
 ## Subsetting
 
 Pandas lets you subset elements using either their numerical indices or their row/column names. Long time ago
-Pandas used to have a single function to do both. Now there are two separate functions, `.iloc()` and
-`.loc()`. Let's print one element:
+Pandas used to have a single function to do both. Now there are two separate functions, `.iloc` and
+`.loc`. Let's print one element:
 
 ```py
 data.iloc[0,5]                                    # using row/column numbers
