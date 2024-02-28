@@ -35,10 +35,10 @@ matplotlib, and few others.
 {{<linktitle url="../python3/python-07-dictionaries" text="Dictionaries">}} \
 {{<linktitle url="../python3/python-08-functions" text="Writing functions">}} \
 {{<linktitle url="../python3/python-09-scope" text="Working with strings, variable scope, exceptions">}} \
-{{<linktitle url="../python3/python-10-libraries" text="Libraries, virtual environments and packaging">}} \
-{{<linktitle url="../python3/python-11-pandas" text="Pandas dataframes">}}
+{{<linktitle url="../python3/python-10-libraries" text="Libraries, virtual environments and packaging">}}
 
 {{<cor>}}Day 3{{</cor>}} \
+{{<linktitle url="../python3/python-11-pandas" text="Pandas dataframes">}} \
 {{<linktitle url="../python3/python-12-images" text="Image manipulation, hierarchical data, time">}} \
 {{<linktitle url="../python3/python-13-scraping" text="Web scraping">}} \
 {{<linktitle url="../python3/python-14-matplotlib" text="Plotting with matplotlib">}}
