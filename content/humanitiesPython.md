@@ -861,6 +861,30 @@ mask = ["Machine Learning" in subject for subject in papers.subjects]
 papers[mask]
 ```
 
+### More advanced: extracting all links from a standalone HTML file
+
+```py
+
+import requests                 # to download the html data from a site
+from bs4 import BeautifulSoup   # to parse these html data
+import pandas as pd             # to store our data in a dataframe
+
+from requests.adapters import HTTPAdapter
+from urllib3.response import HTTPResponse
+class FileAdapter(HTTPAdapter):
+    def send(self, request, *args, **kwargs):
+        resp = HTTPResponse(body=open(request.url[7:], 'rb'), status=200, preload_content=False)
+        return self.build_response(request, resp)
+
+session = requests.Session()
+session.mount('file://', FileAdapter())
+r = session.get('file:///path/to/file.html')
+mainpage = BeautifulSoup(r.text, "html.parser")
+links = mainpage.findAll("a", href=True)
+for link in links:
+    print(link['href'])
+```
+
 
 
 
