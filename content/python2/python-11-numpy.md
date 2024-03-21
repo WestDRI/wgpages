@@ -12,8 +12,8 @@ a = 'apple'
 print(a)
 ```
 
-This makes Python very flexible. Out of these variables you form 1D lists, and these can be inhomogeneous and
-can change values and types on the fly:
+This makes Python very flexible. Out of these variables you can form 1D lists, and these can be inhomogeneous
+and can change values and types on the fly:
 
 ```py
 a = [1, 2, 'Vancouver', ['Earth', 'Moon'], {'list': 'an ordered collection of values'}]
