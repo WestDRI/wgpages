@@ -780,6 +780,8 @@ improve. How do we find these? Let's use a profiler!
 
 ## Profiling and performance tuning
 
+<!-- Intro to Memory Profiling in Python https://www.kdnuggets.com/introduction-to-memory-profiling-in-python -->
+
 Since we are talking about bottlenecks, now is a good time to look into profilers.
 
 - `cProfile` to check performance by function
@@ -1066,12 +1068,41 @@ improves only by ~5-10%. There is some compilation overhead, so for bigger probl
 additional %.
 
 As you can see, Numba is not a silver bullet when it comes to speeding up Python. It works great for many
-problems (including the trigonometric series above), but for the slow series its serial performance is almost
-on par with our original code.
+numerical problems including the trigonometric series above, but for problems with high-level Python
+abstractions -- in our case the specific line `if not "9" in str(i)` -- Numba does not really speed up your
+code.
 
+It turns out with Numba there *is* a way to make the slow series code almost as fast as with the compiled
+languages. Check out this implementation:
 
+```py
+from time import time
+from numba import jit
 
+@jit(nopython=True)
+def combined(x):
+    base, x0 = 10, x
+    while 9//base > 0: base *= 10
+    while x > 0:
+        if x%base == 9: return 0.0
+        x = x//10
+    return 1.0/x0
 
+@jit(nopython=True)
+def slow(n):
+    total = 0
+    for i in range(1,n+1):
+        total += combined(i)
+    return total
+
+start = time()
+total = slow(100_000_000)
+end = time()
+print("Time in seconds:", round(end-start,3))
+print(total)
+```
+
+It finishes in 0.601 seconds, i.e. ~10X faster than the first Numba implementation -- any ideas why?
 
 {{< question num=4 >}}
 Parallelize this code with multiple threads and time it on several cores -- does your time improve? (it should somewhat)
@@ -1112,19 +1143,8 @@ Parallelize this code with multiple threads and time it on several cores -- does
 <!-- disk to conserve memory can be annoying, especially when there is a lot of memory to spare. -->
 
 
-
-
-
-
-
-
-
-<!-- ## Parallel Python + profiling -->
-
-<!-- Introduction to Memory Profiling in Python https://www.kdnuggets.com/introduction-to-memory-profiling-in-python -->
 <!-- Advanced Python Tutorials https://pwskills.com/blog/advanced-python-tutorials -->
 <!-- Entering into the World of Concurrency with Python https://www.freecodecamp.org/news/concurrency-in-python -->
 <!-- What Is the Python Global Interpreter Lock (GIL) ~/training/pythonHPC/realpython-gil.jpg -->
 <!-- SC examples of parallel Python https://www.hpc-carpentry.org/hpc-python/06-parallel -->
-
 <!-- webpage2image https://www.web2pdfconvert.com/to/img -->
