@@ -1,5 +1,5 @@
 +++
-title = "Introduction to parallel computing in Python"
+title = "Part 1: towards high-performance Python"
 slug = "pythonhpc"
 katex = true
 +++
@@ -20,14 +20,13 @@ different approaches to parallelizing purely numerical (and therefore CPU-bound)
 without reduction. If your code is I/O-bound, you will also benefit from this course, as I/O-bound workflows
 can be easily sped up with Ray.
 
-We will not cover GPU-accelerated computing in Python in this course, nor will we cover mpi4py (most popular
-MPI implementation for Python).
+We will not cover GPU-accelerated computing in Python in this course (worth its own course), nor will we cover
+mpi4py (most popular MPI implementation for Python).
 
 
 
 
 
-# Part 1: towards HPC Python
 
 ## Installation
 
