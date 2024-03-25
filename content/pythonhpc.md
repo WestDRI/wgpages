@@ -7,22 +7,27 @@ katex = true
 {{<cor>}}March 28<sup>th</sup> (Part 1) and April 4<sup>th</sup> (Part 2){{</cor>}}\
 {{<cgr>}}Both days 10:00am - noon Pacific{{</cgr>}}
 
-**Abstract**: In scientific computing, Python is the most popular programming/scripting language. Wihile known
+**Abstract**: In scientific computing, Python is the most popular programming/scripting language. While known
 for its high-level features, hundreds of fantastic libraries and ease of use, Python is slow compared to
 traditional (C, C++, Fortran) and new (Julia, Chapel) compiled languages. In this course we'll focus on
-speeding up your Python workflows using several different approaches. In Part 1 we will start with traditional
-vectorization with NumPy, will talk about Python compilers (Numba) and profiling and then will jump into
-parallelization. We'll do a little bit of multithreading (possible via numexpr, despite the global interpreter
+speeding up your Python workflows using a number of different approaches. In Part 1 we will start with
+traditional vectorization with NumPy, will talk about Python compilers (Numba) and profiling and will cover
+parallelization. We'll do a little bit of multithreading (possible via NumExpr, despite the global interpreter
 lock) but will target primarily multiprocessing. In Part 2 we will study Ray, a unified framework for scaling
 AI and Python applications. Since this is not a machine learning workshop, we will not touch most of Ray's AI
 capabilities, but will focus on its core distributed runtime and data libraries. We will learn several
 different approaches to parallelizing purely numerical (and therefore CPU-bound) workflows, both with and
 without reduction. If your code is I/O-bound, you will also benefit from this course, as I/O-bound workflows
-can be easily sped up with Ray.
+can be easily processed with Ray.
 
 We will not cover GPU-accelerated computing in Python in this course (worth its own course), nor will we cover
 mpi4py (most popular MPI implementation for Python).
 
+> In these notes all timings are for a 2021 Macbook Pro equipped with the M1 Pro chip and 16 GB of memory. On
+> other machines, including our current training cluster, the timings will be different. They can also vary
+> quite a bit from one training cluster to another, depending on the virtual machine (VM) flavours and the
+> underlying physical cores allocated to run these VMs. What's important is the relative timing of one code
+> vs. another when run on the same machine under the same conditions.
 
 
 
@@ -49,21 +54,22 @@ source deactivate
 
 On an HPC cluster:
 
-```sh <!-- cass, cedar -->
+```sh
 cd ~/scratch/ray
-module load StdEnv/2023 python/3.11.5 arrow/14.0.1 scipy-stack/2023b
+
+module load StdEnv/2023 python/3.11.5 arrow/14.0.1 scipy-stack/2023b netcdf/4.9.2
 virtualenv --no-download pythonhpc-env
 source pythonhpc-env/bin/activate
 pip install --no-index --upgrade pip
 pip install --no-index numba multiprocess
 avail_wheels "ray"
-pip install --no-index ray tqdm netcdf4
+pip install --no-index ray tqdm scalene
 ...
 deactivate
 ```
 
 In this course we will be doing all work on our training cluster on which we have already installed Python and
-all the necessary libraries. Let's log in now!
+all the necessary libraries.
 
 
 
@@ -97,12 +103,67 @@ Python is dynamically typed:
 All these high-level features make Python slow. In this course we will concentrate on getting the most
 performance out of it.
 
+
+
+
+
+
+
+## Python setup in our course
+
+Today we'll be running Python inside a shell on our training cluster `name.c3.ca`. Let's log in now!
+
+We have pre-installed all the required libraries for you in a virtual Python environment in
+`/project/def-sponsor00/shared/pythonhpc-env` that everyone on the system can read.
+
+Once on the system, our workflow is going to be:
+
+```sh
+mkdir -p ~/tmp && cd ~/tmp
+module load StdEnv/2023 python/3.11.5 arrow/14.0.1 scipy-stack/2023b netcdf/4.9.2
+source /project/def-sponsor00/shared/pythonhpc-env/bin/activate
+
+salloc --time=2:00:0 --mem-per-cpu=3600
+...
+exit
+
+salloc --cpus-per-task=4 --time=2:00:0 --mem-per-cpu=3600
+...
+exit
+
+salloc --ntasks=4 --time=2:00:0 --mem-per-cpu=3600
+...
+exit
+
+deactivate
+```
+
+Please do not run Python on the login node, as it'll make the login node slow for everyone.
+
+Finally, to monitor CPU usage inside a Slurm job, from the login node connect to the running job and launch
+`htop` or a similar utility:
+
+```sh
+srun --jobid=<jobID> --pty bash
+htop                     # monitor all processes
+htop --filter "python"   # filter processes by name
+```
+
+Inside `htop` you can press "Shift+H" to hide individual threads (group them inside their parent processes).
+
+
+
+
+
+
+
+
+## Slow series
+
 When I teach parallel computing in other languages (Julia, Chapel), the approach is to take a numerical
 problem and parallelize it using multiple processors, and concentrate on various bottlenecks that lead to less
 than 100% **parallel efficiency**. For the numerical problem I usually select something that is very simple to
 code, yet forces the computer to do brute-force calculation that cannot be easily optimized.
-
-## Slow series
 
 One such problem is a *slow series*. It is a well-known fact that the harmonic series
 $\sum\limits_{k=1}^\infty{1\over k}$ diverges. It turns out that if we omit the terms whose denominators in
@@ -151,6 +212,7 @@ def digitsin(num: int):
         if num%base == 9: return True
         num = num//10
     return False
+
 def slow(n: int):
     total = 0
     for i in range(1,n+1):
@@ -159,9 +221,8 @@ def slow(n: int):
     return total
 ```
 
-our code will be ~3-4X slower, so we will stick with the first version of the code with `if not "9" in str(i)`
--- it turns out that in this particular case Python's high-level substring search is actually quite well
-optimized!
+our code will be ~3-4X slower, so we will use the first version of the code with `if not "9" in str(i)` -- it
+turns out that in this particular case Python's high-level substring search is actually quite well optimized!
 
 <!-- serial.jl - 444.862 ms with digitSequence variable, 355.692 ms with fixed 9 -->
 <!-- serial.chpl - 300 ms -->
@@ -218,10 +279,10 @@ numbers).
   - no reading of extra bits (type, size, reference count)
   - no type checking
   - contiguous allocation in memory
-  - numpy was written in C &nbsp;⇒&nbsp; pre-compiled
-2. numpy lets you work with mathematical arrays.
+  - NumPy was written in C &nbsp;⇒&nbsp; pre-compiled
+2. NumPy lets you work with mathematical arrays.
 
-Lists and numpy arrays behave very differently:
+Lists and NumPy arrays behave very differently:
 
 ```py
 a = [1, 2, 3, 4]
@@ -239,9 +300,9 @@ na * nb            # element-wise product
 
 ### Vectorized functions on array elements
 
-One of the big reasons for using numpy is so you can do fast numerical operations on a large number of elements. The
-result is another `ndarray`. In many calculations you can use replace the usual `for`/`while` loops with functions on
-numpy elements.
+One of the big reasons for using NumPy is so you can do fast numerical operations on a large number of
+elements. The result is another `ndarray`. In many calculations you can use replace the usual `for`/`while`
+loops with functions on NumPy elements.
 
 ```py
 a = np.arange(100)
@@ -271,7 +332,7 @@ b = np.arange(3).reshape((3,1))      # effectively 1D column; b.shape is (3, 1)
 a + b                                # the result is a 2D array!
 ```
 
-Numpy's broadcast rules are:
+NumPy's broadcast rules are:
 
 1. the shape of an array with fewer dimensions is padded with 1's on the left
 1. any array with shape equal to 1 in that dimension is stretched to match the other array's shape
@@ -310,9 +371,9 @@ n_{lon}\times n_r = 500\times 800\times 300$, with the total of $120\times10^6$ 
 point, we need to convert from the spherical (lateral - longitudinal - radial) velocity components to their
 Cartesian equivalents.
 
-<!-- Doing this by hand with Python's `for` loops would take many hours for 13e6 points. I used numpy to vectorize -->
+<!-- Doing this by hand with Python's `for` loops would take many hours for 13e6 points. I used NumPy to vectorize -->
 <!-- in one dimension, and that cut the time to ~5 mins. At first glance, a more complex vectorization would not -->
-<!-- work, as numpy would have to figure out which dimension goes where. Writing it carefully and following the -->
+<!-- work, as NumPy would have to figure out which dimension goes where. Writing it carefully and following the -->
 <!-- broadcast rules I made it work, with the correct solution at the end -- while the total compute time went down -->
 <!-- to a couple seconds! -->
 
@@ -476,17 +537,19 @@ and then calling a compiled C code on each. There are a lot fewer Python code li
 
 ### Back to the slow series
 
-Let's use NumPy for our slow series calculation. We'll (1) write a function that acts on each counter $k$ in
-the series and then (2) create a vectorized function from it that takes in an array of integer numbers and
-outputs an array of terms that we (3) sum to get the result:
+Let's use NumPy for our slow series calculation. We will:
+
+1. write a function that acts on each counter $k$ in the series,
+2. create a vectorized function from it that takes in an array of integer numbers and returns an array of terms,
+3. sum these terms to get the result.
 
 ```py
 from time import time
 import numpy as np
 n = 100_000_000
-def combined(x):
-    if "9" not in str(x):
-        return 1.0/x
+def combined(k):
+    if "9" not in str(k):
+        return 1.0/k
     else:
         return 0.0
 
@@ -498,6 +561,9 @@ end = time()
 print("Time in seconds:", round(end-start,3))
 print(total)
 ```
+
+> Note: this particular code uses a lot of memory, so you might want to increase your request to
+> `--mem-per-cpu=11000`.
 
 The vectorized function is supposed to speed up calculating the terms, but our time becomes worse (14.72s)
 than the original calculation (6.625s). The reason: we are no longer replacing multiple Python lines with a
@@ -567,13 +633,27 @@ several other NumPy implementations of this problem, but none of them speed it u
 ## Parallelization
 
 We can only start parallelizing the code when we are certain that our serial performance is not too bad, or at
-the very least we have optimized our serial Python code as much as possible.
+the very least we have optimized our serial Python code as much as possible. At this point, *we don't know* if
+we have the best optimized Python code, as we are only starting to look into various tools that (hopefully)
+could speed up our code. We know that our code is ~20X slower than a compiled code in Julia/Chapel/C/Fortran,
+but do we have the best-performing Python code?
+
+Next we'll try to speed up our code with NumExpr expression evaluator, in which simple mathematical / NumPy
+expressions can be parsed and then evaluated using compiled C code. NumExpr has an added benefit in that you
+can do this evaluation with multiple threads in parallel. But first we should talk about threads and
+processes.
+
+
+
 
 
 <!-- 1. You already have a fairly large code that you run in serial, and you want to speed it up on multiple cores -->
 <!--    or nodes; can you optimize this code before parallelizing it? profiling tools -->
 <!-- 2. If your code is I/O-bound (not CPU/GPU-bound) - perfect case for parallelization, especially when run on a cluster -->
 <!-- 3.  -->
+
+
+
 
 ### Threads vs processes
 
@@ -640,10 +720,10 @@ from threading import Thread
 
 but these threads will be taking turns running, due to the GIL, leading to about the same runtime.
 
-### Numexpr
+### NumExpr
 
 However, you can do multithreading in Python via 3rd-party libraries that were written in other languages in
-which there is no GIL. One such famous library is `numexpr` which is essentially a JIT compiler for NumPy
+which there is no GIL. One such famous library is NumExpr which is essentially a JIT compiler for NumPy
 operations. It takes its input NumPy expression as a string and can run it with multiple threads.
 
 - supported operators: - + - * / % << >> < <= == != >= > & | ~ **
@@ -672,7 +752,7 @@ print("Time in seconds:", round(end-start,3))   #
 print(a,b)
 ```
 
-I get the average runtime of 2.04s. Here is how you would implement this with numexpr:
+I get the average runtime of 2.04s. Here is how you would implement this with NumExpr:
 
 ```py
 from time import time
@@ -702,7 +782,7 @@ Average time in seconds:
 <!-- 1. The expression is first compiled using Python's `compile` function (must be a valid Python expression). -->
 <!-- 1.  -->
 
-How would we implement the slow series with numexpr? We need a mechanism to check if a substring is present
+How would we implement the slow series with NumExpr? We need a mechanism to check if a substring is present
 in a string:
 
 ```py
@@ -710,10 +790,10 @@ import numpy as np, numexpr as ne
 x = np.array([b'hi', b'there'])   # an array of byte strings (stored as an array of ASCII codes)
 x.dtype            # each element is a 5-byte string
 np.isin(x,b'hi')   # traditional NumPy => returns array([ True, False])
-ne.evaluate("contains(x, b'hi')")   # this is how you write this expression in numexpr
+ne.evaluate("contains(x, b'hi')")   # this is how you write this expression in NumExpr
 ```
 
-We can use numexpr to parallelize checking for substrings:
+We can use NumExpr to parallelize checking for substrings:
 
 ```py
 from time import time
@@ -738,8 +818,8 @@ Here are the average (over three runs) times in seconds:
 | ncores | 1 | 2 | 4 |
 | wallclock runtime | 18.427 | 17.375 | 17.029 |
 
-Clearly, we are bottlenecked by the serial part of the code. Let's use another numexpr call to parallelize
-`1.0/x`
+Clearly, we are bottlenecked by the serial part of the code. Let's use another NumExpr call to evaluate
+`1.0/x`:
 
 ```py
 from time import time
@@ -764,10 +844,10 @@ Here are the improved times in seconds:
 | ncores | 1 | 2 | 4 | 8 |
 | wallclock runtime | 12.094 | 11.304 | 10.965 | 10.83 |
 
-Obviously, we still have some bottlenecks: recall the original serial runtime 6.625s on which we are trying to
-improve. How do we find these? Let's use a profiler!
+Obviously, we still have some bottleneck(s): look at the scaling, and recall the original serial runtime
+6.625s on which we are trying to improve. How do we find these? Let's use a profiler!
 
-<!-- numexpr for threaded parallelization of certain numpy expressions; show examples; still slow for slow series -->
+<!-- NumExpr for threaded parallelization of certain numpy expressions; show examples; still slow for slow series -->
 
 <!-- - https://stackoverflow.com/questions/64488923/usage-of-numexpr-contains-function -->
 
@@ -781,35 +861,33 @@ improve. How do we find these? Let's use a profiler!
 
 <!-- Intro to Memory Profiling in Python https://www.kdnuggets.com/introduction-to-memory-profiling-in-python -->
 
-Since we are talking about bottlenecks, now is a good time to look into profilers.
+Since we are talking about bottlenecks, now is a good time to look into profilers. There are several good
+open-source profilers for Python codes, e.g. `cProfile`, `line_profiler`, `Scalene`, `Pyinstrument`, Linux's
+`perf` profiler, and few others.
 
-- `cProfile` to check performance by function
-- `line_profiler` and `Scalene` to check performance line-by-line
+<!-- - `cProfile` to check performance by function -->
+<!-- - `line_profiler` and `Scalene` to check performance line-by-line -->
+<!-- - `Pyinstrument` is a Python profiler -->
 
-In our last code we have a sequential workflow with multiple lines, so let's measure it performance
-line-by-line using `Scalene`. It tracks both CPU and memory usage (and more recently GPU), it is fast and very
-easy to use:
+In our last code we had a sequential workflow with multiple lines, so let's measure its performance line by
+line using `Scalene` profiler. It tracks both CPU and memory usage (and more recently GPU), it is fast and
+very easy to use:
 
 <!-- https://pypi.org/project/scalene/0.9.15 -->
 
 ```sh
-scalene slowSeries.py
+scalene slowSeries.py         # on your own computer, will open result in a browser
+scalene --cli slowSeries.py   # on a remote system
 ```
 
 If running on your computer, this will open the result in a browser:
 
 {{< figure src="/img/scalene.png" >}}
 
-If using it on a remote system, you will probably want to show results in the terminal:
-
-```sh
-scalene --cli slowSeries.py
-```
-
 As you can see, our actual computing is quite fast! 67% of the time is taken by the line initializing an array
 of byte strings `j = i.astype(np.bytes_)`, and the second biggest offender is initializing an array of
-integers. If we could find a way to implement this initialization in numexpr, we could vastly improve our
-code's performance. I have not found a way to do this quickly and elegantly in numexpr, but perhaps there is a
+integers. If we could find a way to implement this initialization in NumExpr, we could vastly improve our
+code's performance. I have not found a way to do this quickly and elegantly in NumExpr, but perhaps there is a
 solution? I will leave it as a take-home exercise, and please let me know if you find a solution!
 
 
@@ -848,7 +926,7 @@ r = map(lambda x: x**2, [1,2,3])
 list(r)
 ```
 
-We can write a Python function to sleep for 1s, and run it 10 times with serial `map()`:
+We can write a Python function to sleep for 1 second, and run it 10 times with serial `map()`:
 
 ```py
 import time
@@ -875,8 +953,11 @@ end = time.time()
 print("Time in seconds:", round(end-start,3))
 ```
 
-On 8 cores on my laptop this takes 2.007s, i.e. we run two batches in parallel on (most likely) 8 and 2 cores,
-respectively, each taking a second.
+1. On 8 cores on my laptop this takes 2.007s, i.e. we run two batches in parallel on (most likely) 8 and 2
+   cores, respectively, each taking a second.
+1. On the training cluster it probes the number of physically available cores (not equal to the number of CPU
+   cores inside our job) and launches the same number of tasks, likely switching between multiple tasks per
+   core.
 
 How do we parallelize the slow series with parallel `map()`? One idea is to create a function to process each
 of the $10^8$ terms and use `map()` to apply it to each term. Here is the serial version of this code:
@@ -884,11 +965,11 @@ of the $10^8$ terms and use `map()` to apply it to each term. Here is the serial
 ```py
 from time import time
 n = 100_000_000
-def combined(x):
-    if "9" in str(x):
+def combined(k):
+    if "9" in str(k):
         return 0.0
     else:
-        return 1.0/x
+        return 1.0/k
 start = time()
 total = sum(map(combined, range(1,n+1)))   # use 1,...,n as arguments to `combined` function
 end = time()
@@ -930,11 +1011,11 @@ cores on your computer).
 <!-- import psutil -->
 <!-- from multiprocess import Pool -->
 <!-- n = 100_000_000 -->
-<!-- def combined(x): -->
-<!--     if "9" in str(x): -->
+<!-- def combined(k): -->
+<!--     if "9" in str(k): -->
 <!--         return 0.0 -->
 <!--     else: -->
-<!--         return 1.0/x -->
+<!--         return 1.0/k -->
 <!-- def partial(interval): -->
 <!--     return sum(map(combined, range(interval[0],interval[1]+1))) -->
 <!-- start = time() -->
@@ -951,14 +1032,16 @@ cores on your computer).
 <!-- print(sum(total)) -->
 <!-- ``` -->
 
-Here is what I get for timing on my laptop:
+Here is what I get for timing on ***my laptop*** and on ***the training cluster*** (all in seconds):
 
 |   |   |   |   |   |
 |---|---|---|---|---|
 | ncores | 1 | 2 | 4 | 8 |
-| wallclock runtime | 8.294 | 4.324 | 2.200 | 1.408 |
+| laptop wallclock runtime | 8.294 | 4.324 | 2.200 | 1.408 |
+| --ntasks=4 cluster runtime | 17.557 | 8.780 | 4.499 | 4.508 |
 
-We are still lagging behind the same problem implemented with a serial code in compiled languages ...
+Our parallel scaling looks great, but in terms of absolute numbers we are still lagging behind the same
+problem implemented with a serial code in compiled languages ...
 
 
 
@@ -974,8 +1057,9 @@ We are still lagging behind the same problem implemented with a serial code in c
 <!-- vaqt7exjlllvls3.py - no difference ... -->
 
 Hopefully, I have convinced you that -- in order to get decent performance out of your Python code -- you need
-to compile it. There are many promising Python compilers, e.g.
+to compile it. There are several promising Python compilers, e.g.
 
+- we have already looked at NumExpr (only takes simple expressions)
 - Numba open-source just-in-time compiler that uses LLVM underneath, can also parallelize your code for
   multi-core CPUs and GPUs; often requires only minor code changes
 - Cython open-source compiled language is a superset of Python: Python-like code with Cython-specific
@@ -1035,8 +1119,8 @@ There are two compilation modes in Numba:
   error in case of problems
 
 Let's add `parallel=True` to our decorator and change `range(1,n+1)` to `prange(1,n+1)` - it'll be subdividing
-loops into pieces to pass them to multiple CPU cores. On my 8-core laptop the runtime goes down to 0.341
-seconds -- a further ~2X improvement ... This is not so impressive ...
+loops into pieces to pass them to multiple CPU cores via multithreading. On my 8-core laptop the runtime goes
+down to 0.341 seconds -- a further ~2X improvement ... This is not so impressive ...
 
 It turns out there is quite a bit of overhead with subdividing loops, starting/stopping threads and
 orchestrating everything. If instead of $10^8$ we consider $10^{10}$ terms, a single thread processes this in
@@ -1079,13 +1163,13 @@ from time import time
 from numba import jit
 
 @jit(nopython=True)
-def combined(x):
-    base, x0 = 10, x
+def combined(k):
+    base, k0 = 10, k
     while 9//base > 0: base *= 10
-    while x > 0:
-        if x%base == 9: return 0.0
-        x = x//10
-    return 1.0/x0
+    while k > 0:
+        if k%base == 9: return 0.0
+        k = k//10
+    return 1.0/k0
 
 @jit(nopython=True)
 def slow(n):
@@ -1107,7 +1191,8 @@ It finishes in 0.601 seconds, i.e. ~10X faster than the first Numba implementati
 Parallelize this code with multiple threads and time it on several cores -- does your time improve? (it should somewhat)
 {{< /question >}}
 
-
+In Part 2 (next week) we will combine Numba with multiprocessing via Ray tasks -- this approach will scale
+beyond a single node.
 
 
 
