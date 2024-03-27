@@ -43,7 +43,7 @@ pyenv activate hpc-env
 pip install numpy
 pip install --upgrade "ray[default]"
 pip install --upgrade "ray[data]"
-pip install tqdm netcdf4 scipy numexpr psutil multiprocess numba modin scalene
+pip install tqdm netcdf4 scipy numexpr psutil multiprocess numba scalene Pillow
 ...
 source deactivate
 ```
@@ -60,7 +60,8 @@ source pythonhpc-env/bin/activate
 pip install --no-index --upgrade pip
 pip install --no-index numba multiprocess
 avail_wheels "ray"
-pip install --no-index ray tqdm scalene
+pip install --no-index ray tqdm scalene grpcio
+pip install modin
 ...
 deactivate
 ```
@@ -108,7 +109,7 @@ performance out of it.
 
 ## Python setup in our course
 
-Today we'll be running Python inside a shell on our training cluster `name.c3.ca`. Let's log in now!
+Today we'll be running Python inside a shell on our training cluster `parpy.c3.ca`. Let's log in now!
 
 We have pre-installed all the required libraries for you in a virtual Python environment in
 `/project/def-sponsor00/shared/pythonhpc-env` that everyone on the system can read.
@@ -125,14 +126,16 @@ salloc --time=2:00:0 --mem-per-cpu=3600
 exit
 
 salloc --cpus-per-task=4 --time=2:00:0 --mem-per-cpu=3600   # our default mode
+# sometimes we'll use 4 cores and few GBs memory per core
+# sometimes we'll use one core and almost all available memory
 ...
 exit
 
-salloc --ntasks=4 --nodes=1 --time=2:00:0 --mem-per-cpu=3600
+salloc --ntasks=4 --nodes=1 --time=2:00:0 --mem-per-cpu=3600   # very similar
 ...
 exit
 
-salloc --ntasks=4 --time=2:00:0 --mem-per-cpu=3600
+salloc --ntasks=4 --time=2:00:0 --mem-per-cpu=3600   # might run on multiple nodes
 ...
 exit
 
@@ -1206,10 +1209,13 @@ beyond a single node.
 {{< question num=5 >}}
 We covered a lot of material in this section! Let's summarize the most important points. Which tool would you
 use, in what situation, and why?
+- which of today's tools let you do multithreading?
+- which of today's tools let you do multiprocessing?
+- which Python compilers did we try?
 {{< /question >}}
 
 {{< question num=6 >}}
-Which tool would you use for your research problem and why?
+Which tool would you use for your research problem and why? Are you ready to parallelize your workflow?
 {{< /question >}}
 
 
