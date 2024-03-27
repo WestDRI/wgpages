@@ -40,11 +40,10 @@ On your computer:
 ```sh
 pyenv virtualenv 3.11.8 hpc-env   # goes into ~/.pyenv/versions/3.11.8/envs/hpc-env
 pyenv activate hpc-env
-pip install numpy # pandas
+pip install numpy
 pip install --upgrade "ray[default]"
 pip install --upgrade "ray[data]"
-pip install tqdm netcdf4 scipy numexpr psutil multiprocess numba
-pip install scalene
+pip install tqdm netcdf4 scipy numexpr psutil multiprocess numba modin scalene
 ...
 source deactivate
 ```
@@ -55,8 +54,6 @@ source deactivate
 On an HPC cluster:
 
 ```sh
-cd ~/scratch/ray
-
 module load StdEnv/2023 python/3.11.5 arrow/14.0.1 scipy-stack/2023b netcdf/4.9.2
 virtualenv --no-download pythonhpc-env
 source pythonhpc-env/bin/activate
@@ -127,7 +124,11 @@ salloc --time=2:00:0 --mem-per-cpu=3600
 ...
 exit
 
-salloc --cpus-per-task=4 --time=2:00:0 --mem-per-cpu=3600
+salloc --cpus-per-task=4 --time=2:00:0 --mem-per-cpu=3600   # our default mode
+...
+exit
+
+salloc --ntasks=4 --nodes=1 --time=2:00:0 --mem-per-cpu=3600
 ...
 exit
 
@@ -149,7 +150,7 @@ htop                     # monitor all processes
 htop --filter "python"   # filter processes by name
 ```
 
-Inside `htop` you can press "Shift+H" to hide individual threads (group them inside their parent processes).
+Inside `htop` you can press "Shift+H" to hide/show individual threads (group them inside their parent processes).
 
 
 
@@ -385,6 +386,7 @@ from scipy.special import lpmv
 import time
 
 nlat, nlon, nr = 500, 800, 300   # 120e6 grid points
+# nlat, nlon, nr = nlat//2, nlon//2, nr//2   # reduce the problem size by 8X
 
 latitude = np.linspace(-90, 90, nlat)
 longitude = np.linspace(0, 360, nlon)
@@ -419,6 +421,7 @@ for i in range(nlat):
                 np.cos(np.radians(latitude[i]))*np.sin(np.radians(longitude[k]))*vrad[i,j,k]
             vz[i,j,k] = np.cos(np.radians(latitude[i]))*vlat[i,j,k] + \
                 np.sin(np.radians(latitude[i]))*vrad[i,j,k]
+
 end = time.time()
 print("Time in seconds:", round(end-start,3))
 ```
@@ -441,6 +444,7 @@ for i in range(nlat):
             vx[i,j,k] = - sinlon*vlon[i,j,k] - sinlat*coslon*vlat[i,j,k] + coslat*coslon*vrad[i,j,k]
             vy[i,j,k] = coslon*vlon[i,j,k] - sinlat*sinlon*vlat[i,j,k] + coslat*sinlon*vrad[i,j,k]
             vz[i,j,k] = coslat*vlat[i,j,k] + sinlat*vrad[i,j,k]
+
 end = time.time()
 print("Time in seconds:", round(end-start,3))
 ```
@@ -477,6 +481,7 @@ for i in range(nlat):
         vx[i,j,0:nlon] = - sinlon*vlon[i,j,0:nlon] - sinlat*coslon*vlat[i,j,0:nlon] + coslat*coslon*vrad[i,j,0:nlon]
         vy[i,j,0:nlon] = coslon*vlon[i,j,0:nlon] - sinlat*sinlon*vlat[i,j,0:nlon] + coslat*sinlon*vrad[i,j,0:nlon]
         vz[i,j,0:nlon] = coslat*vlat[i,j,0:nlon] + sinlat*vrad[i,j,0:nlon]
+
 end = time.time()
 print("Time in seconds:", round(end-start,3))
 ```
@@ -512,6 +517,7 @@ for i in range(nlat):
     vx[i,0:nr,0:nlon] = - sinlon*vlon[i,0:nr,0:nlon] - sinlat*coslon*vlat[i,0:nr,0:nlon] + coslat*coslon*vrad[i,0:nr,0:nlon]
     vy[i,0:nr,0:nlon] = coslon*vlon[i,0:nr,0:nlon] - sinlat*sinlon*vlat[i,0:nr,0:nlon] + coslat*sinlon*vrad[i,0:nr,0:nlon]
     vz[i,0:nr,0:nlon] = coslat*vlat[i,0:nr,0:nlon] + sinlat*vrad[i,0:nr,0:nlon]
+
 end = time.time()
 print("Time in seconds:", round(end-start,3))
 ```
@@ -748,7 +754,7 @@ b = np.zeros(n)
 start = time()
 b = np.sin(2*np.pi*a)**2 + np.cos(2*np.pi*a)**2
 end = time()
-print("Time in seconds:", round(end-start,3))   # 
+print("Time in seconds:", round(end-start,3))
 print(a,b)
 ```
 
@@ -804,8 +810,9 @@ start = time()
 i = np.arange(1,n+1)           # array of integers
 j = i.astype(np.bytes_)        # convert to byte strings
 mask = ne.evaluate("~contains(j, '9')")   # parallel part; returns an array of True/False
+nonZeroTerms = i[mask]
 inverse = np.vectorize(lambda x: 1.0/x)
-total = sum(inverse(i[mask]))
+total = sum(inverse(nonZeroTerms))
 end = time()
 print("Time in seconds:", round(end-start,3))
 print(total)
@@ -941,9 +948,8 @@ replacing serial `map()` with parallel `pool.map()`:
 
 ```py
 import time
-import psutil
 from multiprocess import Pool
-ncores = psutil.cpu_count(logical=False)
+ncores = 4            # set it to 4 or 8
 print("Running on", ncores, "cores")
 pool = Pool(ncores)   # create a pool of workers
 start = time.time()
@@ -953,11 +959,9 @@ end = time.time()
 print("Time in seconds:", round(end-start,3))
 ```
 
-1. On 8 cores on my laptop this takes 2.007s, i.e. we run two batches in parallel on (most likely) 8 and 2
-   cores, respectively, each taking a second.
-1. On the training cluster it probes the number of physically available cores (not equal to the number of CPU
-   cores inside our job) and launches the same number of tasks, likely switching between multiple tasks per
-   core.
+1. On 8 cores this takes 2.007 seconds: in the 1st second we run 8 `sleep(1)` calls in parallel, and the 2nd
+   second we run the remaining 2 calls in parallel.
+1. On 4 cores this takes 3.005 seconds: running batches of 4 + 4 + 2 calls.
 
 How do we parallelize the slow series with parallel `map()`? One idea is to create a function to process each
 of the $10^8$ terms and use `map()` to apply it to each term. Here is the serial version of this code:
@@ -980,8 +984,8 @@ print(total)
 This takes 9.403s.
 
 With `multiprocess` we would be inclined to use `sum(pool.map(combined, range(1,n+1))))`. Unfortunately,
-`pool.map()` returns a list, and with $10^8$ input integers it will return a $10^8$-long list, processing and
-summing which will take a long time ... (85s in my tests). Simply put, lists perform poorly in Python.
+`pool.map()` returns a list, and with $10^8$ input integers it will return a $10^8$-element list, processing
+and summing which will take a long time ... (85s in my tests). Simply put, lists perform poorly in Python.
 
 How do we speed it up?
 
@@ -1188,13 +1192,25 @@ print(total)
 It finishes in 0.601 seconds, i.e. ~10X faster than the first Numba implementation -- any ideas why?
 
 {{< question num=4 >}}
-Parallelize this code with multiple threads and time it on several cores -- does your time improve? (it should somewhat)
+Parallelize this code with multiple threads and time it on several cores -- does your time improve? (it should
+somewhat) Let's fill this table together:
+|   |   |   |   |
+|---|---|---|---|
+| ncores | 1 | 2 | 4 |
+| wallclock runtime | &emsp;&emsp;&emsp; | &emsp;&emsp;&emsp; | &emsp;&emsp;&emsp; |
 {{< /question >}}
 
-In Part 2 (next week) we will combine Numba with multiprocessing via Ray tasks -- this approach will scale
+In Part 2 (next week) we will combine Numba with multiprocessing via Ray tasks -- this approach can scale
 beyond a single node.
 
+{{< question num=5 >}}
+We covered a lot of material in this section! Let's summarize the most important points. Which tool would you
+use, in what situation, and why?
+{{< /question >}}
 
+{{< question num=6 >}}
+Which tool would you use for your research problem and why?
+{{< /question >}}
 
 
 
