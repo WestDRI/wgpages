@@ -165,9 +165,10 @@ Inside `htop` you can press "Shift+H" to hide/show individual threads (group the
 ## Slow series
 
 When I teach parallel computing in other languages (Julia, Chapel), the approach is to take a numerical
-problem and parallelize it using multiple processors, and concentrate on various bottlenecks that lead to less
-than 100% **parallel efficiency**. For the numerical problem I usually select something that is very simple to
-code, yet forces the computer to do brute-force calculation that cannot be easily optimized.
+problem and parallelize it using multiple processors, and concentrate on various issues and bottlenecks
+(variable locks, load balancing, false sharing, messaging overheads, etc.) that lead to less than 100%
+**parallel efficiency**. For the numerical problem I usually select something that is very simple to code, yet
+forces the computer to do brute-force calculation that cannot be easily optimized.
 
 One such problem is a *slow series*. It is a well-known fact that the harmonic series
 $\sum\limits_{k=1}^\infty{1\over k}$ diverges. It turns out that if we omit the terms whose denominators in
@@ -797,7 +798,7 @@ in a string:
 ```py
 import numpy as np, numexpr as ne
 x = np.array([b'hi', b'there'])   # an array of byte strings (stored as an array of ASCII codes)
-x.dtype            # each element is a 5-byte string
+x.dtype            # each element is a 5-element string
 np.isin(x,b'hi')   # traditional NumPy => returns array([ True, False])
 ne.evaluate("contains(x, b'hi')")   # this is how you write this expression in NumExpr
 ```
@@ -984,11 +985,12 @@ print("Time in seconds:", round(end-start,3))
 print(total)
 ```
 
-This takes 9.403s.
+This takes 9.403 seconds.
 
 With `multiprocess` we would be inclined to use `sum(pool.map(combined, range(1,n+1))))`. Unfortunately,
 `pool.map()` returns a list, and with $10^8$ input integers it will return a $10^8$-element list, processing
-and summing which will take a long time ... (85s in my tests). Simply put, lists perform poorly in Python.
+and summing which will take a long time ... (85 seconds in my tests). Simply put, lists perform poorly in
+Python.
 
 How do we speed it up?
 
@@ -1007,6 +1009,29 @@ print(sum(total))
 Complete and run this code on two cores.
 {{< /question >}}
 
+<!-- Solution: -->
+<!-- ```py -->
+<!-- from time import time -->
+<!-- from multiprocess import Pool -->
+<!-- n = 100_000_000 -->
+<!-- def combined(k): -->
+<!--     if "9" in str(k): -->
+<!--         return 0.0 -->
+<!--     else: -->
+<!--         return 1.0/k -->
+
+<!-- def partial(interval): -->
+<!--     return sum(map(combined, range(interval[0],interval[1]+1))) -->
+
+<!-- start = time() -->
+<!-- pool = Pool(2) -->
+<!-- total = pool.map(partial, [(1, n//2-1), (n//2,n)]) -->
+<!-- pool.close()   # turn off your parallel workers -->
+<!-- end = time() -->
+<!-- print("Time in seconds:", round(end-start,3))   # 1.487 1.471 1.555 -->
+<!-- print(sum(total)) -->
+<!-- ``` -->
+
 {{< question num=3 >}}
 Write a scalable version of this code and run it on an arbitrary number of cores (up to the physical number of
 cores on your computer).
@@ -1023,8 +1048,10 @@ cores on your computer).
 <!--         return 0.0 -->
 <!--     else: -->
 <!--         return 1.0/k -->
+
 <!-- def partial(interval): -->
 <!--     return sum(map(combined, range(interval[0],interval[1]+1))) -->
+
 <!-- start = time() -->
 <!-- ncores = psutil.cpu_count(logical=False) -->
 <!-- pool = Pool(ncores) -->
@@ -1032,6 +1059,7 @@ cores on your computer).
 <!-- intervals = [(i*size+1,(i+1)*size) for i in range(ncores)] -->
 <!-- if n > intervals[-1][1]: -->
 <!--     intervals[-1] = (intervals[-1][0], n) -->
+
 <!-- total = pool.map(partial, intervals) -->
 <!-- pool.close()   # turn off your parallel workers -->
 <!-- end = time() -->
@@ -1064,7 +1092,8 @@ problem implemented with a serial code in compiled languages ...
 <!-- vaqt7exjlllvls3.py - no difference ... -->
 
 Hopefully, I have convinced you that -- in order to get decent performance out of your Python code -- you need
-to compile it. There are several promising Python compilers, e.g.
+to compile it with a proper compiler (and not just NumExpr). There are several Python compilers I'll mention
+here, e.g.
 
 - we have already looked at NumExpr (only takes simple expressions)
 - Numba open-source just-in-time compiler that uses LLVM underneath, can also parallelize your code for
@@ -1125,6 +1154,8 @@ There are two compilation modes in Numba:
   force Numba to fall back to the object mode; the flag `nopython=True` enforces faster mode and raises an
   error in case of problems
 
+### Parallelizing
+
 Let's add `parallel=True` to our decorator and change `range(1,n+1)` to `prange(1,n+1)` - it'll be subdividing
 loops into pieces to pass them to multiple CPU cores via multithreading. On my 8-core laptop the runtime goes
 down to 0.341 seconds -- a further ~2X improvement ... This is not so impressive ...
@@ -1134,6 +1165,8 @@ orchestrating everything. If instead of $10^8$ we consider $10^{10}$ terms, a si
 57.890 seconds, whereas 8 threads take 10.125 seconds -- factor of 5.7X better!
 
 <!-- still not as good as compiled languages -->
+
+### Back to the slow series
 
 Let's apply Numba to our slow series problem. Take the very first version of the code (6.625 seconds):
 
@@ -1161,6 +1194,8 @@ As you can see, Numba is not a silver bullet when it comes to speeding up Python
 numerical problems including the trigonometric series above, but for problems with high-level Python
 abstractions -- in our case the specific line `if not "9" in str(i)` -- Numba does not really speed up your
 code.
+
+### Fast implementation
 
 It turns out with Numba there *is* a way to make the slow series code almost as fast as with the compiled
 languages. Check out this implementation:
