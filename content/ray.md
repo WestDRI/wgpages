@@ -920,84 +920,78 @@ single-node Ray cluster. Strictly speaking, this is not necessary, as on a singl
 
 <!-- Launching a multi-node ray cluster -->
 
-To run Ray workflows on multiple cluster nodes, you *must* create a virtual Ray cluster first. I copied this
-example from our documentation at https://docs.alliancecan.ca/wiki/Ray#Multiple_Nodes. You can also read more
-in the official documentation https://docs.ray.io/en/latest/cluster/getting-started.html.
+To run Ray workflows on multiple cluster nodes, you *must* create a virtual Ray cluster first. You can find
+details of Ray's virtual clusters in the official Ray documentation
+https://docs.ray.io/en/latest/cluster/getting-started.html.
 
+Here we'll take a look at the example which I copied and adapted from our documentation at
+https://docs.alliancecan.ca/wiki/Ray#Multiple_Nodes. I made several changes in this workflow:
 
+1. made it interactive,
+2. not creating virtual environments in `$SLURM_TMPDIR` inside the job, but using the already existing one in
+   `/project/def-sponsor00/shared/pythonhpc-env`,
+3. removed GPUs.
 
-
-abc
+Let's quit our current Slurm job (if any), back on the login node start the following interactive job, and
+then run the following commands:
 
 ```sh
-#!/bin/bash   # this is ray-example.sh
-#SBATCH --nodes 2
-#SBATCH --ntasks-per-node=1
-#SBATCH --gpus-per-task=1
-#SBATCH --cpus-per-task=4
-#SBATCH --mem-per-cpu=3600
-#SBATCH --time=0:30:0
+salloc --nodes 2 --ntasks-per-node=1 --cpus-per-task=2 --mem-per-cpu=3600 --time=0:60:0
 
-srun --nodes $SLURM_NNODES --ntasks $SLURM_NNODES createEnv.sh   # create a virtualenv, install Ray on all nodes
-export HEAD_NODE=$(hostname)                          # head node's address
-export RAY_PORT=34567                                 # a port to start Ray on the head node 
+module load StdEnv/2023 python/3.11.5 arrow/14.0.1 scipy-stack/2023b netcdf/4.9.2
+source /project/def-sponsor00/shared/pythonhpc-env/bin/activate
 
-source $SLURM_TMPDIR/ENV/bin/activate
-
-# 1. start Ray cluster head node
-ray start --head --node-ip-address=$HEAD_NODE --port=$RAY_PORT --num-cpus=$SLURM_CPUS_PER_TASK --num-gpus=1 --block &
-sleep 10
-
-# 2. launch worker nodes
-srun launchRay.sh &
-ray_cluster_pid=$!   # get its process ID
-
-#3. launch the calculation
-python testRay.py
-
-# 4. shut down Ray worker nodes
-kill $ray_cluster_pid
+export HEAD_NODE=$(hostname)   # head node's address -- different from the login node!
+export RAY_PORT=34567          # a port to start Ray on the head node 
 ```
 
-This is `createEnv.sh`:
+Next, we will start a Ray cluster on the head node as a background process:
 
 ```sh
-#!/bin/bash
-module load python
-virtualenv --no-download $SLURM_TMPDIR/ENV
-source $SLURM_TMPDIR/ENV/bin/activate
-pip install --upgrade pip --no-index
-pip install ray --no-index
+ray start --head --node-ip-address=$HEAD_NODE --port=$RAY_PORT --num-cpus=$SLURM_CPUS_PER_TASK --block &
+sleep 10   # wait for the prompt (asking to enable usage stats collection) to auto-proceed in 10 seconds
 ```
 
-This is `launchRay.sh` to launch worker nodes on all the other nodes allocated by the job:
+Then on each node inside our Slurm job, except the head node, we launch the worker nodes of the Ray cluster:
 
 ```sh
+cat << EOF > launchRay.sh
 #!/bin/bash
-source $SLURM_TMPDIR/ENV/bin/activate
-module load gcc/9.3.0 arrow
-if [[ "$SLURM_PROCID" -eq "0" ]]; then   # check MPI rank
+module load StdEnv/2023 python/3.11.5 arrow/14.0.1 scipy-stack/2023b netcdf/4.9.2
+source /project/def-sponsor00/shared/pythonhpc-env/bin/activate
+if [[ "$SLURM_PROCID" -eq "0" ]]; then   # if MPI rank is 0
         echo "Ray head node already started..."
         sleep 10
 else
-        ray start --address "${HEAD_NODE}:${RAY_PORT}" --num-cpus="${SLURM_CPUS_PER_TASK}" --num-gpus=1 --block
+        ray start --address "${HEAD_NODE}:${RAY_PORT}" --num-cpus="${SLURM_CPUS_PER_TASK}" --block
         sleep 5
-        echo "ray worker started!"
+        echo "Ray worker started!"
 fi
+EOF
+chmod u+x launchRay.sh
+srun launchRay.sh &
+ray_cluster_pid=$!   # get its process ID
 ```
 
-And this is the actual Python code `testRay.py` that connects to Ray cluster, checks the nodes and all
-available CPUs and GPUs:
+Next, we launch a Python script that connects to the Ray cluster, checks the nodes and all available CPUs:
 
 ```py
 import ray
 import os
 ray.init(address=f"{os.environ['HEAD_NODE']}:{os.environ['RAY_PORT']}",_node_ip_address=os.environ['HEAD_NODE'])
-print("Nodes in the Ray cluster:")   # should see two nodes
-print(ray.nodes())                   # their status should be 'Alive'
-print(ray.available_resources())     # should see 12 CPUs and 2 GPUs over 2 Nodes
+print("Nodes in the Ray cluster:", ray.nodes())   # should see two nodes with 'Alive' status
+print(ray.available_resources())                  # should see 12 CPUs and 2 GPUs over 2 Nodes
 ```
 
+Finally, we shut down the Ray worker nodes:
+
+```sh
+kill $ray_cluster_pid
+```
+
+and terminate the job.
+
+<!-- abc -->
 
 
 
@@ -1009,7 +1003,9 @@ print(ray.available_resources())     # should see 12 CPUs and 2 GPUs over 2 Node
 
 
 
-### Distributed dataset example
+## Distributed data processing on Ray and I/O-bound workflows
+
+### Simple distributed dataset example
 
 Run the following Python code line by line, while watching memory usage in a separate window with `htop
 --filter "ray::IDLE"`:
@@ -1061,7 +1057,7 @@ they will be loaded temporarily into memory, which you can monitor with `htop --
 
 
 
-## Distributed data processing on Ray and I/O-bound workflows
+
 
 <!-- - Reading and writing data in parallel. -->
 <!-- - From 6 hours to 1.5 minutes using Ray, DynamoDB and Python -->
@@ -1201,7 +1197,7 @@ b.show()
 
 
 
-### A problem without reduction
+### A CPU-intensive problem without reduction
 
 So far we've been working with problems where calculations from individual tasks add to form a single number
 (sum of a slow series) -- this is called *reduction*. Let's now look at a problem without reduction, i.e. where
