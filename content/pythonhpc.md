@@ -1092,19 +1092,19 @@ problem implemented with a serial code in compiled languages ...
 <!-- vaqt7exjlllvls3.py - no difference ... -->
 
 Hopefully, I have convinced you that -- in order to get decent performance out of your Python code -- you need
-to compile it with a proper compiler (and not just NumExpr). There are several Python compilers I'll mention
-here, e.g.
+to compile it with a proper compiler (and not just NumExpr). There are several Python compilers worth
+mentioning here:
 
-- we have already looked at NumExpr (only takes simple expressions)
-- Numba open-source just-in-time compiler that uses LLVM underneath, can also parallelize your code for
-  multi-core CPUs and GPUs; often requires only minor code changes
-- Cython open-source compiled language is a superset of Python: Python-like code with Cython-specific
-  extensions for C types
-- Codon is research project from MIT: not endorsing it, but it consistently comes up high in my search results,
-  source code https://github.com/exaloop/codon and the related article https://bit.ly/3uUvTmd
-- new proprietary programming language https://www.modular.com/max/mojo (based on Python) with somewhat
-  ridiculous (68,000X) speedup claims on their front page, documentation/examples/workshops at
-  https://github.com/modularml/mojo
+1. We have already looked at NumExpr (only takes simple expressions).
+1. Numba open-source just-in-time compiler that uses LLVM underneath, can also parallelize your code for
+   multi-core CPUs and GPUs; often requires only minor code changes.
+1. Cython open-source compiled language is a superset of Python: Python-like code with Cython-specific
+   extensions for C types.
+1. Codon is research project from MIT: not endorsing it, but it consistently comes up high in my search
+   results, source code https://github.com/exaloop/codon and the related article https://bit.ly/3uUvTmd.
+1. New proprietary programming language https://www.modular.com/max/mojo is a superset of Python, was
+   open-sourced just a few days ago (?), with somewhat misleading (68,000X) speedup claims on their front
+   page, documentation/examples/workshops at https://github.com/modularml/mojo.
 
 <!-- numba, using a JIT compiler (https://numba.readthedocs.io/en/stable/glossary.html#term-nopython-mode) -->
 <!-- <\!-- also https://github.com/numba/llvmlite -\-> -->

@@ -10,25 +10,25 @@ katex = true
 There is a number of high-level open-source parallel frameworks for Python that are quite popular in data
 science and beyond:
 
-- {{<a "https://www.ray.io" "Ray">}} is a unified framework for scaling AI and Python applications
+- {{<a "https://www.ray.io" "Ray">}} is a unified framework for scaling AI and Python applications.
 - {{<a "https://www.dask.org" "Dask">}} parallelizes Python loops and graphs of functions, scales NumPy,
-  pandas, and scikit-learn
+  pandas, and scikit-learn.
 - {{<a "https://spark.apache.org/docs/latest/api/python" "PySpark">}} is the Python API for Apache Spark for
-  large-scale data processing in a distributed environment
+  large-scale data processing in a distributed environment.
 - {{<a "https://mars-project.readthedocs.io" "Mars">}} is a tensor-based unified framework for large-scale
-  data computation which scales NumPy, pandas, scikit-learn and many other libraries
+  data computation which scales NumPy, pandas, scikit-learn and many other libraries.
 - {{<a "https://mpi4py.readthedocs.io" "mpi4py">}} is the most popular Message Passing Interface (MPI)
-  implementation for Python
+  implementation for Python.
 - {{<a "https://ipyparallel.readthedocs.io" "IPyParallel">}} architecture for parallel and distributed
-  computing
+  computing.
 - {{<a "https://joblib.readthedocs.io/en/latest/parallel.html" "Joblib">}} for parallel for loops with
-  multiprocessing
+  multiprocessing.
 
-Here we'll focus on Ray, a unified framework for scaling AI and Python workflows. Since this is not a machine
-learning workshop, we will not touch most of Ray's AI capabilities, but will focus on its core distributed
-runtime and data libraries. We will learn several different approaches to parallelizing purely numerical (and
-therefore CPU-bound) workflows, both with and without reduction. If your code is I/O-bound, you will also
-benefit from this course, as I/O-bound workflows can be easily sped up with Ray.
+Here we'll focus on Ray, a unified framework for scaling AI and general Python workflows. Since this is not a
+machine learning workshop, we will not touch most of Ray's AI capabilities, but will focus on its core
+distributed runtime and data libraries. We will learn several different approaches to parallelizing purely
+numerical (and therefore CPU-bound) workflows, both with and without reduction. We will also look at I/O-bound
+workflows.
 
 
 
