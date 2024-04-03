@@ -40,7 +40,8 @@ workflows.
 
 ```py
 import ray
-ray.init()   # no longer necessary, will run by default when you first use it
+ray.init()   # start a Ray cluster  and connect to it
+             # no longer necessary, will run by default when you first use it
 ```
 
 However, `ray.init()` is very useful for passing options at initialization. For example, Ray is quite verbose
@@ -60,9 +61,26 @@ ray.init(num_cpus=4, configure_logging=False)
 ```
 
 By default Ray will use all available CPU cores, e.g. on my laptop `ray.init()` will start 8 ray::IDLE
-processes (workers), and you can monitor these in a separate shell with `htop --filter "ray::IDLE"` command.
+processes (workers), and you can monitor these in a separate shell with `htop --filter "ray::IDLE"` command
+(you may want to hide threads -- typically thrown in green -- with Shift+H).
+
+> ### Discussion
+> How many "ray::IDLE" processes do you see, and why? Recall that you can use `srun --jobid=<jobID> --pty
+> bash` to open an interactive shell process inside your currently running job, and run `htop --filter
+> "ray::IDLE"` there.
+
+{{< question num=11 >}}
+How would you pass the actual number of processor cores to the Ray cluster? Consider three options:
+1. Using a Slurm environment variable. How would you pass it to `ray.init()`?
+2. Launching a single-node Ray cluster as described in our
+   [Ray documentation](https://docs.alliancecan.ca/wiki/Ray).
+3. Not passing anything at all.
+{{< /question >}}
 
 
+
+
+<!-- abc -->
 
 
 
@@ -75,7 +93,6 @@ remote functions**, and their asynchronous invocations are called **Ray tasks**:
 
 ```py
 import ray
-
 ray.init(configure_logging=False)   # optional
 
 @ray.remote             # declare that we want to run this function remotely
@@ -114,14 +131,13 @@ print(ray.get(r))          # more compact way to do the same (single blocking ca
 
 
 
-### Task output and monitoring
+### Task output
 
 Consider a Dask code in which each task sleeps for 10 seconds, prints a message and returns its task ID:
 
 ```py
 import ray
 from time import sleep, time
-
 ray.init(num_cpus=4, configure_logging=False)
 
 @ray.remote
@@ -145,14 +161,49 @@ I get 10.013 seconds since I have enough cores to run all of them in parallel. H
 printout ("almost done") from only one process and a message "repeated 3x across cluster". To enable print
 messages from all tasks, you need set the bash shell environment variable `export RAY_DEDUP_LOGS=0`.
 
-Also notice that Ray task IDs are not integers but 48-character hexadecimal numbers.
+Notice that Ray task IDs are not integers but 48-character hexadecimal numbers.
 
-Ray provides a command-line utility to monitor current and past tasks in bash:
+### Distributed progress bars
 
-```sh
-pyenv activate hpc-env
-ray summary tasks
+```py
+from ray.experimental.tqdm_ray import tqdm
+
+@ray.remote
+def busy(name):
+    for x in tqdm(range(100), desc=name):
+        sleep(0.1)
+
+[busy.remote("task 1"), busy.remote("task 2")]
 ```
+
+A side effect of `tqdm()` is that these tasks start running immediately.
+
+{{< question num=11b >}}
+Implement the same for 10 tasks using a `for` loop.
+{{< /question >}}
+
+<!-- Solution: -->
+<!-- ```py -->
+<!-- [busy.remote("task "+str(i)) for i in range(10)] -->
+<!-- ``` -->
+
+
+
+
+
+
+<!-- ### Task monitoring -->
+
+<!-- Ray provides a command-line utility to monitor current and past tasks in bash, while a Ray instance is -->
+<!-- running. On your own computer you would do: -->
+
+<!-- ```sh -->
+<!-- pyenv activate hpc-env -->
+<!-- ray summary tasks -->
+<!-- ``` -->
+
+
+
 
 
 
@@ -170,6 +221,7 @@ a Ray remote function running on one of the workers:
 ```py
 from time import time
 import ray
+ray.init(num_cpus=4, configure_logging=False)
 
 @ray.remote
 def slow(n: int):
@@ -183,12 +235,12 @@ start = time()
 r = slow.remote(100_000_000)
 total = ray.get(r)
 end = time()
-print("Time in seconds:", round(end-start,3))   # 6.867 seconds
+print("Time in seconds:", round(end-start,3))
 print(total)
 ```
 
-We get the same timing as before (6+ seconds). You can call `ray.get()` on the previously computed result
-again without having to redo the calculation:
+We should get the same timing as before (~6-7 seconds). You can call `ray.get()` on the previously computed
+result again without having to redo the calculation:
 
 ```py
 start = time()
@@ -204,10 +256,8 @@ let's calculate a partial sum on each task:
 ```py
 from time import time
 import psutil, ray
+ray.init(num_cpus=4, configure_logging=False)
 
-ray.init(configure_logging=False)
-
-n = 100_000_000
 @ray.remote
 def slow(interval):
     total = 0
@@ -220,18 +270,21 @@ def slow(interval):
 This would be a serial calculation:
 
 ```py
+n = 100_000_000
 start = time()
 r = slow.remote((1, n))   # takes in one argument
 total = ray.get(r)
 end = time()
-print("Time in seconds:", round(end-start,3))   # 6.963
+print("Time in seconds:", round(end-start,3))
 print(total)
 ```
 
 To launch it in parallel, we need to subdivide the interval:
 
 ```py
-ncores = psutil.cpu_count(logical=False)
+ncores = psutil.cpu_count(logical=False)   # good option on a standalone computer
+ncores = 4                                 # on a cluster
+
 size = n//ncores   # size of each batch
 intervals = [(i*size+1,(i+1)*size) for i in range(ncores)]
 if n > intervals[-1][1]: intervals[-1] = (intervals[-1][0], n)   # add the remainder (if any)
@@ -247,7 +300,7 @@ print(total)
 On 8 cores I get the average runtime of 1.282 seconds -- not too bad, considering that some of the cores are
 low-efficiency (slower) cores.
 
-{{< question num=11 >}}
+{{< question num=12 >}}
 Increase `n` to 2_000_000_000 and run `htop --filter "ray::IDLE` in a separate shell to monitor CPU usage of
 individual processes.
 {{< /question >}}
@@ -315,7 +368,7 @@ ray.get(r)
 
 In my tests with more CPU-intensive functions, both versions produce equivalent runtimes.
 
-{{< question num="12: combining Numba and Ray remotes for the slow series (big one!)" >}}
+{{< question num="13: combining Numba and Ray remotes for the slow series (big one!)" >}}
 Write a slow series solver with Numba-compiled functions executed as Ray tasks.
 1. Numba-compiled `combined(k)` that returns either 1/x or 0.
 2. Numba-compiled `slow(interval)` for partial sums.
@@ -332,8 +385,55 @@ end = time()
 print("Time in seconds:", round(end-start,3))
 print(total)
 ```
-(on presenter's laptop the solution is in `slowSeriesNumbaRay.py`)
 {{< /question >}}
+
+<!-- Solution (on presenter's laptop in `slowSeriesNumbaRay.py`): -->
+<!-- ```py -->
+<!-- from time import time -->
+<!-- import ray -->
+<!-- from numba import jit -->
+
+<!-- ray.init(configure_logging=False) -->
+
+<!-- n = 100_000_000 -->
+
+<!-- @jit(nopython=True) -->
+<!-- def combined(x): -->
+<!--     base, x0 = 10, x -->
+<!--     while 9//base > 0: base *= 10 -->
+<!--     while x > 0: -->
+<!--         if x%base == 9: return 0.0 -->
+<!--         x = x//10 -->
+<!--     return 1.0/x0 -->
+
+<!-- @jit(nopython=True) -->
+<!-- def slow(interval): -->
+<!--     total = 0 -->
+<!--     for i in range(interval[0],interval[1]+1): -->
+<!--         total += combined(i) -->
+<!--     return total -->
+
+<!-- @ray.remote -->
+<!-- def runCompiled(interval): -->
+<!--     return slow(interval) -->
+
+<!-- ncores = 4 -->
+<!-- size = n//ncores   # size of each batch -->
+<!-- intervals = [(i*size+1,(i+1)*size) for i in range(ncores)] -->
+<!-- if n > intervals[-1][1]: intervals[-1] = (intervals[-1][0], n)   # add the remainder (if any) -->
+
+<!-- r = [runCompiled.remote((1,10)) for i in range(ncores)]   # expose workers to runCompiled function -->
+<!-- total = sum(ray.get(r)) -->
+
+<!-- start = time() -->
+<!-- r = [runCompiled.remote(intervals[i]) for i in range(ncores)] -->
+<!-- total = sum(ray.get(r))   # compute total sum -->
+<!-- end = time() -->
+<!-- print("Time in seconds:", round(end-start,3)) -->
+<!-- print(total) -->
+<!-- ``` -->
+
+
 
 Averaged (over three runs) times in seconds :
 
@@ -344,25 +444,7 @@ Averaged (over three runs) times in seconds :
 
 Using a combination of Numba and Ray tasks on 8 cores, we accelerated the calculation by ~68X.
 
-```py
-# from time import time
-# import numpy as np
-# import ray
 
-# @ray.remote
-# def slow():
-#     n = 100_000_000
-#     term = np.vectorize(lambda x: 1.0/x if "9" not in str(x) else 0.0)
-#     i = np.arange(1,n+1)
-#     return np.sum(term(i))
-
-# start = time()
-# r = slow.remote()
-# total = ray.get(r)
-# end = time()
-# print("Time in seconds:", round(end-start,3))   # 15.714 15.086 14.764
-# print(total)
-```
 
 
 
@@ -494,12 +576,14 @@ first task has finished.
 
 Ray Data is a parallel data processing library for ML workflows. As you will see in this section, Ray Data can
 be easily used for non-ML workflows. To process large datasets, Ray Data uses **streaming/lazy execution**,
-i.e. processing does not happen until you try to access ("consume" in Ray's language) the result.
+i.e. processing does not happen until you try to access (*consume* in Ray's language) the result.
 
 <!-- https://www.anyscale.com/blog/streaming-distributed-execution-across-cpus-and-gpus -->
 
 The core object in Ray Data is a **dataset** which is a distributed data collection. Ray datasets can store
-general multidimensional array data that are too large to fit into a single machine's memory.
+general multidimensional array data that are too large to fit into a single machine's memory. Instead, they
+will be (1) distributed in memory across a number of Ray tasks and (2) saved to disk once they are no longer
+in use.
 
 Ray's dataset operates over a sequence of Ray object references to blocks. Each block contains a disjoint
 subset of rows, and Ray Data loads and transforms these blocks in parallel. Each row in Ray's datasets is a
@@ -517,15 +601,15 @@ dictionary.
 
 ```py
 import ray
-ray.init(configure_logging=False)
+ray.init(num_cpus=4, configure_logging=False)
 
 ds = ray.data.range(1000)   # create a dataset from a range
-ds   # Dataset(num_blocks=17, num_rows=1000, schema={id: int64})
-ds.num_blocks()   # 17 blocks
-ds.take(3)   # return first 3 rows as a list of dictionaries; default keys are often 'id' or 'item'
-len(ds.take())   # default is 20 rows
-ds.show(3)   # first 3 rows in a different format (one row per line)
-ds.count()   # explicitly count the number of rows; might be expensive (to load the dataset into memory)
+ds   # Dataset(num_blocks=..., num_rows=1000, schema={id: int64})
+ds.num_blocks()   # ... blocks
+ds.count()        # explicitly count the number of rows; might be expensive (to load the dataset into memory)
+ds.take(3)        # return first 3 rows as a list of dictionaries; default keys are often 'id' or 'item'
+len(ds.take())    # default is 20 rows
+ds.show(3)        # first 3 rows in a different format (one row per line)
 ```
 
 Rows can be generated from arbitrary items:
@@ -537,12 +621,14 @@ ray.data.from_items([10,20,30]).take()   # [{'item': 10}, {'item': 20}, {'item':
 Rows can have multiple key-value pairs:
 
 ```py
-listOfDictionaries = [{"col1": i, "col2": i ** 2} for i in range(1000)]
-ds = ray.data.from_items(listOfDictionaries)
+listOfDict = [{"col1": i, "col2": i ** 2} for i in range(1000)]
+ds = ray.data.from_items(listOfDict)
 ds.show(5)
 ```
 
 A dataset can also be loaded from a file:
+> Note: this example works on my computer, but not on the training cluster where `arrow/14.0.1` was compiled
+> without S3 support.
 
 ```py
 dd = ray.data.read_csv("s3://anonymous@air-example-data/iris.csv")   # load a predefined dataset
@@ -568,7 +654,7 @@ dd.show()   # might pause to read data, default is 20 rows
 
 ```py
 import ray
-ray.init(configure_logging=False)
+ray.init(num_cpus=4, configure_logging=False)
 
 ds = ray.data.range(1000)   # create a dataset
 ds.show(5)
@@ -579,12 +665,13 @@ form each row in the new dataset:
 
 ```py
 ds.map(lambda row: row).show(3)                 # takes a row, returns the same row
+ds.map(lambda row: {"id": row["id"]}).show(3)   # takes a row, returns a new row idential to the old one
 a = ds.map(lambda row: {"id": str(row["id"])})  # takes a row, returns a dict with 'id' values converted to string
 a   # `a` is a new dataset
 a.show(5)
 ```
 
-With `.map()` you can also use non-lambda (or non-anonymous) functions:
+With `.map()` you can also use non-lambda (i.e. non-anonymous) functions:
 
 ```py
 def squares(row):
@@ -606,11 +693,12 @@ ds.show(5)  # original dataset
 b.show(5)   # contains both the original entries and the squares
 ```
 
-You might have already noticed by now that all processing is lazy, i.e. it happens when we request results:
+You might have already noticed by now that all processing in Ray Data is lazy, i.e. it happens when we request
+results:
 
 ```py
 ds = ray.data.range(10_000_000)   # define a bigger dataset
-ds.map(addSquares)   # no visible calculation, just a request, not comsuming results
+ds.map(addSquares)   # no visible calculation, just a request, not consuming results
 ds.map(addSquares).show()   # print results => start calculation
 ds.map(addSquares).show()   # previous results were not stored, so this will re-run the calculation
 
@@ -630,7 +718,8 @@ c = b.take()             # fast: only first 20 elements
 c = b.take(10_000_000)   # takes a couple of minutes, runs in parallel
 ```
 
-This is not very efficient ... certainly, computing 10_000_000 squares should not take a couple of minutes in parallel!
+This is not very efficient ... certainly, computing 10,000,000 squares should not take a couple of minutes in
+parallel!
 
 Let's rewrite this problem:
 
@@ -650,7 +739,7 @@ start = time()
 b = ds.map(squares).take()
 end = time()
 print("Time in seconds:", round(end-start,3))
-b.show()
+print(b)
 ```
 
 Now the runtime is 0.359 seconds.
@@ -758,7 +847,7 @@ print("Time in seconds:", round(end-start,3))
 print(total)
 ```
 
-I get the average runtime of 6.978 seconds. To parallelize this, you simply redefine `intervals`:
+I get the average runtime of 6.978 seconds. To parallelize this, you can redefine `intervals`:
 
 ```py
 intervals = ray.data.from_items([
@@ -776,7 +865,7 @@ print(total)
 
 On 2 cores I get the average time of 3.765 seconds.
 
-{{< question num=13 >}}
+{{< question num=14 >}}
 Parallelize this for 4 CPU cores. **Hint**: programmatically form a list of dictionaries, each containing
 two key-value pairs (`a` and `b`) with the sub-intervals.
 {{< /question >}}
@@ -842,7 +931,7 @@ On my laptop I am getting:
 
 Let's try running the last problem on the training cluster as a batch job. 
 
-{{< question num=14 >}}
+{{< question num=15 >}}
 1. Save the entire Python code for the last problem as a file `rayPartialMap.py`
 2. Modify the code to take <ncores> as a command-line argument:
 ```py
@@ -991,7 +1080,7 @@ kill $ray_cluster_pid
 
 and terminate the job.
 
-<!-- abc -->
+
 
 
 
@@ -1111,6 +1200,7 @@ Here is a simple example of processing a directory with images with Ray Data. Su
 2154$ image `tuscany.avif`. Let's crop 100 random $300\times 300$ images out of it:
 
 ```sh
+wget https://wgpages.netlify.app/img/tuscany.avif
 ls -l tuscany.avif
 mkdir -p images
 width=$(identify tuscany.avif | awk '{print $3}' | awk -Fx '{print $1}')
@@ -1270,7 +1360,7 @@ f.close()
 ```
 
 Here we are timing purely the computational part, not saving the image to a NetCDF file. Let's run it and look
-at the result in ParaView! When running this on my laptop, I get 9.097, 9.169, 9.119 seconds.
+at the result in ParaView! When running this on my laptop, it takes 9.220 seconds.
 
 How would you parallelize this problem with `ray.data`? The main points to remember are:
 
@@ -1383,10 +1473,6 @@ $2000\times 2000$ (averaged over three runs, in seconds):
 <!-- ``` -->
 
 
-
-
-<!-- {{< question num=xx >}} -->
-<!-- {{< /question >}} -->
 
 
 

@@ -44,12 +44,11 @@ pip install numpy
 pip install --upgrade "ray[default]"
 pip install --upgrade "ray[data]"
 pip install tqdm netcdf4 scipy numexpr psutil multiprocess numba scalene Pillow
+pip uninstall pandas
+pip install -Iv pandas==2.1.4
 ...
-source deactivate
+pyenv deactivate
 ```
-
-<!-- # pip uninstall pandas -->
-<!-- # pip install -Iv pandas==2.1.4 -->
 
 On an HPC cluster:
 
@@ -803,7 +802,7 @@ np.isin(x,b'hi')   # traditional NumPy => returns array([ True, False])
 ne.evaluate("contains(x, b'hi')")   # this is how you write this expression in NumExpr
 ```
 
-We can use NumExpr to parallelize checking for substrings:
+We can use NumExpr to parallelize checking for substrings (store this as `slowSeries.py`):
 
 ```py
 from time import time
@@ -844,7 +843,7 @@ mask = ne.evaluate("~contains(j, '9')")
 nonZeroTerms = i[mask]
 total = np.sum(ne.evaluate("1.0/nonZeroTerms"))
 end = time()
-print("Time in seconds:", round(end-start,3))   # 11.987 12.201 12.094
+print("Time in seconds:", round(end-start,3))
 print(total)
 ```
 
@@ -897,9 +896,13 @@ If running on your computer, this will open the result in a browser:
 
 As you can see, our actual computing is quite fast! 67% of the time is taken by the line initializing an array
 of byte strings `j = i.astype(np.bytes_)`, and the second biggest offender is initializing an array of
-integers. If we could find a way to implement this initialization in NumExpr, we could vastly improve our
-code's performance. I have not found a way to do this quickly and elegantly in NumExpr, but perhaps there is a
-solution? I will leave it as a take-home exercise, and please let me know if you find a solution!
+integers.
+
+If we could find a way to implement this initialization in NumExpr, we could vastly improve our code's
+performance. I have not found a way to do this quickly and elegantly in NumExpr (very marginal improvement
+with `j = i.astype(dtype='S9')`), but perhaps there is a solution?
+
+I will leave it as a take-home exercise, and please let me know if you find a solution!
 
 
 
@@ -950,6 +953,9 @@ print("Time in seconds:", round(end-start,3))
 This takes 10.045s as expected. Let's parallelize it with `multiprocess`, creating a pool of workers and
 replacing serial `map()` with parallel `pool.map()`:
 
+> Note: serial `map()` returns an iterable, whereas parallel `pool.map()` already returns a list &nbsp;⇒&nbsp;
+> no need to convert it to a list.
+
 ```py
 import time
 from multiprocess import Pool
@@ -957,14 +963,14 @@ ncores = 4            # set it to 4 or 8
 print("Running on", ncores, "cores")
 pool = Pool(ncores)   # create a pool of workers
 start = time.time()
-r = list(pool.map(lambda x: time.sleep(1), range(10)))   # use 0, 1, ..., 9 as arguments to the lambda function
+r = pool.map(lambda x: time.sleep(1), range(10))   # use 0, 1, ..., 9 as arguments to the lambda function
 pool.close()          # turn off your parallel workers
 end = time.time()
 print("Time in seconds:", round(end-start,3))
 ```
 
-1. On 8 cores this takes 2.007 seconds: in the 1st second we run 8 `sleep(1)` calls in parallel, and the 2nd
-   second we run the remaining 2 calls in parallel.
+1. On 8 cores this takes 2.007 seconds: in the 1st second we run eight `sleep(1)` calls in parallel, and the 2nd
+   second we run the remaining two calls in parallel, i.e. we running batches of 8+2 calls.
 1. On 4 cores this takes 3.005 seconds: running batches of 4 + 4 + 2 calls.
 
 How do we parallelize the slow series with parallel `map()`? One idea is to create a function to process each
@@ -978,6 +984,7 @@ def combined(k):
         return 0.0
     else:
         return 1.0/k
+
 start = time()
 total = sum(map(combined, range(1,n+1)))   # use 1,...,n as arguments to `combined` function
 end = time()
@@ -1110,13 +1117,16 @@ mentioning here:
 <!-- <\!-- also https://github.com/numba/llvmlite -\-> -->
 
 Here we'll take a look at Numba:
-- compiles selected blocks of Python code to machine code
-- can process multi-dimensional arrays
-- can use GPUs (not covered here): you'd be writing CUDA kernels
+- compiles selected blocks of Python code to machine code,
+- can process multi-dimensional arrays,
+- can do multithreading on multiple CPU cores (and we'll later learn how to use it with multiprocessing),
+- can use GPUs (not covered here): you'd be writing CUDA kernels.
 
 Let's compute the following sum:
 
 $$\sum_{k=1}^\infty\frac{\cos(k\theta)}{k} = -\ln\left(2\sin\frac{\theta}{2}\right)~~~~~{\rm for}~\theta=1. $$
+
+Here is the familiar serial implementation:
 
 ```py
 from time import time
@@ -1192,8 +1202,7 @@ additional %.
 
 As you can see, Numba is not a silver bullet when it comes to speeding up Python. It works great for many
 numerical problems including the trigonometric series above, but for problems with high-level Python
-abstractions -- in our case the specific line `if not "9" in str(i)` -- Numba does not really speed up your
-code.
+abstractions -- in our case the specific line `if not "9" in str(i)` -- Numba does not perform very well.
 
 ### Fast implementation
 
