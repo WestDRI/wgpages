@@ -1196,22 +1196,30 @@ ray.data.read_csv(                ray.data.read_json(               ray.data.rea
 
 ### Processing images
 
+> Note: this example won't work on the training cluster, where `arrow/14.0.1` was compiled without proper
+> filesystem support. However, I can demo this on my computer.
+
 Here is a simple example of processing a directory with images with Ray Data. Suppose we have a $2874\times
 2154$ image `tuscany.avif`. Let's crop 100 random $300\times 300$ images out of it:
 
 ```sh
-wget https://wgpages.netlify.app/img/tuscany.avif
-ls -l tuscany.avif
+tmpdir=${RANDOM}${RANDOM}
+mkdir -p ~/$tmpdir && cd ~/$tmpdir
+pyenv activate hpc-env
+
+wget https://wgpages.netlify.app/img/tuscany.jpg
+ls -l tuscany.jpg
 mkdir -p images
-width=$(identify tuscany.avif | awk '{print $3}' | awk -Fx '{print $1}')
-height=$(identify tuscany.avif | awk '{print $3}' | awk -Fx '{print $2}')
+width=$(identify tuscany.jpg | awk '{print $3}' | awk -Fx '{print $1}')
+height=$(identify tuscany.jpg | awk '{print $3}' | awk -Fx '{print $2}')
+
 for num in $(seq -w 00 99); do   # crop it into hundred 300x300 random images
     echo $num
     x=$(echo "scale=8; $RANDOM / 32767 * ($width-300)" | bc)   # $RANDOM goes from 0 to 32767
     x=$(echo $x | awk '{print int($1+0.5)}')
     y=$(echo "scale=8; $RANDOM / 32767 * ($height-300)" | bc)
     y=$(echo $y | awk '{print int($1+0.5)}')
-	convert tuscany.avif -crop 300x300+$x+$y images/small$num.png
+	convert tuscany.jpg -crop 300x300+$x+$y images/small$num.png
 done
 ```
 
@@ -1220,7 +1228,7 @@ Now we will load these images into Ray Data. First, let's set `export RAY_DEDUP_
 ```py
 import ray
 ds = ray.data.read_images("images/")
-ds   # 100 rows (one image per row) split into 16 blocks
+ds   # 100 rows (one image per row) split into ... blocks
 ds.take(1)[0]                  # first image
 type(ds.take(1)[0]["image"])   # stored as a numpy array
 ds.take(1)[0]["image"].shape   # 300x300 and three channels (RGB)
@@ -1245,7 +1253,6 @@ def negate(row):
     return {'image': 255-row['image']}
 
 negative = ds.map(negate)
-
 negative.write_images("output", column='image')
 ```
 
