@@ -123,15 +123,27 @@ Describe all approaches.
 
 ## Previous/future work on Visualize This and Seeing Big
 
-We ran the national *"Visualize This!"* contest in 2016, 2017, 2018, 2019, 2021 (this year internationally
+We ran the national *"Visualize This!"* contests in 2016, 2017, 2018, 2019, 2021 (this year internationally
 with IEEE Vis), and 2023. You can find the details and links to individual years
-[here](https://ccvis.netlify.app/contests).
+[here](https://ccvis.netlify.app/contests). In each competition we provided a dataset (or two) and asked
+participants to come with their best visualizations to answer some specific questions. The number of
+submissions varies from 0 to 10 per contest, and we were really blown away by the quality of some of the
+submissions.
 
-- objectives
+{{< figure src="/img/ieee2021.png" caption="Several visualization examples from the website gallery." >}}
 
-We ran the *"Seeing Big showcase"* at HPCS in 2015 (48m video), 2016 (25m video), 2017 (12m video).
+These contests have three goals:
 
-- chance for researchers to showcase their work
+1. promote and teach visualization tools and techniques to researchers,
+1. advertise our services and support, and
+1. (most exciting for us) crowdsource novel visualization ideas: we know the tools, but using them effectively
+   could be an art in itself.
+
+We ran the *"Seeing Big showcase"* at HPCS in 2015 (48m video), 2016 (25m video), and 2017 (12m video). Few
+weeks prior to each event, we asked researchers across the country to contribute their scientific
+visualizations, either high-resolution images or videos that would showcase their work to a wider
+audience. From these visualizations we assembled 4K videos that were shown in a loop on a big screen in the
+conference lobby for the entire duration of the conference.
 
 We would love to discuss how we could make these two outreach programs work better in the future, and ways to
 collaborate on them.
