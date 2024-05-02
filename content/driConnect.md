@@ -124,13 +124,23 @@ Describe all approaches.
 ## Previous/future work on Visualize This and Seeing Big
 
 We ran the national *"Visualize This!"* contests in 2016, 2017, 2018, 2019, 2021 (this year internationally
-with IEEE Vis), and 2023. You can find the details and links to individual years
-[here](https://ccvis.netlify.app/contests). In each competition we provided a dataset (or two) and asked
-participants to come with their best visualizations to answer some specific questions. The number of
-submissions varies from 0 to 10 per contest, and we were really blown away by the quality of some of the
-submissions.
+with IEEE Vis), and 2023. In each competition we provided a dataset (or two) and asked participants to come
+with their best visualizations that would answer some specific questions. The number of submissions varied
+from 0 to 10 per contest, and we were really blown away by the quality of some of the submissions.
 
-{{< figure src="/img/ieee2021.png" caption="Several visualization examples from the website gallery." >}}
+<!-- You can find the details and links to individual years [here](https://ccvis.netlify.app/contests). -->
+
+- {{<a "https://scivis2021.netlify.app/2016" "2016:">}} Visualizing multiple variables in a global ocean model
+- {{<a "https://scivis2021.netlify.app/2017" "2017:">}} Airflow around counter-rotating wind turbines
+- {{<a "https://scivis2021.netlify.app/2018" "2018:">}} Interaction of a large protein structure with a cell's
+  membrane <ins>and</ins> Linked humanities data
+- {{<a "https://scivis2021.netlify.app/2019" "2019:">}} Incompressible transitional air flow over a wind turbine
+  section <ins>or</ins> bring your own data
+- {{<a "https://scivis2021.netlify.app" "2020-2021:">}} Earth's Mantle Convection
+- {{<a "https://visualizethis.netlify.app" "2023:">}} Halloween storm over Eastern Canada and the Normalized
+  difference vegetation index
+
+{{< figure src="/img/ieee2021.png" caption="In 2020-2021 we partnered with IEEE to host the international SciVis Contest." >}}
 
 These contests have three goals:
 
