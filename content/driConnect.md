@@ -48,7 +48,7 @@ compress typical 3D scalar fields by ~20-30X without any visible degradation, an
 
 ## National visualization team
 
-Did you know that the National Visualization Team has a [website for users](https://ccvis.netlify.app)?  We
+Did you know that the Visualization National Team has a [website for users](https://ccvis.netlify.app)?  We
 use it regularly to show users the types of visualizations one could create from their datasets.
 
 {{< figure src="/img/ccvisGallery.png" caption="Several visualization examples from the website gallery." >}}
@@ -65,9 +65,12 @@ If you want to add your own rendering to the gallery, or have any comments, plea
 We've been providing training on RDM-in-HPC tools for ~10 years. You can find dozens of recorded webinars on
 these two pages:
 
-- [Data management tools](https://training.westdri.ca/tools/rdm)
+- [Data management tools](https://training.westdri.ca/tools/rdm) - data compression, version control for large
+  files, hierarchical datasets with pytables, SQL databases, backing up, xarray, managing many files, DAR, and
+  many others
 - [Visualization resources](https://training.westdri.ca/tools/visualization) - working with large datasets,
-  including in-situ processing, distributed rendering, etc.
+  in-situ processing, remote and distributed rendering, Cinema science, topological data analysis, web-based
+  vis, programmable filters, and many others
 
 Each webinar tries to dive into a new, advanced topic that is typically not addressed in our existing
 documentation or training courses.
@@ -128,7 +131,7 @@ with IEEE Vis), and 2023. You can find the details and links to individual years
 
 We ran the *"Seeing Big showcase"* at HPCS in 2015 (48m video), 2016 (25m video), 2017 (12m video).
 
-- chance for researchers to showcase their research
+- chance for researchers to showcase their work
 
 We would love to discuss how we could make these two outreach programs work better in the future, and ways to
 collaborate on them.
