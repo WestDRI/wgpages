@@ -184,12 +184,14 @@ variable.
 {{< /question >}}
 
 {{< question num=41c >}}
-Write a script that lists every 10th file in a directory. **Hint**: create an alphabetically sorted list of
-files in that directory and then use awk's `NR` variable.
+Imagine that the directory `/project/def-sponsor00/shared/deepImpact` contains results from a numerical
+simulation. Write a script to copy every 10th file (starting from `yB31_oneblock_00000.vti`)
+from this directory to one of your own directories. **Hint**:
+create an alphabetically sorted list of files in that directory and then use awk's `NR` variable.
 {{< /question >}}
 
 <!-- ```sh -->
-<!-- find . -type f | awk 'NR%10==0' -->
+<!-- find . -type f | sort | awk 'NR%10==0' -->
 <!-- ``` -->
 
 **Quick reference:**

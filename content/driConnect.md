@@ -19,7 +19,7 @@ compress typical 3D scalar fields by ~20-30X without any visible degradation, an
 <!-- visualization. This is really a big deal and has been completely unexplored by anyone in the Federation until -->
 <!-- now. -->
 
-{{< figure src="/img/99X.png" caption="Original deep asteroid impact dataset (left) and its TTK-compressed version (right), both at 500^3 in double precision. Note the ~100X compression." >}}
+{{< figure src="/img/99X.png" caption="Original deep asteroid impact dataset (left) and its TTK-compressed version (right), both at 500^3 in double precision. Note the ~100X compression. Do you see any differences between the two images?" >}}
 
 - two ready-to-use methods ([ZFP](https://computing.llnl.gov/projects/zfp) and [topological
   compression](https://topology-tool-kit.github.io/examples/persistenceDrivenCompression))
@@ -49,7 +49,7 @@ compress typical 3D scalar fields by ~20-30X without any visible degradation, an
 ## National visualization team
 
 Did you know that the Visualization National Team has a [website for users](https://ccvis.netlify.app)?  We
-use it regularly to show users the types of visualizations one could create from their datasets.
+use it regularly to show to users the types of visualizations one could create from their datasets.
 
 {{< figure src="/img/ccvisGallery.png" caption="Several visualization examples from the website gallery." >}}
 
@@ -69,8 +69,8 @@ these two pages:
   files, hierarchical datasets with pytables, SQL databases, backing up, xarray, managing many files, DAR, and
   many others
 - [Visualization resources](https://training.westdri.ca/tools/visualization) - working with large datasets,
-  in-situ processing, remote and distributed rendering, Cinema science, topological data analysis, web-based
-  vis, programmable filters, and many others
+  in-situ processing, remote and distributed rendering, Cinema science, topological data analysis (using TTK),
+  web-based visualization, programmable filters, photorealistic rendering, and many others
 
 Each webinar tries to dive into a new, advanced topic that is typically not addressed in our existing
 documentation or training courses.
@@ -79,7 +79,6 @@ documentation or training courses.
 
 
 
-<!-- ## Lack of consortium branding in the West -->
 ## Webinar and course programs
 
 Following the demise of WestGrid in April 2022, the SFU training team (Marie and Alex, both formerly of
@@ -97,8 +96,8 @@ webinars are developed and delivered by Marie and Alex.
 <!-- ARC/HPC analysts in the past, but -- without an umbrella consortium or any inter-university agreements -- we -->
 <!-- cannot "volunteer" webinar speakers. -->
 
-We are looking for long-term collaborators on the webinar program, both for improved branding (recall: no
-WestGrid) and communication to researchers, additional expertise, and to share the workload.
+We are looking for a **long-term collaboration on the webinar program**, for improved branding (recall: no
+consortium in the West) and communication to researchers, additional expertise, and to share the workload.
 
 
 
@@ -113,9 +112,10 @@ bottlenecks they would encounter both with multi-threading and multi-processing.
 
 
 
-## Teaching machine learning
 
-Describe all approaches.
+
+<!-- ## Teaching machine learning (Marie) -->
+<!-- Describe all approaches. -->
 
 
 
@@ -155,18 +155,17 @@ visualizations, either high-resolution images or videos that would showcase thei
 audience. From these visualizations we assembled 4K videos that were shown in a loop on a big screen in the
 conference lobby for the entire duration of the conference.
 
-We would love to discuss how we could make these two outreach programs work better in the future, and ways to
-collaborate on them.
+The videos from 2015-2017 are not online (copyright limitations), but Alex will be happy to show them to you.
+
+We would love to discuss how we could make these two outreach programs work better in the future, and find
+ways to collaborate on them. Would it make sense to merge *"Visualize This!"* and *"Seeing Big showcase"*, and
+how would we do it?
+
+We could use some help from the Alliance:
+1. funding of prizes,
+1. comms (announcement and advertising).
 
 
-
-
-
-
-<!-- Tessa: "Yes, that's a little tricky being able to communicate at DRI Connect - other than I'd say putting -->
-<!-- something in the Slack channel right at the beginning and inviting people to talk to. Unfortunately the -->
-<!-- program is full - and we did have to reject some sessions to fit the schedule in 2 days so we can't really -->
-<!-- rework it now." -->
 
 
 
