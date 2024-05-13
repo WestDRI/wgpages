@@ -6,6 +6,17 @@ katex = true
 
 This page lists some topics that we would like to discuss at DRI Connect but could not fit into the program.
 
+
+
+<!-- We would like to present several topics at DRI Connect, but the program is full. Instead, we listed these -->
+<!-- topics on this page https://wgpages.netlify.app/sfu -- please get in touch with Alex Razoumov and Marie-Hélène -->
+<!-- Burle if you would like to chat about any of these topics. -->
+
+
+
+
+
+
 ## Lossy compression of 3D scalar fields
 
 Recently we started looking into lossy compression of 3D scalar fields (watch our [webinar on this
@@ -114,8 +125,14 @@ bottlenecks they would encounter both with multi-threading and multi-processing.
 
 
 
-<!-- ## Teaching machine learning (Marie) -->
-<!-- Describe all approaches. -->
+## Teaching machine learning
+
+We would love to learn which research examples / data you use to teach ML, and how you build the hands-on
+component of your course. On a related note, what are the most common ML problems that researchers run on our
+HPC systems? Do you any of them train their models on simulation data? If yes, what are the model goals?
+Finding patterns in simulation data, data segmentation, upscaling numerical models, speeding up rendering,
+visualization surrogates, etc?
+
 
 
 
@@ -155,7 +172,8 @@ visualizations, either high-resolution images or videos that would showcase thei
 audience. From these visualizations we assembled 4K videos that were shown in a loop on a big screen in the
 conference lobby for the entire duration of the conference.
 
-The videos from 2015-2017 are not online (copyright limitations), but Alex will be happy to show them to you.
+The 2015-2017 showcase videos are not online (copyright restrictions), but Alex will be happy to demo them to
+you in private.
 
 We would love to discuss how we could make these two outreach programs work better in the future, and find
 ways to collaborate on them. Would it make sense to merge *"Visualize This!"* and *"Seeing Big showcase"*, and
