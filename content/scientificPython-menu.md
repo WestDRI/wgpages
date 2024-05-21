@@ -3,8 +3,8 @@ title = "Scientific Python"
 slug = "scientificpython"
 +++
 
-{{<cor>}}Friday, October 27th{{</cor>}}\
-{{<cgr>}}1:00pm-2:30pm Pacific Time{{</cgr>}}
+{{<cor>}}June 6<sup>th</sup>{{</cor>}}\
+{{<cgr>}}1:30pm–4:30pm Pacific Time{{</cgr>}}
 
 
 

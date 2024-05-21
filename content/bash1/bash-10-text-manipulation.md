@@ -183,15 +183,35 @@ Write an awk script that prints every 10th line from `cities.csv` starting from 
 variable.
 {{< /question >}}
 
-{{< question num=41c >}}
-Imagine that the directory `/project/def-sponsor00/shared/deepImpact` contains results from a numerical
-simulation. Write a script to copy every 10th file (starting from `yB31_oneblock_00000.vti`)
+{{< question num="`copy every 10th file`" >}}
+Imagine that the directory `/project/def-sponsor00/shared/toyModel` contains results from a numerical
+simulation. Write a command to copy every 10th file (starting from `yB31_oneblock_00000.vti`)
 from this directory to one of your own directories. **Hint**:
 create an alphabetically sorted list of files in that directory and then use awk's `NR` variable.
 {{< /question >}}
 
 <!-- ```sh -->
-<!-- find . -type f | sort | awk 'NR%10==0' -->
+<!-- find /project/def-sponsor00/shared/toyModel -type f | sort | awk 'NR%10==0' -->
+<!-- ``` -->
+
+{{< question num="`archive every 20th file`" >}}
+Similarly to the previous exercise, write a command to create a tar archive that includes every 20th file
+from the simulation directory `/project/def-sponsor00/shared/toyModel`. Is it possible to do this in one
+command? Why does it remove leading '/' from file paths?
+{{< /question >}}
+
+<!-- There are many solutions: -->
+<!-- ```sh -->
+<!-- # the downside of this solution is that it'll include paths (without the leading /) into the arhive -->
+<!-- tar cvf toy.tar $(find /project/def-sponsor00/shared/toyModel -type f | sort | awk 'NR%20==0') -->
+
+<!-- cd /project/def-sponsor00/shared/toyModel   # if you are allowed to cd into that directory -->
+<!-- tar cvf ~/tmp/toy.tar $(find . -type f | sort | awk 'NR%20==0') -->
+<!-- cd - -->
+
+<!-- find /project/def-sponsor00/shared/toyModel -type f | sort | awk 'NR%20==0' > list.txt -->
+<!-- tar cfz toy.tar --files-from=list.txt -->
+<!-- /bin/rm list.txt -->
 <!-- ``` -->
 
 **Quick reference:**

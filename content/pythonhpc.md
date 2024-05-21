@@ -4,8 +4,8 @@ slug = "pythonhpc"
 katex = true
 +++
 
-{{<cor>}}March 28<sup>th</sup> (Part 1) and April 4<sup>th</sup> (Part 2){{</cor>}}\
-{{<cgr>}}Both days 10:00am - noon Pacific{{</cgr>}}
+{{<cor>}}June 7<sup>th</sup>{{</cor>}}\
+{{<cgr>}}9:30am–12:30pm (Part 1) and 1:30pm-4:30pm (Part 2) Pacific Time{{</cgr>}}
 
 **Abstract**: In scientific computing, Python is the most popular programming/scripting language. While known
 for its high-level features, hundreds of fantastic libraries and ease of use, Python is slow compared to

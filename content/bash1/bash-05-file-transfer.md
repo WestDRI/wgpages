@@ -126,3 +126,20 @@ Copy a file to/from the training cluster using either `scp` or `sftp`.
 {{< question num="`rsync`" >}}
 Bring up the manual page on `rsync`, then use it to synchronize a directory from the training cluster.
 {{< /question >}}
+
+{{< question num="`multiple files`" >}}
+Write a command to `scp` multiple files with a single command so that `scp` asks you for password (and
+possible MFA) *only once* for all files, not once per file. Feel free to google this problem. If you have an
+Alliance account, try copying a set of files from the training cluster to Cedar (you will run into a problem):
+```sh
+for i in {1..5}; do
+	echo ${RANDOM}${RANDOM}${RANDOM} > a$i.txt
+done
+scp a*.txt username@cedar.alliancecan.ca:scratch
+```
+How many times does it ask for a password?
+{{< /question >}}
+
+{{< question num="`ssh config file`" >}}
+Let's discuss remote system profiles in `~/.ssh/config`.
+{{< /question >}}

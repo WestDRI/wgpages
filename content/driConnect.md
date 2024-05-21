@@ -164,7 +164,7 @@ These contests have three goals:
 1. promote and teach visualization tools and techniques to researchers,
 1. advertise our services and support, and
 1. (most exciting for us) crowdsource novel visualization ideas: we know the tools, but using them effectively
-   could be an art in itself.
+   could be an art in itself -- just look at the pictures above.
 
 We ran the *"Seeing Big showcase"* at HPCS in 2015 (48m video), 2016 (25m video), and 2017 (12m video). Few
 weeks prior to each event, we asked researchers across the country to contribute their scientific
@@ -173,15 +173,16 @@ audience. From these visualizations we assembled 4K videos that were shown in a 
 conference lobby for the entire duration of the conference.
 
 The 2015-2017 showcase videos are not online (copyright restrictions), but Alex will be happy to demo them to
-you in private.
+you offline.
 
-We would love to discuss how we could make these two outreach programs work better in the future, and find
-ways to collaborate on them. Would it make sense to merge *"Visualize This!"* and *"Seeing Big showcase"*, and
-how would we do it?
+We would love to discuss how we could **make these two outreach programs work better in the future**, and find
+ways to collaborate on them. Would it make sense to **merge *"Visualize This!"* and *"Seeing Big showcase"***,
+and how would we do it?
 
 We could use some help from the Alliance:
-1. funding of prizes,
-1. comms (announcement and advertising).
+1. funding of prizes - this would really boost participation!
+1. comms (announcement and advertising),
+1. any ideas to make these programs more effective.
 
 
 

@@ -4,8 +4,8 @@ slug = "bash"
 aliases = ["bash-in-summer", "bash-in-february"]
 +++
 
-{{<cor>}}December 14th and 21st{{</cor>}}\
-{{<cgr>}}10:00am-noon Pacific Time{{</cgr>}}
+{{<cor>}}June 3<sup>rd</sup>{{</cor>}}\
+{{<cgr>}}9:30am–12:30pm and 1:30pm-4:30pm Pacific Time{{</cgr>}}
 
 <!-- Course materials will be added here shortly before the start of the course. -->
 
