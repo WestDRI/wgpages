@@ -185,7 +185,7 @@ Write a Python code to count the number of addresses from each domain and report
 Try doing it without using `Counter` library.
 
 **Hint**: For each domain, try creating a list of True/False values telling whether that domain is present in
-each element.
+each element.Can you solve the entire problem in one line?
 {{< /question >}}
 
 <!-- Solution: -->
@@ -194,4 +194,8 @@ each element.
 <!-- for d in domains: -->
 <!--     base[d] = sum([d in e for e in emails]) -->
 <!-- print(base) -->
+<!-- ``` -->
+<!-- One-line solution: -->
+<!-- ```py -->
+<!-- {d:sum([d in e for e in emails]) for d in domains} -->
 <!-- ``` -->

@@ -9,9 +9,8 @@ This page lists some topics that we would like to discuss at DRI Connect but cou
 
 
 <!-- We would like to present several topics at DRI Connect but the program is full. Instead, we listed these -->
-<!-- topics at https://wgpages.netlify.app/sfu -- please get in touch with Alex Razoumov and Marie-Hélène Burle if -->
-<!-- you would like to chat about any of these. -->
-
+<!-- topics at https://wgpages.netlify.app/sfu -- please get in touch with Alex Razoumov if you would like to -->
+<!-- chat about any of these. -->
 
 
 
@@ -120,6 +119,10 @@ Over the past 10 years we switched from teaching MPI and OpenMP (which are still
 course) to teaching parallel programming using higher-level frameworks in Julia, Chapel, Python, and R. In
 each case/language the objective is different, but in general we walk students through typical pitfalls and
 bottlenecks they would encounter both with multi-threading and multi-processing.
+
+- Related question: how do we get researchers more interested in advanced and niche courses? Very often
+  students don't know what they are missing by not attending.
+
 
 
 
