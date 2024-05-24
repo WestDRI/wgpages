@@ -33,7 +33,7 @@ bindings and fuzzy completion.
 <!-- {{< yt Mq6Vs9v_VAI 63 >}} -->
 You can {{<a "https://youtu.be/Mq6Vs9v_VAI" "watch a video for this topic">}} after the workshop.
 
-{{< question num=42 >}}
+{{< question num=11.1 >}}
 Let's study together these commands:
 ```sh
 $ source ~/projects/def-sponsor00/shared/fzf/.fzf.bash

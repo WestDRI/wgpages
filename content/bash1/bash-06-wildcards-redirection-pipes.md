@@ -36,7 +36,7 @@ Standard input of a process. Standard output of a process. Pipes connect the two
 <!-- > echo hello >> test.txt -->
 <!-- > ~~~ -->
 
-{{< question num=10 >}}
+{{< question num=6.1 >}}
 Running `ls -F` in `~/Desktop/Shell/Users/nelle/sugars` results in:
 ```sh
 analyzed/  glucose.dat  mannose.dat  sucrose.dat  fructose.dat  maltose.dat  raw/
@@ -44,7 +44,7 @@ analyzed/  glucose.dat  mannose.dat  sucrose.dat  fructose.dat  maltose.dat  raw
 What code would you use to move all the `.dat` files into the `analyzed` subdirectory?
 {{< /question >}}
 
-{{< question num=11 >}}
+{{< question num=6.2 >}}
 In a directory we want to find the 3 files that have the least number of lines. Which command would work for
 this?
 1. `wc -l * > sort -n > head -3`
@@ -53,12 +53,12 @@ this?
 4. `wc -l * | sort -n | head -3`
 {{< /question >}}
 
-{{< question num=18 >}}
+{{< question num=6.3 >}}
 Using Unix pipes, write a one-line command to show the name of the longest `.pdb` file (by the number of lines). Paste
 your answer into the chat.
 {{< /question >}}
 
-{{< question num=19 >}}
+{{< question num=6.4 >}}
 Combine `ls` and `head` and/or `tail` into a one-line command to show three largest files (by the number of bytes) in a
 given directory. Paste your answer into the chat.
 {{< /question >}}

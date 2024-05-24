@@ -53,7 +53,7 @@ $ ./process propane.pdb
 Let's talk more about file permissions.
 {{< /question >}}
 
-{{< question num=34 >}}
+{{< question num=8.2 >}}
 In the `molecules` directory (download link mentioned <a href="../bash/bash-04-tar-gzip" target="_blank">here</a>),
 create a shell script called `scan.sh` containing the following:
 ```sh
@@ -132,7 +132,7 @@ Some examples of conditions (**make sure to have spaces around each bracket!**):
 - `[ -s name ]` checks if file name has length greater than 0
 
 
-{{< question num=23 >}}
+{{< question num=8.3 >}}
 Write a script that complains when it does not receive arguments.
 {{< /question >}}
 
@@ -209,7 +209,7 @@ $ echo $PS1
 It is best to define custom environment variables inside your ~/.bashrc file. It is loaded every time you
 start a new shell.
 
-{{< question num=22 >}}
+{{< question num=8.6 >}}
 Play with variables and their values. Change the prompt, e.g. `PS1="\u@\h \w> "`.
 {{< /question >}}
 

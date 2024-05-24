@@ -85,7 +85,7 @@ b.pop(2)             # you can use its index
 b.remove('Earth')       # or you can use its value
 ```
 
-{{< question num=3 >}}
+{{< question num=5.1 >}}
 Write a script to find the second largest number in the list [77,9,23,67,73,21].
 {{< /question >}}
 

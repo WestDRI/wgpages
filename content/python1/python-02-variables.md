@@ -31,9 +31,9 @@ age = age + 3   # another syntax: age += 3
 print('age in three years:', age)
 ```
 
-{{< question num=1 >}}
-What is the final value of `position` in the program below? (Try to predict the value without running the program, then
-check your prediction.)
+{{< question num=2.1 >}}
+What is the final value of `position` in the program below? (Try to predict the value without running the
+program, then check your prediction.)
 ```py
 initial = "left"
 position = initial
@@ -87,5 +87,7 @@ print(str(1)+'a')   # this works
 print(1+int('2'))   # this works
 ```
 
-{{< question num=2 >}} If you assign some arbitrary integer value to `a`, e.g. `a=123` or `a=87236`, write a
-code to get the second digit of `a`.  {{< /question >}}
+{{< question num=2.2 >}}
+If you assign some arbitrary integer value to `a`, e.g. `a=123` or `a=87236`, write a code to get the second
+digit of `a`.
+{{< /question >}}

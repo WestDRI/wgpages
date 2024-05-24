@@ -15,11 +15,11 @@ weight = 2
 
 Click on a triangle to expand a question:
 
-{{< question num=1 >}}
+{{< question num=2.1 >}}
 Relative vs. absolute paths. Using `~` as part of a longer path.
 {{< /question >}}
 
-{{< question num=2 >}}
+{{< question num=2.2 >}}
 If `pwd` displays `/users/thing`, what will `ls ../backup` display?
 1. `../backup: No such file or directory`
 2. `2012-12-01 2013-01-08 2013-01-27`
@@ -29,7 +29,7 @@ If `pwd` displays `/users/thing`, what will `ls ../backup` display?
 
 {{< figure src="/img/quizDirs.png" >}}
 
-{{< question num=3 >}}
+{{< question num=2.3 >}}
 Given the same directory structure, if `pwd` displays `/users/backup`, and `-r` tells `ls` to display things
 in reverse order, what command will display:
 ```
@@ -41,7 +41,7 @@ pnas-sub/  pnas-final/  original/
 4. Either #2 or #3 above, but not #1
 {{< /question >}}
 
-{{< question num=4 >}}
+{{< question num=2.4 >}}
 What does the command `cd` do if you do not pass it a directory name?
 1. It has no effect
 2. It changes the working directory to /
@@ -49,7 +49,7 @@ What does the command `cd` do if you do not pass it a directory name?
 4. It produces an error message
 {{< /question >}}
 
-{{< question num=5 >}}
+{{< question num=2.5 >}}
 Starting from `/Users/amanda/data/`, which of the following commands could Amanda use to navigate to her home directory,
 which is `/Users/amanda`? Mark all correct answers.
 cd.

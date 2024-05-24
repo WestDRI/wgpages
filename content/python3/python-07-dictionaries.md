@@ -116,8 +116,7 @@ or in a single line:
 [(person["colour"], person["age"]) for person in data if person["name"]=="Jeff"]
 ```
 
-Finally, if you want **performance**, you might want to consider the following approach. Consider the
-following code:
+Finally, if you want **performance**, you might want to consider the following approach:
 
 ```sh
 for i in filter(lambda x: x%2 == 0, range(1,11)):
@@ -206,7 +205,7 @@ grades[1] = 2
 grades
 ```
 
-## Sorting dictionary items
+## "Sorting" dictionary items
 
 Let's go back to our original dictionary:
 

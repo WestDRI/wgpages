@@ -6,34 +6,16 @@ slug = "scientificpython"
 {{<cor>}}June 6<sup>th</sup>{{</cor>}}\
 {{<cgr>}}1:30pm–4:30pm Pacific Time{{</cgr>}}
 
-
-
-
-
-
-
-
-<!-- http://localhost:1313/3daypython contains an updated version of this material, so might want to update it here -->
-
-
-
-
-
-
-
-
-
+<!-- 3dayPython-menu.md, python3/ contains an updated version of this material, so might want to update it here -->
 <!-- Course materials will be added here shortly before the start of the course. -->
-
-<!-- Register for this course -->
-<!-- {{<a "https://docs.google.com/forms/d/e/1FAIpQLSc5u2bwaPWW53D9kijqQxyqRSoFqUTx55iWjPJpzjMFAR3Dag/viewform" "here">}}. -->
+<!-- Register for this course {{<a "link" "here">}}. -->
 
 ---
 
-Building on our {{<a "../intropython" "Python level 1 course">}}, this course
-will cover more advanced scientific computing in Python. We will talk about speeding up calculations and
-working with mathematical arrays with NumPy, working with dataframes in Pandas, basic plotting, working with
-scientific datasets with xarray, and a few other topics.
+Building on our {{<a "../intropython" "Python level 1 course">}}, this course will cover more advanced
+scientific computing in Python. We will talk about speeding up calculations and working with mathematical
+arrays with NumPy, working with dataframes in Pandas and Polars, basic plotting, working with scientific
+datasets with xarray, and a few other topics.
 
 **Instructors**: Alex Razoumov
 
@@ -68,7 +50,7 @@ functions, lists, dictionaries).
 {{<linktitle url="../python2/python-10-libraries" text="Libraries, virtual environments and packaging">}} \
 {{<linktitle url="../python2/python-11-numpy" text="Numpy">}} \
 {{<linktitle url="../python2/python-12-matplotlib" text="Plotting with matplotlib">}} \
-{{<linktitle url="../python2/python-13-pandas" text="Pandas dataframes">}} \
+{{<linktitle url="../python2/python-13-pandas" text="Dataframes with Pandas and Polars">}} \
 {{<linktitle url="../python2/python-14-xarray" text="Multidimensional labeled arrays and datasets with xarray">}} \
 {{<linktitle url="../python2/python-16-scripts" text="Running Python scripts from the command line">}} (additional material) \
 {{<linktitle url="../python2/python-17-objects" text="Basics of object-oriented programming in Python">}} (additional material) \

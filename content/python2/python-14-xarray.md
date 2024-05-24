@@ -175,17 +175,18 @@ new = xr.open_dataset("test.nc")   # try reading it
 
 We can even try opening this 2D dataset in ParaView - select (y,x) and deselect Spherical.
 
-{{< question num=23 >}}
-Recall the 2D function we plotted when we were talking about numpy's array broadcasting. Let's scale it to a unit square
-x,y∈[0,1]:
+{{< question num=14.1 >}}
+Recall the 2D function we plotted when we were talking about numpy's array broadcasting. Let's scale it to a
+unit square x,y∈[0,1]:
 ```py
 x = np.linspace(0, 1, 50)
 y = np.linspace(0, 1, 50).reshape(50,1)
 z = np.sin(5*x)**8 + np.cos(5+25*x*y)*np.cos(5*x)
 ```
-This is will our image at z=0. Then rotate this image 90 degrees (e.g. flip x and y), and this will be our function at
-z=1. Now interpolate linearly between z=0 and z=1 to build a 3D function in the unit cube x,y,z∈[0,1]. Check what the
-function looks like at intermediate z. Write out a NetCDF file with the 3D function.
+This is will our image at z=0. Then rotate this image 90 degrees (e.g. flip x and y), and this will be our
+function at z=1. Now interpolate linearly between z=0 and z=1 to build a 3D function in the unit cube
+x,y,z∈[0,1]. Check what the function looks like at intermediate z. Write out a NetCDF file with the 3D
+function.
 {{< /question >}}
 
 
@@ -292,10 +293,10 @@ ds.lat.attrs["units"] = "degrees_north"   # this line is important to adhere to 
 ds.lon.attrs["units"] = "degrees_east"    # this line is important to adhere to CF convention
 ```
 
-{{< question num=24 >}}
-Let's do it! Create a small (one-degree horizontal + some vertical resolution), stationary (no time dependency) dataset
-in spherical geometry with one 3D variable and write it to `spherical.nc`. Load it into ParaView to make sure the
-geometry is spherical.
+{{< question num=14.2 >}}
+Let's do it! Create a small (one-degree horizontal + some vertical resolution), stationary (no time
+dependency) dataset in spherical geometry with one 3D variable and write it to `spherical.nc`. Load it into
+ParaView to make sure the geometry is spherical.
 {{< /question >}}
 
 

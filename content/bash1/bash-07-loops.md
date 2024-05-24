@@ -82,7 +82,7 @@ $ seq 1 2 10      # step=2, so can use: for i in $(seq 1 2 10)
 $ for ((i=1; i<=5; i++)) do echo $i; done   # can use C-style loops
 ```
 
-{{< question num=12 >}}
+{{< question num=7.1 >}}
 In a directory the command `ls` returns:
 ```sh
 fructose.dat  glucose.dat  sucrose.dat  maltose.txt
@@ -115,7 +115,7 @@ touch 2022-May-{0{1..9},{10..30}}.md
 ```
 {{< /question >}}
 
-{{< question num=20 >}}
+{{< question num=7.4 >}}
 Write a loop that concatenates all .pdb files in `data-shell/molecules` subdirectory into one file called
 `allmolecules.txt`, prepending each fragment with the name of the corresponding .pdb file, and separating different
 files with an empty line. Run the loop, make sure it works, bring it up with the &nbsp;**↑**&nbsp; key and paste into the

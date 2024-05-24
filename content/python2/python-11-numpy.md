@@ -148,7 +148,7 @@ np.arange(10) / np.arange(1,11)  # this is np.array([ 0/1, 1/2, 2/3, 3/4, ..., 9
 
 Consider the series {{< figure src="/img/eq001.png" >}}.
 
-{{< question num=5 >}}
+{{< question num=11.1 >}}
 Let's verify it using summation of elements of an `ndarray`.
 
 **Hint**: Start with the first 10 terms `k = np.arange(1,11)`. Then try the first 30 terms.

@@ -119,7 +119,7 @@ manual pages. Where would you store these aliases?
 Write simple alias for safer `rm`.
 {{< /question >}}
 
-{{< question num=9 >}}
+{{< question num=3.4 >}}
 What is the output of the last `ls` command in the sequence shown below?
 ```sh
 $ pwd
