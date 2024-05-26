@@ -3,29 +3,12 @@ title = "Introduction to Python"
 slug = "intropython"
 +++
 
-{{<cor>}}Friday, October 6th{{</cor>}}\
-{{<cgr>}}1:00pm - 2:30pm{{</cgr>}}
+{{<cor>}}June 6<sup>th</sup>{{</cor>}}\
+{{<cgr>}}9:30am - 12:30pm{{</cgr>}}
 
-
-
-
-
-
-
-
-<!-- http://localhost:1313/3daypython contains an updated version of this material, so might want to update it here -->
-
-
-
-
-
-
-
-
+<!-- 3dayPython-menu.md, python3/ contains an updated version of this material, so might want to update it here -->
 <!-- Course materials will be added here shortly before the start of the course. -->
-
-<!-- Register for this course -->
-<!-- {{<a "https://docs.google.com/forms/d/e/1FAIpQLSc5u2bwaPWW53D9kijqQxyqRSoFqUTx55iWjPJpzjMFAR3Dag/viewform" "here">}}. -->
+<!-- Register for this course {{<a "link" "here">}}. -->
 
 ---
 
@@ -46,10 +29,6 @@ functions, lists, dictionaries).
 <!-- order to participate in the course exercises. On Windows we recommend [the free Home Edition of -->
 <!-- MobaXterm](https://mobaxterm.mobatek.net/download.html). On Mac and Linux computers SSH is usually -->
 <!-- pre-installed (try typing `ssh` in a terminal to make sure it is there). -->
-
-
-
-
 
 {{<cor>}}Interactive session{{</cor>}}
 <!-- {{<cgr>}}10:00am-noon Pacific{{</cgr>}} -->

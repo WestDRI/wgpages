@@ -30,18 +30,10 @@ functions, lists, dictionaries).
 <!-- MobaXterm](https://mobaxterm.mobatek.net/download.html). On Mac and Linux computers SSH is usually -->
 <!-- pre-installed (try typing `ssh` in a terminal to make sure it is there). -->
 
-
-
-
-
 <!-- {{<cor>}}Zoom session (week 1){{</cor>}} \ -->
 <!-- {{<cgr>}}10:00am-noon Pacific{{</cgr>}} -->
 
-
 {{<cor>}}Interactive session {{</cor>}}
-
-
-
 
 <!-- {{<nolinktitle>}}Libraries, virtual environments and packaging{{</nolinktitle>}} \ -->
 <!-- {{<nolinktitle>}}Numpy{{</nolinktitle>}} \ -->
@@ -56,27 +48,14 @@ functions, lists, dictionaries).
 {{<linktitle url="../python2/python-17-objects" text="Basics of object-oriented programming in Python">}} (additional material) \
 {{<linktitle url="../python2/python-18-other" text="Other topics">}}
 
-
-
-
-
 <!-- {{<cor>}}Zoom session (week 2){{</cor>}} \ -->
 <!-- {{<cgr>}}10:00am-noon Pacific{{</cgr>}} -->
-
-
-
-
 
 <!-- {{<nolinktitle>}}Pandas dataframes{{</nolinktitle>}} \ -->
 <!-- {{<nolinktitle>}}Multidimensional labeled arrays and datasets with xarray{{</nolinktitle>}} \ -->
 <!-- {{<nolinktitle>}}Running Python scripts from the command line{{</nolinktitle>}} \ -->
 <!-- {{<nolinktitle>}}Basics of object-oriented programming in Python{{</nolinktitle>}} -->
 <!-- {{<nolinktitle>}}Other topics{{</nolinktitle>}} -->
-
-
-
-
-
 
 <!-- <\!-- {{<nolinktitle>}}Plotting with cartopy (additional material){{</nolinktitle>}} \ -\-> -->
 <!-- <\!-- {{<linktitle url="../python2/python-15-cartopy" text="Plotting with cartopy">}} (additional material) \ -\-> -->
