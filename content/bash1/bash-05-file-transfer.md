@@ -141,5 +141,14 @@ How many times does it ask for a password?
 {{< /question >}}
 
 {{< question num="`ssh config file`" >}}
-Let's discuss remote system profiles in `~/.ssh/config`.
+Let's discuss remote system profiles in `~/.ssh/config`. Consider this:
+```txt
+Host <name>
+    HostName <name>.c3.ca
+    User userXX
+```
+- Note that in Windows you can create `.ssh/config` in `C:\Users\username`. If referencing this folder from
+  Windows Subsystem for Linux, make sure to run `chmod 600 ~\.ssh\*` after creating the config file.
+- Another useful setting is `IdentityFile private_ssh_key` coupled with `IdentitiesOnly yes` (i.e. use only
+  the provided key).
 {{< /question >}}

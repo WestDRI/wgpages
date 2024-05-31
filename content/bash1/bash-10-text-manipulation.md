@@ -110,8 +110,9 @@ Can you shorten our novel-manipulation workflow putting it into a single line us
 
 
 {{< question num=10.2 >}}
-Write a script that takes an English-language file and print the list of its 100 most common words, along with
-the word count. Hint: use the workflow we just studied. Next, convert this script into a bash function.
+Write a script that takes an English-language text file and prints the list of its 100 most common words,
+along with the word count in its dictionary. **Hint**: use the workflow we just studied. Next, convert this script
+into a bash function.
 {{< /question >}}
 
 
@@ -130,10 +131,11 @@ cat haiku.txt   # 11 lines
 You can define inline awk scripts with braces surrounded by single quotation:
 
 ```sh
-awk '{print $1}' haiku.txt       # $1 is the first field (word) in each line => processing columns
-awk '{print $0}' haiku.txt       # $0 is the whole line
-awk '{print}' haiku.txt          # the whole line is the default action
-awk -Fa '{print $1}' haiku.txt   # can specify another separator with -F ("a" in this case)
+awk '{print $1}' haiku.txt        # $1 is the first field (word) in each line => processing columns
+awk '{print $0}' haiku.txt        # $0 is the whole line
+awk '{print}' haiku.txt           # the whole line is the default action
+awk -Fa '{print $1}' haiku.txt    # can specify another separator with -F ("a" in this case)
+awk -F, '{print $1}' cities.csv   # for a CSV file
 ```
 
 You can use multiple commands inside your awk script:
@@ -154,7 +156,8 @@ Most common `awk` usage is to postprocess output of other commands:
 Awk also takes patterns in addition to scripts:
 
 ```sh
-awk '/Yesterday|Today/' haiku.txt   # print the lines that contain the words Yesterday or Today
+awk '/Yesterday/' haiku.txt         # print the lines that contain "Yesterday"
+awk '/Yesterday|Today/' haiku.txt   # print the lines that contain "Yesterday" or "Today"
 ```
 
 And then you act on these patterns: if the pattern evaluates to True, then run the script:
@@ -164,24 +167,36 @@ awk '/Yesterday|Today/{print $3}' haiku.txt
 awk '/Yesterday|Today/' haiku.txt | awk '{print $3}'   # same as previous line
 ```
 
+- everything inside `''` is processed by awk language; then nested further inside,
+  - everything inside `//` is a search pattern
+  - everything inside `{}` is an action to run
+
 Awk has a number of built-in variables; the most commonly used is NR:
 
 ```sh
 awk 'NR>1' haiku.txt    # if NumberRecord >1 then print it (default action), i.e. skip the first line
-awk 'NR>1{print $0}' haiku.txt   # last command expanded
-awk 'NR>1 && NR < 5' haiku.txt   # print lines 2-4
+awk 'NR>1{print $0}' haiku.txt     # last command expanded
+awk 'NR>1 && NR < 5' haiku.txt     # print lines 2-4
+awk 'NR>=2 && NR <= 4' haiku.txt   # the same
 ```
 
 {{< question num=10.3 >}}
-Write an awk script to process `cities.csv` to print only town/city names and their
-population and store it in a separate file `populations.csv`. Try to do everything in a single-line
-command.
+Write an awk script to process `cities.csv` to print only town/city names and their population and store it in
+a separate file `populations.csv`. Try to do everything in a single-line command.
 {{< /question >}}
 
+<!-- ```sh -->
+<!-- awk -F, '{print $1 "," $2}' cities.csv > populations.csv -->
+<!-- ``` -->
+
 {{< question num=10.4 >}}
-Write an awk script that prints every 10th line from `cities.csv` starting from line 2. **Hint**: use `NR`
-variable.
+Write an awk script that prints every 10th line from `cities.csv` starting from line 2, i.e. the first line
+after the header. **Hint**: use `NR` variable.
 {{< /question >}}
+
+<!-- ```sh -->
+<!-- awk -F, 'NR%10==2' cities.csv -->
+<!-- ``` -->
 
 {{< question num="`copy every 10th file`" >}}
 Imagine that the directory `/project/def-sponsor00/shared/toyModel` contains results from a numerical

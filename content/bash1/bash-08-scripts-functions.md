@@ -277,8 +277,9 @@ combine() {
 ```
 
 {{< question num="`swap file names`" >}}
-Write a function to swap two file names. Add a check that both files exist, before
-renaming them.
+Write a function to swap two file names. Add a check that both files exist, before renaming them.
+{{< /question >}}
+
 <!-- ```sh -->
 <!-- function swap() { -->
 <!--     if [ -e $1 ] && [ -e $2 ] ; then -->
@@ -290,7 +291,6 @@ renaming them.
 <!--     fi -->
 <!-- } -->
 <!-- ``` -->
-{{< /question >}}
 
 {{< question num="`archive()`" >}}
 Write a function `archive()` to replace directories with their gzipped archives.
