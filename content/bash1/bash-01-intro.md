@@ -39,7 +39,7 @@ workflows, and is necessary to work on larger Unix systems. *Bash* is one of man
 out there. It is a default on the Alliance systems, but you can easily switch to a different shell such as
 *tcsh*, *zsh*, etc. The main difference between these is a slight change in the command syntax.
 
-For the hands-on work, we have set up a small training cluster *cluster.c3.ca* that features the same software
+For the hands-on work, we have set up a small training cluster *sssfu.c3.ca* that features the same software
 setup as our real production clusters. In our "Introduction to HPC" course we teach the specifics of working
 on a cluster: its software environment, scheduler, compilers, parallel programming models, and so on. In this
 course we start with the basics and learn how to work with a remote Linux machine and its filesystem, the
@@ -52,10 +52,10 @@ You can connect to a remote HPC system via SSH (secure shell) using a terminal o
 laptops have built-in terminals, whereas on Windows we suggest using a free version of MobaXterm that comes
 with its own terminal emulator and a simple interface for remote SSH sessions.
 
-Let's log in to *cluster.c3.ca* using a username userXXX (where XXX is three digits):
+Let's log in to *sssfu.c3.ca* using a username userXX (where XX is three digits):
 
 ```sh
-[local]$ ssh userXXX@cluster.c3.ca   # password supplied by the instructor
+[local]$ ssh userXX@sssfu.c3.ca   # password supplied by the instructor
 ```
 
 - those on Windows please use MobaXterm: click on Session | SSH, and then fill in the Remote host name
