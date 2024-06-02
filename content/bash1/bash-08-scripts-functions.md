@@ -126,11 +126,10 @@ Some examples of conditions (**make sure to have spaces around each bracket!**):
 
 - `[ $myvar == 'text' ]` checks if variable is equal to 'text'
 - `[ $myvar == number ]` checks if variable is equal to number
-- `[ -e fileOrDirName ]` checks if fileOrDirName exists
-- `[ -d name ]` checks if name is a directory
-- `[ -f name ]` checks if name is a file
-- `[ -s name ]` checks if file name has length greater than 0
-
+- `[ -e fileOrDirName ]` checks if `fileOrDirName` exists
+- `[ -d name ]` checks if `name` is a directory
+- `[ -f name ]` checks if `name` is a file
+- `[ -s name ]` checks if file `name` has length greater than 0
 
 {{< question num=8.3 >}}
 Write a script that complains when it does not receive arguments.
@@ -244,9 +243,9 @@ functionName() {
 }
 ```
 
-Inside functions you can access its arguments with variables $1 $2 ... $# $@ -- exactly the same as in
-scripts. Functions are very convenient because you can define them inside your ~/.bashrc
-file. Alternatively, you can place them into a file and then **source** them whenever needed:
+Inside functions you can access its arguments with variables `$1` `$2` ... `$#` `$@` -- exactly the same as in
+scripts. Functions are very convenient because you can define them inside your ~/.bashrc file. Alternatively,
+you can place them into a file and then **source** them whenever needed:
 
 ```sh
 $ source allMyFunctions.sh
@@ -280,18 +279,6 @@ combine() {
 Write a function to swap two file names. Add a check that both files exist, before renaming them.
 {{< /question >}}
 
-<!-- ```sh -->
-<!-- function swap() { -->
-<!--     if [ -e $1 ] && [ -e $2 ] ; then -->
-<!--         /bin/mv $2 $2.bak -->
-<!--         /bin/mv $1 $2 -->
-<!--         /bin/mv $2.bak $1 -->
-<!--     else -->
-<!--         echo at least one of these files does not exist ... -->
-<!--     fi -->
-<!-- } -->
-<!-- ``` -->
-
 {{< question num="`archive()`" >}}
 Write a function `archive()` to replace directories with their gzipped archives.
 ```sh
@@ -323,19 +310,6 @@ arguments). At the beginning add the check:
 ```
 {{< /question >}}
 
-<!-- {{< solution >}} -->
-<!-- ```sh -->
-<!-- function countfiles() { -->
-<!--     if [ $# -eq 0 ]; then -->
-<!--         echo "No arguments given. Usage: countfiles dir1 dir2 ..." -->
-<!--         return 1 -->
-<!--     fi -->
-<!--     for dir in $@; do -->
-<!--         echo in $dir we found $(find $dir -type f | wc -l) files -->
-<!--     done -->
-<!-- } -->
-<!-- ``` -->
-<!-- {{< /solution >}} -->
 
 
 

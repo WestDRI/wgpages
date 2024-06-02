@@ -19,15 +19,15 @@ Click on a triangle to expand a question:
 Relative vs. absolute paths. Using `~` as part of a longer path.
 {{< /question >}}
 
+{{< figure src="/img/quizDirs.png" >}}
+
 {{< question num=2.2 >}}
-If `pwd` displays `/users/thing`, what will `ls ../backup` display?
+In the figure above, if `pwd` displays `/users/thing`, what will `ls ../backup` display?
 1. `../backup: No such file or directory`
 2. `2012-12-01 2013-01-08 2013-01-27`
 3. `2012-12-01/ 2013-01-08/ 2013-01-27/`
 4. `original pnas_final pnas_sub`
 {{< /question >}}
-
-{{< figure src="/img/quizDirs.png" >}}
 
 {{< question num=2.3 >}}
 Given the same directory structure, if `pwd` displays `/users/backup`, and `-r` tells `ls` to display things

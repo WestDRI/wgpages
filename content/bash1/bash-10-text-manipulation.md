@@ -102,10 +102,6 @@ cat dictionary.txt | sort -gr > frequency.txt       # sort the list into most fr
 Can you shorten our novel-manipulation workflow putting it into a single line using pipes?
 {{< /question >}}
 
-<!-- ```sh -->
-<!-- cat wellsInvisibleMan.txt | tr -d "[:punct:]" | tr '[:upper:]' '[:lower:]' | \ -->
-<!--   sed 's/ /\'$'\n/g' | sed '/^$/d' | sort | uniq -c | sort -gr > frequency.txt -->
-<!-- ``` -->
 
 
 
@@ -185,18 +181,10 @@ Write an awk script to process `cities.csv` to print only town/city names and th
 a separate file `populations.csv`. Try to do everything in a single-line command.
 {{< /question >}}
 
-<!-- ```sh -->
-<!-- awk -F, '{print $1 "," $2}' cities.csv > populations.csv -->
-<!-- ``` -->
-
 {{< question num=10.4 >}}
 Write an awk script that prints every 10th line from `cities.csv` starting from line 2, i.e. the first line
 after the header. **Hint**: use `NR` variable.
 {{< /question >}}
-
-<!-- ```sh -->
-<!-- awk -F, 'NR%10==2' cities.csv -->
-<!-- ``` -->
 
 {{< question num="`copy every 10th file`" >}}
 Imagine that the directory `/project/def-sponsor00/shared/toyModel` contains results from a numerical
@@ -205,29 +193,11 @@ from this directory to one of your own directories. **Hint**:
 create an alphabetically sorted list of files in that directory and then use awk's `NR` variable.
 {{< /question >}}
 
-<!-- ```sh -->
-<!-- find /project/def-sponsor00/shared/toyModel -type f | sort | awk 'NR%10==0' -->
-<!-- ``` -->
-
 {{< question num="`archive every 20th file`" >}}
 Similarly to the previous exercise, write a command to create a tar archive that includes every 20th file
 from the simulation directory `/project/def-sponsor00/shared/toyModel`. Is it possible to do this in one
 command? Why does it remove leading '/' from file paths?
 {{< /question >}}
-
-<!-- There are many solutions: -->
-<!-- ```sh -->
-<!-- # the downside of this solution is that it'll include paths (without the leading /) into the arhive -->
-<!-- tar cvf toy.tar $(find /project/def-sponsor00/shared/toyModel -type f | sort | awk 'NR%20==0') -->
-
-<!-- cd /project/def-sponsor00/shared/toyModel   # if you are allowed to cd into that directory -->
-<!-- tar cvf ~/tmp/toy.tar $(find . -type f | sort | awk 'NR%20==0') -->
-<!-- cd - -->
-
-<!-- find /project/def-sponsor00/shared/toyModel -type f | sort | awk 'NR%20==0' > list.txt -->
-<!-- tar cfz toy.tar --files-from=list.txt -->
-<!-- /bin/rm list.txt -->
-<!-- ``` -->
 
 **Quick reference:**
 ```sh
@@ -238,18 +208,15 @@ awk '/Yesterday|Today/' haiku.txt         # print lines that contain Yesterday o
 ```
 
 {{< question num=10.7 >}}
-Write a one-line command that finds 5 largest files in the current directory and prints only their names and file sizes
-in the human-readable format (indicating bytes, kB, MB, GB, ...) in the decreasing file-size order. Hint: use `find`,
-`xargs`, and `awk`.
+Write a one-line command that finds 5 largest files in the current directory (and all of its subdirectories)
+and prints only their names and file sizes in the human-readable format (indicating bytes, kB, MB, GB, ...) in
+the decreasing file-size order. Hint: use `find`, `xargs`, and `awk`.
 {{< /question >}}
 
 {{< question num="`ps`" >}}
 Use `ps` command to see how many processes you are running on the training cluster. Explore its flags. Write
 commands to reduce `ps` output to a few essential columns.
 {{< /question >}}
-
-
-
 
 <!-- 10-awk.mkv -->
 <!-- {{< yt BMrL7zoyJH8 63 >}} -->
