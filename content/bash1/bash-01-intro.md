@@ -52,7 +52,7 @@ You can connect to a remote HPC system via SSH (secure shell) using a terminal o
 laptops have built-in terminals, whereas on Windows we suggest using a free version of MobaXterm that comes
 with its own terminal emulator and a simple interface for remote SSH sessions.
 
-Let's log in to *sfuschool.c3.ca* using a username userXX (where XX is three digits):
+Let's log in to *sfuschool.c3.ca* using a username userXX (where XX is two digits):
 
 ```sh
 [local]$ ssh userXX@sfuschool.c3.ca   # password supplied by the instructor
