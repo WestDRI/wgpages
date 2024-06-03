@@ -52,7 +52,6 @@ What does the command `cd` do if you do not pass it a directory name?
 {{< question num=2.5 >}}
 Starting from `/Users/amanda/data/`, which of the following commands could Amanda use to navigate to her home directory,
 which is `/Users/amanda`? Mark all correct answers.
-cd.
 1. `cd /`
 2. `cd /home/amanda`
 3. `cd ../..`
