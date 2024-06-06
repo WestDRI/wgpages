@@ -1,5 +1,5 @@
 +++
-title = "Numpy"
+title = "NumPy"
 slug = "python-11-numpy"
 weight = 2
 +++
@@ -27,7 +27,7 @@ object with its own type and size. As lists get longer, eventually performance t
 
 Python does not have any mechanism for a uniform/homogeneous list, where -- to jump to element #1000 -- you
 just take the memory address of the very first element and then increment it by (element size in bytes)
-x 999. **Numpy** library fills this gap by adding the concept of homogenous collections to python --
+x 999. **NumPy** library fills this gap by adding the concept of homogenous collections to python --
 `numpy.ndarray`s -- which are multidimensional, homogeneous arrays of fixed-size items (most commonly
 numbers).
 
@@ -35,10 +35,10 @@ numbers).
   - no reading of extra bits (type, size, reference count)
   - no type checking
   - contiguous allocation in memory
-  - numpy was written in C &nbsp;⇒&nbsp; pre-compiled
-2. numpy lets you work with mathematical arrays.
+  - NumPy was written in C &nbsp;⇒&nbsp; pre-compiled
+2. NumPy lets you work with mathematical arrays.
 
-Lists and numpy arrays behave very differently:
+Lists and NumPy arrays behave very differently:
 
 ```py
 a = [1, 2, 3, 4]
@@ -54,9 +54,9 @@ na + nb            # this will sum two vectors element-wise: array([6,8,10,12])
 na * nb            # element-wise product
 ```
 
-## Working with mathematical arrays in numpy
+## Working with mathematical arrays in NumPy
 
-Numpy arrays have the following attributes:
+NumPy arrays have the following attributes:
 
 - `ndim` = the number of dimensions
 - `shape` = a tuple giving the sizes of the dimensions
@@ -77,7 +77,7 @@ b = np.arange(10, dtype=np.float)
 b.dtype     # dtype('float64')
 ```
 
-In numpy there are many ways to create arrays:
+In NumPy there are many ways to create arrays:
 
 ```py
 np.arange(11,20)               # 9 integer elements 11..19
@@ -106,7 +106,7 @@ For 1D arrays:
 a = np.linspace(0,1,100)
 a[0]        # first element
 a[-2]       # 2nd to last element
-a[5:12]     # values [5..12), also a numpy array
+a[5:12]     # values [5..12), also a NumPy array
 a[5:12:3]   # every 3rd element in [5..12), i.e. elements 5,8,11
 a[::-1]     # array reversed
 ```
@@ -132,17 +132,16 @@ np.column_stack((a,b))         # use a,b as columns
 np.vstack((a,b)).transpose()   # same result
 ```
 
-## Vectorized functions on array elements (a.k.a. universal functions = ufunc)
+## Vectorized functions on array elements (universal functions)
 
-One of the big reasons for using numpy is so you can do fast numerical operations on a large number of elements. The
-result is another `ndarray`. In many calculations you can use replace the usual `for`/`while` loops with functions on
-numpy elements.
+A big reason for using NumPy is that you can do fast numerical operations on a large number of elements of an
+array, without explicit `for`/`while` Python loops. The result is another `ndarray`.
 
 ```py
 a = np.arange(100)
-a**2          # each element is a square of the corresponding element of a
-np.log10(a+1)     # apply this operation to each element
-(a**2+a)/(a+1)    # the result should effectively be a floating-version copy of a
+a**2             # each element is a square of the corresponding element of a
+np.log10(a+1)    # apply this operation to each element
+(a**2+a)/(a+1)   # the result should effectively be a floating-version copy of a
 np.arange(10) / np.arange(1,11)  # this is np.array([ 0/1, 1/2, 2/3, 3/4, ..., 9/10 ])
 ```
 
@@ -156,8 +155,8 @@ Let's verify it using summation of elements of an `ndarray`.
 
 ### Array broadcasting
 
-An extremely useful feature of ufuncs is the ability to operate between arrays of different sizes and shapes, a set of
-operations known as *broadcasting*.
+An extremely useful feature of universal functions is the ability to operate between arrays of different sizes
+and shapes, a set of operations known as *broadcasting*.
 
 ```py
 a = np.array([0, 1, 2])    # 1D array
@@ -174,7 +173,7 @@ b = np.arange(3).reshape((3,1))      # effectively 1D column; b.shape is (3, 1)
 a + b                                # the result is a 2D array!
 ```
 
-Numpy's broadcast rules are:
+NumPy's broadcast rules are:
 
 1. the shape of an array with fewer dimensions is padded with 1's on the left
 1. any array with shape equal to 1 in that dimension is stretched to match the other array's shape
@@ -225,7 +224,7 @@ plt.colorbar(shrink=0.8)
 ```
 
 {{< question num="`building a 3D array`" >}}
-Use numpy broadcasting to build a 3D array from three 1D ones.
+Use NumPy broadcasting to build a 3D array from three 1D ones.
 {{< /question >}}
 
 
@@ -234,13 +233,13 @@ Use numpy broadcasting to build a 3D array from three 1D ones.
 
 
 
-<!-- > **Comment on numpy speed**: Few years ago, I was working with a spherical dataset describing Earth's mantle -->
+<!-- > **Comment on NumPy speed**: Few years ago, I was working with a spherical dataset describing Earth's mantle -->
 <!-- > convection. It was defined on a spherical grid with 13e6 grid points. For each grid point, I was converting -->
 <!-- > from the spherical -->
 <!-- > (lateral - radial - longitudinal) velocity components to the Cartesian velocity components. For each point this is a -->
 <!-- > matrix-vector multiplication. Doing this by hand with Python's `for` loops would take many hours for 13e6 points. I -->
-<!-- > used numpy to vectorize in one dimension, and that cut the time to ~5 mins. At first glance, a more complex -->
-<!-- > vectorization would not work, as numpy would have to figure out which dimension goes where. Writing it carefully and -->
+<!-- > used NumPy to vectorize in one dimension, and that cut the time to ~5 mins. At first glance, a more complex -->
+<!-- > vectorization would not work, as NumPy would have to figure out which dimension goes where. Writing it carefully and -->
 <!-- > following the broadcast rules I made it work, with the correct solution at the end -- while the total compute time -->
 <!-- > went down to a couple seconds! -->
 
@@ -286,7 +285,7 @@ finish = time.time()
 print("It took", finish - start, "seconds")
 
 ```
-Using numpy further, you can speed up the nested loop between the `start = ...` and `finish = ...` lines
+Using NumPy further, you can speed up the nested loop between the `start = ...` and `finish = ...` lines
 by at least a factor of 1,000X. If you achieve a significant speedup, please
 send us your solution at "`training` at `westdri` dot `ca`".
 {{< /question >}}
@@ -345,9 +344,9 @@ b > 22      # all rows are False, except for the last row [F,F,F,T,T]
 b[b > 22]   # turns out we always get a 1D array with only True elements
 ```
 
-## More numpy functionality
+## More NumPy functionality
 
-Numpy provides many standard linear algebra algorithms: matrix/vector products, decompositions, eigenvalues, solving
+NumPy provides many standard linear algebra algorithms: matrix/vector products, decompositions, eigenvalues, solving
 linear equations, e.g.
 
 ```py
@@ -358,18 +357,18 @@ x
 np.allclose(np.dot(a, x),b)    # check the solution
 ```
 
-## External packages built on top of numpy
+## External packages built on top of NumPy
 
-A lot of other packages are built on top of numpy. E.g., there is a Python package for analysis and visualization of 3D
-multi-resolution volumetric data called [yt](https://yt-project.org) which is based on numpy. Check out [this
+A lot of other packages are built on top of NumPy. E.g., there is a Python package for analysis and visualization of 3D
+multi-resolution volumetric data called [yt](https://yt-project.org) which is based on NumPy. Check out [this
 visualization](https://raw.githubusercontent.com/razoumov/publish/master/grids.png) produced with yt.
 
-Many image-processing libraries use numpy data structures underneath, e.g.
+Many image-processing libraries use NumPy data structures underneath, e.g.
 
 ```py
 import skimage.io        # scikit-image is a collection of algorithms for image processing
 image = skimage.io.imread(fname="https://raw.githubusercontent.com/razoumov/publish/master/grids.png")
-image.shape       # it's a 1024^2 image, with (R,G,B,\alpha) channels
+image.shape       # it's a 1024^2 image, with (R,G,B) channels
 ```
 
 Let's plot this image using matplotlib:
@@ -382,7 +381,7 @@ plt.imshow(image[:,:,2], interpolation='nearest')
 plt.colorbar(orientation='vertical', shrink=0.75, aspect=50)
 ```
 
-Using numpy, you can easily manipulate pixels:
+Using NumPy, you can easily manipulate pixels:
 
 ```py
 image[:,:,2] = 255 - image[:,:,2]
@@ -390,5 +389,5 @@ image[:,:,2] = 255 - image[:,:,2]
 
 and then rerun the previous (matplotlib) cell.
 
-Another example of a package built on top of numpy is **pandas**, for working with 2D tables. Going further, **xarray**
-was built on top of both numpy and pandas. We will study **pandas** and **xarray** later in this workshop.
+Another example of a package built on top of NumPy is **pandas**, for working with 2D tables. Going further, **xarray**
+was built on top of both NumPy and pandas. We will study **pandas** and **xarray** later in this workshop.

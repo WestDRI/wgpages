@@ -10,7 +10,7 @@ weight = 3
 <!-- > memory = ***3600 MB***, GPU configuration = ***None***, user interface = ***JupyterLab***. Finally, start a -->
 <!-- > new Python 3 notebook. -->
 
-There are hundreds of Python visualization packages. Check out this {{<a
+There are hundreds of visualization packages in Python. Check out this {{<a
 "https://raw.githubusercontent.com/rougier/python-visualization-landscape/master/landscape-colors.png"
 "diagram of the Python Visualization Landscape">}} (circa 2017, by Nicolas Rougier) which focuses on 1D+2D
 packages at the time (and only barely mentions 3D sci-vis packages). For 3D examples, check {{<a
@@ -27,6 +27,8 @@ static images (and non-interactive animations).
 
 ## Simple line/scatter plots
 
+If working in a Jupyter notebook, you can create a simple line plot with:
+
 ```py
 %matplotlib inline
 import matplotlib.pyplot as plt
@@ -37,8 +39,19 @@ y = sin(1/x)
 plt.plot(x, y, 'bo-')
 plt.xlabel('x', fontsize=18)
 plt.ylabel('f(x)', fontsize=18)
-# plt.show()       # not needed inside the Jupyter notebook
-# plt.savefig('tmp.png')
+```
+
+If working inside a terminal on your own computer (where you can open windows), you can display the graph with:
+
+```sh
+plt.show()       # not needed inside the Jupyter notebook
+```
+
+Both in a Jupyter notebook and in the terminal, you can save the plot with:
+
+```sh
+plt.savefig('filename.png')
+# plt.savefig('filename.png', dpi=300)   # optionally specify the resolution
 ```
 
 {{< figure src="/img/styles.png" height=350 >}}
@@ -56,7 +69,7 @@ plt.ylabel('f(x)', fontsize=18)
 > plt.plot(x, y, 'bo-')
 > plt.xlabel('x', fontsize=18)
 > plt.ylabel('f(x)', fontsize=18)
-> plt.savefig('tmp.png')
+> plt.savefig('filename.png')
 > ```
 
 Let's add the second line, the labels, and the legend. Note that matplotlib automatically adjusts the axis ranges to fit
@@ -164,8 +177,8 @@ plt.xlabel('x')
 plt.ylabel('f1')
 ```
 
-Replace `ax = fig.add_subplot(111)` with `ax = fig.add_subplot(111, projection='polar')`. Now we have a plot in the
-phi-r plane, i.e. in polar coordinates. `Phi` goes [0,2$\pi$], whereas `r` goes [0,1].
+Replace `ax = fig.add_subplot(111)` with `ax = fig.add_subplot(111, projection='polar')`. Now we have a plot
+in the phi-r plane, i.e. in polar coordinates. `Phi` goes [0,2$\pi$], whereas `r` goes [0,1].
 
 ```py
 ?fig.add_subplot    # look into `projection` parameter
@@ -253,8 +266,7 @@ wget http://bit.ly/pythfiles -O pfiles.zip
 unzip pfiles.zip && rm pfiles.zip        # this should unpack into the directory data-python/
 ```
 
-This will download and unpack the ZIP file into your home directory. You can now close the terminal panel. Let's switch
-back to our Python notebook and check our location:
+This will download and unpack the ZIP file into your home directory. Now switch back to Python.
 
 ```py
 %pwd       # run `pwd` bash command

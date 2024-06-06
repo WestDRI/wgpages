@@ -9,22 +9,22 @@ weight = 4
 ## Reading tabular data
 
 In this section we will be reading datasets from `data-python`. If you have not downloaded it in the previous
-section, open a terminal and type:
+section, in the terminal run:
 
 ```sh
 wget http://bit.ly/pythfiles -O pfiles.zip
 unzip pfiles.zip && rm pfiles.zip        # this should unpack into the directory data-python/
 ```
 
-You can now close the terminal panel. Let's switch back to our Python notebook and check our location:
+<!-- You can now close the terminal panel. Let's switch back to our Python notebook and check our location: -->
 
-```py
-%pwd       # run `pwd` bash command
-%ls        # make sure you see data-python/
-```
+<!-- ```py -->
+<!-- %pwd       # run `pwd` bash command -->
+<!-- %ls        # make sure you see data-python/ -->
+<!-- ``` -->
 
-Pandas is a widely-used Python library for working with tabular data, borrows heavily from R's dataframes, built on top
-of numpy. We will be reading the data we downloaded a minute ago into a pandas dataframe:
+Pandas is a widely-used Python library for working with tabular data. It borrows heavily from R's dataframes
+and is built on top of NumPy. We will be reading the data we downloaded a minute ago into a pandas dataframe:
 
 ```py
 import pandas as pd
@@ -234,72 +234,55 @@ pd.DataFrame({'a': col1, 'b': col2}, index=['a1','a2','a3'])
 
 
 
+
+
+
+
+## Example with a larger dataframe
+
+Let's try reading some public-domain data about Jeopardy questions with `pandas` (31MB file, so it might take a while):
+
+```py
+import pandas as pd
+data = pd.read_csv("https://raw.githubusercontent.com/razoumov/publish/master/jeopardy.csv")
+data.shape      # 216930 rows, 7 columns
+data.head(10)   # first 10 rows
+data.tail()     # last 5 rows
+data.iloc[2:5]  # rows 2-4
+data.columns    # names of the columns
+
+data['Category']
+data['Category']=='HISTORY'
+data.loc[data['Category']=='HISTORY'].shape   # 349 matches
+data.loc[data['Category']=='HISTORY'].to_csv("history.csv")   # write to a file
+```
+
+Let's check what time period is covered by these data:
+
+```py
+data["Air Date"]
+data["Air Date"][0][-2:]   # first row, last two digits is the year
+year = data["Air Date"].apply(lambda x: x[-2:])   # last two digits of the year from all rows
+year.min(); year.max()     # '00' and '99' - not very informative, wraps at the turn of the century
+
+for y in range(100):
+    twoDigits = str(y).zfill(2)
+    print(twoDigits, sum(year==twoDigits))
+```
+
+This shows that this table covers years from 1984 to 2012.
+
+
+
+
+
+
+
+
+
 ## Three solutions to a classification problem
 
 <!-- idea from https://youtu.be/SAFmrTnEHLg -->
-
-
-
-
-
-
-
-<!-- Let's create a simple dataframe from scratch: -->
-
-<!-- ```py -->
-<!-- import pandas as pd -->
-<!-- import numpy as np -->
-
-<!-- df = pd.DataFrame() -->
-<!-- size = 10_000 -->
-<!-- df['studentID'] = np.arange(1, size+1) -->
-<!-- df['grade'] = np.random.choice(['A', 'B', 'C', 'D'], size) -->
-
-<!-- df.head() -->
-<!-- ``` -->
-
-<!-- Let's built a new column `outcome` containing *"pass"* or *"fail"* based on the numeric grade column. Let's -->
-<!-- start by processing a row: -->
-
-<!-- ```py -->
-<!-- def result(row): -->
-<!--     if row['grade'] == 'A': -->
-<!--         return 'pass' -->
-<!--     return 'fail' -->
-<!-- ``` -->
-
-<!-- (1) We can apply this function to each row in a loop: -->
-
-<!-- ```py -->
-<!-- %%timeit -->
-<!-- for index, row in df.iterrows(): -->
-<!--     df.loc[index, 'outcome'] = result(row) -->
-<!-- ``` -->
-<!-- <\!-- => 290 ms -\-> -->
-
-<!-- (2) We can use `df.apply()` to apply this function to each row: -->
-
-<!-- ```py -->
-<!-- %%timeit -->
-<!-- df['outcome'] = df.apply(result, axis=1)   # axis=1 applies the function to each row -->
-<!-- ``` -->
-<!-- <\!-- => 30.8 ms -\-> -->
-
-<!-- (3) Or we could use a mask to only assign `pass` to rows with `A`: -->
-
-<!-- ```py -->
-<!-- %%timeit -->
-<!-- df['outcome'] = 'fail' -->
-<!-- df.loc[df['grade'] == 'A', 'outcome'] = 'pass' -->
-<!-- ``` -->
-<!-- <\!-- => 473 µs -\-> -->
-
-
-
-
-
-
-
 
 Fizz buzz is a children's game to practice divisions. Players take turn counting out loud while replacing:
 - any number divisible by 3 with the word "Fizz",
@@ -412,7 +395,7 @@ for filename in glob('data-python/gapminder*.csv'):
     print(filename, data.gdpPercap_1952.min())
 ```
 
-{{< question num=13.10 >}}
+{{< question num=`13.10` >}}
 Which of these files is not matched by the expression `glob('data-python/*as*.csv')`?
 ```txt
 A. data-python/gapminder_gdp_africa.csv
@@ -450,4 +433,4 @@ print('smallest file has', fewest, 'records')
 
 # Part 2: Polars dataframes
 
-[External link]().
+{{<a "https://mint.westdri.ca/python/hpc_polars" "External link">}}

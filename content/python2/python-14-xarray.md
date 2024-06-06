@@ -232,8 +232,8 @@ ds.sel(time="2002-12-22")
 Time dependency in xarray allows resampling with a different timestep:
 
 ```py
-ds.resample(time='7D')    # 1096 times -> 157 time groups
-weekly = ds.resample(time='7D').mean()     # compute mean for each group
+ds.resample(time='7D')                   # 1096 times -> 157 time groups
+weekly = ds.resample(time='7D').mean()   # compute mean for each group
 weekly.dims
 weekly.temperature.plot(size=8)
 ```

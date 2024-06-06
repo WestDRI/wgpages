@@ -108,7 +108,7 @@ performance out of it.
 
 ## Python setup in our course
 
-Today we'll be running Python inside a shell on our training cluster `parpy.c3.ca`. Let's log in now!
+Today we'll be running Python inside a shell on our training cluster `school.c3.ca`. Let's log in now!
 
 We have pre-installed all the required libraries for you in a virtual Python environment in
 `/project/def-sponsor00/shared/pythonhpc-env` that everyone on the system can read.
