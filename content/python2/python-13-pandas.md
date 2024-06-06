@@ -284,7 +284,22 @@ This shows that this table covers years from 1984 to 2012.
 
 <!-- idea from https://youtu.be/SAFmrTnEHLg -->
 
-Fizz buzz is a children's game to practice divisions. Players take turn counting out loud while replacing:
+In this section we will see that there are different techniques to process a Pandas dataframe, and some of
+them are more efficient than others. However, first we need to learn how to time execution of a block of
+Python code:
+
+1. Inside a Jupyter notebook, you can use `%%timeit` to time an entire cell.
+1. Inside your code, you can call `time.time()` function:
+```py
+import time
+start = time.time()
+...
+end = time.time()
+print("Time in seconds:", round(end-start,3))
+```
+
+Now, let's go to our computational problem. "Fizz buzz" is a children's game to practice divisions. Players
+take turn counting out loud while replacing:
 - any number divisible by 3 with the word "Fizz",
 - any number divisible by 5 with the word "Buzz",
 - any number divisible by both 3 and 5 with the word "FizzBuzz".
@@ -308,7 +323,7 @@ show(df)
 ```
 
 Let's built a new column `response` containing either *"Fizz"* or *"Buzz"* or *"FizzBuzz"* or the original
-number, based on the `number` value in that row. Let's start by processing a row:
+number, based on the `number` value in that row. We start by processing a row:
 
 ```py
 def count(row):
@@ -321,6 +336,15 @@ def count(row):
     else:
       return str(row['number'])
 ```
+
+Here is how you would use this function:
+
+```py
+print(df.iloc[2])
+print(count(df.iloc[2]))
+```
+
+
 
 (1) We can apply this function to each row in a loop:
 
