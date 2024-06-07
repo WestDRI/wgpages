@@ -80,9 +80,6 @@ How would you pass the actual number of processor cores to the Ray cluster? Cons
 
 
 
-<!-- abc -->
-
-
 
 
 
@@ -666,7 +663,8 @@ form each row in the new dataset:
 ```py
 ds.map(lambda row: row).show(3)                 # takes a row, returns the same row
 ds.map(lambda row: {"id": row["id"]}).show(3)   # takes a row, returns a new row idential to the old one
-a = ds.map(lambda row: {"id": str(row["id"])})  # takes a row, returns a dict with 'id' values converted to string
+a = ds.map(lambda row: {"id": str(row["id"])*3})  # takes a row, returns a dict with 'id' values
+                                                  # converted to string and repeated 3X
 a   # `a` is a new dataset
 a.show(5)
 ```
