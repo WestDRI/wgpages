@@ -346,6 +346,9 @@ print(count(df.iloc[2]))
 
 
 
+
+
+
 (1) We can apply this function to each row in a loop:
 
 ```py

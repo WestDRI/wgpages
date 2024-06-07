@@ -409,11 +409,14 @@ vz = np.zeros((nlat,nr,nlon))
 We need to go through all grid points, and at each point perform a matrix-vector multiplication. Here is our
 first attempt:
 
-> Note: you might want to use Python's `tqdm` library to provide a progress bar for better runtime estimate.
+> Notes:
+> 1. you might want to use Python's `tqdm` library to provide a progress bar for better runtime estimate.
+> 1. if running the full $500\times 800\times 300$ problem, consider using 7200M memory.
 
 ```py
+from tqdm import tqdm
 start = time.time()
-for i in range(nlat):
+for i in tqdm(range(nlat)):
     for k in range(nlon):
         for j in range(nr):
             vx[i,j,k] = - np.sin(np.radians(longitude[k]))*vlon[i,j,k] - \
@@ -434,8 +437,9 @@ e.g. we compute all angles to radians multiple times, compute $\sin$ and $\cos$ 
 longitude multiple times, and so on. Getting rid of these redundancies:
 
 ```py
+from tqdm import tqdm
 start = time.time()
-for i in range(nlat):
+for i in tqdm(range(nlat)):
     lat = np.radians(latitude[i])
     sinlat = np.sin(lat)
     coslat = np.cos(lat)
@@ -464,16 +468,16 @@ rot = np.array([[-sinlon, -sinlat*coslon, coslat*coslon],
 vspherical = np.array([vlon[i,j,k], vlat[i,j,k], vrad[i,j,k]])
 vx[i,j,k], vy[i,j,k], vz[i,j,k] = np.dot(rot, vspherical)
 ```
-<!-- Answer: nope, the computation time goes up to 293s. -->
 {{< /question >}}
+
+<!-- Answer: nope, the computation time goes up to 293s. -->
 
 To speed up our computation, we should vectorize over one of the dimensions, e.g. longitudes:
 
-<!-- (using the rules of broadcasting) -->
-
 ```py
+from tqdm import tqdm
 start = time.time()
-for i in range(nlat):
+for i in tqdm(range(nlat)):
     lat = np.radians(latitude[i])
     sinlat = np.sin(lat)
     coslat = np.cos(lat)
@@ -509,8 +513,9 @@ now 3.503s, which is a huge improvement!
 Vectorizing over two dimensions, e.g. over radii and longitudes leaves us with a single loop:
 
 ```py
+from tqdm import tqdm
 start = time.time()
-for i in range(nlat):
+for i in tqdm(range(nlat)):
     lat = np.radians(latitude[i])
     sinlat = np.sin(lat)
     coslat = np.cos(lat)
@@ -538,7 +543,7 @@ down to 1.487s.
 
 You can also vectorize in all three dimensions (latitudes, radii and longitudes), resulting in no explicit
 Python loops in your calculation at all, but requires a little bit of extra work, and the computation time
-will actually slightly go up -- any idea why?
+will actually slightly go up -- **any idea why**?
 
 In the end, with NumPy's element-wise vectorized operations, we improved our time from 1280s to 1.5s! The
 entire calculation was done as a batch in a compiled C code, instead of cycling through individual elements
@@ -551,6 +556,8 @@ Let's use NumPy for our slow series calculation. We will:
 1. write a function that acts on each counter $k$ in the series,
 2. create a vectorized function from it that takes in an array of integer numbers and returns an array of terms,
 3. sum these terms to get the result.
+
+Let's save the following code as `slow2.py`:
 
 ```py
 from time import time
@@ -705,12 +712,12 @@ programming in this course). Context switching between threads of the same proce
 
 ## Multithreading
 
-Python uses *reference counting* for memory management. Each object that you create in Python has a counter
-storing the number of references to that object. Once this counter reaches zero (when you delete objects),
-Python releases memory occupied by the object. If you have multiple threads, letting them modify the same
-counter at the same time can lead to a race condition where you can write an incorrect value to the counter,
-leading to either memory leaks (too much memory allocated) or to releasing memory incorrectly when a there is
-still a reference to that object on another thread.
+Python uses *reference counting* for memory management. Each object in memory that you create in Python has a
+counter storing the number of references to that object. Once this counter reaches zero (when you delete
+objects), Python releases memory occupied by the object. If you have multiple threads, letting them modify the
+same counter at the same time can lead to a race condition where you can write an incorrect value to the
+counter, leading to either memory leaks (too much memory allocated) or to releasing memory incorrectly when a
+there is still a reference to that object on another thread.
 
 One way to solve this problem is to have locks on all shared data structures, where only one thread at a time
 can modify data. This can also lead to problems, and Python's solution is to use a lock on the interpreter
@@ -797,12 +804,14 @@ in a string:
 ```py
 import numpy as np, numexpr as ne
 x = np.array([b'hi', b'there'])   # an array of byte strings (stored as an array of ASCII codes)
-x.dtype            # each element is a 5-element string
-np.isin(x,b'hi')   # traditional NumPy => returns array([ True, False])
-ne.evaluate("contains(x, b'hi')")   # this is how you write this expression in NumExpr
+x.dtype     # each element is a 5-element string
+x.nbytes    # 10 bytes in total, i.e. 1 byte per ASCII character
+ne.evaluate("contains(x, b'hi')")   # returns array([True, False])
+ne.evaluate("contains(x, b'h')")    # returns array([True, True])
+ne.evaluate("~contains(x, b'h')")   # not contains => returns array([False, False])
 ```
 
-We can use NumExpr to parallelize checking for substrings (store this as `slowSeries.py`):
+We can use NumExpr to parallelize checking for substrings (store this as `slow3.py`):
 
 ```py
 from time import time
@@ -829,7 +838,7 @@ Here are the average (over three runs) times in seconds:
 | wallclock runtime | 18.427 | 17.375 | 17.029 |
 
 Clearly, we are bottlenecked by the serial part of the code. Let's use another NumExpr call to evaluate
-`1.0/x`:
+`1.0/x` -- store this as updated `slow3.py`:
 
 ```py
 from time import time
@@ -886,9 +895,11 @@ very easy to use:
 <!-- https://pypi.org/project/scalene/0.9.15 -->
 
 ```sh
-scalene slowSeries.py         # on your own computer, will open result in a browser
-scalene --cli slowSeries.py   # on a remote system
+scalene slow3.py         # on your own computer, will open result in a browser
+scalene --cli slow3.py   # on a remote system
 ```
+
+> Note: to run `scalene --cli slow3.py` on the training cluster, you might want to use `--mem-per-cpu=7200`.
 
 If running on your computer, this will open the result in a browser:
 
@@ -950,7 +961,15 @@ end = time.time()
 print("Time in seconds:", round(end-start,3))
 ```
 
-This takes 10.045s as expected. Let's parallelize it with `multiprocess`, creating a pool of workers and
+This takes 10.045s as expected.
+
+At this point we need to restart our job on 4 cores:
+
+```sh
+salloc --time=2:00:0 --ntasks=4 --mem-per-cpu=3600
+```
+
+Let's parallelize it with `multiprocess`, creating a pool of workers and
 replacing serial `map()` with parallel `pool.map()`:
 
 > Note: serial `map()` returns an iterable, whereas parallel `pool.map()` already returns a list &nbsp;⇒&nbsp;
@@ -959,7 +978,7 @@ replacing serial `map()` with parallel `pool.map()`:
 ```py
 import time
 from multiprocess import Pool
-ncores = 4            # set it to 4 or 8
+ncores = 4            # set it to the actual number of cores
 print("Running on", ncores, "cores")
 pool = Pool(ncores)   # create a pool of workers
 start = time.time()
@@ -972,6 +991,12 @@ print("Time in seconds:", round(end-start,3))
 1. On 8 cores this takes 2.007 seconds: in the 1st second we run eight `sleep(1)` calls in parallel, and the 2nd
    second we run the remaining two calls in parallel, i.e. we running batches of 8+2 calls.
 1. On 4 cores this takes 3.005 seconds: running batches of 4 + 4 + 2 calls.
+1. On 1 core it takes 10.013 seconds.
+
+> Note: we are not doing real calculations here, just waiting for 1 wallclock time second in each call. If you
+> attempt to run multiple processes (e.g. `ncores = 4` in the code above) on 1 physical core, they will take
+> turns running at the same time, but they will compare their time against the wallclock time, and all of them
+> will finish running as if you had 4 physical cores.
 
 How do we parallelize the slow series with parallel `map()`? One idea is to create a function to process each
 of the $10^8$ terms and use `map()` to apply it to each term. Here is the serial version of this code:
@@ -1124,7 +1149,7 @@ Here we'll take a look at Numba:
 
 Let's compute the following sum:
 
-$$\sum_{k=1}^\infty\frac{\cos(k\theta)}{k} = -\ln\left(2\sin\frac{\theta}{2}\right)~~~~~{\rm for}~\theta=1. $$
+$$\sum_{i=1}^\infty\frac{\cos(i\theta)}{i} = -\ln\left(2\sin\frac{\theta}{2}\right)~~~~~{\rm for}~\theta=1. $$
 
 Here is the familiar serial implementation:
 
