@@ -67,12 +67,12 @@ accounts.
 
 ### Julia on the training cluster for this workshop
 
-We have Julia on our training cluster *lecarre.c3.ca*.
+We have Julia on our training cluster *school.c3.ca*.
 
 {{<note>}}
 Our training cluster has: <br><br>
 - one fairly small login node, <br>
-- 15 compute nodes with 4 *"compute"* cores and 15GB of memory on each &nbsp;→&nbsp; 60 cores in total and 3.75GB/core
+- 7 compute nodes with 8 cores and 30GB of memory on each &nbsp;→&nbsp; 56 cores in total and 3.75GB/core
 {{</note>}}
 
 Normally in our introductory Julia course we would use Julia inside a Jupyter notebook. Today we will be
