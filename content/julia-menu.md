@@ -14,7 +14,7 @@ aliases = ["julia-in-summer", "parallel_julia", "parallel_julia_oct21"]
 <!-- {{<cgr>}}Both days 10:00am - noon Pacific Time{{</cgr>}} -->
 
 {{<cor>}}June 10<sup>th</sup>{{</cor>}}\
-{{<cgr>}}9:00am - noon Mountain Time{{</cgr>}}
+{{<cgr>}}10:00am - 1:00pm Mountain Time{{</cgr>}}
 
 <!-- Course materials will be added here shortly before the start of the course. -->
 
