@@ -174,6 +174,67 @@ mpirun -np $SLURM_NTASKS apptainer exec $CONTAINER ./distributedPi
 
 
 
+### Example: WRF container with self-contained MPICH
+
+{{<a "/wrf-container" "These instructions">}} describe building a WRF Apptainer image following [this build
+script](https://github.com/Hos128/WRF-CMAQ-Installation). This container is large (8.1GB compressed SIF file,
+47GB uncompressed sandbox) and includes everything but the kitchen sink, including multiple perl and Python 3
+libraries and 3rd-party packages. It was created for a support ticket, but what's important for us is that it
+also installs MPICH entirely inside the container, not relying on host's OpenMPI. This means that we'll be
+limited to MPI runs on one node.
+
+To run an MPI code inside this container, it is important to pass `-e` to Apptainer to avoid loading MPI
+from the host:
+
+```sh
+cd ~/scratch
+module load apptainer/1.2.4
+salloc --time=1:0:0 --ntasks=4 --mem-per-cpu=3600 --account=def-razoumov-ac
+export APPTAINERENV_NTASKS=$SLURM_NTASKS
+apptainer shell -e --pwd $PWD wrf.sif
+
+export PATH=/data/WRF/Libs/MPICH/bin:$PATH
+
+cat << EOF > distributedPi.c
+#include <stdio.h>
+#include <math.h>
+#include <mpi.h>
+int main(int argc, char *argv[])
+{
+  double total, h, sum, x;
+  long long int i, n = 1e10;
+  int rank, numprocs;
+  MPI_Init(&argc, &argv);
+  MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+  MPI_Comm_size(MPI_COMM_WORLD, &numprocs);
+  h = 1./n;
+  sum = 0.;
+  if (rank == 0)
+    printf("Calculating PI with %d processes\n", numprocs);
+  printf("process %d started\n", rank);
+  for (i = rank+1; i <= n; i += numprocs) {
+    x = h * ( i - 0.5 );    //calculate at center of interval
+    sum += 4.0 / ( 1.0 + pow(x,2));
+  }
+  sum *= h;
+  MPI_Reduce(&sum,&total,1,MPI_DOUBLE,MPI_SUM,0,MPI_COMM_WORLD);
+  if (rank == 0)
+    printf("%.17g\n", total);
+  MPI_Finalize();
+  return 0;
+}
+EOF
+
+mpicc distributedPi.c -o mpi
+mpirun -np $NTASKS ./mpi
+```
+
+
+
+
+
+
+
 
 ## Overlays
 
@@ -440,6 +501,7 @@ options of where to build a container. You can move your SIF file to other clust
 #!/bin/bash
 #SBATCH --time=...
 #SBATCH --mem=...
+#SBATCH --account=def-...
 cd $SLURM_TMPDIR
 mkdir -p tmp cache
 export APPTAINER_TMPDIR=${PWD}/tmp
@@ -454,6 +516,8 @@ export APPTAINER_CACHEDIR=${PWD}/cache   # replaces default `$HOME/.apptainer/ca
 
 
 
+
+## Placeholder: running self-contained container with MPI
 
 
 
