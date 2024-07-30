@@ -25,7 +25,7 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css" integrity="sha384-KA6wR/X5RY4zFAHpv/CnoG2UW1uogYfdnP67Uv7eULvTveboZJg0qUpmJZb5VqzN" crossorigin="anonymous" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" integrity="sha256-l85OmPOjvil/SOvVt3HnSSjzF1TUMyT9eV0c2BzEGzU=" crossorigin="anonymous" />
 
-    {{ if .Site.IsServer }}
+    {{ if hugo.IsServer }}
       {{ $cssOpts := (dict "targetPath" "css/coder.css" "enableSourceMap" true ) }}
       {{ $styles := resources.Get "scss/coder.scss" | resources.ExecuteAsTemplate "style.coder.css" . | toCSS $cssOpts }}
       <link rel="stylesheet" href="{{ $styles.RelPermalink }}" media="screen">
@@ -36,7 +36,7 @@
     {{ end }}
 
     {{ if .Site.Params.rtl }}
-      {{ if .Site.IsServer }}
+      {{ if hugo.IsServer }}
         {{ $cssOpts := (dict "targetPath" "css/coder-rtl.css" "enableSourceMap" true ) }}
         {{ $styles := resources.Get "scss/coder-rtl.scss" | resources.ExecuteAsTemplate "style.coder-rtl.css" . | toCSS $cssOpts }}
         <link rel="stylesheet" href="{{ $styles.RelPermalink }}" media="screen">
@@ -48,7 +48,7 @@
     {{ end }}
 
     {{ if  or (eq .Site.Params.colorscheme "auto") (eq .Site.Params.colorscheme "dark") }}
-      {{ if .Site.IsServer }}
+      {{ if hugo.IsServer }}
         {{ $cssOpts := (dict "targetPath" "css/coder-dark.css" "enableSourceMap" true ) }}
         {{ $styles := resources.Get "scss/coder-dark.scss" | resources.ExecuteAsTemplate "style.coder-dark.css" . | toCSS $cssOpts }}
         <link rel="stylesheet" href="{{ $styles.RelPermalink }}" media="screen">
@@ -69,7 +69,7 @@
 
     {{ range .Site.Params.custom_scss }}
       {{/* We don't change the targetPath to because it's transparent to users */}}
-      {{ if $.Site.IsServer }}
+      {{ if hugo.IsServer }}
         {{ $cssOpts := (dict "enableSourceMap" true ) }}
         {{ $styles := resources.Get . | toCSS $cssOpts }}
         <link rel="stylesheet" href="{{ $styles.RelPermalink }}" media="screen">
