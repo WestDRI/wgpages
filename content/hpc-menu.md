@@ -3,7 +3,7 @@ title = "Intro to high-performance computing (HPC)"
 slug = "introhpc"
 +++
 
-{{<cor>}}January 11th (Part 1) and 18th (Part 2){{</cor>}}\
+{{<cor>}}September 12th (Part 1) and September 19th (Part 2){{</cor>}}\
 {{<cgr>}}Both days 10:00am - noon Pacific Time{{</cgr>}}
 
 <!-- Course materials will be added here shortly before the start of the course. -->
@@ -12,7 +12,7 @@ slug = "introhpc"
 
 This course is an introduction to High-Performance Computing on the Alliance clusters.
 
-<!-- Abstract: This course is an introduction to High-Performance Computing (HPC) on the Alliance clusters. We
+**Abstract**: This course is an introduction to High-Performance Computing (HPC) on the Alliance clusters. We
 will start with the cluster hardware overview, then talk about some basic tools and the software environment
 on our clusters. Next we'll give a quick tour of various parallel programming frameworks such as OpenMP, MPI,
 Python Dask, newer parallel languages such as Chapel and Julia, and we'll try to compile some serial,
@@ -20,113 +20,118 @@ shared-memory and distributed-memory codes using makefiles. We'll then proceed t
 scheduler, submitting and benchmarking our previously compiled codes. We will learn about batch and
 interactive cluster usage, best practices for submitting a large number of jobs, estimating your job's
 resource requirements, and managing file permissions in shared cluster filesystems. There will be many demos
-and hands-on exercises on our training cluster. -->
+and hands-on exercises on our training cluster.
 
 **Instructor**: Alex Razoumov (SFU)
 
-**Prerequisites:** Working knowledge of the Linux Bash shell. We will provide guest accounts to one of our Linux systems.
+**Prerequisites:** Working knowledge of the Linux Bash shell. We will provide guest accounts to one of our
+Linux systems.
 
-**Software**: All attendees will need a remote secure shell (SSH) client installed on their computer in order to
-participate in the course exercises. On Windows we recommend
-[the free Home Edition of MobaXterm](https://mobaxterm.mobatek.net/download.html). On Mac and Linux computers SSH is
-usually pre-installed (try typing `ssh` in a terminal to make sure it is there).
+**Software**: All attendees will need a remote secure shell (SSH) client installed on their computer in order
+to participate in the course exercises. On Mac and Linux computers SSH is usually pre-installed (try typing
+`ssh` in a terminal to make sure it is there). Many versions of Windows also provide an OpenSSH client by
+default -- try opening PowerShell and typing `ssh` to see if it is available. If not, then we recommend
+installing [the free Home Edition of MobaXterm](https://mobaxterm.mobatek.net/download.html).
 
-<!-- {{<cor>}}Part 1{{</cor>}} -->
-
-1. Please download a [ZIP file](http://bit.ly/introhpc2) with all slides (single PDF combining all chapters)
-   and sample codes.
-1. We'll be using the same training cluster as in the morning -- let's try to log in now.
-
-{{<cor>}}Part 1{{</cor>}} \
-Click on a triangle to expand a question:
-
-{{< question num="1: cluster filesystems" >}}
-Let's log in to the training cluster. Try to access `/home`, `/scratch`, `/project` on the training cluster. Note that
-these only emulate the real production filesystems and have no speed benefits on the training cluster.
-{{< /question >}}
-
-{{< question num="2: edit a remote file" >}}
-Edit a remote file in `nano` or `vi` or `emacs`. Use `cat` or `more` to view its content in the terminal.
-{{< /question >}}
-
-{{< question num="3: gcc compiler" >}}
-Load the default GNU compiler with `module` command. Which version is it? Try to understand what the module does: run
-`module show` on it, `echo $PATH`, `which gcc`.
-{{< /question >}}
-
-{{< question num="4: Intel compiler" >}}
-Load the default Intel compiler. Which version is it? Does it work on the training cluster?
-{{< /question >}}
-
-{{< question num="5: third compiler?" >}}
-Can you spot the third compiler family when you do `module avail`?
-{{< /question >}}
-
-{{< question num="6: scipy-stack" >}}
-What other modules does `scipy-stack/2022a` load?
-{{< /question >}}
-
-{{< question num="7: python3" >}}
-How many versions of python3 do we have? What about python2?
-{{< /question >}}
-
-{{< question num="8: research software" >}}
-Think of a software package that you use. Check if it is installed on the cluster, and share your findings.
-{{< /question >}}
-
-{{< question num="9: file transfer" >}}
-Transfer a file to/from the cluster (we did this already in bash class) using either command line or GUI. Type "done"
-into the chat when done.
-{{< /question >}}
-
-{{< question num="10: why HPC?" >}}
-Can you explain (1-2 sentences) how HPC can help us solve problems? Why a desktop/workstation not sufficient? Maybe, you
-can give an example from your field?
-{{< /question >}}
-
-{{< question num="11: tmux" >}}
-Try left+right or upper+lower split panes in `tmux`. Edit a file in one and run bash commands in the
-other. Try disconnecting temporarily and then reconnecting to the same session.
-{{< /question >}}
-
-{{< question num="12: compiling" >}}
-In `introHPC/codes`, compile `{pi,sharedPi,distributedPi}.c` files. Try running a short serial code on the login node
-(not longer than a few seconds: modify the number of terms in the summation).
-{{< /question >}}
-
-{{< question num="13a: make" >}}
-Write a makefile to replace these compilations commands with `make {serial,openmp,mpi}`.
-{{< /question >}}
-
-{{< question num="13b: make (cont.)" >}}
-Add target `all`.
-
-Add target `clean`. Try implementing `clean` for *all* executable files in the current directory, no matter what they
-are called.
-{{< /question >}}
-
-{{< question num="14: Julia" >}}
-Julia parallelism was not mentioned in the videos. Let's quickly talk about it (slide 29).
-{{< /question >}}
-
-{{< question num="14b: parallelization" >}}
-Suggest a computational problem to parallelize. Which of the parallel tools mentioned in the videos would you use, and
-why?
-
-If you are not sure about the right tool, suggest a problem, and we can brainstorm the approach together.
-{{< /question >}}
+**Materials**: Please download a [ZIP file](http://bit.ly/introhpc2) with all slides (single PDF combining all
+   chapters) and sample codes. We will also download this ZIP file to the training cluster later in the
+   course. First, let's try to log in to the training cluster.
 
 
-{{< question num="15: Python and R" >}}
-If you use Python or R in your work, try running a Python or R script in the terminal.
 
-If this script depends on packages, try installing them in your own directory with `virtualenv`. Probably, only a few of
-you should do this on the training cluster at the same time.
-{{< /question >}}
 
-{{< question num="16: other" >}}
-Any remaining questions? Type your question into the chat, ask via audio (unmute), or raise your hand in Zoom.
-{{< /question >}}
+
+
+<!-- {{<cor>}}Part 1{{</cor>}} \ -->
+<!-- Click on a triangle to expand a question: -->
+
+<!-- {{< question num="1: cluster filesystems" >}} -->
+<!-- Let's log in to the training cluster. Try to access `/home`, `/scratch`, `/project` on the training cluster. Note that -->
+<!-- these only emulate the real production filesystems and have no speed benefits on the training cluster. -->
+<!-- {{< /question >}} -->
+
+<!-- {{< question num="2: edit a remote file" >}} -->
+<!-- Edit a remote file in `nano` or `vi` or `emacs`. Use `cat` or `more` to view its content in the terminal. -->
+<!-- {{< /question >}} -->
+
+<!-- {{< question num="3: gcc compiler" >}} -->
+<!-- Load the default GNU compiler with `module` command. Which version is it? Try to understand what the module does: run -->
+<!-- `module show` on it, `echo $PATH`, `which gcc`. -->
+<!-- {{< /question >}} -->
+
+<!-- {{< question num="4: Intel compiler" >}} -->
+<!-- Load the default Intel compiler. Which version is it? Does it work on the training cluster? -->
+<!-- {{< /question >}} -->
+
+<!-- {{< question num="5: third compiler?" >}} -->
+<!-- Can you spot the third compiler family when you do `module avail`? -->
+<!-- {{< /question >}} -->
+
+<!-- {{< question num="6: scipy-stack" >}} -->
+<!-- What other modules does `scipy-stack/2022a` load? -->
+<!-- {{< /question >}} -->
+
+<!-- {{< question num="7: python3" >}} -->
+<!-- How many versions of python3 do we have? What about python2? -->
+<!-- {{< /question >}} -->
+
+<!-- {{< question num="8: research software" >}} -->
+<!-- Think of a software package that you use. Check if it is installed on the cluster, and share your findings. -->
+<!-- {{< /question >}} -->
+
+<!-- {{< question num="9: file transfer" >}} -->
+<!-- Transfer a file to/from the cluster (we did this already in bash class) using either command line or GUI. Type "done" -->
+<!-- into the chat when done. -->
+<!-- {{< /question >}} -->
+
+<!-- {{< question num="10: why HPC?" >}} -->
+<!-- Can you explain (1-2 sentences) how HPC can help us solve problems? Why a desktop/workstation not sufficient? Maybe, you -->
+<!-- can give an example from your field? -->
+<!-- {{< /question >}} -->
+
+<!-- {{< question num="11: tmux" >}} -->
+<!-- Try left+right or upper+lower split panes in `tmux`. Edit a file in one and run bash commands in the -->
+<!-- other. Try disconnecting temporarily and then reconnecting to the same session. -->
+<!-- {{< /question >}} -->
+
+<!-- {{< question num="12: compiling" >}} -->
+<!-- In `introHPC/codes`, compile `{pi,sharedPi,distributedPi}.c` files. Try running a short serial code on the login node -->
+<!-- (not longer than a few seconds: modify the number of terms in the summation). -->
+<!-- {{< /question >}} -->
+
+<!-- {{< question num="13a: make" >}} -->
+<!-- Write a makefile to replace these compilations commands with `make {serial,openmp,mpi}`. -->
+<!-- {{< /question >}} -->
+
+<!-- {{< question num="13b: make (cont.)" >}} -->
+<!-- Add target `all`. -->
+
+<!-- Add target `clean`. Try implementing `clean` for *all* executable files in the current directory, no matter what they -->
+<!-- are called. -->
+<!-- {{< /question >}} -->
+
+<!-- {{< question num="14: Julia" >}} -->
+<!-- Julia parallelism was not mentioned in the videos. Let's quickly talk about it (slide 29). -->
+<!-- {{< /question >}} -->
+
+<!-- {{< question num="14b: parallelization" >}} -->
+<!-- Suggest a computational problem to parallelize. Which of the parallel tools mentioned in the videos would you use, and -->
+<!-- why? -->
+
+<!-- If you are not sure about the right tool, suggest a problem, and we can brainstorm the approach together. -->
+<!-- {{< /question >}} -->
+
+
+<!-- {{< question num="15: Python and R" >}} -->
+<!-- If you use Python or R in your work, try running a Python or R script in the terminal. -->
+
+<!-- If this script depends on packages, try installing them in your own directory with `virtualenv`. Probably, only a few of -->
+<!-- you should do this on the training cluster at the same time. -->
+<!-- {{< /question >}} -->
+
+<!-- {{< question num="16: other" >}} -->
+<!-- Any remaining questions? Type your question into the chat, ask via audio (unmute), or raise your hand in Zoom. -->
+<!-- {{< /question >}} -->
 
 
 
@@ -151,93 +156,90 @@ Any remaining questions? Type your question into the chat, ask via audio (unmute
 
 
 
-{{<cor>}}Part 2{{</cor>}} \
-Click on a triangle to expand a question:
-
-{{< question num="17: serial job" >}}
-Submit a serial job that runs `hostname` command.
-
-Try playing with `sq`, `squeue`, `scancel` commands.
-{{< /question >}}
-
-{{< question num="18: serial job (cont.)" >}}
-Submit a serial job based on `pi.c`.
-
-Try `sstat` on a currently running job. Try `seff` and `sacct` on a completed job.
-{{< /question >}}
-
-{{< question num="19: optimization timing" >}}
-Using a serial job, time optimized (`-O2`) vs. unoptimized code. Type your findings into the chat.
-{{< /question >}}
-
-{{< question num="20: Python vs. C timing" >}}
-Using a serial job, time `pi.c` vs. `pi.py` for the same number of terms (cannot be too large or too small -- why?).
-
-Python pros -- can you speed up `pi.py`?
-{{< /question >}}
-
-{{< question num="21: array job" >}}
-Submit an array job for different values of `n` (number of terms) with `pi.c`. How can you have different executable for
-each job inside the array?
-{{< /question >}}
-
-{{< question num="22: OpenMP job" >}}
-Submit a shared-memory job based on `sharedPi.c`. Did you get any speedup? Type your answer into the chat.
-{{< /question >}}
-
-{{< question num="23: MPI job" >}}
-Submit an MPI job based on `distributedPi.c`.
-
-Try scaling 1 → 2 → 4 → 8 cores. Did you get any speedup? Type your answer into the chat.
-{{< /question >}}
-
-{{< question num="24: serial interactive job" >}}
-Test the serial code inside an interactive job. Please quit the job when done, as we have very few compute cores on the
-training cluster.
-
-Note: we have seen the training cluster become unstable when using too many interactive resources. Strictly speaking,
-this should not happen, however there is a small chance it might. We do have a backup.
-{{< /question >}}
-
-{{< question num="25: shared-memory interactive job" >}}
-Test the shared-memory code inside an interactive job. Please quit when done, as we have very few compute cores on the training cluster.
-{{< /question >}}
-
-{{< question num="26: MPI interactive job" >}}
-Test the MPI code inside an interactive job. Please quit when done, as we have very few compute cores on the training cluster.
-{{< /question >}}
-
-{{< question num="27: debugging and optimization" >}}
-Let's talk about debugging, profiling and code optimization.
-{{< /question >}}
-
-{{< question num="28: permissions and file sharing" >}}
-Let's talk about file permissions and file sharing.
-
-Share a file in your `~/projects` directory (make it readable) with all other users in `def-sponsor00` group.
-{{< /question >}}
-
-{{< question num="29: other" >}}
-Are there questions on any of the topics that we covered today? You can type your question into the chat, ask via audio
-(unmute), or raise your hand in Zoom.
-{{< /question >}}
 
 
 
+<!-- {{<cor>}}Part 2{{</cor>}} \ -->
+<!-- Click on a triangle to expand a question: -->
 
+<!-- {{< question num="17: serial job" >}} -->
+<!-- Submit a serial job that runs `hostname` command. -->
 
+<!-- Try playing with `sq`, `squeue`, `scancel` commands. -->
+<!-- {{< /question >}} -->
+
+<!-- {{< question num="18: serial job (cont.)" >}} -->
+<!-- Submit a serial job based on `pi.c`. -->
+
+<!-- Try `sstat` on a currently running job. Try `seff` and `sacct` on a completed job. -->
+<!-- {{< /question >}} -->
+
+<!-- {{< question num="19: optimization timing" >}} -->
+<!-- Using a serial job, time optimized (`-O2`) vs. unoptimized code. Type your findings into the chat. -->
+<!-- {{< /question >}} -->
+
+<!-- {{< question num="20: Python vs. C timing" >}} -->
+<!-- Using a serial job, time `pi.c` vs. `pi.py` for the same number of terms (cannot be too large or too small -- why?). -->
+
+<!-- Python pros -- can you speed up `pi.py`? -->
+<!-- {{< /question >}} -->
+
+<!-- {{< question num="21: array job" >}} -->
+<!-- Submit an array job for different values of `n` (number of terms) with `pi.c`. How can you have different executable for -->
+<!-- each job inside the array? -->
+<!-- {{< /question >}} -->
+
+<!-- {{< question num="22: OpenMP job" >}} -->
+<!-- Submit a shared-memory job based on `sharedPi.c`. Did you get any speedup? Type your answer into the chat. -->
+<!-- {{< /question >}} -->
+
+<!-- {{< question num="23: MPI job" >}} -->
+<!-- Submit an MPI job based on `distributedPi.c`. -->
+
+<!-- Try scaling 1 → 2 → 4 → 8 cores. Did you get any speedup? Type your answer into the chat. -->
+<!-- {{< /question >}} -->
+
+<!-- {{< question num="24: serial interactive job" >}} -->
+<!-- Test the serial code inside an interactive job. Please quit the job when done, as we have very few compute cores on the -->
+<!-- training cluster. -->
+
+<!-- Note: we have seen the training cluster become unstable when using too many interactive resources. Strictly speaking, -->
+<!-- this should not happen, however there is a small chance it might. We do have a backup. -->
+<!-- {{< /question >}} -->
+
+<!-- {{< question num="25: shared-memory interactive job" >}} -->
+<!-- Test the shared-memory code inside an interactive job. Please quit when done, as we have very few compute cores on the training cluster. -->
+<!-- {{< /question >}} -->
+
+<!-- {{< question num="26: MPI interactive job" >}} -->
+<!-- Test the MPI code inside an interactive job. Please quit when done, as we have very few compute cores on the training cluster. -->
+<!-- {{< /question >}} -->
+
+<!-- {{< question num="27: debugging and optimization" >}} -->
+<!-- Let's talk about debugging, profiling and code optimization. -->
+<!-- {{< /question >}} -->
+
+<!-- {{< question num="28: permissions and file sharing" >}} -->
+<!-- Let's talk about file permissions and file sharing. -->
+
+<!-- Share a file in your `~/projects` directory (make it readable) with all other users in `def-sponsor00` group. -->
+<!-- {{< /question >}} -->
+
+<!-- {{< question num="29: other" >}} -->
+<!-- Are there questions on any of the topics that we covered today? You can type your question into the chat, ask via audio -->
+<!-- (unmute), or raise your hand in Zoom. -->
+<!-- {{< /question >}} -->
 
 
 
 
 
 
-<!-- - Edit a remote file in nano or vi or emacs. -->
-<!-- - Try to understand what the default GNU compiler module does: run `module show` on it, print `PATH` -->
-<!--   variable, locate the GNU C compiler. -->
-<!-- - Check if your favourite research software is installed on the cluster. -->
-<!-- - Write a makefile from scratch. -->
-<!-- - Try left+right or upper+lower split panes in tmux on the cluster. -->
+
+
+
+
+
 
 
 
@@ -246,6 +248,9 @@ Are there questions on any of the topics that we covered today? You can type you
 
 ## Videos: introduction
 
+These videos (recorded in 2020) cover the same materials we studied in the course, but you can watch these at
+your own pace.
+
 - [Introduction](https://www.youtube.com/watch?v=dVMNSp98yRA) (3 min)
 - [Cluster hardware overview](https://www.youtube.com/watch?v=pLy3m9Nq4rM) (17 min)
 - [Basic tools on HPC clusters](https://www.youtube.com/watch?v=9StaWaE4KRw) (18 min)
@@ -253,8 +258,7 @@ Are there questions on any of the topics that we covered today? You can type you
 - [Programming languages and tools](https://www.youtube.com/watch?v=dhV0Jg8VLoU) (16 min)
 
 **Updates**:
-1. WestGrid ceased its operations on March 31, 2022. Since April 1st, your instructors in this course are
-   based at Simon Fraser University.
+1. Since April 1st, 2022, your instructors in this course are based at Simon Fraser University.
 1. Some of the slides and links in the video have changed -- please make sure to download
    the [latest version of the slides](http://bit.ly/introhpc2) (ZIP file).
 1. Compute Canada has been replaced by the Digital Research Alliance of Canada (the Alliance). All Compute
