@@ -175,14 +175,14 @@ only to the particular thread.
 > ```chpl
 > use Random, Time;
 > config const nelem = 1e8: int;
-> var x: [1..nelem] real;
+> var x: [1..nelem] int;
 > fillRandom(x);	                   // fill array with random numbers
-> var gmax = 0.0;
+> var gmax = 0;
 >
 > config const numthreads = 2;       // let's pretend we have 2 cores
 > const n = nelem / numthreads;      // number of elements per thread
 > const r = nelem - n*numthreads;    // these elements did not fit into the last thread
-> var lmax: [1..numthreads] real;    // local maxima for each thread
+> var lmax: [1..numthreads] int;    // local maxima for each thread
 > coforall threadid in 1..numthreads do {
 >   var start, finish: int;
 >   start = ...
