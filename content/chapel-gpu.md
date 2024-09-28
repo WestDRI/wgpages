@@ -1,6 +1,6 @@
 +++
 title = "GPU computing with Chapel"
-slug = "gpu"
+slug = "chapel-gpu"
 katex = true
 +++
 
@@ -126,7 +126,7 @@ on here.gpus[0] {
   var A: [1..n] int;     // kernel launch to initialize an array
   foreach i in 1..n do   // thread parallelism on a CPU or a GPU => kernel launch
     A[i] = i**2;
-  writeln("A = ", A);
+  writeln("A = ", A);    // copy A to host
 }
 ```
 ```output
@@ -294,6 +294,11 @@ Alternatively, you can count kernel launches -- it'll be zero for the `for` loop
 More on `@assertOnGpu` and other attributes at https://chapel-lang.org/docs/main/modules/standard/GPU.html.
 
 <!-- @assertOnGpu foreach i in 0..0 { -->
+
+> In Chapel 2.2 there is a new additional attribute `@gpu.assertEligible` that asserts that a statement is
+> suitable for GPU execution, without requiring it to be executed on a GPU.
+
+
 
 
 

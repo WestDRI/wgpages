@@ -70,6 +70,20 @@ Why:
 1. popular, but somewhat dubious reason: data reproducibility (use the same software environment as the
    authors &nbsp;➜&nbsp; same result)
 
+## Why/when not to use a container
+
+<!-- Maxime: In any upcoming Apptainer course, there should be a very clear section explaining when , and the -->
+<!-- downsides of using Apptainer/containers. If users think that learning Apptainer is simpler than learning how -->
+<!-- to use our modules/python packages, they are mistaken. -->
+
+<!-- PaulP: Whenever we have modules for something I strongly discourage users from creating their own unless they -->
+<!-- have a very good reason to need their own (which is extremely rare). -->
+
+
+
+
+
+
 ## Installing/running Apptainer on your own computer
 
 Apptainer was really developed for use on HPC cluster, but there are ways to run it on your own computer:
