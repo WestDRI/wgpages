@@ -63,6 +63,8 @@ container](https://chapel-lang.org/install-docker.html).
 
 ## Useful built-in variables
 
+From inside your Chapel code, you can access the following predefined variables:
+
 - `Locales` is the list of locales (nodes) that your code can run on (invoked in code execution)
 - `numLocales` is the number of these locales
 - `here` is the current locale (node), and by extension current CPU
@@ -118,7 +120,7 @@ There is one GPU, and it is available to us as the first (and only) element of t
 
 ## Our first GPU code
 
-Let's run some code on this GPU:
+To benefit from GPU acceleration, you want to run a computation that can be broken into many independent identical pieces. An obvious example is a `for` loop in which each loop iteration does not depend on other iterations. Let's run such an example on the GPU:
 
 ```chpl
 config const n = 10;
@@ -262,7 +264,7 @@ The *loop attribute* `@assertOnGpu` (applied to a loop) does two things:
 1. at compilation, will fail to compile a code that cannot run on a GPU and will tell you why
 2. at runtime, will halt execution if called from outside a GPU
 
-Consider the serial following code:
+Consider the following serial code:
 
 ```chpl
 config const n = 10;
@@ -296,7 +298,7 @@ More on `@assertOnGpu` and other attributes at https://chapel-lang.org/docs/main
 <!-- @assertOnGpu foreach i in 0..0 { -->
 
 > In Chapel 2.2 there is a new additional attribute `@gpu.assertEligible` that asserts that a statement is
-> suitable for GPU execution, without requiring it to be executed on a GPU.
+> suitable for GPU execution (same as `@assertOnGpu`), without requiring it to be executed on a GPU.
 
 
 
@@ -307,7 +309,11 @@ More on `@assertOnGpu` and other attributes at https://chapel-lang.org/docs/main
 
 ## Timing on the CPU
 
-Use a stopwatch from the `Time` module:
+
+Let's pack our computation into a function, so that we can call it from both a CPU and a GPU. For timing, we can use a stopwatch from the `Time` module:
+
+
+
 
 ```chpl
 use Time;
