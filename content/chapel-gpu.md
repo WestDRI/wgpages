@@ -364,10 +364,14 @@ CPU. We will see an example of this later in this webinar.
 
 ## Timing on the GPU
 
-`GPU` module provides a function `gpuClock()` that returns the clock cycle counter but it needs to be called
-to time code blocks *within a GPU enabled loop*.
+Obtaining timing  from within  a running  CUDA kernel is  tricky as  you are
+running  thousands of  potentially asynchronous  threads, so  you definitely
+cannot measure the wallclock time. However, you can measure GPU clock cycles
+spent on a partucular part of the kernel function. The `GPU` module provides
+a function `gpuClock()` that returns the clock cycle counter, and it needs to
+be called to time code blocks *within a GPU enabled loop*.
 
-Here is a code (modelled after
+Here is an example (modelled after
 [https://raw.githubusercontent.com/chapel-lang/chapel/main/test/gpu/native/measureGpuCycles.chpl](measureGpuCycles.chpl))
 to demonstrate its use. This is not the most efficient code, as on the GPU we are parallelizing the loop with
 `n=10` iterations, and then inside each iteration we run a serial loop to keep the (few non-idle) GPU cores
