@@ -51,8 +51,8 @@ in AlmaLinux 9.4](https://gist.github.com/razoumov/03cfc54cc388675389bb4343beb8a
 these steps do not work for you.
 
 In *Windows*, Chapel with GPU support works under the Windows Subsystem for Linux (WSL) as explained in [this
-post](https://chapel-lang.org/blog/posts/nvidia-gpu-wsl). You can also run Chapel inside a [Docker
-container](https://chapel-lang.org/install-docker.html).
+post](https://chapel-lang.org/blog/posts/nvidia-gpu-wsl). You *could* also run Chapel inside a [Docker
+container](https://chapel-lang.org/install-docker.html), although you need to find a GPU-enabled Docker image.
 
 
 
@@ -364,15 +364,18 @@ CPU. We will see an example of this later in this webinar.
 
 ## Timing on the GPU
 
-Obtaining timing  from within  a running  CUDA kernel is  tricky as  you are
-running  thousands of  potentially asynchronous  threads, so  you definitely
-cannot measure the wallclock time. However, you can measure GPU clock cycles
-spent on a partucular part of the kernel function. The `GPU` module provides
-a function `gpuClock()` that returns the clock cycle counter, and it needs to
-be called to time code blocks *within a GPU enabled loop*.
+Obtaining timing from within a running CUDA kernel is tricky as you are running potentially thousands of
+simultaneous threads, so you definitely cannot measure the wallclock time. However, you can measure GPU clock
+cycles spent on a partucular part of the kernel function. The `GPU` module provides a function `gpuClock()`
+that returns the clock cycle counter (per multiprocessor), and it needs to be called to time code blocks
+*within a GPU-enabled loop*.
+
+<!-- V100 contains 80 Streaming Multiprocessors (SMs) and 2560 CUDA cores -->
+<!-- A100 contains 108 Streaming Multiprocessors (SMs) and 6912 CUDA cores -->
+<!-- H100 contains 114 Streaming Multiprocessors (SMs) and 14,592 CUDA cores -->
 
 Here is an example (modelled after
-[https://raw.githubusercontent.com/chapel-lang/chapel/main/test/gpu/native/measureGpuCycles.chpl](measureGpuCycles.chpl))
+[measureGpuCycles.chpl](https://raw.githubusercontent.com/chapel-lang/chapel/main/test/gpu/native/measureGpuCycles.chpl))
 to demonstrate its use. This is not the most efficient code, as on the GPU we are parallelizing the loop with
 `n=10` iterations, and then inside each iteration we run a serial loop to keep the (few non-idle) GPU cores
 busy, but it gives you an idea.
@@ -390,7 +393,7 @@ on here.gpus[0] {
     A[i] = i**2;
     start = gpuClock();
     for j in 0..<1000 do
-      A[j % n + 1] += i*j;
+      A[i] += i*j;
     stop = gpuClock();
     clockDiff[i] = stop - start;
   }
