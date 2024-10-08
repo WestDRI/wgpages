@@ -36,8 +36,9 @@ In <u>most cases</u>, you would download an existing Docker/Apptainer container 
 container from it, without having to modify the image. Or maybe, the image is already provided by your lab, a
 research collaborator, or the Alliance. For example, right now we are testing a set of Apptainer images with
 GPU development tools for different GPU architectures, such as NVIDIA's CUDA and AMD's ROCm, as it is often
-difficult to compile these from source -- and we are planning to make these images available to all users in
-the near future.
+difficult to compile these from source.
+
+<!-- and we are planning to make these images available to all users in the near future. -->
 
 {{<note>}}
 In most cases `apptainer build ...` will need root access, so for simple downloading of an online image as a
@@ -46,15 +47,15 @@ regular user you might prefer `apptainer pull ...` command.
 
 ### Build consideration 1: modifying system files inside the container (root vs. regular user)
 
-In <u>other cases</u> you might want to modify the image or build your own container image from scratch. To
+In <u>some cases</u>, you might want to modify the image or build your own container image from scratch. To
 create a container image, you need a machine that:
 
 1. runs Linux,
 1. has Apptainer installed,
 1. has Internet access, and
-1. ideally where you have `root` (or `sudo`) permissions, otherwise all permissions inside the image will be
-   messed up, and you won't have `root` or `sudo` access
-    &nbsp;➜&nbsp; you won't be able to install or upgrade packages (this requires `root`)
+1. ideally where you have `root` (or `sudo`) permissions, otherwise all permissions inside the container will
+   be messed up, and you won't have `root` or `sudo` access &nbsp;➜&nbsp; you won't be able to install or
+   upgrade packages (this requires `root`).
 
 It is possible to install packages and modify system (root-owned) files inside the container without being
 root, either:
@@ -64,9 +65,8 @@ root, either:
 1. by using a `--remote` build option (covered in this section).
 
 If installing packages is not important to you, i.e. you are planning to use the container as is for
-production purposes, you can create an image on an HPC cluster; for more details see
-{{<a "https://docs.alliancecan.ca/wiki/Singularity#Creating_images_on_Alliance_clusters" "Creating images on Alliance clusters">}}.
-
+production purposes, you can probably create an image on an HPC cluster. If you run into problems, please ask
+for help at <i>support@tech.alliancecan.ca</i>.
 
 {{<note>}}
 In Apptainer the user always remains the same inside and outside of the container. In other
@@ -76,11 +76,8 @@ the container.
 
 {{<note>}}
 If you have access to your own Linux computer, it is best to build your images there (root access and
-performance from a local drive). Alternatively, you can use a VM where you have root access.
-{{</note>}}
-
-{{<note>}}
-If you have problems building an image for our HPC clusters, ask for help at <i>support@tech.alliancecan.ca</i>.
+performance from a local drive). Alternatively, you can use a VM where you have root access. In the Alliance,
+we provide cloud projects to researchers for spinning up VMs.
 {{</note>}}
 
 ### Build consideration 2: host's filesystem limitations
@@ -93,7 +90,7 @@ technical details on one of the issues see {{<a
 
 In addition, building containers involves a large number of small file operations slowing down parallel
 filesystems which were not optimized for this type of I/O. For this reason, when building containers on our
-clusters, we highly recommend doing this inside Slurm jobs in `$SLURM_TMPDIR` (SSD local to a compute node).
+clusters, we highly recommend doing this inside a Slurm job in `$SLURM_TMPDIR` (SSD on a compute node).
 
 
 
@@ -109,8 +106,9 @@ Run the "Lolcow" container by Apptainer developers:
 ```sh
 mkdir tmp && cd tmp
 module load apptainer
-salloc --time=1:0:0 --mem-per-cpu=3600
-apptainer pull hello-world.sif shub://vsoch/hello-world   # store it into the file hello-world.sif
+salloc --time=2:0:0 --mem-per-cpu=3600   # very important!!!
+apptainer pull hello-world.sif shub://vsoch/hello-world   # store it as hello-world.sif
+ls
 apptainer run hello-world.sif   # run its default script
 ```
 
@@ -128,8 +126,8 @@ rm hello-world.sif                        # clear old image
 apptainer run shub://vsoch/hello-world    # use the cached image	
 ```
 
-Alternatively, we can run a container directly off Docker Hub. However, it will first convert a Docker image
-into an Apptainer image, and then run this Apptainer image:
+Alternatively, we can run a **Docker** container directly off Docker Hub. However, it will first convert a
+Docker image into an Apptainer image, and then run this Apptainer image:
 
 ```sh
 apptainer run docker://godlovedc/lolcow   # random cow message
@@ -141,8 +139,8 @@ Let's try something more basic:
 apptainer run docker://ubuntu   # press Ctrl-D to exit
 ```
 
-What happened here in the last example? Well, there was no default script, so it just presented the container
-shell to type commands.
+What happened here in the last example? Well, there was no default script, so it presented the container shell
+to type commands. You can exit the container with Ctrl-D or `exit`.
 
 
 
@@ -223,15 +221,16 @@ container. In this example `ubuntu.dir` is a directory on the host filesystem.
 <!-- sudo yum install apptainer -y     # install Apptainer -->
 <!-- ``` -->
 
-I will log in as user `centos` (with sudo privileges) to my own cloud machine and there run `apptainer` with
-the full path (as `apptainer` from CVMFS will not be accessible to `sudo`):
+I will log in as user `centos` (with sudo privileges) to the training cluster and run `apptainer` with the
+full path (as `apptainer` from CVMFS will not be accessible to `sudo`):
 
 <!-- APPTNR=/cvmfs/soft.computecanada.ca/easybuild/software/2020/Core/apptainer/1.1.8/bin/apptainer -->
 
 ```sh
 ssh centos@cass
 mkdir -p tmp && cd tmp
-alias apptainer=/cvmfs/soft.computecanada.ca/easybuild/software/2020/Core/apptainer/1.1.8/bin/apptainer
+alias apptainer=/cvmfs/soft.computecanada.ca/easybuild/software/2023/x86-64-v3/Core/apptainer/1.2.4/bin/apptainer
+alias sudo='sudo '   # so that the command after sudo is checked for alias
 apptainer build --sandbox ubuntu.dir docker://ubuntu   # sudo not yet required
 du -sh ubuntu.dir                              # 82M, before installing packages
 sudo apptainer shell --writable ubuntu.dir     # start the sandbox in writable mode;
@@ -241,36 +240,36 @@ Apptainer> wget                      # not available
 Apptainer> whoami                    # I am root, so can install software system-wide
 Apptainer> apt-get -y install wget   # will fail here if Apptainer run without root
 
-sudo du -sh ubuntu.dir               # 130M; sudo necessary to scan root directories
+sudo du -sh ubuntu.dir               # 124M; sudo necessary to scan root directories
 ```
 
 > Above you might see a warning when running `... apptainer shell --writable ...`
 > ```txt
 > WARNING: Skipping mount /etc/localtime [binds]: /etc/localtime doesn't exist in container
 > ```
-> occurs when you try to mount a file/directory into the container without that file/directory already
-> inside the container. You can simply ignore this message.
+> occurs when you try to mount a file/directory into the container without that destination already
+> inside the container. You can simply ignore this message. We will learn bind-mounting in the next section.
 
-To convert the sandbox to a regular non-writable SIF container image, use
+To convert the sandbox to a regular non-writable SIF container image, I will use:
 
 ```sh
 sudo apptainer build ubuntu.sif ubuntu.dir
 sudo rm -rf ubuntu.dir
-ls -lh ubuntu.sif            # 62M (compressed)
+ls -lh ubuntu.sif            # 58M (compressed)
 apptainer shell ubuntu.sif   # can now start it as non-root
 
 Apptainer> wget
 Apptainer> ...
 
-scp ubuntu.sif user149@lecarre.c3.ca:shared
+scp ubuntu.sif user01@cass.vastcloud.org:/project/def-sponsor00/shared
 ```
 
 As a regular user on the training cluster, I should be able to use this image now:
 
 ```sh
-chmod -R og+rX ~user149/shared   # give read access to all users
+chmod -R og+rX /project/def-sponsor00/shared   # give read access to all users
 module load apptainer
-apptainer shell ~user149/shared/ubuntu.sif
+apptainer shell /project/def-sponsor00/shared/ubuntu.sif
 ```
 
 
@@ -306,21 +305,42 @@ modify files inside the container, i.e. we cannot do this inside an immutable SI
 ```sh
 mkdir -p tmp && cd tmp
 apptainer build --sandbox ubuntu.dir docker://ubuntu   # create the sandbox in ubuntu.dir/
-du -sh ubuntu.dir                                      # 81M, before installing packages
-apptainer shell --fakeroot --writable ubuntu.dir   # with Apptainer 1.1 fakeroot works even
-                                                   # without /etc/subuid mapping
+du -sh ubuntu.dir                                      # 82M, before installing packages
+apptainer shell --fakeroot --writable ubuntu.dir
+```
+
+
+
+> ### <font style="color:blue">Exercise 1</font>
+> At this point you might see the following output:
+> ```output
+> INFO:    User not listed in /etc/subuid, trying root-mapped namespace
+> INFO:    Using fakeroot command combined with root-mapped namespace
+> WARNING: Skipping mount /etc/localtime [binds]: /etc/localtime doesn't exist in container
+> WARNING: By using --writable, Apptainer can't create /project destination automatically without overlay or underlay
+> FATAL:   container creation failed: mount hook function failure: mount /project->/project error: while mounting /project: destination /project doesn't exist in container
+> ```
+> How would you solve it?
+
+<!-- Solution 1: -->
+<!-- ```sh -->
+<!-- mkdir ubuntu.dir/project -->
+<!-- mkdir ubuntu.dir/scratch -->
+<!-- ``` -->
+<!-- Solution 2: -->
+<!-- turn off bind-mounting these directories (covered in the next chapter), e.g. with `unset APPTAINER_BIND` -->
+
+
+
+
+Next, inside the container, we can install the software we need, e.g.
+
+```sh
 Apptainer> apt-get update
 Apptainer> apt-get -y install wget
 
-du -sh ubuntu.dir                     # ~126M
+du -sh ubuntu.dir                     # 124M
 ```
-
-> Above you might see a warning when running `... apptainer shell --writable ...`
-> ```txt
-> WARNING: Skipping mount /etc/localtime [binds]: /etc/localtime doesn't exist in container
-> ```
-> occurs when you try to mount a file/directory into the container without that file/directory already
-> inside the container. You can simply ignore this message.
 
 To convert the sandbox to a regular non-writable SIF container image, use
 
@@ -349,7 +369,7 @@ Depending on your Apptainer installation, you may or may no need to be root in t
 along, if you want, or alternatively simply watch this demo.
 {{</note>}}
 
-Inside the VM, create a new file `test.def`:
+Inside your working directory, create a new file `test.def`:
 
 ```sh
 cd ~/tmp
@@ -357,23 +377,25 @@ nano test.def
 ```
 ```txt
 Bootstrap: docker
-From: ubuntu:20.04
+From: ubuntu:24.04
 
 %post
-    apt-get -y update && apt-get install -y python
+    apt-get -y update && apt-get install -y python3
 
 %runscript
-    python -c 'print("Hello World! Hello from our custom Apptainer image!")'
+    python3 -c 'print("Hello World! Hello from our custom Apptainer image!")'
 ```
 
 We will bootstrap our image from a minimal Ubuntu 20.04 Linux Docker image as then run it as a regular user:
 
 ```sh
-apptainer build test.sif test.def   # in Apptainer 1.0 important to run this as root; it can run
-                                    # without sudo but will use /etc/subuid mappings;
+unset APPTAINER_BIND
+apptainer build test.sif test.def   # in Apptainer 1.0 important to run this as root; it can
+                                    # run without sudo but will use /etc/subuid mappings;
                                     # running this as regular user will result in errors;
-                                    # in properly configured Apptainer 1.1 can run this as regular user
-ls -l test.sif           # ~65M
+                                    # in properly configured Apptainer 1.1 and higher can run
+                                    # this as regular user
+ls -l test.sif           # 69M
 apptainer run test.sif   # Hello World! Hello from our custom Apptainer image!
 ```
 
@@ -417,6 +439,7 @@ as described in {{<a "https://apptainer.org/docs/user/latest/definition_files.ht
 
 
 
+
 ### Remote builder: no need for root!
 
 If you have access to a platform with Apptainer installed but you don't have root access to create
@@ -432,19 +455,19 @@ to use their service, you will need to register for a cloud token via the link o
 
 ```txt
 Bootstrap: docker
-From: ubuntu:20.04
+From: ubuntu:24.04
 
 %post
-    apt-get -y update && apt-get install -y python
+    apt-get -y update && apt-get install -y python3
 
 %runscript
-    python -c 'print("Hello World! Hello from our custom Apptainer image!")'
+    python3 -c 'print("Hello World! Hello from our custom Apptainer image!")'
 ```
 
 4. Build the image remotely and then run it locally:
 
 ```sh
-module load apptainer/1.1.8
+module load apptainer
 apptainer remote login    # enter the token
 apptainer remote status   # check that you are able to connect to the services
 apptainer build --remote test.sif test.def
@@ -464,7 +487,8 @@ You can find more information on remote endpoints in the
 
 
 ## Running more useful Docker images via Apptainer as regular user
-### Running client-server ParaView from a container
+
+### Demo: running client-server ParaView from a container
 
 You can pull a Docker image from [Docker Hub](https://hub.docker.com) and convert it to an Apptainer
 image. For this you typically do not need `sudo` access. Please build containers only on compute nodes, as
@@ -473,14 +497,14 @@ this process is CPU-intensive.
 The following commands require online access and will work only on Cedar (and the training cluster!)  where
 compute nodes can access Internet. Let's search [Docker Hub](https://hub.docker.com) for
 *"topologytoolkit"*. Click on the result and then on Tags -- you should see the suggested Docker command
-*"docker pull topologytoolkit/ttk:5.10.1-stable"*. From Apptainer, the address will be
-*"docker://topologytoolkit/ttk:5.10.1-stable"*.
+*"docker pull topologytoolkit/ttk-dev:5.11.0"*. From Apptainer, the address will be
+*"docker://topologytoolkit/ttk-dev:5.11.0"*.
 
 ```sh
 cd ~/tmp
-module load apptainer/1.1.8
+module load apptainer
 salloc --cpus-per-task=1 --time=0:30:0 --mem-per-cpu=3600
-apptainer pull topologytoolkit.sif docker://topologytoolkit/ttk:5.10.1-stable
+apptainer pull topologytoolkit.sif docker://topologytoolkit/ttk-dev:5.11.0
 ```
 
 > Note: on other production clusters -- such as Béluga, Narval or Graham -- compute nodes do not have Internet access,
@@ -491,7 +515,7 @@ apptainer pull topologytoolkit.sif docker://topologytoolkit/ttk:5.10.1-stable
 > sh download-frozen-image-v2.sh build ttk:latest   # download an image
 >                                                   # from Docker Hub into build/
 > cd build && tar cvf ../ttk.tar * && cd ..
-> module load apptainer/1.1.8
+> module load apptainer
 > salloc --cpus-per-task=1 --time=0:30:0 --mem-per-cpu=3600 --account=...
 > apptainer build topologytoolkit.sif docker-archive://ttk.tar   # build the Apptainer image;
 >                                                                # wait for `Build complete`
@@ -505,55 +529,104 @@ unzip /project/def-sponsor00/shared/paraview.zip data/sineEnvelope.nc   # unpack
 apptainer exec -B /home topologytoolkit.sif pvserver
 ```
 
-If successful, it should say something like *"Accepting connection(s): node1.int.lecarre.c3.ca:11111"* --
+If successful, it should say something like *"Accepting connection(s): node1.int.cass.vastcloud.org:11111"* --
 write down the node and the port names as you will need them in the next step.
 
 On your laptop, set up SSH port forwarding to this compute node and port:
 
 ```sh
-ssh username@lecarre.c3.ca -L 11111:node1:11111
+ssh username@cass.vastcloud.org -L 11111:node1:11111
 ```
 
-Next, start ParaView 5.10.x on your computer and connect to `localhost:11111`, and then load the dataset and
+Next, start ParaView 5.11.x on your computer and connect to `localhost:11111`, and then load the dataset and
 visualize it.
 
-### Switching to another Linux distribution
-
-... is super-easy:
-
-```sh
-apptainer pull centos.sif docker://centos:latest
-apptainer pull debian.sif docker://debian:latest
-apptainer pull ubuntu.sif docker://ubuntu:latest
-apptainer pull ubuntu.sif docker://ubuntu:19.04   # specific older version
-```
 
 
 
 
-> ### <font style="color:blue">Exercise 1: latest Python image</font>
+
+> ### <font style="color:blue">Exercise: switch to another Linux distribution</font>
+> Let's try creating an image with another Linux distribution:
+> ```sh
+> apptainer pull debian.sif docker://debian:latest
+> ```
+> Try running `nano` text editor inside one of these containers. If it is not installed, install it yourself:
+> create a writable sandbox directory, enter it with `--fakeroot --writable`, install `nano` (google the
+> commands), convert it back to SIF.
+
+<!-- Solution: -->
+<!-- ```sh -->
+<!-- apptainer shell debian.sif -->
+<!-- Apptainer> nano -->
+
+<!-- apptainer build --sandbox debian.dir docker://debian:latest -->
+<!-- mkdir debian.dir/{project,scratch} -->
+<!-- apptainer shell --fakeroot --writable debian.dir -->
+<!-- Apptainer> apt-get update -->
+<!-- Apptainer> apt install nano -->
+
+<!-- apptainer build debian.sif debian.dir -->
+
+<!-- apptainer shell debian.sif -->
+<!-- Apptainer> nano -->
+<!-- ``` -->
+
+
+
+
+
+
+
+
+
+
+
+
+> ### <font style="color:blue">Exercise: latest Python image</font>
 > Pull the latest Python image from Docker Hub into an Apptainer image. It should take few minutes to build it.
 > 1. How large is the resulting image?
-> 1. Run container's Python with the `exec` command. Which version of Python did it install?
+> 1. Run container's Python with the `apptainer exec` command. Which version of Python did it install?
 > 1. Do some math, e.g. print $\pi$.
 > 1. When you exit Python, you will be back to your host system's shell.
+> 1. Now try running Python via the `apptainer shell` command.
 > 1. Which operating system does this container run?
 > ```sh
-> module load apptainer/1.1.8
+> module load apptainer
 > salloc --cpus-per-task=1 --time=3:00:0 --mem-per-cpu=3600
 > apptainer pull python.sif docker://???
 > ```
-> <!-- docker://python -->
 
-> ### <font style="color:blue">Exercise 2: CPU-based PyTorch image</font>
+<!-- Solution: -->
+<!-- ```sh -->
+<!-- apptainer pull python.sif docker://python -->
+<!-- ls -l python.sif   # 336M -->
+<!-- apptainer exec python.sif python   # Python 3.13.0 -->
+<!-- >>> import math as m -->
+<!-- >>> m.pi -->
+<!-- apptainer shell python.sif -->
+<!-- Apptainer> python -->
+<!-- apptainer exec python.sif cat /etc/os-release   # Debian GNU/Linux -->
+<!-- ``` -->
+
+
+
+
+
+
+
+
+
+> ### <font style="color:blue">Exercise: CPU-based PyTorch image</font>
 > Pull a recent <b>CPU-based</b> PyTorch image from Docker Hub into an Apptainer image.
 > ```sh
-> module load apptainer/1.1.8
+> module load apptainer
 > salloc --cpus-per-task=1 --time=3:00:0 --mem-per-cpu=3600
 > apptainer pull pytorch.sif docker://???
 > ```
 > <!-- docker://intel/intel-optimized-pytorch:latest -->
-> Try running some basic PyTorch commands inside this image:
+> 1. Which operating system does this container run?
+> 1. Try running some basic PyTorch commands inside this image:
 > ```py
 > import torch
 > A = torch.tensor([[2., 3., -1.], [1., -2., 8.], [6., 1., -3.]])

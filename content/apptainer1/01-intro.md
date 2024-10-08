@@ -32,29 +32,29 @@ transferred to the [Linux Foundation](https://www.linuxfoundation.org), and that
 has been renamed *Apptainer*, while the commercial fork is still called *Singularity*.
 
 - Apptainer is an open-source project developed within the research community since 2015, started at the
-  Lawrence Berkeley National Lab
-- Its goal: create a portable system to run Linux applications on HPC clusters independently of the specific
-  host Linux version and distro, i.e. distribute software and **its compute environment**
+  Lawrence Berkeley National Lab.
+- Its goal is to create a portable system to run Linux applications on HPC clusters *independently of the
+  specific host Linux version and distro*, i.e. distribute software and **its compute environment**.
 - Apptainer creates a custom, secure virtual Linux environment (a **container**) that is different from the
-  host Linux system
+  host Linux system.
   - e.g., on a CentOS/Rocky Linux machine you can create a virtual Ubuntu system where you can install any
     precompiled packaged software from the Ubuntu repositories
   - in a sense, gives you control of your software environment without being `root` on the host system (with a
     catch: creating containers from scratch usually requires `root`)
   - you can install any system packages and all dependencies for your software as packages inside the container
 - Apptainer quickly became a way to package and deploy scientific software and its dependencies to different
-  HPC systems
+  HPC systems.
 - Apptainer is different from Docker, as it does not require `root` access on the host system to *run* it
   - specifically designed for running containers on multi-user HPC clusters
-- On a Linux host Apptainer is very lightweight compared to a full virtual machine (**VM**)
+- On a Linux host Apptainer is very lightweight compared to a full **virtual machine** (VM).
 - On MacOS or Windows hosts Apptainer can be deployed inside a VM (still requires a Linux host layer
-  &nbsp;➜&nbsp; a VM)
+  &nbsp;➜&nbsp; a VM).
 - From the technical standpoint, Apptainer uses:
-  - <u>kernel namespaces</u> to virtualize and isolate OS resources (CPU, memory access, disk I/O, network
-    access, user/group namespaces), so that processes inside the container see only a specific, virtualized
-    set of resources
-  - Linux control groups (<u>cgroups</u>) to control and limit the use of these resources
-  - <u>overlay images</u> to enable writable filesystems in otherwise read-only containers
+  - *kernel namespaces* to virtualize and isolate OS resources (CPU, memory access, disk I/O, network access,
+    user/group namespaces), so that processes inside the container see only a specific, virtualized set of
+    resources
+  - Linux control groups (*cgroups*) to control and limit the use of these resources
+  - *overlay images* to enable writable filesystems in otherwise read-only containers
 
 ## Why use a container
 
@@ -72,27 +72,23 @@ Why:
 
 ## Why/when not to use a container
 
-<!-- Maxime: In any upcoming Apptainer course, there should be a very clear section explaining when , and the -->
-<!-- downsides of using Apptainer/containers. If users think that learning Apptainer is simpler than learning how -->
-<!-- to use our modules/python packages, they are mistaken. -->
+Do not use Apptainer if your software is
+{{<a "https://docs.alliancecan.ca/wiki/Available_software" "already installed">}} on the Alliance
+clusters. Learning and understanding Apptainer is *more difficult* than learning how to use our software modules
+or pre-compiled Python packages.
 
-<!-- PaulP: Whenever we have modules for something I strongly discourage users from creating their own unless they -->
-<!-- have a very good reason to need their own (which is extremely rare). -->
-
-
-
-
-
+Create your own Apptainer images only if you have a compelling reason to require a custom image. In my
+experience, 95% of those who think they need one actually don't.
 
 ## Installing/running Apptainer on your own computer
 
 Apptainer was really developed for use on HPC cluster, but there are ways to run it on your own computer:
 
-1. on a Linux system (when running a longer version of this course after a Cloud course, we install Apptainer
-   as a package inside our VM)
-1. in a VM running Linux (on any host OS)
-1. within Vagrant for Windows (WSL) or MacOS
-1. inside Docker (download a Docker image with Apptainer installed)
+1. On Linux install and use Apptainer software. When running a longer version of this course after a Cloud
+   course, we install Apptainer as a package inside our VM.
+1. On any host OS: in a VM running Linux.
+1. On Windows or MacOS: inside Vagrant.
+1. On Windows or MacOS: inside Docker (download a Docker image with Apptainer installed).
 
 ## Glossary
 
@@ -144,10 +140,12 @@ There are few other container engines focusing on specific features.
 We will now distribute usernames and passwords for our training cluster.
 {{</note>}}
 
-Let's log in to the training cluster `lecarre.c3.ca` and try loading Apptainer:
+Let's log in to the training cluster `cass.vastcloud.org` and try loading Apptainer:
 
 ```sh
-module load apptainer/1.1.8
+module load apptainer/1.2.4   # the default version at the time of writing
 apptainer --version
-apptainer             # see the list of available commands
+apptainer                     # see the list of available commands
 ```
+
+<!-- {{<a "link" "text">}} -->

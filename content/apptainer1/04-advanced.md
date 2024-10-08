@@ -22,7 +22,7 @@ apptainer exec --nv -B /scratch/${USER}:/scratch tensorflow.sif python my-tf.py
 ```
 
 > ### Key point
-> 1. Use `--nv` to expose the NVIDIA hardware devices to the container.
+> Use `--nv` to expose the NVIDIA hardware devices to the container.
 
 In addition, [NVidia NGC](https://catalog.ngc.nvidia.com) (host of GPU-optimized software) provides prebuilt
 containers for a large number of HPC apps. Try searching for TensorFlow, GAMESS (quantum chemistry), GROMACS
@@ -114,19 +114,19 @@ definition file that:
 1. bootstraps from docker://ubuntu:22.04
 1. installs the necessary fabric and PMI packages, Slurm client, few others requirements
 
-and then used it to build `mpi.sif` which I copied over to the training cluster into `/home/user149/shared`.
+and then used it to build `mpi.sif` which I copied over to the training cluster into `/home/user01/shared`.
 
-<!-- scp mpi.sif user01@lecarre.c3.ca:/project/def-sponsor00/shared -->
+<!-- scp mpi.sif user01@cass.vastcloud.org:/project/def-sponsor00/shared -->
 
 ```sh
 cd ~/tmp
-module load openmpi apptainer/1.1.8
-unzip ~user149/shared/introHPC.zip codes/distributedPi.c
+module load openmpi apptainer
+unzip ~user01/shared/introHPC.zip codes/distributedPi.c
 cd codes
 mkdir -p ~/.openmpi
 echo "btl_vader_single_copy_mechanism=none" >> ~/.openmpi/mca-params.conf
 export PMIX_MCA_psec=native   # allow mpirun to use host's PMI
-export CONTAINER=~user149/shared/mpi.sif
+export CONTAINER=~user01/shared/mpi.sif
 apptainer exec $CONTAINER mpicc -O2 distributedPi.c -o distributedPi
 salloc --ntasks=4 --time=0:5:0 --mem-per-cpu=1200
 mpirun -np $SLURM_NTASKS apptainer exec $CONTAINER ./distributedPi
@@ -266,7 +266,7 @@ running Rocky Linux 8.5 or later.
 ```sh
 cd ~/tmp
 apptainer pull ubuntu.sif docker://ubuntu:latest
-module load apptainer/1.1.8
+module load apptainer
 salloc --time=0:30:0 --mem-per-cpu=3600
 apptainer overlay create --size 512 small.img   # create a 0.5GB overlay image file
 apptainer shell --overlay small.img ubuntu.sif
@@ -437,7 +437,7 @@ start/terminate these with `instance start`/`instance stop`. All these processes
 ends.
 
 ```sh
-module load apptainer/1.1.8
+module load apptainer
 salloc --cpus-per-task=1 --time=0:30:0 --mem-per-cpu=3600
 apptainer instance start ubuntu.sif test01     # start a container instance test01
 apptainer shell instance://test01   # start an interactive shell in that instance

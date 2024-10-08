@@ -12,7 +12,7 @@ If you have not done so already, let's pull the latest Ubuntu container from Doc
 
 ```sh
 # cd ~/tmp
-module load apptainer/1.1.8
+module load apptainer
 # salloc --cpus-per-task=1 --time=3:00:0 --mem-per-cpu=3600
 apptainer pull ubuntu.sif docker://ubuntu
 ```
@@ -71,10 +71,28 @@ both read and write, subject to your account's permissions, and then will run a 
 ```sh
 pwd     # most likely your working directory
 echo $USER
-ls /home/$USER
-ls /scratch/$USER
-ls /project/def-sponsor00/$USER
+ls /home
+ls /scratch
+ls /project
 ```
+
+
+
+
+If you prefer, you can pass the same bind information via an environment variable `APPTAINER_BIND`. In fact,
+by default your `APPTAINER_BIND` is set to `/project,/scratch`, so these two directories (along with
+`/home/$USER`) will be mounted every time. If you want to stop mounting `/project` and `/scratch`, unset the
+variable:
+
+```sh
+unset APPTAINER_BIND
+apptainer shell ubuntu.sif
+```
+
+
+
+
+
 
 You can mount host directories to specific paths inside the container, e.g.
 
@@ -84,12 +102,13 @@ Apptainer> ls /myproject
 Apptainer> ls /myscratch
 ```
 
-Note that by default Apptainer typically mounts some of the host's directories. The flag `-C` will hide the
-host's filesystems and environment variables, but then you need to explicitly bind-mount the needed paths (to
-store results), e.g.
+Note that by default Apptainer typically mounts some of the host's directories (think `/home/$USER`). The flag
+`-C` will hide the host's filesystems and environment variables, but then you need to explicitly bind-mount
+the needed paths (to store results), e.g.
 
 ```sh
 apptainer shell -C -B /scratch ubuntu.sif   # from the host see only /scratch
+ls /home/username     # still there, but does not contain host's files and directories
 ```
 
 <!-- The reason is that it needs some space to store temporary files that get generated along the way, access some -->
@@ -99,7 +118,6 @@ You can disable specific mounts, e.g. the following will start the container wit
 
 ```sh
 apptainer shell --no-mount home ubuntu.sif
-cd     # no such file or directory
 ```
 
 Alternatively, you can disable mounting `/home` with the `--no-home` flag. And you can disable multiple mounts
@@ -112,27 +130,29 @@ keep the default bind-mounted filesystems, to start in a *cleaner* environment:
 ```sh
 apptainer shell ubuntu.sif
 Apptainer> echo $USER $PYTHONPATH         # defined from the host
-Apptainer> ls /home/user149               # shows my $HOME content on the host
+Apptainer> ls /home/user01                # shows my $HOME content on the host
 
 apptainer shell -C ubuntu.sif
 Apptainer> echo $USER $PYTHONPATH         # not defined
-Apptainer> ls /home/user149               # nothing
+Apptainer> ls /home/user01                # nothing
 
 apptainer shell -e ubuntu.sif
 Apptainer> echo $USER $PYTHONPATH         # not defined
-Apptainer> ls /home/user149               # shows my $HOME content on the host
+Apptainer> ls /home/user01                # shows my $HOME content on the host
 ```
 
 On the other hand, you can pass variables to your container by prefixing their names:
 
 ```sh
-$ APPTAINERENV_HI=hello apptainer shell mpi.sif
+$ APPTAINERENV_HI="hello" APPTAINERENV_NAME="alex" apptainer shell ubuntu.sif
 Apptainer> echo $HI
 hello
+Apptainer> echo $NAME
+alex
 ```
 
-Finally, you don't have to pass the same bind (`-B`) flags every time -- instead you can put them into a
-variable (that can be stored in your `~/.bashrc` file):
+Finally, we already mentioned `APPTAINER_BIND`: you don't have to pass the same bind (`-B`) flags every time
+-- instead you can put them into a variable (that can be stored in your `~/.bashrc` file):
 
 ```sh
 export APPTAINER_BIND="/home,/project/def-sponsor00/${USER}:/project,/scratch/${USER}:/scratch"
