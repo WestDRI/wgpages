@@ -34,7 +34,7 @@ installing [the free Home Edition of MobaXterm](https://mobaxterm.mobatek.net/do
 
 {{<cor>}}Zoom{{</cor>}} {{<s>}} {{<cgr>}}10:00am-12:00pm Pacific{{</cgr>}} \
 {{<linktitle url="../apptainer1/01-intro" text="What is Apptainer / Singularity ">}} \
-{{<linktitle url="../apptainer1/02-build" text="Creating container images">}} \
+{{<linktitle url="../apptainer1/02-build" text="Creating and running container images">}} \
 {{<linktitle url="../apptainer1/03-run" text="More on running containers">}} \
 {{<linktitle url="../apptainer1/04-advanced" text="Advanced Apptainer usage">}}
 
@@ -42,7 +42,7 @@ installing [the free Home Edition of MobaXterm](https://mobaxterm.mobatek.net/do
 
 - Alliance's {{<a "https://docs.alliancecan.ca/wiki/Apptainer" "Apptainer wiki page">}}
 - Official {{<a "https://apptainer.org/docs/user/latest" "Apptainer User Guide">}}
-- Recent webinars:
+- Our recent webinars:
   - {{<a "https://training.westdri.ca/tools/virtual#manyFilesInOverlays" "Hiding large numbers of files in container overlays">}} by Alex Razoumov (SFU) recorded on 2023-Jan-17
   - {{<a "https://www.youtube.com/watch?v=bpmrfVqBowY" "Apptainer">}} by Paul Preney (SHARCNET) recorded on
     2022-Apr-06: many best practices and a couple of complete workflows on our clusters using `/localscratch`,

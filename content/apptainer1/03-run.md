@@ -163,9 +163,11 @@ You can have more granular control (e.g. specifying read only) with the `--mount
 official
 [Bind Paths and Mounts documentation](https://sylabs.io/guides/latest/user-guide/bind_paths_and_mounts.html).
 
-> ### Key points
-> 1. Your current directory and home directory are usually available by default in a container.
-> 1. You have the same username and permissions in a container as on the host system.
-> 1. You can specify additional host system directories to be available in the container.
-> 1. It is a very good idea to use `-C` to hide the host's filesystems while mounting only few specific
->    directories.
+{{<note>}}
+<font size="+1"><b>Key points:</b><br>
+1. Your current directory and home directory are usually available by default in a container.<br>
+2. You have the same username and permissions in a container as on the host system.<br>
+3. You can specify additional host system directories to be available in the container.<br>
+4. It is a very good idea to use `-C` to hide the host's filesystems while mounting only few specific directories.
+</font>
+{{</note>}}

@@ -11,6 +11,8 @@ weight = 4
 
 ## Running GPU programs: using CUDA
 
+### Bind-mounting GPU drivers
+
 Apptainer supports Nvidia GPUs through bind-mounting the GPU drivers and the base CUDA libraries. The `--nv`
 flag does it transparently to the user, e.g.
 
@@ -21,13 +23,16 @@ salloc --gres=gpu:p100:1 --cpus-per-task=8 --mem=40Gb --time=2:0:0 --account=...
 apptainer exec --nv -B /scratch/${USER}:/scratch tensorflow.sif python my-tf.py
 ```
 
-> ### Key point
-> Use `--nv` to expose the NVIDIA hardware devices to the container.
+{{<note>}}
+<font size="+1"><b>Key point:</b> Use `--nv` to expose the NVIDIA hardware devices to the container.</font>
+{{</note>}}
 
-In addition, [NVidia NGC](https://catalog.ngc.nvidia.com) (host of GPU-optimized software) provides prebuilt
-containers for a large number of HPC apps. Try searching for TensorFlow, GAMESS (quantum chemistry), GROMACS
-and NAMD (molecular dynamics), VMD, ParaView, NVIDIA IndeX (visualization). Their GPU-accelerated containers
-are quite large, so it might take a while to build one of them:
+### Pre-built NVIDIA containers
+
+[NVIDIA NGC](https://catalog.ngc.nvidia.com) (NVIDIA's hub for GPU-optimized software) provides prebuilt
+containers for a large number of HPC applications. Try searching for TensorFlow, GAMESS (quantum chemistry),
+GROMACS and NAMD (molecular dynamics), VMD, ParaView, NVIDIA IndeX (visualization). Their GPU-accelerated
+containers are quite large, so it might take a while to build them, e.g.
 
 ```sh
 apptainer pull tensorflow-22.06-tf1-py3.sif docker://nvcr.io/nvidia/tensorflow:22.06-tf1-py3
@@ -52,15 +57,58 @@ ls -l tensorflow-22.06-tf1-py3.sif   # 5.9G (very large!)
 
 
 
+
+
+
+### Chapel GPU container
+
+Recently, I built a container for using GPUs from Chapel programming language. There are some issues compiling
+Chapel with LLVM and GPU support on InfiniBand clusters, so I bypassed them by creating a container that can
+be used on any of our clusters, whether built on InfiniBand, or Ethernet, or OmniPath interconnect. The
+container can be used only on one node (no multi-node parallelism), but it does support multiple GPUs.
+
+Here is how I would use it on Cedar:
+
+```sh
+cd ~/scratch
+salloc --time=0:30:0 --nodes=1 --cpus-per-task=1 --mem-per-cpu=3600 --gpus-per-node=v100l:1 \
+       --account=cc-debug --reservation=asasfu_756
+nvidia-smi
+git clone ~/chapelBare $SLURM_TMPDIR/
+module load apptainer
+apptainer shell --nv -B $SLURM_TMPDIR --overlay extra.img:ro almalinux.sif
+source /extra/c4/chapel-2.1.0/util/setchplenv.bash
+export CHPL_GPU=nvidia
+export CHPL_CUDA_PATH=/usr/local/cuda-12.4
+export PATH=$PATH:/usr/local/cuda-12.4/bin
+cd $SLURM_TMPDIR/2024/
+chpl --fast probeGPU.chpl -L/usr/local/cuda-12.4/targets/x86_64-linux/lib/stubs
+./probeGPU
+chpl --fast juliaSetGPU.chpl -L/usr/local/cuda-12.4/targets/x86_64-linux/lib/stubs
+./juliaSetGPU --height=8000
+```
+
+Let me know if you are interested in playing with it on a machine with an NVIDIA GPU, and I can share the
+container files with you.
+
+
+
+
+
+
+
+
+
+
 ## Running MPI programs from within a container
 
 MPI (message passing interface) is the industry standard for distributed-memory parallel programming. There
 are several implementations: OpenMPI, MPICH, and few others.
 
-MPI libraries on HPC systems usually depend on various lower-level -- interconnect, RDMA (Remote Direct Memory
-Access), PMI (process management interface) and others -- libraries, so they are hard to containerize. Thus no
-generic `--mpi` flag could be implemented for containers that would work across the network on different HPC
-clusters.
+MPI libraries on HPC systems usually depend on various lower-level libraries -- interconnect, RDMA (Remote
+Direct Memory Access), PMI (process management interface) and others -- so they are hard to containerize. Thus
+no generic `--mpi` flag could be implemented for containers that would work across the network on different
+HPC clusters.
 
 The official Apptainer documentation provides a [good
 overview](https://apptainer.org/docs/user/latest/mpi.html) of running MPI codes inside containers. There
@@ -114,19 +162,23 @@ definition file that:
 1. bootstraps from docker://ubuntu:22.04
 1. installs the necessary fabric and PMI packages, Slurm client, few others requirements
 
-and then used it to build `mpi.sif` which I copied over to the training cluster into `/home/user01/shared`.
+and then used it to build `mpi.sif` which I copied over to the training cluster into `/project/def-sponsor00/shared`.
 
-<!-- scp mpi.sif user01@cass.vastcloud.org:/project/def-sponsor00/shared -->
+```sh
+cedar
+cd /project/6003910/razoumov/apptainerImages/apptainerCourse202410
+scp mpi.sif user01@cass.vastcloud.org:/project/def-sponsor00/shared
+```
 
 ```sh
 cd ~/tmp
 module load openmpi apptainer
-unzip ~user01/shared/introHPC.zip codes/distributedPi.c
+unzip /project/def-sponsor00/shared/introHPC.zip codes/distributedPi.c
 cd codes
 mkdir -p ~/.openmpi
 echo "btl_vader_single_copy_mechanism=none" >> ~/.openmpi/mca-params.conf
 export PMIX_MCA_psec=native   # allow mpirun to use host's PMI
-export CONTAINER=~user01/shared/mpi.sif
+export CONTAINER=/project/def-sponsor00/shared/mpi.sif
 apptainer exec $CONTAINER mpicc -O2 distributedPi.c -o distributedPi
 salloc --ntasks=4 --time=0:5:0 --mem-per-cpu=1200
 mpirun -np $SLURM_NTASKS apptainer exec $CONTAINER ./distributedPi
@@ -517,7 +569,6 @@ export APPTAINER_CACHEDIR=${PWD}/cache   # replaces default `$HOME/.apptainer/ca
 
 
 
-## Placeholder: running self-contained container with MPI
 
 
 

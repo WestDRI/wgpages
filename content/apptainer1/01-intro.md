@@ -33,10 +33,10 @@ has been renamed *Apptainer*, while the commercial fork is still called *Singula
 
 - Apptainer is an open-source project developed within the research community since 2015, started at the
   Lawrence Berkeley National Lab.
-- Its goal is to create a portable system to run Linux applications on HPC clusters *independently of the
-  specific host Linux version and distro*, i.e. distribute software and **its compute environment**.
-- Apptainer creates a custom, secure virtual Linux environment (a **container**) that is different from the
-  host Linux system.
+- Its goal is to create a **portable system to run Linux applications on HPC clusters *independently of the
+  specific host Linux version and distro***, i.e. distribute software and **its compute environment**.
+- Apptainer creates a custom, secure virtual Linux environment (a *container*) that is different from the host
+  Linux system.
   - e.g., on a CentOS/Rocky Linux machine you can create a virtual Ubuntu system where you can install any
     precompiled packaged software from the Ubuntu repositories
   - in a sense, gives you control of your software environment without being `root` on the host system (with a
@@ -147,5 +147,15 @@ module load apptainer/1.2.4   # the default version at the time of writing
 apptainer --version
 apptainer                     # see the list of available commands
 ```
+
+{{<note>}}
+Apart from this short example, please do <b>not</b> run Apptainer on a cluster's login node. Apptainer can be
+quite resource-demanding, so we will run on a compute node inside a Slurm job. I will explain how to do that
+in the next section. The same applies to our production clusters: always schedule either an interactive or a
+batch job to run Apptainer workflows.
+{{</note>}}
+
+
+
 
 <!-- {{<a "link" "text">}} -->

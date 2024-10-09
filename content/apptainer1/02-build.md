@@ -1,5 +1,5 @@
 +++
-title = "Creating container images"
+title = "Creating and running container images"
 slug = "02-build"
 weight = 2
 katex = true
@@ -160,16 +160,29 @@ apptainer cache clean --help   # more granular control
 By default, Apptainer cache is stored in `$HOME/.apptainer/cache`. We can control the cache location with
 APPTAINER_CACHE environment variable.
 
+> ### <font style="color:blue">Exercise</font>
+> Are there any `APPTAINER*` variables in our setup? What do you think they do?
+
+
+
+
 
 
 
 ### Inspecting image metadata
 
 ```sh
-apptainer inspect /path/to/SIF/file
+apptainer inspect /path/to/SIF/file      # some general build information
 apptainer inspect -r /path/to/SIF/file   # short for --runscript
 apptainer inspect -d /path/to/SIF/file   # short for --deffile
 ```
+
+> ### <font style="color:blue">Exercise</font>
+> Can you find other inspection flags besides `-r` and `-d`?
+
+
+
+
 
 
 
@@ -182,7 +195,7 @@ You need to be root in this section. For this reason, in this section I will run
 access, and you can simply watch.
 {{</note>}}
 
-1. Pull a existing Docker image from Docker Hub.
+1. Pull an existing Docker image from Docker Hub.
 1. Create a modifiable sandbox directory into which you can install packages.
 1. Add packages and perhaps your application and data.
 1. Convert the sandbox into a regular SIF image.
@@ -293,7 +306,7 @@ output for errors.
 
 We will follow the same recipe:
 
-1. Pull a existing Docker image from Docker Hub.
+1. Pull an existing Docker image from Docker Hub.
 1. Create a modifiable sandbox directory into which you can install packages.
 1. Add packages and perhaps your application and data.
 1. Convert the sandbox into a regular SIF image.
@@ -311,7 +324,7 @@ apptainer shell --fakeroot --writable ubuntu.dir
 
 
 
-> ### <font style="color:blue">Exercise 1</font>
+> ### <font style="color:blue">Exercise</font>
 > At this point you might see the following output:
 > ```output
 > INFO:    User not listed in /etc/subuid, trying root-mapped namespace
@@ -365,7 +378,7 @@ Apptainer> ...
 ### Building a development container from a definition file: root or not
 
 {{<note>}}
-Depending on your Apptainer installation, you may or may no need to be root in this section. Try to follow
+Depending on your Apptainer installation, you may or may not need to be root in this section. Try to follow
 along, if you want, or alternatively simply watch this demo.
 {{</note>}}
 
@@ -428,11 +441,13 @@ More advanced definition files may have these sections:
 
 as described in {{<a "https://apptainer.org/docs/user/latest/definition_files.html#sections" "the user guide">}}.
 
-> #### Key point
-> Apptainer definition files are used to define the build process and configuration for an image.
+{{<note>}}
+<font size="+1"><b>Key point:</b> Apptainer definition files are used to define the build process and
+configuration for an image.</font>
+{{</note>}}
 
 > #### <font style="color:blue">Discussion</font>
-> At this point, how do we install additional packages into this new container? There are several options.
+> At this point, how do we install additional packages into this new container? There are several (three?) options.
 
 
 
