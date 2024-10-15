@@ -106,9 +106,9 @@ MPI (message passing interface) is the industry standard for distributed-memory 
 are several implementations: OpenMPI, MPICH, and few others.
 
 MPI libraries on HPC systems usually depend on various lower-level libraries -- interconnect, RDMA (Remote
-Direct Memory Access), PMI (process management interface) and others -- so they are hard to containerize. Thus
-no generic `--mpi` flag could be implemented for containers that would work across the network on different
-HPC clusters.
+Direct Memory Access), PMI (process management interface) and others -- that vary from one HPC cluster to
+another, so they are hard to containerize. Thus no generic `--mpi` flag could be implemented for containers
+that would work across the network on different HPC clusters.
 
 The official Apptainer documentation provides a [good
 overview](https://apptainer.org/docs/user/latest/mpi.html) of running MPI codes inside containers. There
@@ -122,9 +122,10 @@ apptainer exec -B ... --pwd ... container.sif mpirun -np $SLURM_NTASKS ./mpicode
 - you start a single Apptainer process on the host
 - `cgroup` limitations from the Slurm job are passed into the container &nbsp;⇒&nbsp; sets the number of
   available CPU cores &nbsp;⇒&nbsp; `mpirun` uses all available (to this job) CPU cores
-- **con**: limited to a single node ...
-- **pro**: no need to adapt container's MPI to the host; just install SSH into the container
-- **pro**: can build a generic container that will work across multiple HPC clusters (each with a different setup)
+- ![](/img/no.png) limited to a single node ...
+- ![](/img/yes.png) no need to adapt container's MPI to the host; just install SSH into the container
+- ![](/img/yes.png) can build a generic container that will work across multiple HPC clusters (each with a
+  different setup)
 
 2. **Hybrid mode**: use host's MPI to spawn MPI processes, and MPI inside the container to compile
    the code and provide runtime MPI libraries:
@@ -133,8 +134,8 @@ apptainer exec -B ... --pwd ... container.sif mpirun -np $SLURM_NTASKS ./mpicode
 mpirun -np $SLURM_NTASKS apptainer exec -B ... --pwd ... container.sif ./mpicode
 ```
 - separate Apptainer process per each MPI rank
-- **pro**: can span multiple nodes
-- **con**: container's MPI should be configured to support the same process management mechanism and version
+- ![](/img/yes.png) can span multiple nodes
+- ![](/img/no.png) container's MPI should be configured to support the same process management mechanism and version
   (e.g. PMI2 / PMIx) as the host - not that difficult
 
 <!-- Install MPI (similar that of the host) inside the container, use it to compile the code `mpitest` when -->
