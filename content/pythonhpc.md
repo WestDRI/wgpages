@@ -7,21 +7,15 @@ katex = true
 {{<cor>}}June 7<sup>th</sup>{{</cor>}}\
 {{<cgr>}}9:30am–12:30pm (Part 1) and 1:30pm-4:30pm (Part 2) Pacific Time{{</cgr>}}
 
-**Abstract**: In scientific computing, Python is the most popular programming/scripting language. While known
-for its high-level features, hundreds of fantastic libraries and ease of use, Python is slow compared to
-traditional (C, C++, Fortran) and new (Julia, Chapel) compiled languages. In this course we'll focus on
-speeding up your Python workflows using a number of different approaches. In Part 1 we will start with
-traditional vectorization with NumPy, will talk about Python compilers (Numba) and profiling and will cover
-parallelization. We'll do a little bit of multithreading (possible via NumExpr, despite the global interpreter
-lock) but will target primarily multiprocessing. In Part 2 we will study Ray, a unified framework for scaling
-AI and Python applications. Since this is not a machine learning workshop, we will not touch most of Ray's AI
-capabilities, but will focus on its core distributed runtime and data libraries. We will learn several
-different approaches to parallelizing purely numerical (and therefore CPU-bound) workflows, both with and
-without reduction. If your code is I/O-bound, you will also benefit from this course, as I/O-bound workflows
-can be easily processed with Ray.
+**Abstract**: In scientific computing, Python is the most popular programming language. While known for its high-level features, hundreds of fantastic libraries and ease of use, Python is slow compared to traditional (C, C++, Fortran) and new (Julia, Chapel) compiled languages. In this course we'll focus on speeding up your Python workflows using a number of different approaches.
 
-We will not cover GPU-accelerated computing in Python in this course (worth its own course), nor will we cover
-mpi4py (most popular MPI implementation for Python).
+In Part 1, we will start with traditional vectorization with NumPy, talk about Python compilers (Numba) and profiling, and cover parallelization. We will do a little bit of multithreading (possible via NumExpr, despite the global interpreter lock), but will focus primarily on multiprocessing.
+
+In Part 2, we will study Ray, a unified framework for scaling AI and Python applications. Since this is not a machine learning workshop, we will not touch most of Ray's AI capabilities, but will focus on its core distributed runtime and data libraries. We will learn several different approaches to parallelizing purely numerical (and therefore CPU-bound) workflows, both with and without reduction. If your code is I/O-bound, you will also benefit from this course, as I/O-bound workflows can be easily processed with Ray.
+
+We will not cover GPU-accelerated computing in Python in this course (worth its own course), nor will we cover mpi4py (most popular MPI implementation for Python).
+
+
 
 > In these notes all timings are for a 2021 Macbook Pro equipped with the M1 Pro chip and 16 GB of memory. On
 > other machines, including our current training cluster, the timings will be different. They can also vary
