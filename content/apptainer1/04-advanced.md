@@ -105,48 +105,60 @@ container files with you.
 MPI (message passing interface) is the industry standard for distributed-memory parallel programming. There
 are several implementations: OpenMPI, MPICH, and few others.
 
-MPI libraries on HPC systems usually depend on various lower-level libraries -- interconnect, RDMA (Remote
-Direct Memory Access), PMI (process management interface) and others -- that vary from one HPC cluster to
-another, so they are hard to containerize. Thus no generic `--mpi` flag could be implemented for containers
+MPI libraries on HPC systems usually depend on various lower-level runtime libraries -- interconnect, RDMA
+(Remote Direct Memory Access), PMI (process management interface) and others -- that vary from one HPC cluster
+to another, so they are hard to containerize. Thus no generic `--mpi` flag could be implemented for containers
 that would work across the network on different HPC clusters.
 
 The official Apptainer documentation provides a [good
 overview](https://apptainer.org/docs/user/latest/mpi.html) of running MPI codes inside containers. There
 are 3 possible modes of running MPI programs with Apptainer:
 
-1. Rely on **MPI inside the container**:
+### 1. Rely on MPI inside the container
+
 <!-- least interesting, won't work across multiple nodes. -->
+
+In the **MPI-inside-the-container** mode you would start a single Apptainer process on the host:
+
 ```sh
 apptainer exec -B ... --pwd ... container.sif mpirun -np $SLURM_NTASKS ./mpicode
 ```
-- you start a single Apptainer process on the host
-- `cgroup` limitations from the Slurm job are passed into the container &nbsp;⇒&nbsp; sets the number of
-  available CPU cores &nbsp;⇒&nbsp; `mpirun` uses all available (to this job) CPU cores
-- ![](/img/no.png) limited to a single node ...
-- ![](/img/yes.png) no need to adapt container's MPI to the host; just install SSH into the container
-- ![](/img/yes.png) can build a generic container that will work across multiple HPC clusters (each with a
+
+The `cgroup` limitations from the Slurm job are passed into the container which sets the number of available
+CPU cores inside the container. In this setup the command `mpirun` uses all available (to this job) CPU cores.
+
+&emsp; ![](/img/no.png) limited to a single node ...\
+&emsp; ![](/img/yes.png) no need to adapt container's MPI to the host; just install SSH into the container\
+&emsp; ![](/img/yes.png) can build a generic container that will work across multiple HPC clusters (each with a
   different setup)
 
-2. **Hybrid mode**: use host's MPI to spawn MPI processes, and MPI inside the container to compile
-   the code and provide runtime MPI libraries:
-   <!-- Call the parallel launcher (`srun`) on the container itself, e.g. -->
+### 2. Hybrid mode
+
+**Hybrid mode** uses host's MPI to spawn MPI processes, and MPI inside the container to compile the code and
+provide runtime MPI libraries. In this mode you would start a separate Apptainer process for each MPI rank:
+
+<!-- Call the parallel launcher (`srun`) on the container itself, e.g. -->
+
 ```sh
 mpirun -np $SLURM_NTASKS apptainer exec -B ... --pwd ... container.sif ./mpicode
 ```
-- separate Apptainer process per each MPI rank
-- ![](/img/yes.png) can span multiple nodes
-- ![](/img/no.png) container's MPI should be configured to support the same process management mechanism and version
-  (e.g. PMI2 / PMIx) as the host - not that difficult
+
+&emsp; ![](/img/yes.png) can span multiple nodes\
+&emsp; ![](/img/no.png) container's MPI should be configured to support the same process management mechanism\
+&emsp;&emsp;&emsp; and version (e.g. PMI2 / PMIx) as the host - not that difficult
 
 <!-- Install MPI (similar that of the host) inside the container, use it to compile the code `mpitest` when -->
 <!-- building the container, and also use it at runtime. MPI inside the container should also be configured to -->
 <!-- support the same process management mechanism and version, e.g. PMI2 / PMIx, as on the host. -->
 
-3. **Bind mode**: bind-mount host's MPI libraries and drivers into the container and use exclusively them,
-   i.e. there is no MPI inside the container. The MPI code will need to be compiled (when building the
-   container) with a version of MPI similar to that of the host -- typically that MPI will reside on the build
-   node used to build the container, but will not be installed inside the container.
-- I have zero experience with this mode, so I won't talk about it more
+### 3. Bind mode
+
+**Bind mode** bind-mount host's MPI libraries and drivers into the container and use exclusively them,
+i.e. there is no MPI inside the container. The MPI code will need to be compiled (when building the container)
+with a version of MPI similar to that of the host -- typically that MPI will reside on the build node used to
+build the container, but will not be installed inside the container.
+
+I have zero experience with this mode, so I won't talk about it here in detail.
 
 <!-- {{<note>}} -->
 <!-- Always use `srun` to run MPI code with Apptainer. Do not use `mpirun` or `mpiexec` with containers: they -->
