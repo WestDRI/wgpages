@@ -60,12 +60,14 @@ ls -l tensorflow-22.06-tf1-py3.sif   # 5.9G (very large!)
 
 
 
-### Chapel GPU container
+### Demo: Chapel GPU container
 
 Recently, I built a container for using GPUs from Chapel programming language. There are some issues compiling
 Chapel with LLVM and GPU support on InfiniBand clusters, so I bypassed them by creating a container that can
-be used on any of our clusters, whether built on InfiniBand, or Ethernet, or OmniPath interconnect. The
-container can be used only on one node (no multi-node parallelism), but it does support multiple GPUs.
+be used on any of our clusters, whether built on InfiniBand, or Ethernet, or OmniPath interconnect.
+
+- the container can be used only on one node (no multi-node parallelism), but it does support multiple GPUs
+- installed Chapel into an overlay image (we'll study overlays below)
 
 Here is how I would use it on Cedar:
 
@@ -73,22 +75,24 @@ Here is how I would use it on Cedar:
 cd ~/scratch
 salloc --time=0:30:0 --nodes=1 --cpus-per-task=1 --mem-per-cpu=3600 --gpus-per-node=v100l:1 \
        --account=cc-debug --reservation=asasfu_756
-nvidia-smi
+nvidia-smi   # verify that we can see the GPU on the node
 git clone ~/chapelBare $SLURM_TMPDIR/
+
 module load apptainer
-apptainer shell --nv -B $SLURM_TMPDIR --overlay extra.img:ro almalinux.sif
+export SRC=/project/6003910/razoumov/apptainerImages/chapelGPU20240826
+apptainer shell --nv -B $SLURM_TMPDIR --overlay $SRC/extra.img:ro $SRC/almalinux.sif
+
+nvidia-smi   # verify that we can see the GPU inside the container
 source /extra/c4/chapel-2.1.0/util/setchplenv.bash
 export CHPL_GPU=nvidia
 export CHPL_CUDA_PATH=/usr/local/cuda-12.4
 export PATH=$PATH:/usr/local/cuda-12.4/bin
-cd $SLURM_TMPDIR/2024/
+cd $SLURM_TMPDIR/gpu
 chpl --fast probeGPU.chpl -L/usr/local/cuda-12.4/targets/x86_64-linux/lib/stubs
 ./probeGPU
-chpl --fast juliaSetGPU.chpl -L/usr/local/cuda-12.4/targets/x86_64-linux/lib/stubs
-./juliaSetGPU --height=8000
 ```
 
-Let me know if you are interested in playing with it on a machine with an NVIDIA GPU, and I can share the
+Let me know if you are interested in playing with it on a machine with an NVIDIA GPU, and I can share both
 container files with you.
 
 
@@ -129,8 +133,7 @@ CPU cores inside the container. In this setup the command `mpirun` uses all avai
 
 &emsp; ![](/img/no.png) limited to a single node ...\
 &emsp; ![](/img/yes.png) no need to adapt container's MPI to the host; just install SSH into the container\
-&emsp; ![](/img/yes.png) can build a generic container that will work across multiple HPC clusters (each with a
-  different setup)
+&emsp; ![](/img/yes.png) can build a generic container that will work across multiple HPC clusters (each with a different setup)
 
 ### 2. Hybrid mode
 
@@ -144,8 +147,7 @@ mpirun -np $SLURM_NTASKS apptainer exec -B ... --pwd ... container.sif ./mpicode
 ```
 
 &emsp; ![](/img/yes.png) can span multiple nodes\
-&emsp; ![](/img/no.png) container's MPI should be configured to support the same process management mechanism\
-&emsp;&emsp;&emsp; and version (e.g. PMI2 / PMIx) as the host - not that difficult
+&emsp; ![](/img/no.png) container's MPI should be configured to support the same process management mechanism and version (e.g. PMI2 / PMIx) as the host -- not that difficult with a little bit of technical knowledge (reach to us for help)
 
 <!-- Install MPI (similar that of the host) inside the container, use it to compile the code `mpitest` when -->
 <!-- building the container, and also use it at runtime. MPI inside the container should also be configured to -->
@@ -177,11 +179,11 @@ definition file that:
 
 and then used it to build `mpi.sif` which I copied over to the training cluster into `/project/def-sponsor00/shared`.
 
-```sh
-cedar
-cd /project/6003910/razoumov/apptainerImages/apptainerCourse202410
-scp mpi.sif user01@cass.vastcloud.org:/project/def-sponsor00/shared
-```
+<!-- ```sh -->
+<!-- cedar -->
+<!-- cd /project/6003910/razoumov/apptainerImages/apptainerCourse202410 -->
+<!-- scp mpi.sif user01@cass.vastcloud.org:/project/def-sponsor00/shared -->
+<!-- ``` -->
 
 ```sh
 cd ~/tmp
@@ -194,6 +196,7 @@ export PMIX_MCA_psec=native   # allow mpirun to use host's PMI
 export CONTAINER=/project/def-sponsor00/shared/mpi.sif
 apptainer exec $CONTAINER mpicc -O2 distributedPi.c -o distributedPi
 salloc --ntasks=4 --time=0:5:0 --mem-per-cpu=1200
+mpirun -np $SLURM_NTASKS ./distributedPi   # error: compiled for Ubuntu, cannot run on Rocky Linux
 mpirun -np $SLURM_NTASKS apptainer exec $CONTAINER ./distributedPi
 ```
 
@@ -419,21 +422,24 @@ Apptainer> df -kh .     # should take ~75-100 MB, pay attention to "Used"
 du -h sparse.img        # shows actual usage
 ```
 {{<note>}}
-Be careful using sparse images: not all tools (e.g. backup/restore, scp, sftp, gunzip) recognize sparsefiles
-⇒ this can potentially lead to very bad things ...
+Be careful with sparse images: not all tools (e.g. backup/restore, scp, sftp, gunzip) recognize sparsefiles
+⇒ this can potentially lead to data loss and other bad things ...
 {{</note>}}
 
 ### Example: installing Conda into an overlay
 
-- native Anaconda on HPC clusters is a [bad idea](https://docs.alliancecan.ca/wiki/Anaconda/en) for a number
-  of reasons
-- suggested solution: transition from Conda to `virtualenv`
-- alternatively, can install Conda into an overlay image
-  - takes a couple of minutes, results in 22k+ files that are hidden from the host
-  - no need for root, as you don't modify the container
-  - still might not be the most efficient use of resources (non-optimized binaries)
+Installing native Anaconda on HPC clusters is a [bad idea](https://docs.alliancecan.ca/wiki/Anaconda/en) for a
+number of reasons. Instead of Conda, we recommend using `virtualenv` together with our pre-compiled Python
+wheels to install Python packages into your own virtual environments.
 
-Here is how you would install Conda into an overlay image:
+One of the reasons we do not recommend Conda is that it creates a large number of files in your
+directories. You can alleviate this problem by hiding Conda files inside an overlay image:
+
+- takes a couple of minutes, results in 22k+ files that are hidden from the host
+- no need for root, as you don't modify the container image
+- still might not be the most efficient use of resources (non-optimized binaries)
+
+Here is one way you could install Conda into an overlay image:
 
 ```sh
 cd ~/tmp
@@ -537,12 +543,12 @@ larger temporary space via the `-W` flag. In practice, this would mean doing som
 - on your own computer or on a production cluster's login node:
 ```sh
 mkdir /localscratch/tmp
-apptainer shell/exce/run ... -W /localscratch/tmp <image.sif>
+apptainer shell/exec/run ... -W /localscratch/tmp <image.sif>
 ```
 - inside a Slurm job:
 ```sh
 mkdir $SLURM_TMPDIR/tmp
-apptainer shell/exce/run ... -W $SLURM_TMPDIR/tmp <image.sif>
+apptainer shell/exec/run ... -W $SLURM_TMPDIR/tmp <image.sif>
 ```
 
 {{<note>}}
@@ -554,7 +560,7 @@ You can use an environment variable in lieu of `-W`:
 
 ```sh
 export APPTAINER_TMPDIR=$SLURM_TMPDIR/tmp
-apptainer shell/exce/run ... <image.sif>
+apptainer shell/exec/run ... <image.sif>
 ```
 
 ### Sample job submission script

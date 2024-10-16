@@ -8,12 +8,18 @@ weight = 3
 
 ## Different ways to run a container
 
+As a reminder, we continue working in our `~/tmp` directory inside an interactive job with the Apptainer
+module loaded:
+
+```sh
+cd ~/tmp
+module load apptainer
+salloc --cpus-per-task=1 --time=3:00:0 --mem-per-cpu=3600   # only from the login node
+```
+
 If you have not done so already, let's pull the latest Ubuntu container from Docker:
 
 ```sh
-# cd ~/tmp
-module load apptainer
-# salloc --cpus-per-task=1 --time=3:00:0 --mem-per-cpu=3600
 apptainer pull ubuntu.sif docker://ubuntu
 ```
 
@@ -108,20 +114,21 @@ the needed paths (to store results), e.g.
 
 ```sh
 apptainer shell -C -B /scratch ubuntu.sif   # from the host see only /scratch
-ls /home/username     # still there, but does not contain host's files and directories
+Apptainer> ls /home/$USER     # still there, but does not contain host's files and directories
 ```
 
 <!-- The reason is that it needs some space to store temporary files that get generated along the way, access some -->
 <!-- host's system files, and also provide space in `/home` to store your data. -->
 
-You can disable specific mounts, e.g. the following will start the container without a home directory:
+You can disable specific mounts, e.g. the following will start the container without mounting your home
+directory, but it'll mount the current directory:
 
 ```sh
 apptainer shell --no-mount home ubuntu.sif
 ```
 
-Alternatively, you can disable mounting `/home` with the `--no-home` flag. And you can disable multiple mounts
-with something like `--no-mount tmp,sys,dev`.
+Alternatively, you can disable mounting `/home` with the `--no-home` flag, which is equivalent to `--no-mount
+home`. And you can disable multiple mounts with something like `--no-mount tmp,sys,dev`.
 
 In general, without `-C`, Apptainer inherits all environment variables and default bind-mounted
 filesystems. You can add the `-e` flag to remove only the host's environment variables from your container but
@@ -167,7 +174,8 @@ official
 <font size="+1"><b>Key points:</b><br>
 1. Your current directory and home directory are usually available by default in a container.<br>
 2. You have the same username and permissions in a container as on the host system.<br>
-3. You can specify additional host system directories to be available in the container.<br>
-4. It is a very good idea to use `-C` to hide the host's filesystems while mounting only few specific directories.
+3. Use `-B` to mount host's directories inside the container.<br>
+4. Use `-C` to hide both host's filesystems and environment variables, perhaps while mounting only few specific directories.<br>
+5. Use `-e` to hide only the host's environment variables.
 </font>
 {{</note>}}

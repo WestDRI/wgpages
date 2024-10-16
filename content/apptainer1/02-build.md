@@ -596,8 +596,6 @@ visualize it.
 
 
 
-
-
 > ### <font style="color:blue">Exercise: latest Python image</font>
 > Pull the latest Python image from Docker Hub into an Apptainer image. It should take few minutes to build it.
 > 1. How large is the resulting image?
@@ -639,7 +637,6 @@ visualize it.
 > salloc --cpus-per-task=1 --time=3:00:0 --mem-per-cpu=3600
 > apptainer pull pytorch.sif docker://???
 > ```
-> <!-- docker://intel/intel-optimized-pytorch:latest -->
 > 1. Which operating system does this container run?
 > 1. Try running some basic PyTorch commands inside this image:
 > ```py
@@ -654,5 +651,33 @@ visualize it.
 > ```
 > For more info on working with PyTorch tensors watch
 > [our webinar](https://westgrid.github.io/trainingMaterials/tools/ml/#pytorch-tensors).
+
+<!-- Solution: -->
+<!-- ```sh -->
+<!-- # ----- -->
+<!-- apptainer pull pytorch.sif docker://pytorch/manylinux-cpu -->
+<!-- # 712M, CentOS Linux 7, Python 3.6.8 -->
+<!-- seems like a good match by its name, but can't find PyTorch inside -->
+
+<!-- # ----- -->
+<!-- apptainer pull llvm.sif docker://pytorch/llvm:12.0.0 -->
+<!-- 326M, Alpine Linux 3.17, no sign of either Python or PyTorch inside -->
+<!-- ``` -->
+
+<!-- # ----- -->
+<!-- apptainer pull intel.sif docker://intel/intel-optimized-pytorch:latest -->
+<!-- # 971M, Ubuntu 22.04.5 LTS, Python 3.10.14 -->
+<!-- apptainer shell intel.sif -->
+<!-- Apptainer> python -->
+<!-- >>> import torch -->
+
+{{<note>}}
+On our clusters we have PyTorch installed natively, both for CPUs and GPUs, so no need to rely on a container
+for this.
+{{</note>}}
+
+
+
+
 
 <!-- {{<a "link" "text">}} -->
