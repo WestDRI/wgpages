@@ -444,7 +444,7 @@ Here is one way you could install Conda into an overlay image:
 ```sh
 cd ~/tmp
 apptainer pull ubuntu.sif docker://ubuntu:latest
-apptainer overlay create --size 800 conda.img   # create a 800M overlay image
+apptainer overlay create --size 1200 conda.img   # create a 1200M overlay image
 wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
 
 apptainer shell --overlay conda.img -B /home ubuntu.sif
@@ -455,8 +455,8 @@ Apptainer> bash /home/${USER}/tmp/miniconda.sh
   agree to the license
   use /conda/miniconda3 for the installation path
   no to initialize Miniconda3
-Apptainer> find /conda/miniconda3/ -type f | wc -l   # 22,039 files
-Apptainer> df -kh .                                  # uses ~612M
+Apptainer> find /conda/miniconda3/ -type f | wc -l   # 22,637 files
+Apptainer> df -kh .   # uses ~695M once finished, but more was used during installation
 ```
 
 These 22k+ files appear as a single file to the Lustre metadata server (which is great!).
