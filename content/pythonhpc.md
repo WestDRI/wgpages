@@ -4,14 +4,14 @@ slug = "pythonhpc"
 katex = true
 +++
 
-{{<cor>}}June 7<sup>th</sup>{{</cor>}}\
-{{<cgr>}}9:30am–12:30pm (Part 1) and 1:30pm-4:30pm (Part 2) Pacific Time{{</cgr>}}
+{{<cor>}}October 31<sup>st</sup> (Part 1){{</cor>}}\
+{{<cgr>}}10am–noon Pacific Time{{</cgr>}}
 
 **Abstract**: In scientific computing, Python is the most popular programming language. While known for its high-level features, hundreds of fantastic libraries and ease of use, Python is slow compared to traditional (C, C++, Fortran) and new (Julia, Chapel) compiled languages. In this course we'll focus on speeding up your Python workflows using a number of different approaches.
 
-In Part 1, we will start with traditional vectorization with NumPy, talk about Python compilers (Numba) and profiling, and cover parallelization. We will do a little bit of multithreading (possible via NumExpr, despite the global interpreter lock), but will focus primarily on multiprocessing.
+In Part 1, we will start with traditional vectorization with NumPy, talk about Python compilers (Numba) and profiling, and cover parallelization. We will do a little bit of multithreading (possible via NumExpr, despite the global interpreter lock prior to 3.13, and as *free threading* starting with 3.13), but will focus primarily on multiprocessing.
 
-In Part 2, we will study Ray, a unified framework for scaling AI and Python applications. Since this is not a machine learning workshop, we will not touch most of Ray's AI capabilities, but will focus on its core distributed runtime and data libraries. We will learn several different approaches to parallelizing purely numerical (and therefore CPU-bound) workflows, both with and without reduction. If your code is I/O-bound, you will also benefit from this course, as I/O-bound workflows can be easily processed with Ray.
+In Part 2, we will study Ray, a unified framework for scaling AI and Python applications. Since this is not a machine learning workshop, we will not touch Ray's AI capabilities, but will focus on its core distributed runtime and data libraries. We will learn several different approaches to parallelizing purely numerical (and therefore CPU-bound) workflows, both with and without reduction. If your code is I/O-bound, you will also benefit from this course, as I/O-bound workflows can be easily processed with Ray.
 
 We will not cover GPU-accelerated computing in Python in this course (worth its own course), nor will we cover mpi4py (most popular MPI implementation for Python).
 
@@ -714,27 +714,92 @@ counter, leading to either memory leaks (too much memory allocated) or to releas
 there is still a reference to that object on another thread.
 
 One way to solve this problem is to have locks on all shared data structures, where only one thread at a time
-can modify data. This can also lead to problems, and Python's solution is to use a lock on the interpreter
+can modify data. This can also lead to problems, and Python's solution prior to version 3.13 is to use a lock on the interpreter
 itself (Global Interpreter Lock = GIL), so that only **one thread can run at a time**. Recall that in Python
 each line of code is being interpreted on the fly, so placing a lock on the interpreter means pausing code
 execution while some other thread is running.
 
-The GIL will be removed from Python in its next big release (3.13), but until then you can only run one Python
-thread at a time.
+Starting with v3.13, you can install Python with the GIL removed. This mode called *free threading* is still
+considered experimental and is usually not enabled by default. There is a good [Real Python
+article](https://realpython.com/python313-free-threading-jit) (might require subscription) describing various
+build options to enable free threading; here is what worked on my Macbook:
 
-Python has a threading library with a function to launch new threads:
+```sh
+brew install pyenv
+git clone https://github.com/pyenv/pyenv-update.git $(pyenv root)/plugins/pyenv-update
 
-```py
-from threading import Thread
+pyenv update
+pyenv install --list | grep 3.13   # list all available versions, with "t" standing for free-threaded variant
+PYTHON_CONFIGURE_OPTS='--enable-experimental-jit' pyenv install 3.13.0t # build free-threaded Python with JIT
+                                                                        # support in ~/.pyenv/versions/3.13.0t
+pyenv shell 3.13.0t   # switch to the new build in this shell only
+python
 ```
 
-but these threads will be taking turns running, due to the GIL, leading to about the same runtime.
+
+
+
+<!-- The GIL will be removed from Python in its next big release (3.13), but until then you can only run one Python -->
+<!-- thread at a time. -->
+
+
+
+
+Python has several threading libraries. For example, `threading` library provides a function `Thread()` to
+launch new threads. Here is a [full example](/files/sum.py) that instead uses `ThreadPoolExecutor()` function
+from `concurrent` library. If you run it with v3.12 or earlier, you will get about the same runtime
+independently of the number of threads, as -- due to the GIL -- these threads will be taking turns
+running. With a free-threaded Python 3.13 build, you will see better runtimes with additional threads,
+provided you have the CPU cores to run all threads in parallel:
+
+```sh
+python sum.py
+```
+```output
+running with 1 threads over [(1, 100000000)]
+Time in seconds: 13.747
+sum = 13.277605949858103
+```
+```sh
+python sum.py --ntasks=4
+```
+```output
+running with 4 threads over [(1, 25000000), (25000001, 50000000), (50000001, 75000000), (75000001, 100000000)]
+Time in seconds: 5.831
+sum = 13.277605949854326
+```
+```sh
+python sum.py --ntasks=8
+```
+```output
+running with 8 threads over [(1, 12500000), (12500001, 25000000), (25000001, 37500000), (37500001, 50000000), (50000001, 62500000), (62500001, 75000000), (75000001, 87500000), (87500001, 100000000)]
+Time in seconds: 4.324
+sum = 13.277605949855293
+```
+
+Note that the free-threaded build has some additional overhead when executing Python code compared to the
+default GIL-enabled build. In 3.13, this overhead is ~40%.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ### NumExpr
 
-However, you can do multithreading in Python via 3rd-party libraries that were written in other languages in
-which there is no GIL. One such famous library is NumExpr which is essentially a JIT compiler for NumPy
-operations. It takes its input NumPy expression as a string and can run it with multiple threads.
+Alternatively, you can do multithreading in Python via 3rd-party libraries that were written in other
+languages in which there is no GIL. One such famous library is NumExpr which is essentially a JIT compiler for
+NumPy operations. It takes its input NumPy expression as a string and can run it with multiple threads.
 
 - supported operators: - + - * / % << >> < <= == != >= > & | ~ **
 - supported functions: where, sin, cos, tan, arcsin, arccos arctan, arctan2, sinh, cosh, tanh, arcsinh,
