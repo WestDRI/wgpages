@@ -29,17 +29,23 @@ We will not cover GPU-accelerated computing in Python in this course (worth its 
 
 ## Installation
 
-On your computer:
+Today we'll be running Python on the training cluster. If instead you want to run everything locally on your
+computer, you can install Python and the libraries, but the installation instructions will vary depending on
+how you typically install Python, and whether/how you use Python virtual environments. Here is what I did on
+my computer (with `pyenv` installed earlier):
 
 ```sh
-pyenv virtualenv 3.11.8 hpc-env   # goes into ~/.pyenv/versions/3.11.8/envs/hpc-env
+pyenv install 3.12.7
+unlink ~/.pyenv/versions/hpc-env
+pyenv virtualenv 3.12.7 hpc-env   # goes into ~/.pyenv/versions/<version>/envs/hpc-env
 pyenv activate hpc-env
 pip install numpy
 pip install --upgrade "ray[default]"
 pip install --upgrade "ray[data]"
+abc
 pip install tqdm netcdf4 scipy numexpr psutil multiprocess numba scalene Pillow
-pip uninstall pandas
-pip install -Iv pandas==2.1.4
+# pip uninstall pandas
+# pip install -Iv pandas==2.1.4
 ...
 pyenv deactivate
 ```
@@ -102,7 +108,7 @@ performance out of it.
 
 ## Python setup in our course
 
-Today we'll be running Python inside a shell on our training cluster `school.c3.ca`. Let's log in now!
+Today we'll be running Python inside a shell on our training cluster `cass.vastcloud.org`. Let's log in now!
 
 We have pre-installed all the required libraries for you in a virtual Python environment in
 `/project/def-sponsor00/shared/pythonhpc-env` that everyone on the system can read.

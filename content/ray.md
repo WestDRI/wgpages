@@ -1390,6 +1390,12 @@ $2000\times 2000$ (averaged over three runs, in seconds):
 
 
 
+## Quickly on parallel Python in ML frameworks (Marie)
+
+<!-- Marie will say a word about parallel Python in ML frameworks. The exact methods are different for each -->
+<!-- framework, so we are not teaching them, just providing a quick overview of what different frameworks provide -->
+<!-- in terms of parallel computing. -->
+
 
 
 
