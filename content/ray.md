@@ -1025,7 +1025,7 @@ then run the following commands:
 ```sh
 salloc --nodes 2 --ntasks-per-node=1 --cpus-per-task=2 --mem-per-cpu=3600 --time=0:60:0
 
-module load StdEnv/2023 python/3.11.5 arrow/14.0.1 scipy-stack/2023b netcdf/4.9.2
+module load StdEnv/2023 python/3.12.4 arrow/17.0.0 scipy-stack/2024a netcdf/4.9.2
 source /project/def-sponsor00/shared/pythonhpc-env/bin/activate
 
 export HEAD_NODE=$(hostname)   # head node's address -- different from the login node!
@@ -1044,7 +1044,7 @@ Then on each node inside our Slurm job, except the head node, we launch the work
 ```sh
 cat << EOF > launchRay.sh
 #!/bin/bash
-module load StdEnv/2023 python/3.11.5 arrow/14.0.1 scipy-stack/2023b netcdf/4.9.2
+module load StdEnv/2023 python/3.12.4 arrow/17.0.0 scipy-stack/2024a netcdf/4.9.2
 source /project/def-sponsor00/shared/pythonhpc-env/bin/activate
 if [[ "$SLURM_PROCID" -eq "0" ]]; then   # if MPI rank is 0
         echo "Ray head node already started..."

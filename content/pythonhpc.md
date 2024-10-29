@@ -42,7 +42,6 @@ pyenv activate hpc-env
 pip install numpy
 pip install --upgrade "ray[default]"
 pip install --upgrade "ray[data]"
-abc
 pip install tqdm netcdf4 scipy numexpr psutil multiprocess numba scalene Pillow
 # pip uninstall pandas
 # pip install -Iv pandas==2.1.4
@@ -50,14 +49,14 @@ pip install tqdm netcdf4 scipy numexpr psutil multiprocess numba scalene Pillow
 pyenv deactivate
 ```
 
-On an HPC cluster:
+On a production HPC cluster:
 
 ```sh
-module load StdEnv/2023 python/3.11.5 arrow/14.0.1 scipy-stack/2023b netcdf/4.9.2
+module load StdEnv/2023 python/3.12.4 arrow/17.0.0 scipy-stack/2024a netcdf/4.9.2
 virtualenv --no-download pythonhpc-env
 source pythonhpc-env/bin/activate
 pip install --no-index --upgrade pip
-pip install --no-index numba multiprocess
+pip install --no-index numba multiprocess numexpr
 avail_wheels "ray"
 pip install --no-index ray tqdm scalene grpcio
 pip install modin
@@ -117,7 +116,7 @@ Once on the system, our workflow is going to be:
 
 ```sh
 mkdir -p ~/tmp && cd ~/tmp
-module load StdEnv/2023 python/3.11.5 arrow/14.0.1 scipy-stack/2023b netcdf/4.9.2
+module load StdEnv/2023 python/3.12.4 arrow/17.0.0 scipy-stack/2024a netcdf/4.9.2
 source /project/def-sponsor00/shared/pythonhpc-env/bin/activate
 
 salloc --time=2:00:0 --mem-per-cpu=3600
@@ -148,7 +147,8 @@ Finally, to monitor CPU usage inside a Slurm job, from the login node connect to
 
 ```sh
 srun --jobid=<jobID> --pty bash
-htop                     # monitor all processes
+alias htop='htop -u $USER -s PERCENT_CPU'
+htop                     # monitor all your processes
 htop --filter "python"   # filter processes by name
 ```
 
@@ -553,8 +553,9 @@ and then calling a compiled C code on each. There are a lot fewer Python code li
 
 Let's use NumPy for our slow series calculation. We will:
 
-1. write a function that acts on each counter $k$ in the series,
-2. create a vectorized function from it that takes in an array of integer numbers and returns an array of terms,
+1. write a function that acts on each integer $k$ in the series,
+2. convert this function to a *vectorized function* that takes in an array of integer numbers and returns an
+   array of terms,
 3. sum these terms to get the result.
 
 Let's save the following code as `slow2.py`:
@@ -578,15 +579,19 @@ print("Time in seconds:", round(end-start,3))
 print(total)
 ```
 
-> Note: this particular code uses a lot of memory, so you might want to increase your request to
-> `--mem-per-cpu=11000`.
+> Note: this particular code uses a lot of memory, so you might want to change your request to
+> `--mem-per-cpu=11000` (and single core).
 
 The vectorized function is supposed to speed up calculating the terms, but our time becomes worse (14.72s)
-than the original calculation (6.625s). The reason: we are no longer replacing multiple Python lines with a
+than the original calculation (6.625s). **The reason**: we are no longer replacing multiple Python lines with a
 single line. The code inside `combined()` is still native Python code that is being interpreted on the fly,
-and we applying all its lines to each element of array `i`. If, instead, we wrote a function in C that takes
-an array of integers and computes the slow series sum all inside the same C function, compile and run it, it
-would run ~20X faster than the original calculation.
+and we applying all its lines to each element of array `i`.
+
+The function `np.vectorize` does not compile `combined()` -- it simply adapts it to work with arrays, but
+underneath you are still running Python loops. If, instead, our vectorization could produce a *compiled
+function* that takes an array of integers and computes the slow series sum all inside the same
+C/C++/Fortran/Rust function, it would run ~20X faster than the original calculation. This is what a JIT
+compiler can do -- we will study it later.
 
 As it turns out, there is no easy way to speed this problem with NumPy. For interested parties I could share
 several other NumPy implementations of this problem, but none of them speed it up.
@@ -655,7 +660,7 @@ could speed up our code. We know that our code is ~20X slower than a compiled co
 but do we have the best-performing Python code?
 
 Next we'll try to speed up our code with NumExpr expression evaluator, in which simple mathematical / NumPy
-expressions can be parsed and then evaluated using compiled C code. NumExpr has an added benefit in that you
+expressions can be parsed and then evaluated using *compiled C code*. NumExpr has an added benefit in that you
 can do this evaluation with multiple threads in parallel. But first we should talk about threads and
 processes.
 
@@ -738,6 +743,7 @@ pyenv update
 pyenv install --list | grep 3.13   # list all available versions, with "t" standing for free-threaded variant
 PYTHON_CONFIGURE_OPTS='--enable-experimental-jit' pyenv install 3.13.0t # build free-threaded Python with JIT
                                                                         # support in ~/.pyenv/versions/3.13.0t
+pyenv versions        # show installed versions
 pyenv shell 3.13.0t   # switch to the new build in this shell only
 python
 ```
@@ -804,7 +810,7 @@ default GIL-enabled build. In 3.13, this overhead is ~40%.
 ### NumExpr
 
 Alternatively, you can do multithreading in Python via 3rd-party libraries that were written in other
-languages in which there is no GIL. One such famous library is NumExpr which is essentially a JIT compiler for
+languages in which there is no GIL. One such famous library is NumExpr which is essentially a compiler for
 NumPy operations. It takes its input NumPy expression as a string and can run it with multiple threads.
 
 - supported operators: - + - * / % << >> < <= == != >= > & | ~ **
@@ -824,7 +830,6 @@ import numpy as np
 
 n = 100_000_000
 a = np.random.rand(n)
-b = np.zeros(n)
 
 start = time()
 b = np.sin(2*np.pi*a)**2 + np.cos(2*np.pi*a)**2
@@ -841,9 +846,9 @@ import numpy as np, numexpr as ne
 
 n = 100_000_000
 a = np.random.rand(n)
-b = np.zeros(n)
 
 prev = ne.set_num_threads(1)   # specify the number of threads, returns the previous setting
+print(prev)                    # on first use tries to grab all cores
 start = time()
 twoPi = 2*np.pi
 b = ne.evaluate('sin(twoPi*a)**2 + cos(twoPi*a)**2')
@@ -881,7 +886,7 @@ We can use NumExpr to parallelize checking for substrings (store this as `slow3.
 ```py
 from time import time
 import numpy as np, numexpr as ne
-n = 100_000_000
+n = 100                        # later set to 100_000_000
 prev = ne.set_num_threads(1)   # specify the number of threads
 start = time()
 i = np.arange(1,n+1)           # array of integers
@@ -906,19 +911,10 @@ Clearly, we are bottlenecked by the serial part of the code. Let's use another N
 `1.0/x` -- store this as updated `slow3.py`:
 
 ```py
-from time import time
-import numpy as np, numexpr as ne
-n = 100_000_000
-prev = ne.set_num_threads(8)   # specify the number of threads
-start = time()
-i = np.arange(1,n+1)      # array of integers
-j = i.astype(np.bytes_)   # convert to byte strings
-mask = ne.evaluate("~contains(j, '9')")
-nonZeroTerms = i[mask]
-total = np.sum(ne.evaluate("1.0/nonZeroTerms"))
-end = time()
-print("Time in seconds:", round(end-start,3))
-print(total)
+< inverse = np.vectorize(lambda x: 1.0/x)
+< total = sum(inverse(nonZeroTerms))
+---
+> total = np.sum(ne.evaluate("1.0/nonZeroTerms"))
 ```
 
 Here are the improved times in seconds:
