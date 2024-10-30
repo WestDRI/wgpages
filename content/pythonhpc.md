@@ -960,7 +960,8 @@ scalene slow3.py         # on your own computer, will open result in a browser
 scalene --cli slow3.py   # on a remote system
 ```
 
-> Note: to run `scalene --cli slow3.py` on the training cluster, you might want to use `--mem-per-cpu=7200`.
+> Note: to run `scalene --cli slow3.py` on the training cluster, you might need more memory, so I found it
+> useful to request `--mem-per-cpu=7200`.
 
 If running on your computer, this will open the result in a browser:
 
@@ -1049,9 +1050,10 @@ end = time.time()
 print("Time in seconds:", round(end-start,3))
 ```
 
-1. On 8 cores this takes 2.007 seconds: in the 1st second we run eight `sleep(1)` calls in parallel, and the 2nd
-   second we run the remaining two calls in parallel, i.e. we running batches of 8+2 calls.
-1. On 4 cores this takes 3.005 seconds: running batches of 4 + 4 + 2 calls.
+1. On 4 cores this takes 3.005 seconds: running batches of 4 + 4 + 2 calls, i.e. in the 1st second we run four
+   `sleep(1)` calls in parallel, in the 2nd second we run another set of four `sleep(1)` calls, and the
+   remaining two calls run during the 3rd second.
+1. On 8 cores this takes 2.007 seconds: running batches of 8+2 calls.
 1. On 1 core it takes 10.013 seconds.
 
 > Note: we are not doing real calculations here, just waiting for 1 wallclock time second in each call. If you
@@ -1060,7 +1062,7 @@ print("Time in seconds:", round(end-start,3))
 > will finish running as if you had 4 physical cores.
 
 How do we parallelize the slow series with parallel `map()`? One idea is to create a function to process each
-of the $10^8$ terms and use `map()` to apply it to each term. Here is the serial version of this code:
+of the $10^8$ terms and use `map()` to apply it to each term. Here is the **serial version** of this code:
 
 ```py
 from time import time
@@ -1099,7 +1101,7 @@ print(sum(total))
 ```
 
 {{< question num=2 >}}
-Complete and run this code on two cores.
+Complete and run this code on two cores. Add timing.
 {{< /question >}}
 
 <!-- Solution: -->
@@ -1127,7 +1129,15 @@ Complete and run this code on two cores.
 
 {{< question num=3 >}}
 Write a scalable version of this code and run it on an arbitrary number of cores (up to the physical number of
-cores on your computer).
+cores on your computer). Use the following to divide the workload:
+```py
+ncores = ...
+pool = Pool(ncores)
+size = n // ncores
+intervals = [(i*size+1,(i+1)*size) for i in range(ncores)]
+if n > intervals[-1][1]:
+    intervals[-1] = (intervals[-1][0], n)
+```
 {{< /question >}}
 
 <!-- Solution: -->
@@ -1195,9 +1205,9 @@ mentioning here:
    extensions for C types.
 1. Codon is research project from MIT: not endorsing it, but it consistently comes up high in my search
    results, source code https://github.com/exaloop/codon and the related article https://bit.ly/3uUvTmd.
-1. New proprietary programming language https://www.modular.com/max/mojo is a superset of Python, was
-   open-sourced just a few days ago (?), with somewhat misleading (68,000X) speedup claims on their front
-   page, documentation/examples/workshops at https://github.com/modularml/mojo.
+1. New proprietary programming language https://www.modular.com/max/mojo is a superset of Python, with
+   somewhat misleading (68,000X) speedup claims on their front page, documentation/examples/workshops at
+   https://github.com/modularml/mojo.
 
 <!-- numba, using a JIT compiler (https://numba.readthedocs.io/en/stable/glossary.html#term-nopython-mode) -->
 <!-- <\!-- also https://github.com/numba/llvmlite -\-> -->
@@ -1228,7 +1238,7 @@ start = time()
 total = trig(100_000_000)
 end = time()
 print("Time in seconds:", round(end-start,3))
-print(-total/log(2*sin(0.5)))
+print("approximate / exact =", -total/log(2*sin(0.5)))
 ```
 
 Our runtime is 7.493 seconds.
@@ -1245,16 +1255,16 @@ The first time you use Numba in a code, it might be slow, but all subsequent use
 compile the code. Our runtime went down to 0.693 seconds -- that's more than a 10X speedup!
 
 There are two compilation modes in Numba:
-- **object mode**: generates a more stable, slower code
-- **nopython mode**: generates much faster code that requires knowledge of all types, has limitations that can
-  force Numba to fall back to the object mode; the flag `nopython=True` enforces faster mode and raises an
+1. **object mode**: generates a more stable, slower code
+1. **nopython mode**: generates much faster code that requires knowledge of all types, has limitations that
+  can force Numba to fall back to the object mode; the flag `nopython=True` enforces faster mode and raises an
   error in case of problems
 
 ### Parallelizing
 
 Let's add `parallel=True` to our decorator and change `range(1,n+1)` to `prange(1,n+1)` - it'll be subdividing
-loops into pieces to pass them to multiple CPU cores via multithreading. On my 8-core laptop the runtime goes
-down to 0.341 seconds -- a further ~2X improvement ... This is not so impressive ...
+loops into pieces to pass them to multiple CPU cores via *multithreading*. On my 8-core laptop the runtime
+goes down to 0.341 seconds -- a further ~2X improvement ... This is not so impressive ...
 
 It turns out there is quite a bit of overhead with subdividing loops, starting/stopping threads and
 orchestrating everything. If instead of $10^8$ we consider $10^{10}$ terms, a single thread processes this in
