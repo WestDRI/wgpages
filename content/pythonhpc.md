@@ -43,11 +43,12 @@ pip install numpy
 pip install --upgrade "ray[default]"
 pip install --upgrade "ray[data]"
 pip install tqdm netcdf4 scipy numexpr psutil multiprocess numba scalene Pillow
-# pip uninstall pandas
-# pip install -Iv pandas==2.1.4
 ...
 pyenv deactivate
 ```
+
+<!-- # pip uninstall pandas -->
+<!-- # pip install -Iv pandas==2.1.4 -->
 
 On a production HPC cluster:
 
