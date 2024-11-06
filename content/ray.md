@@ -47,7 +47,7 @@ However, `ray.init()` is very useful for passing options at initialization. For 
 when you do things in it. To turn off this logging output to the terminal, you can do
 
 ```py
-ray.init(configure_logging=False)   # hide ray's copious logging output
+ray.init(configure_logging=False)   # hide Ray's copious logging output
 ```
 
 You can run `ray.init()` only once. If you want to re-run it, first you need to run
@@ -958,8 +958,8 @@ On my laptop I am getting:
 ### Processing Ray datasets with Numba-compiled functions
 
 So far we processed Ray datasets with non-Numba functions, either lambda (anonymous) or plain Python
-functions, and we obtained perfect scaling with multiple Ray processes. However, these functions are slower
-than their Numba-compiled versions.
+functions, and we obtained very good parallel scaling with multiple Ray processes. However, these functions
+are slower than their Numba-compiled versions.
 
 Is it possible to *process Ray datasets with Numba-compiled functions*, similar to how earlier we executed
 Numba-compiled functions on remote workers? The answer is a **firm yes**, but I will leave it to you to write
@@ -1178,14 +1178,17 @@ and terminate the job.
 
 ### Simple distributed dataset example
 
-Run the following Python code line by line, while watching memory usage in a separate window with `htop
---filter "ray::IDLE"`:
+With multiple CPU cores available, run the following Python code line by line, while watching memory usage in
+a separate window with `htop --filter "ray::IDLE"`:
 
 ```py
 import numpy as np
 import ray
 
-ray.init(configure_logging=False)
+ray.init(configure_logging=False, _system_config={ 'automatic_object_spilling_enabled':False })
+# 1. hide Ray's copious logging output
+# 2. start as many ray::IDLE process as the physical number of cores -- we'll use only two of them below
+# 3. disable automatic object spilling to disk
 
 b = ray.data.from_items([(800,800,800), (800,800,800)])   # 800**3 will take noticeable 3.81GB memory
 b.show()
@@ -1199,16 +1202,23 @@ c = b.map(initArray)
 c.show()
 ```
 
-We'll see the two arrays being initialized in memory, on two processes, and then these blocks will be
-automatically written to disk, and the memory usage goes back to zero. Ray writes ("spills") objects to
-storage once they are no longer in use, as it tries to minimize the total number of "materialized" (in-memory)
-blocks. On Linux and MacOS, the temporary spill folder is `/tmp/ray`, but you can customize its location
-https://docs.ray.io/en/latest/ray-core/objects/object-spilling.html.
+We'll see the two arrays being initialized in memory, on two processes, with a couple of GBs of memory
+consumed per process. Ray writes ("spills") objects to storage once they are no longer in use, as it tries to
+minimize the total number of "materialized" (in-memory) blocks. On Linux and MacOS, the temporary spill folder
+is `/tmp/ray`, but you can customize its location as described
+[here](https://docs.ray.io/en/latest/ray-core/objects/object-spilling.html).
 
-If you try to access these arrays, e.g.
+With the automatic object spilling to disk disabled (our second flag to `ray.init()` above), these arrays will
+stay in memory.
+
+With that flag removed, and hence with the usual automatic object spilling to disk, these array blocks will be
+automatically written to disk, and the memory usage goes back to zero after a fraction of a second. If next
+you try to access these arrays, e.g.
 
 ```py
-type(c.take()[0]['array'])   # numpy.ndarray
+d = c.take()
+type(d[0]['array'])   # numpy.ndarray
+d[0]['array'].shape   # (800, 800, 800)
 ```
 
 they will be loaded temporarily into memory, which you can monitor with `htop --filter "ray::IDLE"`.
