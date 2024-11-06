@@ -858,12 +858,12 @@ print("Time in seconds:", round(end-start,3))
 print(a,b)
 ```
 
-Average time in seconds:
+Average time:
 
 |   |   |   |   |   |
 |---|---|---|---|---|
 | ncores | 1 | 2 | 4 | 8 |
-| wallclock runtime | 1.738 | 0.898 | 0.478 | 0.305 |
+| wallclock runtime (sec) | 1.738 | 0.898 | 0.478 | 0.305 |
 
 <!-- How it works: https://numexpr.readthedocs.io/en/latest/intro.html -->
 <!-- 1. The expression is first compiled using Python's `compile` function (must be a valid Python expression). -->
@@ -901,12 +901,12 @@ print("Time in seconds:", round(end-start,3))
 print(total)
 ```
 
-Here are the average (over three runs) times in seconds:
+Here are the average (over three runs) times:
 
 |   |   |   |   |
 |---|---|---|---|
 | ncores | 1 | 2 | 4 |
-| wallclock runtime | 18.427 | 17.375 | 17.029 |
+| wallclock runtime (sec) | 18.427 | 17.375 | 17.029 |
 
 Clearly, we are bottlenecked by the serial part of the code. Let's use another NumExpr call to evaluate
 `1.0/x` -- store this as updated `slow3.py`:
@@ -918,12 +918,12 @@ Clearly, we are bottlenecked by the serial part of the code. Let's use another N
 > total = np.sum(ne.evaluate("1.0/nonZeroTerms"))
 ```
 
-Here are the improved times in seconds:
+Here are the improved times:
 
 |   |   |   |   |   |
 |---|---|---|---|---|
 | ncores | 1 | 2 | 4 | 8 |
-| wallclock runtime | 12.094 | 11.304 | 10.965 | 10.83 |
+| wallclock runtime (sec) | 12.094 | 11.304 | 10.965 | 10.83 |
 
 Obviously, we still have some bottleneck(s): look at the scaling, and recall the original serial runtime
 6.625s on which we are trying to improve. How do we find these? Let's use a profiler!
@@ -1051,6 +1051,19 @@ end = time.time()
 print("Time in seconds:", round(end-start,3))
 ```
 
+
+
+
+<br>&nbsp;<br>
+{{< figure src="/img/pause.png" title="" width="400px" >}}
+<br>&nbsp;<br>
+
+
+
+
+
+
+
 1. On 4 cores this takes 3.005 seconds: running batches of 4 + 4 + 2 calls, i.e. in the 1st second we run four
    `sleep(1)` calls in parallel, in the 2nd second we run another set of four `sleep(1)` calls, and the
    remaining two calls run during the 3rd second.
@@ -1157,7 +1170,7 @@ if n > intervals[-1][1]:
 <!--     return sum(map(combined, range(interval[0],interval[1]+1))) -->
 
 <!-- start = time() -->
-<!-- ncores = psutil.cpu_count(logical=False) -->
+<!-- ncores = 1   # psutil.cpu_count(logical=False) -->
 <!-- pool = Pool(ncores) -->
 <!-- size = n//ncores -->
 <!-- intervals = [(i*size+1,(i+1)*size) for i in range(ncores)] -->
@@ -1171,13 +1184,13 @@ if n > intervals[-1][1]:
 <!-- print(sum(total)) -->
 <!-- ``` -->
 
-Here is what I get for timing on ***my laptop*** and on ***the training cluster*** (all in seconds):
+Here is what I get for timing on ***my laptop*** and on ***the training cluster***:
 
 |   |   |   |   |   |
 |---|---|---|---|---|
 | ncores | 1 | 2 | 4 | 8 |
-| laptop wallclock runtime | 8.294 | 4.324 | 2.200 | 1.408 |
-| --ntasks=4 cluster runtime | 17.557 | 8.780 | 4.499 | 4.508 |
+| laptop wallclock runtime (sec) | 8.294 | 4.324 | 2.200 | 1.408 |
+| --ntasks=4 cluster runtime (sec) | 17.557 | 8.780 | 4.499 | 4.508 |
 
 Our parallel scaling looks great, but in terms of absolute numbers we are still lagging behind the same
 problem implemented with a serial code in compiled languages ...
@@ -1221,9 +1234,11 @@ Here we'll take a look at Numba:
 
 Let's compute the following sum:
 
-$$\sum_{i=1}^\infty\frac{\cos(i\theta)}{i} = -\ln\left(2\sin\frac{\theta}{2}\right)~~~~~{\rm for}~\theta=1. $$
+<!-- $$\sum_{i=1}^\infty\frac{\cos(i\theta)}{i} = -\ln\left(2\sin\frac{\theta}{2}\right)~~~~~{\rm for}~\theta=1. $$ -->
 
-Here is the familiar serial implementation:
+$$\sum_{i=1}^\infty\frac{\cos(i)}{i} = -\ln\left(2\sin0.5\right) $$
+
+Here is the familiar serial implementation (let's save it as `trig.py`):
 
 ```py
 from time import time
@@ -1341,7 +1356,7 @@ somewhat) Let's fill this table together:
 |   |   |   |   |
 |---|---|---|---|
 | ncores | 1 | 2 | 4 |
-| wallclock runtime | &emsp;&emsp;&emsp; | &emsp;&emsp;&emsp; | &emsp;&emsp;&emsp; |
+| wallclock runtime (sec) | &emsp;&emsp;&emsp; | &emsp;&emsp;&emsp; | &emsp;&emsp;&emsp; |
 {{< /question >}}
 
 In Part 2 (next week) we will combine Numba with multiprocessing via Ray tasks -- this approach can scale

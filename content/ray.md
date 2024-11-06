@@ -25,10 +25,9 @@ science and beyond:
   multiprocessing.
 
 Here we'll focus on Ray, a unified framework for scaling AI and general Python workflows. Since this is not a
-machine learning workshop, we will not touch most of Ray's AI capabilities, but will focus on its core
-distributed runtime and data libraries. We will learn several different approaches to parallelizing purely
-numerical (and therefore CPU-bound) workflows, both with and without reduction. We will also look at I/O-bound
-workflows.
+machine learning workshop, we will not touch Ray's AI capabilities, but will focus on its core distributed
+runtime and data libraries. We will learn several different approaches to parallelizing purely numerical (and
+therefore CPU-bound) workflows, both with and without reduction. We will also look at I/O-bound workflows.
 
 
 
@@ -74,7 +73,7 @@ How would you pass the actual number of processor cores to the Ray cluster? Cons
 1. Using a Slurm environment variable. How would you pass it to `ray.init()`?
 2. Launching a single-node Ray cluster as described in our
    [Ray documentation](https://docs.alliancecan.ca/wiki/Ray).
-3. Not passing anything at all.
+3. Not passing anything at all, in which case Ray will try -- unsuccessfully -- to grab all cores.
 {{< /question >}}
 
 
@@ -167,6 +166,7 @@ from ray.experimental.tqdm_ray import tqdm
 
 @ray.remote
 def busy(name):
+    if "2" in name: sleep(2)
     for x in tqdm(range(100), desc=name):
         sleep(0.1)
 
@@ -183,6 +183,10 @@ Implement the same for 10 tasks using a `for` loop.
 <!-- ```py -->
 <!-- [busy.remote("task "+str(i)) for i in range(10)] -->
 <!-- ``` -->
+
+> Note: Ray's `tqdm()` is somewhat buggy, so you might want to restart Python and your Ray cluster, if you
+> don't want to see artifacts from previous bars sometimes popping up in your session.
+
 
 
 
@@ -298,7 +302,7 @@ On 8 cores I get the average runtime of 1.282 seconds -- not too bad, considerin
 low-efficiency (slower) cores.
 
 {{< question num=12 >}}
-Increase `n` to 2_000_000_000 and run `htop --filter "ray::IDLE` in a separate shell to monitor CPU usage of
+Increase `n` to 1_000_000_000 and run `htop --filter "ray::IDLE` in a separate shell to monitor CPU usage of
 individual processes.
 {{< /question >}}
 
@@ -432,12 +436,12 @@ print(total)
 
 
 
-Averaged (over three runs) times in seconds :
+Averaged (over three runs) times:
 
 |   |   |   |   |   |
 |---|---|---|---|---|
 | ncores | 1 | 2 | 4 | 8 |
-| wallclock runtime | 0.439 | 0.235 | 0.130 | 0.098 |
+| wallclock runtime (sec) | 0.439 | 0.235 | 0.130 | 0.098 |
 
 Using a combination of Numba and Ray tasks on 8 cores, we accelerated the calculation by ~68X.
 
@@ -458,22 +462,29 @@ from time import sleep
 import ray, random
 
 @ray.remote
-def increment(x):
-    sleep(random.randint(1,100))   # sleep random number from [1,100] seconds
-    return x + 1
+def increment():
+    duration = random.randint(1,100) # random integer from [1,100]
+    sleep(duration)   # sleep for this number of seconds
+    return duration
 
-refs = [increment.remote(x) for x in range(1,21)]   # start 20 tasks
+refs = [increment.remote() for x in range(1,21)]   # start 20 tasks
 ```
 
 If we now call `ray.get(refs)`, that would block until all of these remote tasks finish. If we want to, let's
-say, one of them to finish and then continue on the main task, we will do:
+say, one of them to finish and then continue on the main task, we can do:
 
 ```py
-ready_refs, remaining_refs = ray.wait(refs, num_returns=1, timeout=None)   # wait for one of them to finish
+ready_refs, remaining_refs = ray.wait(refs, num_returns=1, timeout=None) # wait for one of them to finish
 print(ready_refs, remaining_refs)   # print the IDs of the finished task, and the other 19 IDs
 ray.get(ready_refs)                 # get finished results
 ```
 
+```py
+ready_refs, remaining_refs = ray.wait(refs, num_returns=5, timeout=None) # wait for 5 of them to finish
+ray.get(ready_refs)                 # get finished results
+for i in remaining_refs:
+	ray.cancel(i)   # cancel the unfinished ones
+```
 
 
 
@@ -496,7 +507,7 @@ r = threeNumbers.remote()
 print(ray.get(r)[0])        # get the result (tuple) and show its first element
 ```
 
-Alternatively, you can pipe each number to a separate object ref:
+Alternatively, you can pipe each number to a separate object ref (*tell the decorator!*):
 
 ```py
 @ray.remote(num_returns=3)
@@ -516,7 +527,7 @@ def threeNumbers():
         yield i
 
 r1, r2, r3 = threeNumbers.remote()
-ray.get(r1)   # # get the first number only
+ray.get(r1)   # get the first number only
 ```
 
 
@@ -601,12 +612,18 @@ import ray
 ray.init(num_cpus=4, configure_logging=False)
 
 ds = ray.data.range(1000)   # create a dataset from a range
-ds   # Dataset(num_blocks=..., num_rows=1000, schema={id: int64})
-ds.num_blocks()   # ... blocks
+ds                # Dataset(num_rows=1000, schema={id: int64})
 ds.count()        # explicitly count the number of rows; might be expensive (to load the dataset into memory)
 ds.take(3)        # return first 3 rows as a list of dictionaries; default keys are often 'id' or 'item'
 len(ds.take())    # default is 20 rows
 ds.show(3)        # first 3 rows in a different format (one row per line)
+```
+
+Until recently, you could easily displays the number of blocks in a dataset, but now you have to *materialize*
+it first, and the number of blocks can change during execution:
+
+```py
+ds.materialize().num_blocks()   # will show the number of blocks; might be expensive
 ```
 
 Rows can be generated from arbitrary items:
@@ -618,14 +635,15 @@ ray.data.from_items([10,20,30]).take()   # [{'item': 10}, {'item': 20}, {'item':
 Rows can have multiple key-value pairs:
 
 ```py
-listOfDict = [{"col1": i, "col2": i ** 2} for i in range(1000)]
+listOfDict = [{"col1": i, "col2": i ** 2} for i in range(1000)] # each dict contains 2 pairs
 ds = ray.data.from_items(listOfDict)
 ds.show(5)
 ```
 
 A dataset can also be loaded from a file:
-> Note: this example works on my computer, but not on the training cluster where `arrow/14.0.1` was compiled
-> without S3 support.
+
+> Note: this example works on my computer (`pyenv activate hpc-env`), but not on the training cluster where
+> `arrow/14.0.1` was compiled without S3 support.
 
 ```py
 dd = ray.data.read_csv("s3://anonymous@air-example-data/iris.csv")   # load a predefined dataset
@@ -649,6 +667,8 @@ dd.show()   # might pause to read data, default is 20 rows
 <!--                               (3) grouping via groupby() -->
 <!--                               (4) shuffling operations, e.g. sort(), random_shuffle(), and repartition() -->
 
+Ray datasets become useful once you start processing them. Let's initialize a simple dataset from a range:
+
 ```py
 import ray
 ray.init(num_cpus=4, configure_logging=False)
@@ -657,19 +677,23 @@ ds = ray.data.range(1000)   # create a dataset
 ds.show(5)
 ```
 
-Let's apply a function to each row in the dataset `ds`. This function *must* return a dictionary that will
-form each row in the new dataset:
+We will apply a function to each row in this dataset. This function *must* return a dictionary that will form
+each row in the new dataset:
 
 ```py
-ds.map(lambda row: row).show(3)                 # takes a row, returns the same row
-ds.map(lambda row: {"id": row["id"]}).show(3)   # takes a row, returns a new row idential to the old one
-a = ds.map(lambda row: {"id": str(row["id"])*3})  # takes a row, returns a dict with 'id' values
-                                                  # converted to string and repeated 3X
-a   # `a` is a new dataset
+ds.map(lambda row: row).show(3)                  # takes a row, returns the same row
+
+ds.map(lambda row: {"key": row["id"]}).show(3)   # takes a row, returns a similar row;
+                       # `row["id"]` is needed to refer to the value in each
+					   # original row; `key` is a new, arbitrary key name
+
+a = ds.map(lambda row: {"long": str(row["id"])*3})  # takes a row, returns a dict with 'id' values
+                                                    # converted to strings and repeated 3X
+a   # it is a new dataset
 a.show(5)
 ```
 
-With `.map()` you can also use non-lambda (i.e. non-anonymous) functions:
+With `.map()` you can also use familiar non-lambda (i.e. non-anonymous) functions:
 
 ```py
 def squares(row):
@@ -712,26 +736,39 @@ permanent (not a data stream) object, e.g. a list:
 
 ```py
 b = ds.map(addSquares)   # this does not start calculation
-c = b.take()             # fast: only first 20 elements
+c = b.take()             # create a list, fast (only first 20 elements)
 c = b.take(10_000_000)   # takes a couple of minutes, runs in parallel
 ```
 
 This is not very efficient ... certainly, computing 10,000,000 squares should not take a couple of minutes in
-parallel!
+parallel! The problem is that we have too many rows, and -- similar to Python lists -- Ray datasets perform
+poorly with too many rows. Think about subdividing your large computation into a number of chunks where each
+chunk comes with its own computational and communication overhead -- you want to keep their number small.
 
 Let's rewrite this problem:
+
+<!-- ```py -->
+<!-- n = 10_000_000 -->
+<!-- a = np.arange(n) -->
+<!-- start = time() -->
+<!-- b = a**2 -->
+<!-- end = time() -->
+<!-- print("Time in seconds:", round(end-start,3)) -->
+<!-- print(b[-10:]) -->
+<!-- ``` -->
 
 ```py
 n = 10_000_000
 n1 = n // 2
 n2 = n - n1
 
+from time import time
 import numpy as np
 ds = ray.data.from_items([np.arange(n1), n1 + np.arange(n2)])
-ds.show()
+ds.show()   # 2 rows
 
 def squares(row):
-    return {'squares': row['item']**2}
+    return {'squares': row['item']**2}   # compute element-wise square of an array
 
 start = time()
 b = ds.map(squares).take()
@@ -740,7 +777,7 @@ print("Time in seconds:", round(end-start,3))
 print(b)
 ```
 
-Now the runtime is 0.359 seconds.
+Now the runtime is 0.072 seconds.
 
 
 
@@ -834,11 +871,11 @@ def slow(row):
     for i in range(row['a'], row['b']+1):
         if not "9" in str(i):
             total += 1.0 / i
-    row['sum'] = total
+    row['sum'] = total             # add key-value pair to the row
     return row
 
 start = time()
-partial = intervals.map(slow)     # define the calculation
+partial = intervals.map(slow)      # define the calculation
 total = partial.take()[0]['sum']   # request the result => start the calculation on 1 CPU core
 end = time()
 print("Time in seconds:", round(end-start,3))
@@ -872,11 +909,11 @@ two key-value pairs (`a` and `b`) with the sub-intervals.
 <!-- ```py -->
 <!-- n = 100_000_000 -->
 <!-- ncores = 2 -->
-<!-- print(type(ncores)) -->
+<!-- ray.init(num_cpus=ncores, configure_logging=False) -->
 <!-- size = n // ncores -->
-<!-- widths = [(i*size+1, i*size+size) for i in range(ncores)] -->
-<!-- if widths[-1][1] < n: widths[-1] = (widths[-1][0],n) -->
-<!-- intervals = ray.data.from_items([{'a':w[0], 'b':w[1]} for w in widths]) -->
+<!-- edges = [(i*size+1, i*size+size) for i in range(ncores)] -->
+<!-- if edges[-1][1] < n: edges[-1] = (edges[-1][0],n) -->
+<!-- intervals = ray.data.from_items([{'a':w[0], 'b':w[1]} for w in edges]) -->
 <!-- ``` -->
 
 On my laptop I am getting:
@@ -884,7 +921,7 @@ On my laptop I am getting:
 |   |   |   |   |   |
 |---|---|---|---|---|
 | ncores | 1 | 2 | 4 | 8 |
-| wallclock runtime | 6.978 | 3.765 | 1.675 | 1.574 |
+| wallclock runtime (sec) | 6.978 | 3.765 | 1.675 | 1.574 |
 
 <!-- The entire code is: -->
 <!-- ```py -->
@@ -901,10 +938,11 @@ On my laptop I am getting:
 
 <!-- n = 100_000_000 -->
 <!-- ncores = 2 -->
+<!-- ray.init(num_cpus=ncores, configure_logging=False) -->
 <!-- size = n // ncores -->
-<!-- widths = [(i*size+1, i*size+size) for i in range(ncores)] -->
-<!-- if widths[-1][1] < n: widths[-1] = (widths[-1][0],n) -->
-<!-- intervals = ... -->
+<!-- edges = [(i*size+1, i*size+size) for i in range(ncores)] -->
+<!-- if edges[-1][1] < n: edges[-1] = (edges[-1][0],n) -->
+<!-- intervals = ray.data.from_items([{'a':w[0], 'b':w[1]} for w in edges]) -->
 
 <!-- start = time() -->
 <!-- partial = intervals.map(slow)     # define the calculation -->
@@ -914,6 +952,48 @@ On my laptop I am getting:
 <!-- print(total) -->
 <!-- ``` -->
 
+
+
+
+### Processing Ray datasets with Numba-compiled functions
+
+So far we processed Ray datasets with non-Numba functions, either lambda (anonymous) or plain Python
+functions, and we obtained perfect scaling with multiple Ray processes. However, these functions are slower
+than their Numba-compiled versions.
+
+Is it possible to *process Ray datasets with Numba-compiled functions*, similar to how earlier we executed
+Numba-compiled functions on remote workers? The answer is a **firm yes**, but I will leave it to you to write
+an implementation for the slow series problem. Even though I have the solution on my laptop, I am not
+providing it here, as I feel this would be an excellent take-home exercise.
+
+A couple of considerations:
+1. Numba does not work with Python dictionaries, instead providing its own dictionary type which is not
+   compatible with Ray datasets. You can easily sidestep this problem, but you will have to find the solution
+   yourself.
+2. Very important: you must do small runs on workers to copy your functions over to them -- no need to time
+   these runs. Without this "pre-compilation" step you will not get fast execution on workers on the bigger
+   problem the first time you run it.
+
+<!-- The solution is in `~/training/pythonHPC/slowSeriesNumbaRayData.py`. -->
+
+With this Numba-compiled processing, on my laptop I am getting:
+
+|   |   |   |   |   |
+|---|---|---|---|---|
+| ncores | 1 | 2 | 4 | 8 |
+| wallclock runtime (sec) | 0.447 | 0.234 | 0.238 | 0.137 |
+
+
+I am not quite sure why going 2 → 4 cores does not result in better runtimes, but there could be some inherent
+overhead in Ray tasks implementation on my laptop that shows up in this small problem -- or more likely the
+efficiency cores enter the calculation at this time?
+
+With the same code on the training cluster I get better scaling:
+
+|   |   |   |   |   |
+|---|---|---|---|---|
+| ncores | 1 | 2 | 4 | 8 |
+| wallclock runtime (sec) | 1.054 | 0.594 | 0.306 | 0.209 |
 
 
 
@@ -927,14 +1007,14 @@ On my laptop I am getting:
 
 <!-- Launching a single-node ray cluster -->
 
-Let's try running the last problem on the training cluster as a batch job. 
-
 {{< question num=15 >}}
-1. Save the entire Python code for the last problem as a file `rayPartialMap.py`
+Let's try running the last (without Numba-compiled functions) problem on the training cluster as a batch job.
+1. Save the entire Python code for the slow series problem into `rayPartialMap.py`
 2. Modify the code to take <ncores> as a command-line argument:
 ```py
 import sys
 ncores = int(sys.argv[1])
+ray.init(num_cpus=ncores, configure_logging=False)
 ```
 and test it from the command line inside your interactive job
 ```sh
@@ -969,14 +1049,14 @@ Testing on the training cluster:
 |   |   |   |   |   |
 |---|---|---|---|---|
 | ncores | 1 | 2 | 4 | 8 |
-| wallclock runtime | 15.345 | 7.890 | 4.264 | 2.756 |
+| wallclock runtime (sec) | 15.345 | 7.890 | 4.264 | 2.756 |
 
 Testing on Cedar (averaged over 2 runs):
 
 |   |   |   |   |   |   |   |
 |---|---|---|---|---|---|---|
 | ncores | 1 | 2 | 4 | 8 | 16 | 32 |
-| wallclock runtime | 18.263 | 9.595 | 5.228 | 3.048 | 2.069 | 1.836 |
+| wallclock runtime (sec) | 18.263 | 9.595 | 5.228 | 3.048 | 2.069 | 1.836 |
 
 In our [Ray documentation](https://docs.alliancecan.ca/wiki/Ray) there are instructions for launching a
 single-node Ray cluster. Strictly speaking, this is not necessary, as on a single machine (node) a call to
@@ -1023,10 +1103,10 @@ Let's quit our current Slurm job (if any), back on the login node start the foll
 then run the following commands:
 
 ```sh
-salloc --nodes 2 --ntasks-per-node=1 --cpus-per-task=2 --mem-per-cpu=3600 --time=0:60:0
-
 module load StdEnv/2023 python/3.12.4 arrow/17.0.0 scipy-stack/2024a netcdf/4.9.2
 source /project/def-sponsor00/shared/pythonhpc-env/bin/activate
+
+salloc --nodes 2 --ntasks-per-node=1 --cpus-per-task=2 --mem-per-cpu=3600 --time=0:60:0
 
 export HEAD_NODE=$(hostname)   # head node's address -- different from the login node!
 export RAY_PORT=34567          # a port to start Ray on the head node 
@@ -1036,7 +1116,9 @@ Next, we will start a Ray cluster on the head node as a background process:
 
 ```sh
 ray start --head --node-ip-address=$HEAD_NODE --port=$RAY_PORT --num-cpus=$SLURM_CPUS_PER_TASK --block &
-sleep 10   # wait for the prompt (asking to enable usage stats collection) to auto-proceed in 10 seconds
+sleep 10   # wait for the prompt; it'll ask to enable usage stats collection
+...
+# Eventually should say "Ray runtime started."
 ```
 
 Then on each node inside our Slurm job, except the head node, we launch the worker nodes of the Ray cluster:
@@ -1046,7 +1128,7 @@ cat << EOF > launchRay.sh
 #!/bin/bash
 module load StdEnv/2023 python/3.12.4 arrow/17.0.0 scipy-stack/2024a netcdf/4.9.2
 source /project/def-sponsor00/shared/pythonhpc-env/bin/activate
-if [[ "$SLURM_PROCID" -eq "0" ]]; then   # if MPI rank is 0
+if [[ "\$SLURM_PROCID" -eq "0" ]]; then   # if MPI rank is 0
         echo "Ray head node already started..."
         sleep 10
 else
@@ -1066,11 +1148,13 @@ Next, we launch a Python script that connects to the Ray cluster, checks the nod
 import ray
 import os
 ray.init(address=f"{os.environ['HEAD_NODE']}:{os.environ['RAY_PORT']}",_node_ip_address=os.environ['HEAD_NODE'])
+...
+# Eventually should say "Connected to Ray cluster."
 print("Nodes in the Ray cluster:", ray.nodes())   # should see two nodes with 'Alive' status
-print(ray.available_resources())                  # should see 12 CPUs and 2 GPUs over 2 Nodes
+print(ray.available_resources())                  # should see 4 CPUs and 2 nodes
 ```
 
-Finally, we shut down the Ray worker nodes:
+Finally, from bash, we shut down the Ray worker nodes:
 
 ```sh
 kill $ray_cluster_pid
@@ -1378,12 +1462,12 @@ How would you parallelize this problem with `ray.data`? The main points to remem
    array, and then write this square array to disk.
 
 The solution is in the file `juliaSetParallel.py` on instructor's laptop. Here are the runtimes for
-$2000\times 2000$ (averaged over three runs, in seconds):
+$2000\times 2000$ (averaged over three runs):
 
 |   |   |   |   |   |
 |---|---|---|---|---|
 | ncores | 1 | 2 | 4 | 8 |
-| wallclock runtime | 9.220 | 4.869 | 2.846 | 2.210 |
+| wallclock runtime (sec) | 9.220 | 4.869 | 2.846 | 2.210 |
 
 
 
