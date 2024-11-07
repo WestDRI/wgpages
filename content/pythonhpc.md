@@ -1054,9 +1054,9 @@ print("Time in seconds:", round(end-start,3))
 
 
 
-<br>&nbsp;<br>
-{{< figure src="/img/pause.png" title="" width="400px" >}}
-<br>&nbsp;<br>
+<!-- <br>&nbsp;<br> -->
+<!-- {{< figure src="/img/pause.png" title="" width="400px" >}} -->
+<!-- <br>&nbsp;<br> -->
 
 
 
