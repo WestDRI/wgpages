@@ -1361,7 +1361,7 @@ In `output/` subdirectory you will find 100 negative images.
 
 
 In Ray Data you can also write your own parallel I/O workflows by hand, defining functions to process rows
-that will load certain data/file into a specific row, e.g. with something like:
+that will load certain data/file into a specific row, e.g. with something like this:
 
 ```py
 a = ray.data.from_items([
