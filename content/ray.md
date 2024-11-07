@@ -580,6 +580,36 @@ first task has finished.
 
 
 
+<!-- ```py -->
+<!-- # start = time() -->
+<!-- # ray.get([nap.remote() for i in range(4)]) -->
+<!-- # end = time() -->
+<!-- # print("Time in seconds:", round(end-start,3))   #  -->
+
+<!-- # my_function.options(num_cpus=3).remote() -->
+
+<!-- # @ray.remote(num_cpus=2) -->
+<!-- # def nap(): -->
+<!-- #     sleep(10) -->
+<!-- #     print("almost done") -->
+<!-- #     return ray.get_runtime_context().get_task_id() -->
+
+<!-- # start = time() -->
+<!-- # ray.get([nap.remote() for i in range(4)]) -->
+<!-- # end = time() -->
+<!-- # print("Time in seconds:", round(end-start,3))   #  -->
+<!-- ``` -->
+
+
+
+
+
+
+
+
+
+
+
 ## Ray Data
 
 Ray Data is a parallel data processing library for ML workflows. As you will see in this section, Ray Data can
@@ -1490,114 +1520,22 @@ $2000\times 2000$ (averaged over three runs):
 <!-- framework, so we are not teaching them, just providing a quick overview of what different frameworks provide -->
 <!-- in terms of parallel computing. -->
 
+Machine learning (ML) frameworks in Python usually come with its own parallelization tools, so you do not need
+to use general parallel libraries that we discussed in this course.
 
+### JAX
 
+- {{<a "https://jax.readthedocs.io/en/latest/sharded-computation.html" "Single-Program Multi-Data">}}
+- {{<a "https://jax.readthedocs.io/en/latest/advanced_guide.html" "Several parallel computing sections in the advanced guide">}}
 
+### PyTorch
 
+- {{<a "https://pytorch.org/tutorials/beginner/dist_overview.html" "PyTorch Distributed (torch.distributed) Overview">}}
+- {{<a "https://pytorch.org/tutorials/distributed/home.html" "Distributed and Parallel Training Tutorials">}}
+- {{<a "https://pytorch.org/tutorials/intermediate/ddp_tutorial.html" "Getting Started with DistributedDataParallel (DDP) module">}}
+- {{<a "https://pytorch.org/tutorials/beginner/blitz/data_parallel_tutorial.html" "Using multiple GPUs with DataParallel">}}
 
+### TensorFlow
 
-
-
-
-
-
-
-
-
-
-<!-- ```py -->
-<!-- def add_dog_years(batch: Dict[str, np.ndarray]) -> Dict[str, np.ndarray]: -->
-<!--     batch["age_in_dog_years"] = 7 * batch["age"] -->
-<!--     return batch -->
-<!-- do = ( -->
-<!--     ray.data.from_items([ -->
-<!--         {"name": "Luna", "age": 4}, -->
-<!--         {"name": "Rory", "age": 14}, -->
-<!--         {"name": "Scout", "age": 9}, -->
-<!--     ]) -->
-<!--     .map_batches(add_dog_years) -->
-<!-- ) -->
-<!-- do.show() -->
-
-
-
-
-<!-- ds.map_batches(lambda batch: {"id": batch["id"] * 2})   -->
-
-
-<!-- # Compute the maximum. -->
-
-<!-- ds.max("id") -->
-<!-- 999 -->
-
-<!-- # Shuffle this dataset randomly. -->
-
-<!-- ds.random_shuffle()   -->
-<!-- RandomShuffle -->
-<!-- +- Dataset(num_blocks=..., num_rows=1000, schema={id: int64}) -->
-
-<!-- # Sort it back in order. -->
-
-<!-- ds.sort("id")   -->
-<!-- Sort -->
-<!-- +- Dataset(num_blocks=..., num_rows=1000, schema={id: int64}) -->
-<!-- ``` -->
-
-
-
-
-
-
-
-
-<!-- n = 100_000_000 -->
-<!-- @ray.remote -->
-<!-- def slow(interval): -->
-<!--     total = 0 -->
-<!--     for i in range(interval[0],interval[1]+1): -->
-<!--         if not "9" in str(i): -->
-<!--             total += 1.0 / i -->
-<!--     return total -->
-
-<!-- ncores = psutil.cpu_count(logical=False) -->
-<!-- size = n//ncores -->
-<!-- intervals = [(i*size+1,(i+1)*size) for i in range(ncores)] -->
-<!-- if n > intervals[-1][1]: -->
-<!--     intervals[-1] = (intervals[-1][0], n) -->
-
-<!-- # r = slow.remote((1, 12500000)) -->
-<!-- # ray.get(r) -->
-
-<!-- start = time() -->
-<!-- r = [slow.remote(intervals[i]) for i in range(ncores)] -->
-<!-- # ray.get(r)        # partial sums -->
-<!-- total = sum(ray.get(r))   # total sum -->
-<!-- end = time() -->
-<!-- print("Time in seconds:", round(end-start,3))   # 3.584 3.904 3.754 -->
-<!-- print(total) -->
-<!-- ``` -->
-
-
-
-
-
-
-<!-- ```py -->
-<!-- # start = time() -->
-<!-- # ray.get([nap.remote() for i in range(4)]) -->
-<!-- # end = time() -->
-<!-- # print("Time in seconds:", round(end-start,3))   #  -->
-
-<!-- # my_function.options(num_cpus=3).remote() -->
-
-<!-- # @ray.remote(num_cpus=2) -->
-<!-- # def nap(): -->
-<!-- #     sleep(10) -->
-<!-- #     print("almost done") -->
-<!-- #     return ray.get_runtime_context().get_task_id() -->
-
-<!-- # start = time() -->
-<!-- # ray.get([nap.remote() for i in range(4)]) -->
-<!-- # end = time() -->
-<!-- # print("Time in seconds:", round(end-start,3))   #  -->
-<!-- ``` -->
+- {{<a "https://www.tensorflow.org/guide/distributed_training" "Distributed training with TensorFlow">}}
+- {{<a "https://www.tensorflow.org/guide/keras/distributed_training" "Multi-GPU and distributed training">}}
