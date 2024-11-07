@@ -1520,8 +1520,8 @@ $2000\times 2000$ (averaged over three runs):
 <!-- framework, so we are not teaching them, just providing a quick overview of what different frameworks provide -->
 <!-- in terms of parallel computing. -->
 
-Machine learning (ML) frameworks in Python usually come with its own parallelization tools, so you do not need
-to use general parallel libraries that we discussed in this course.
+Machine learning (ML) frameworks in Python usually come with their own parallelization tools, so you do not
+need to use general parallel libraries that we discussed in this course.
 
 ### JAX
 
