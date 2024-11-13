@@ -11,7 +11,7 @@ katex = true
 <!-- \author[]{{\large\sc Alex Razoumov}\\{\small alex.razoumov@westdri.ca}} -->
 
 * To participate in the course exercises, you will need the [ZIP file](https://bit.ly/programmableZip)
-  (39MB). Extract it to find the following data files: `cube.txt`, `tabulatedGrid.csv`, `compact150.nc`, and
+  (27MB). Extract it to find the following data files: `cube.txt`, `tabulatedGrid.csv`, `compact150.nc`, and
   `sineEnvelope.nc`.
 
 ## ParaView
@@ -85,18 +85,21 @@ Calculator / Python Calculator filter cannot modify the geometry ...
 
 {{< figure src="/img/programmable/vtkDataTypes.png" title="" width="600px" >}}
 
+In today's examples we will create datasets in the following formats:
 
-Today you will see examples where we create **vtkImageData**, **vtkPolyData** and **vtkStructuredGrid** data.
+1. vtkImageData,
+1. vtkPolyData, and
+1. vtkStructuredGrid.
 
 For simplicity, we will skip the examples with Output Data Set Type = **vtkUnstructuredGrid** -- that would
-produce the most versatile object, but with any vtkUnstructuredGrid cells you will have to describe the
-connections between their points needed to form these cells. You can find a couple of examples of creating
+produce the most versatile object, but with any unstructured cells you will have to describe the connections
+between their points needed to form these cells. You can find a couple of examples of creating
 vtkUnstructuredGrid in a [2021 webinar](https://training.westdri.ca/tools/visualization#programmable).
 
-### Programmable Filter
+### Programmable Filter workflow
 
 1. Apply **Programmable Filter** to a ParaView pipeline object
-1. Select Output Data Set Type (either Same as Input, or one of provided VTK data types)
+1. Select Output Data Set Type: either Same as Input, or one of the VTK data types from above
 1. In the Script box, write Python code: **input** from a pipeline object → **output**
   - use `inputs[0].Points[:,0:3]` and/or `inputs[0].PointData['array name']` to compute your **output**:
     points, cells, and data arrays
@@ -105,7 +108,7 @@ vtkUnstructuredGrid in a [2021 webinar](https://training.westdri.ca/tools/visual
 4. Depending on **output**'s type, might need to describe it in the RequestInformation Script box
 5. Hit Apply
 
-### Programmable Source
+### Programmable Source workflow
 
 Same as Programmable Filter but without an input.
 
@@ -123,7 +126,7 @@ centered at (0,0).
 1. Apply Sources | **Plane** at $100^2$ resolution
 1. Apply **Programmable Filter**
   - set Output Data Set Type = Same as Input
-  - this will create the same discretization (Points) as its input, without the fields (PointData)
+  - this will create the same discretization (vtkPolyData) as its input, without the fields (PointData)
 3. Let's print some info
 ```py
 print(type(output))   # paraview.vtk.numpy_interface.dataset_adapter.PolyData
@@ -133,14 +136,15 @@ print(output.Points)         # but all z-coordinates are 0s
 ```
 3. Paste into Script
 ```py
-output.Points[:,2] = 0.5*exp(-(inputs[0].Points[:,0]**2+inputs[0].Points[:,1]**2)/(2*0.02))
+x = inputs[0].Points[:,0]
+y = inputs[0].Points[:,1]
+output.Points[:,2] = 0.5*exp(-(x**2+y**2)/(2*0.02))
 dataArray = 0.3 + 2*output.Points[:,2]
 output.PointData.append(dataArray, "pnew")   # add the new data array to our output
 ```
 3. Display in 3D, colour with `pnew`
 
 {{< figure src="/img/programmable/gaussian.png" title="" width="600px" >}}
-
 
 <!-- ```py -->
 <!-- numPoints = inputs[0].GetNumberOfPoints() -->
@@ -166,9 +170,8 @@ print(output.Points[1005,:])
 
 ## Programmable Source
 
-1. Let's switch to Programmable Source
-1. Try several different Output Data Set Type (not Same as Input)
-1. `print(type(output))` via Script
+Let's switch to the Programmable Source. It has no input, so we will need to set its Output Data Set Type to
+one of the VTK data types.
 
 A common use of Programmable Source is to *prototype readers*. Let's quickly create our own reader for a CSV
 file with 3D data on a grid.
@@ -242,12 +245,15 @@ You need to modify the previous Programmable Source to read this data.
 
 ## Write a 3D function directly into Cartesian mesh: numpy → VTK
 
+Similar to using a Source to read data from a file, you can use a Source to create a discretized version of a
+3D function.
+
 1. Apply **Programmable Source**, set Output Data Set Type = vtkImageData
 1. Into Script paste this code:
 ```py
 from numpy import linspace, sin, sqrt
 
-n = 100
+n = 100   # the size of our grid
 output.SetDimensions(n,n,n)
 output.SetOrigin(0,0,0)
 output.SetSpacing(.1,.1,.1)
@@ -275,6 +281,8 @@ util.SetOutputWholeExtent(self, [0,n-1,0,n-1,0,n-1])
 {{< figure src="/img/programmable/envelope.png" title="" width="600px" >}}
 
 ## Single helix source example from ParaView docs
+
+Let's create from scratch a Polygonal Data object.
 
 1. Apply **Programmable Source**, set Output Data Set Type = vtkPolyData
 1. Paste this code:
@@ -532,12 +540,15 @@ util.SetOutputWholeExtent(self,[0,nlon-1,0,nr-1,0,nlat-1])   # the order is fixe
   - go slowly and save frequently, as ParaView *will crash* when you don't allocate objects properly inside
         Programmable Filter/Source
 - Links
-  - https://docs.paraview.org/en/latest/ReferenceManual/pythonProgrammableFilter.html
-  - https://www.paraview.org/Wiki/ParaView/Simple_ParaView_3_Python_Filters
-  - https://pyscience.wordpress.com/2014/09/06/numpy-to-vtk-converting-your-numpy-arrays-to-vtk-arrays-and-files
+  - [Programmable Filter](https://docs.paraview.org/en/latest/ReferenceManual/pythonProgrammableFilter.html)
+    in the offical ParaView documentation
+  - simple [Programmable Filter / Source script
+    examples](https://www.paraview.org/Wiki/ParaView/Simple_ParaView_3_Python_Filters) in the ParaView wiki
+  - an article [NumPy to VTK: Converting your NumPy arrays to VTK arrays and
+    files](https://pyscience.wordpress.com/2014/09/06/numpy-to-vtk-converting-your-numpy-arrays-to-vtk-arrays-and-files)
   - first half of the talk by Jean M. Favre (Swiss National Supercomputing Centre) https://youtu.be/aPKVrrzYGdo
 - Future topic: converting Programmable Filter's code to a plugin
   - code its own custom GUI Properties using Python decorators
-  - load your plugin, then use it as a *normal* filter or source
+  - after loading your plugin, it should be available as a normal filter or source in the menu
 
 <!-- - {{<a "link" "text">}} -->
