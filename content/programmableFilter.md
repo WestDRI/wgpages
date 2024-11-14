@@ -10,9 +10,12 @@ katex = true
 <!-- \title[Slides etc at \url{https://bit.ly/programmableZip}]{\LARGE } -->
 <!-- \author[]{{\large\sc Alex Razoumov}\\{\small alex.razoumov@westdri.ca}} -->
 
-* To participate in the course exercises, you will need the [ZIP file](https://bit.ly/programmableZip)
-  (27MB). Extract it to find the following data files: `cube.txt`, `tabulatedGrid.csv`, `compact150.nc`, and
-  `sineEnvelope.nc`.
+**Instructor**: Alex Razoumov (SFU)
+
+**Software**: To participate in the course exercises, you will need to [install
+ParaView](https://www.paraview.org/download) on your computer and [download this ZIP
+file](https://bit.ly/programmableZip) (27MB). Unpack it to find the following data files: *cube.txt*,
+*tabulatedGrid.csv*, *compact150.nc*, and *sineEnvelope.nc*.
 
 ## ParaView
 
@@ -27,9 +30,10 @@ katex = true
 - Client-server for remote interactive visualization
 - Uses MPI for distributed-memory parallelism on HPC clusters
 - ParaView is based on VTK (Visualization Toolkit)
-  - not the only VTK-based open-source scientific renderer, e.g. VisIt, MayaVi (Python + numpy + scipy + VTK),
-  an of course a number of Kitware's own tools besides ParaView are based on VTK
-  - VTK can be used from C++, Python, and now JavaScript as a standalone renderer
+  - not the only VTK-based open-source scientific renderer,
+  e.g. [VisIt](https://visit-dav.github.io/visit-website), MayaVi (Python + numpy + scipy + VTK), an of course
+  a number of Kitware's own tools besides ParaView are based on VTK
+  - VTK can be used as a standalone renderer from C++, Python, and now JavaScript
 
 We teach both beginner's (typically full-day) ParaView workshops and additional, more advanced topics:
 
@@ -77,13 +81,13 @@ Why would you want to use the Programmable Filter / Source? Fundamentally, these
 VTK objects directly from ParaView. Let's say we want to plot a projection of a cubic dataset along one of its
 principal axes, or do some other transformation for which there is no filter.
 
-{{< figure src="/img/programmable/projection1.png" title="from VTK text book" width="600px" >}}
+{{< figure src="/img/programmable/projection1.png" title="" width="600px" >}}
 
 Calculator / Python Calculator filter cannot modify the geometry ...
 
 ### VTK data types
 
-{{< figure src="/img/programmable/vtkDataTypes.png" title="" width="600px" >}}
+{{< figure src="/img/programmable/vtkDataTypes.png" title="from the VTK Textbook" width="600px" >}}
 
 In today's examples we will create datasets in the following formats:
 
@@ -101,10 +105,13 @@ vtkUnstructuredGrid in a [2021 webinar](https://training.westdri.ca/tools/visual
 1. Apply **Programmable Filter** to a ParaView pipeline object
 1. Select Output Data Set Type: either Same as Input, or one of the VTK data types from above
 1. In the Script box, write Python code: **input** from a pipeline object → **output**
-  - use `inputs[0].Points[:,0:3]` and/or `inputs[0].PointData['array name']` to compute your **output**:
-    points, cells, and data arrays
-  - some objects pass multiple `inputs[:]`
-  - either use the default **output** for your selected Output Data Set Type, or create your own custom **output** object
+  - use `inputs[0].Points[:,0:3]` and/or `inputs[0].PointData['array name']` and/or
+    `inputs[0].CellData['array name']` to compute your **output**: points, cells, and data arrays
+  - some objects take/pass multiple `inputs[:]`
+
+<!-- - either use the default **output** for your selected Output Data Set Type, or create your own custom -->
+<!--   **output** object -->
+  
 4. Depending on **output**'s type, might need to describe it in the RequestInformation Script box
 5. Hit Apply
 
@@ -173,6 +180,8 @@ print(output.Points[1005,:])
 Let's switch to the Programmable Source. It has no input, so we will need to set its Output Data Set Type to
 one of the VTK data types.
 
+### Build a custom reader
+
 A common use of Programmable Source is to *prototype readers*. Let's quickly create our own reader for a CSV
 file with 3D data on a grid.
 
@@ -184,7 +193,8 @@ We will start with a conventional approach to reading CSV files:
   - specify `x/y/z` columns
   - colour with `scalar`
 
-Now let's replace this with reading the CSV file directly to the Cartesian mesh. Reset your ParaView and then:
+Now let's replace this with reading the CSV file directly to the Cartesian mesh, without using the File | Open
+dialogue. Reset your ParaView and then:
 
 1. Apply **Programmable Source**, set Output Data Set Type = vtkImageData
 1. Into Script paste this code:
@@ -243,7 +253,7 @@ You need to modify the previous Programmable Source to read this data.
 
 <!-- Solution is in `~/Documents/11-programmableFilterData/solutions.md` -->
 
-## Write a 3D function directly into Cartesian mesh: numpy → VTK
+### Write a 3D function directly into Cartesian mesh: numpy → VTK
 
 Similar to using a Source to read data from a file, you can use a Source to create a discretized version of a
 3D function.
@@ -260,8 +270,9 @@ output.SetSpacing(.1,.1,.1)
 output.SetExtent(0,n-1,0,n-1,0,n-1)
 output.AllocateScalars(vtk.VTK_FLOAT,1)
 
-x = linspace(-7.5,7.5,n)
-y, z = x.reshape(n,1), x.reshape(n,1,1)
+x = linspace(-7.5,7.5,n)   # three orthogonal discretization vectors
+y = x.reshape(n,1)
+z = x.reshape(n,1,1)
 data = ((sin(sqrt(y*y+x*x)))**2-0.5)/(0.001*(y*y+x*x)+1.)**2 + \
     ((sin(sqrt(z*z+y*y)))**2-0.5)/(0.001*(z*z+y*y)+1.)**2 + 1.
 
@@ -269,7 +280,7 @@ vtk_data_array = vtk.util.numpy_support.numpy_to_vtk(
     num_array=data.ravel(), deep=False, array_type=vtk.VTK_FLOAT)
 vtk_data_array.SetNumberOfComponents(1)
 vtk_data_array.SetName("density")
-output.GetPointData().SetScalars(vtk_data_array)
+output.GetPointData().SetScalars(vtk_data_array)   # use it as a scalar field in the output
 ```
 3. Into Request Information paste this code:
 ```py
@@ -280,7 +291,7 @@ util.SetOutputWholeExtent(self, [0,n-1,0,n-1,0,n-1])
 
 {{< figure src="/img/programmable/envelope.png" title="" width="600px" >}}
 
-## Single helix source example from ParaView docs
+### Single helix source example from ParaView docs
 
 Let's create from scratch a Polygonal Data object.
 
@@ -308,7 +319,7 @@ pointIds.SetNumberOfIds(numPoints)
 for i in range(numPoints):   # define a single polyline connecting all the points in order
    pointIds.SetId(i, i)      # point i in the line is formed from point i in vtkPoints
 
-output.Allocate(1, 1)     # allocate space for one vtkPolyLine 'cell' to the vtkPolyData object
+output.Allocate(1)     # allocate space for one vtkPolyLine 'cell' to the vtkPolyData object
 output.InsertNextCell(vtk.VTK_POLY_LINE, pointIds)   # add this 'cell' to the vtkPolyData object
 ```
 
@@ -316,7 +327,10 @@ output.InsertNextCell(vtk.VTK_POLY_LINE, pointIds)   # add this 'cell' to the vt
 
 <!-- Double helix source example from ParaView docs -->
 
-## Programmatically generated point cloud
+### Programmatically generated point cloud
+
+Here we use exactly the same technique (use Source to create a vtkPolyData object, add a bunch of points,
+create a single cell) with a very different looking result.
 
 1. Apply **Programmable Source**, set Output Data Set Type = vtkPolyData
 1. Paste this code:
@@ -412,7 +426,7 @@ util.SetOutputWholeExtent(self, [0,n-1,0,n-1,0,0])
 - {{<a "https://scivis2021.netlify.app/results#best-cover-visualization" "Best Cover Visualization submission">}} with the 3D Mollweide projection
 - On presenter's laptop watch the full video `open $(fd vis21g-sub1007-i5.mp4 ~/Documents)`
 
-## Playing with the dataset in standalone Python
+### Playing with the dataset in standalone Python
 
 ```py
 import xarray as xr
@@ -460,6 +474,8 @@ lam = data.lon.values[100]
 phi = data.lat.values[50]
 mollweide(lam,phi)
 ```
+
+### Back to ParaView
 
 Our goal is to create something like this:
 {{< figure src="/img/programmable/convection.png" title="" width="800px" >}}
