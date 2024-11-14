@@ -201,7 +201,7 @@ dialogue. Reset your ParaView and then:
 <!-- output = self.GetOutput() -->
 ```py
 import numpy as np
-data = np.genfromtxt("/Users/razoumov/Documents/11-programmableFilterData/tabulatedGrid.csv",
+data = np.genfromtxt("/Users/razoumov/programmableFilter/tabulatedGrid.csv",
                      dtype=None, names=True, delimiter=',', autostrip=True)
 
 nx = len(set(data['x']))
@@ -430,7 +430,7 @@ util.SetOutputWholeExtent(self, [0,n-1,0,n-1,0,0])
 
 ```py
 import xarray as xr
-data = xr.open_dataset('/Users/razoumov/tmp/11-programmableFilterData/spherical150.nc')
+data = xr.open_dataset('/Users/razoumov/programmableFilter/compact150.nc')
 print(data)                      # show all variables inside this dataset
 
 print(data.r)                    # radial discretization
@@ -480,7 +480,7 @@ mollweide(lam,phi)
 Our goal is to create something like this:
 {{< figure src="/img/programmable/convection.png" title="" width="800px" >}}
 
-1. load spherical150.nc, uncheck Spherical Coordinates
+1. load `compact150.nc`, uncheck Spherical Coordinates
 2. apply Programmable Filter, set Output Data Set Type = vtkStructuredGrid
 3. let's start playing with the data in the Script dialogue:
 
@@ -498,7 +498,7 @@ test it from a standalone Python shell:
 
 ```py
 import sys
-sys.path.insert(0, "/Users/razoumov/Documents/11-programmableFilterCourse")
+sys.path.insert(0, "/Users/razoumov/programmableFilter")
 from mollweide import mollweide
 mollweide(100,3)
 ```
@@ -509,7 +509,7 @@ Here is what our filter will look like:
 from math import sin, cos, pi, sqrt, radians
 import numpy as np
 import sys
-sys.path.insert(0, "/Users/razoumov/Documents/11-programmableFilterData")
+sys.path.insert(0, "/Users/razoumov/programmableFilter")
 from mollweide import mollweide
 
 temp_in = inputs[0].PointData["temperature"]
