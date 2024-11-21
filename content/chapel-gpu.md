@@ -4,7 +4,7 @@ slug = "chapel-gpu"
 katex = true
 +++
 
-{{<cor>}}October 1st, 2024<sup>st</sup>{{</cor>}}\
+{{<cor>}}October 1<sup>st</sup>, 2024{{</cor>}}\
 {{<cgr>}}10:00am–11:00am Pacific Time{{</cgr>}}
 
 Chapel was designed as a parallel-first programming language targeting any hardware that supports parallel
