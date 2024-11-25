@@ -1,11 +1,16 @@
 +++
 title = "Distributed file storage with git-annex"
-slug = "git-annex"
+slug = "annex"
 katex = true
 +++
 
 {{<cor>}}November 26<sup>th</sup>, 2024{{</cor>}}\
 {{<cgr>}}10:00am–11:00am Pacific Time{{</cgr>}}
+
+{{<ex>}}
+You can find this page at:
+{{</ex>}}
+# https://wgpages.netlify.app/annex
 
 **Abstract**: git-annex is a file synchronization tool designed to simplify the management of large (typically
 data-oriented) files under version control. Unlike Git, git-annex does not track file contents but rather
@@ -20,35 +25,73 @@ redundancy, ensuring that each individual repository or drive is aware of the lo
 drives, eliminating the need to power them on just to find a file. git-annex also offers online capabilities,
 allowing file synchronization across multiple filesystems and clusters to help you manage your research data.
 
-## Running git-annex
+## Git shortcomings for large files
 
-<!-- If you have an NVIDIA GPU on your computer and run *Linux*, and have all the right GPU drivers and CUDA -->
-<!-- installed, it should be fairly straightforward to compile Chapel with GPU support. Here is [what worked for me -->
-<!-- in AlmaLinux 9.4](https://gist.github.com/razoumov/03cfc54cc388675389bb4343beb8a6b1). Please let me know if -->
-<!-- these steps do not work for you. -->
+Git was designed for version control of **text files** (codes, articles, any text-based documents). One major
+drawback of putting large **data files** under traditional version control is that it will double the size of
+your repository. You can use a hack to alleviate this problem, e.g. instead of putting the repository into the
+working directory, you can put it on a separate drive:
 
-<!-- In *Windows*, Chapel with GPU support works under the Windows Subsystem for Linux (WSL) as explained in [this -->
-<!-- post](https://chapel-lang.org/blog/posts/nvidia-gpu-wsl). You *could* also run Chapel inside a [Docker -->
-<!-- container](https://chapel-lang.org/install-docker.html), although you need to find a GPU-enabled Docker image. -->
+```sh
+mkdir large && cd large
+git init --separate-git-dir=/Volume/drive/repoDir
+dd if=/dev/urandom of=someLargeFile bs=10240 count=$(( RANDOM + 1024 ))
+git add someLargeFile
+git commit -m "..."
+```
 
-## Git shortcoming for large files
+In the working directory, this will create a text file `.git` containing the path to the actual
+repository. Now, when you commit large files to this repository, a copy will remain in the working directory
+(first drive), and another copy will go into the repository (second drive). Theoretically, you can even swap
+between different repositories (i.e. different drives) by swapping the content of `.git`, so you can have a
+copy of the same set of files on multiple drives.
 
-## History
+However, if you modify/delete a binary data file from the working directory, git will keep the older version
+in the repository. If this is a multi-GB data file and you no longer need it, you'll be wasting space by
+keeping this file in the repository.
 
-## Warning
+git-annex solves this problem by replacing data files with symbolic links. When you no longer need a file, you
+simply run a `git-annex drop` command to free some disk space. In addition, git-annex provides these features:
 
-Sometimes Git development gets ahead of git-annex, and things might behave weirdly. In such cases you might
-want to check if a new version of git-annex is available.
+1. It can distribute files across multiple repositories, to have a different collection of files in each
+   repository. You don't use multiple bookcases to store the same set of books!
+1. It can automate redundant storage, so that you can have multiple copies of files on different drives *when
+   you need backups*.
+1. It can work offline: you can synchronize data between drives without having to mount all of them at the
+   same time. git-annex is *fully distributed*, i.e. each repository in the collection stores the full
+   history, but it is often convenient to designate the main repository for syncing multiple secondary
+   repositories on external drives. In addition, each repository knows about the location of all files in all
+   other repositories, without having to mount the drives.
 
-## Links
+I typically buy my drives when I need more storage. Eventually I end up with a heterogeneous collection of
+standalone HDDs and SSDs. git-annex helps me automate storage of a large number of files across these drives
+sitting on a shelf and ensures that all my storage is redundant, i.e. I have at least two copies of *all
+important* files. I can even throw into the mix a remote server with extra storage, if I want.
 
-- [git-annex walkthrough](http://git-annex.branchable.com/walkthrough)
+You can read about the history of git-annex on [Wikipedia](https://en.wikipedia.org/wiki/Git-annex).
+
+There is a competing project [Git Large File Storage (LFS)](https://git-lfs.com), and a number of projects
+built on top of git-annex.
+
+## Installation
+
+git-annex is open source and is available as a package in Linux, Mac, Windows. On my Mac I installed it with
+`brew install git-annex`.
+
+Sometimes Git development gets ahead of git-annex, and very occasionally things might behave weirdly (but I
+never had any loss of data) if you have newer Git and older git-annex. In such cases you might want to check
+if a new version of git-annex is available.
+
+## Workflows
 
 ### Adding binary files
 
-1. `shuf -i 0-9 -n 5` produces 5 random digits 0-9
-1. `shuf -i 0-9 -n 5 | tr -d '\n'` puts 5 random digits into a singe line
-1. $RANDOM returns a pseudorandom integer in the range 0..32767
+For the purpose of this tutorial, let's create a bash function to quickly add new binary files to the current
+directory.
+
+1. `shuf -i 0-9 -n 5` produces 5 unique random digits 0-9
+1. `shuf -i 0-9 -n 5 | tr -d '\n'` puts 5 unique random digits into a singe line
+1. `$RANDOM` returns a pseudorandom integer in the range 0..32767
 
 The following function will take a number and will produce this number of binary files (filled with random
 bits) of size (1-33)MB.
@@ -76,7 +119,7 @@ alias ga='git-annex'
 
 git init
 ga init "earth"
-# echo "* annex.numcopies=1" >> .gitattributes
+
 populate 10
 
 ga add .   # (1) move files to .git/annex/objects
@@ -85,13 +128,20 @@ ga add .   # (1) move files to .git/annex/objects
 git commit -m "add 10 new files"
 ```
 
+<!-- # echo "* annex.numcopies=1" >> .gitattributes -->
+
 It is very important to use `ga add` and not `git add` when adding files to annex, so you need to rewire your
 git finger memory.
+
+To check the repository/annex current status, you can use one of these two commands -- both of them report
+approximately the same information, so in practice I use one or the other:
 
 ```sh
 git status   # everything is clean
 ga status    # everything is clean
+```
 
+```sh
 populate 5
 ls   # 5 new files, 10 old links
 
@@ -158,9 +208,7 @@ If you want to remove multiple files, e.g. an entire subdirectory `subdir`, you 
 ```sh
 ga unannex <subdir>
 ga unused   # show all unlinked files
-for i in {1..100}; do   # adjust the numbers based on the previous command's output
-	ga dropunused --force $i
-done
+ga dropunused --force {1..5}   # adjust the numbers based on the previous command's output
 ```
 
 ### Remove file completely from the drive
@@ -172,7 +220,7 @@ If you don't want to keep the file, one possible solution is:
 1. update the repository: `git commit -m "moved <filename> out of the annex"`
 1. delete the file `rm <filename>`
 
-Another solution that we will see later is:
+An alternative solution (we'll see `ga drop` later when we work with remotes) could be:
 
 ```sh
 ga drop --force <filename>   # drop a local copy (object)
@@ -300,8 +348,7 @@ git commit -m "add 2 files"
 
 ga whereis test03985 test69314
 ga whereis | grep -A 1 "1 copy"   # show all files with only one copy
-ga whereis . | grep -A 1 "1 copy" | grep -B 2 here   # show local files with only one copy
-
+ga whereis . | grep -A 1 "1 copy" | grep -B 2 "\[here\]"   # show local files with only one copy
 ga sync
 
 --- mars annex ---
@@ -314,6 +361,22 @@ ga sync
 ```
 
 The command `ga get --auto --numcopies=2` can work with any list of files and/or directories.
+
+<!-- ```sh -->
+<!-- cd /Volumes/white/annex   # 2nd copy destination -->
+<!-- src=watch/soloCamping -->
+<!-- ga whereis $src | grep -A 1 "1 copy"   # show files with only one copy in a given directory -->
+<!-- ga whereis . | grep -A 1 "1 copy" | grep -B 2 evo   # show files with only one copy on a given drive -->
+<!-- >>> make sure the source drive is mounted -->
+<!-- ga get --auto --numcopies=2 $src   # get files with fewer than two copies -->
+<!-- ga whereis $src -->
+<!-- ga sync -->
+<!-- ``` -->
+
+
+
+
+
 
 ### Move files manually between remotes
 
@@ -340,13 +403,65 @@ ga drop --auto --numcopies=1 <path>   # drop all local copies if there is a remo
 ga drop --auto --numcopies=2 <path>   # drop all local copies if there are 2 remote copies
 ```
 
+### Move the file of the annex and drop all annexed copies
+
+Lets' create a new file and put its content into two annexes:
+
+```sh
+--- earth annex ---
+populate 1
+ga add test05873
+ga copy test05873 --to mars
+ga sync
+ga whereis test05873   # two copies: on earth and mars
+
+--- mars annex ---
+ga sync
+ga whereis test05873   # two copies: on earth and mars
+object=$(ls -l test05873 | awk '{print $11}')
+ls -l $object          # actual file is stored here
+```
+
+Let's copy the file content back to replace the link:
+
+```sh
+ga unannex test05873
+ls              # the file replaced the link
+ga unused       # shows no unlinked files
+ls -l $object   # the file is still there, and it is unlinked
+```
+
+What is going on here? It turns out that "ga unused" actually works across linked annexes, and it simply says
+that there is a link to this file somewhere in the other repository. To unannex this file's copy everywhere,
+you need to tell `ga unused` to ignore that this file is checked out in other annexes:
+
+```sh
+ga unused --used-refspec=+master
+ga dropunused --force 1
+ga sync
+ls -l $object   # the object is now gone locally
+
+--- earth annex ---
+ga sync
+ga whereis test05873               # this file is not under annex anywhere
+ga unused --used-refspec=+master   # but you need to delete its copy here as well
+ga dropunused --force 1
+
+--- mars annex ---
+ls test05873      # we have the unannexed copy in mars
+```
+
+
+
+
+
+
+
 ### Show disk usage across all remotes
 
 ```sh
 ga info <path>   # show local+global disk usage in a directory
 ```
-
-## Workflows
 
 ## SSH remotes
 
@@ -417,42 +532,79 @@ ga sync   # not to worry, this will sync the recent changes in the ssh remote
 ls        # vis1 is now here
 ```
 
+Note that having SSH remotes will slow down your `ga sync` commands, so personally -- even when I have them --
+I prefer to temporarily remove them with `git remote remove ...`.
+
 You can find another example at https://git-annex.branchable.com/walkthrough/using_ssh_remotes.
 
 
 
 
 
+## Check annexed data
+
+```sh
+ga fsck     # run checksum on all local files
+ga unused   # show all unlinked files in this annex
+```
+
+
+
+
+
+## When a drive fails
+
+If a drive goes bad, you want to make sure its content is mirrored in two other places, i.e. you should
+rebuild your redundant storage:
+
+```sh
+--- some other annex ---
+ga whereis . | grep -A 1 "1 copy" | grep -B 2 <bad annex>    # congratulations, you lost your only copy ...
+ga whereis . | grep -A 2 "2 copies" | grep -B 3 <bad annex>  # 1 copy left elsewhere
+```
+
+Back up those single copies on a third annex with something like:
+
+```sh
+--- third annex ---
+ga get <items>   # get a local copy
+ga get --auto --numcopies=2 <items>
+
+--- source annex ---
+ga copy <items> --to <third annex>
+```
+
+Next, you want to mark the failed drive's annex as "dead", so that its content stops showing in `gitannex
+whereis`:
+
+```sh
+ga dead <bad annex>
+```
+
+and remove it from all other repositories:
+
+```sh
+git remote remove <bad annex>   # do this in each annex
+```
 
 
 
 
 
 
-<!-- ### Daily work -->
 
-<!-- ```sh -->
-<!-- cd /Volumes/evo/annex -->
 
-<!-- ga sync                                         # synchronize with remotes -->
 
-<!-- copy some files here -->
-<!-- ga add . -->
-<!-- gitcommit -a -->
-<!-- ``` -->
 
-<!-- ```sh -->
 
-<!-- ga whereis path/to/file -->
-<!-- ga move path/to/file --to=here -->
 
-<!-- ga whereis | grep -B 2 "\-\- laptop"   # show local files -->
+
+
 <!-- ga whereis soloCamping/ | grep -B 2 "\-\- laptop"   # show local files in a directory -->
 <!-- ga find movies/sf/   # show local files in a directory -->
 <!-- ga find   # show all local files (might be a long list) -->
 
 
-<!-- gitannex drop osakaElegy.mp4 -->
 
 <!-- cd /Volumes/t7red/annex/movies/sf -->
 <!-- ga add caprica1 theExpansegrep -B 2 "\-\- laptop" -->
@@ -460,72 +612,106 @@ You can find another example at https://git-annex.branchable.com/walkthrough/usi
 <!-- ga sync -->
 <!-- ``` -->
 
-<!-- ### Creating 2nd copies -->
-
-<!-- rosso: recordings -->
-<!-- t7red: recordings -->
-
-<!-- ```sh -->
-<!-- cd /Volumes/white/annex   # 2nd copy destination -->
-<!-- src=watch/soloCamping -->
-<!-- ga whereis $src | grep -A 1 "1 copy"   # show files with only one copy in a given directory -->
-<!-- ga whereis . | grep -A 1 "1 copy" | grep -B 2 evo   # show files with only one copy on a given drive -->
-<!-- >>> make sure the source drive is mounted -->
-<!-- ga get --auto --numcopies=2 $src   # get files with fewer than two copies -->
-<!-- ga whereis $src -->
-<!-- ga sync -->
-<!-- ``` -->
 
 
 
 
 
+## Print one line per file
+
+Sometimes it is tricky to `grep` the output of `ga whereis`, as it produces a variable number of lines per
+file, depending on the number of copies.
+
+`ga whereis` has the flag `--format`, but I find its output somewhat lacking.
+
+### Simpler, less efficient solution
+
+The following commands
+
+```sh
+echo $(ga whereis)        | sed 's/whereis/\n/g'
+echo $(ga whereis <path>) | sed 's/whereis/\n/g'
+```
+
+will print one line per file, so you can organize searches with something like:
+
+```sh
+echo $(ga whereis) | sed 's/whereis/\n/g' | grep <annex>
+echo $(ga whereis) | sed 's/whereis/\n/g' | grep "1 copy"
+echo $(ga whereis) | sed 's/whereis/\n/g' | grep <annex> | grep "1 copy"
+```
+
+echo $(ga whereis watch) | sed 's/whereis/\n/g' | grep "1 copy"
+
+### Faster, more elegant solution
+
+Perhaps, a more elegant solution is to use the `--json` flag which could be useful for sending (very complete)
+JSON output to other utilities or even Python scripts. One added benefit: it'll properly process and display
+Unicode in file names, e.g. if you use Chinese characters or a non-Latin alphabet.
+
+Let's process our output with [jq](https://stedolan.github.io/jq), a command-line JSON processor.
+
+First, let's list files with at least 2 copies:
+
+```sh
+ga whereis --copies 2
+```
+
+and use one of their names below.
+
+```sh
+ga whereis test43816               # multiple lines
+ga whereis --json test43816        # one JSON line per file
+ga whereis --json test43816 | jq   # show the multi-line JSON object
+ga whereis --json test43816 | jq '.file'   # print the file name only
+
+# print file name and the space-delimited list of repositories
+ga whereis --json test43816 | jq '.file + " " + (.whereis|map(.description)|join(","))'
+```
+
+We can now apply this to any list of items or the entire repository:
+
+```sh
+ga whereis --json | jq '.file + " " + (.whereis|map(.description)|join(","))'
+```
 
 
 
 
-
-
-
-
-
-<!-- gitannex whereis | grep "1 copy" -->
-<!-- gitannex whereis | grep -B 2 "\-\- here" -->
-
-<!-- mv ../secretWorldOfArrietty.m4v . -->
-<!-- gitannex add secretWorldOfArrietty.m4v     # could also do "gitannex add ." -->
-<!-- gitannex sync -->
-
-<!-- gitannex move theFinalCut.m4v iWish.m4v producers.mp4 --to boa -->
-<!-- gitannex copy osakaElegy.mp4 --to boa -->
-
-<!-- gitannex fsck     # run checksum on all local files -->
-
-<!-- gitannex get newMovies/redCherry.m4v   # get a local copy of a file -->
-
-<!-- gitannex dead patriotxt       # mark failed drive (so its content will stop showing in "gitannex whereis") -->
-<!-- git remote remove patriotxt   # remove remote repository (do this in each repository) -->
-<!-- >>> either add a new drive, create a new repository on it, and copy "single copy" files to it, -->
-<!-- >>> or alternatively redistribute files in two copies among existing drives -->
 
 
 
 
 ## Cheat sheet
 
-<items> could be any collection of files and/or directories
-<annex> is the name of local git-annex, e.g. earth or mars or venus
+- `<items>` could be any collection of files and/or directories
+- `<annex>` is the name of a git-annex, e.g. earth or mars or venus
 
-ga unannex <path>
-ga unused
+```sh
+ga init <name>
+ga add <items>
+ga sync
+
+ga unannex <items>            # replace the link with the actual file content
+ga unused                     # show all unlinked files in the annex
+ga unused --used-refspec=+master   # same, but ignore these files being checked out in other annexes
 ga dropunused --force <num>   # drop the unused file with a given index
 ga drop --force <items>       # drop a local copy (object)
-ga find   # list all local files
-ga whereis <path>   # locate file(s) or dir(s)
-ga whereis | grep -A 1 "1 copy"   # show all files with only one copy
-ga whereis . | grep -A 1 "1 copy" | grep -B 2 here   # show local files with only one copy
+
+ga find                       # list all local files
+ga whereis <items>            # locate file(s) or dir(s)
+ga whereis | grep -A 1 "1 copy"                          # show all files with only one copy
+ga whereis | grep -A 1 "1 copy" | grep -B 2 "\[here\]"   # show local files with only one copy
+echo $(ga whereis) | sed 's/whereis/\n/g'                # print one file per line
+ga whereis --json | jq '.file + " " + (.whereis|map(.description)|join(","))' # print name + annex
+ga info <items>               # show local + global disk usage
+
 ga copy <items> --to here
 ga copy <items> --to <annex>
 ga move <items> --to here
 ga move <items> --to <annex>
 ga get --auto --numcopies=2 <items>
+```
+
+- [git-annex walkthrough](http://git-annex.branchable.com/walkthrough) is a good introduction to using
+  git-annex from the command line.
