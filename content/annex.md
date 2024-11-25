@@ -76,13 +76,14 @@ built on top of git-annex.
 ## Installation
 
 git-annex is open source and is available as a package in Linux, Mac, Windows. On my Mac I installed it with
-`brew install git-annex`.
+`brew install git-annex`. On the Alliance clusters git-annex is provided as a module (`module load
+git-annex`), so no need to install it there.
 
-Sometimes Git development gets ahead of git-annex, and very occasionally things might behave weirdly (but I
-never had any loss of data) if you have newer Git and older git-annex. In such cases you might want to check
-if a new version of git-annex is available.
+For git-annex to function, you also need Git. Sometimes Git development gets ahead of git-annex, and very
+occasionally things might behave weirdly if you have newer Git and older git-annex (but I never had any data
+lost). In such cases you might want to check if a new version of git-annex is available.
 
-## Workflows
+## Standalone workflows
 
 ### Adding binary files
 
@@ -111,7 +112,7 @@ function populate() {
 
 ```sh
 cd ~/tmp
-mkdir -p {earth,mars,venus}/annex
+mkdir -p {earth,mars,venus}/annex   # placeholders for different drives or filesystems
 tree
 cd earth/annex
 
@@ -124,7 +125,7 @@ populate 10
 
 ga add .   # (1) move files to .git/annex/objects
            # (2) create symbolic links pointing to the new location
-		   # (3) add these links to the index (git commit area)
+		   # (3) add these links to the index (git staging area)
 git commit -m "add 10 new files"
 ```
 
@@ -157,13 +158,14 @@ Let's say we added a file by mistake, but have not committed it yet:
 ```sh
 populate 1
 ls
-ga add test50427
+export testfile=test50427
+ga add $testfile
 
 git status   # new file to be comitted
 ga status    # added the new file
 
-ls -l test50427
-object=$(ls -l test50427 | awk '{print $11}')   # store last line
+ls -l $testfile
+object=$(ls -l $testfile | awk '{print $11}')   # store last line
 ls -l $object
 ```
 
@@ -172,8 +174,8 @@ How do we undo this `ga add` operation? We must do it in two steps.
 1. put the file content back to replace the link:
 
 ```sh
-ga unannex test50427
-ls -l test50427   # the file is back
+ga unannex $testfile
+ls -l $testfile   # the file is back
 ls -l $object     # but the object is also still there
 ```
 
@@ -193,7 +195,7 @@ status`.
 ### Remove files from annex control
 
 What if we have both added and committed the file -- how do we undo that, i.e. how do we remove a file from
-under git-annex control? Follow the same two steps and update the repository:
+git-annex control? Follow the same two steps and update the repository:
 
 ```sh
 ga unannex test80145      # unannex one file currently under git-annex control
@@ -203,17 +205,19 @@ git commit -m "moved test80145 out of the annex"
 
 Now if we do either `git status` or `ga status`, they will report that now we have a new, untracked file.
 
-If you want to remove multiple files, e.g. an entire subdirectory `subdir`, you would do something like this:
+If you want to remove multiple files, e.g. `file1`, `file2`, `file3`, or an entire subdirectory `subdir`, you
+would do something like this:
 
 ```sh
+ga unannex <file1> <file2> <file3>
 ga unannex <subdir>
-ga unused   # show all unlinked files
-ga dropunused --force {1..5}   # adjust the numbers based on the previous command's output
+ga unused                      # show all unlinked files
+ga dropunused --force {1..5}   # adjust the number based on the previous command's output
 ```
 
 ### Remove file completely from the drive
 
-If you don't want to keep the file, one possible solution is:
+If you don't want to keep the data file, one possible solution is:
 
 1. replace the link with the file content: `ga unannex <filename>`
 1. drop the unused object file with a combination of `ga unused` and `ga dropunused --force <number>`
@@ -232,20 +236,28 @@ ga sync                      # does git commit in the background
 
 - `ga --help' will list all available commands
 - `ga <command> --help` will give quick info about the command flags
-- online help pages for individual commands https://git-annex.branchable.com/git-annex-<command>
+- online help pages for individual commands https://git-annex.branchable.com/git-annex-command (replace
+  `command` with the actual command)
+
+## Working with remotes
+
+The real power of git-annex lies in its ability to distribute files across multiple annexes in a seamless
+manner. This is achieved through conventional Git remotes.
 
 ### Remote via a clone
 
 Let's go to another drive and clone our existing repository there:
 
 ```sh
+ga status   # make sure everything is committed
+
 cd ~/tmp/venus
 git clone ~/tmp/earth/annex
 cd annex
 
-ls         # there are symbolic links to non-existent destinations
-du -s .    # currently no objects (data files)
-git log    # see the history from earth
+ls          # there are symbolic links to non-existent destinations
+du -s .     # currently no objects (data files)
+git log     # see the history from earth
 
 ga whereis    # all 15 files are on earth (1 copy of each)
 
@@ -272,20 +284,37 @@ So, what does `ga sync` do exactly? It performs these operations:
 1. run local `git commit` with a generic message "git-annex in <annex>"
 1. update the current repository with all changes made to its remotes, and
 1. push any changes in the current repository to its remotes, where you need to run `ga sync` to get them
-  - for this part to work, the remote needs to be online
-  - but the local drive does not need be online when you next do `ga sync` in the remote; in fact, `ga sync`
-    can run while offline, assuming that some remotes have sync'ed to it first
 
-Let's test this last part:
+An important innovation of `ga sync` is that it can work with remotes when they are offline:
+
+- when pulling from an offline remote, it will check its "Inbox" branch (not actual name) to see if that
+  remote has sync'ed to it earlier
+- when pushing to an offline remote, it will push updates to its "Outbox" branch (not actual name)
+
+```output
+in earth ---
+  git-annex
+* main
+  synced/git-annex
+  synced/main
+
+in venus ---
+  git-annex
+* main
+  synced/main
+```
+
+Let's test communicating with offline annexes:
 
 ```sh
 --- venus annex ---
+ga sync             # we made some changes to earth, need to update here
 dd if=/dev/urandom of=venus1 bs=1024 count=$(( RANDOM + 1024 ));
 ga add venus1
 git commit -m "add venus1"
 ga sync
 cd ../..
-mv venus hidden    # hide it from earth
+mv venus hidden     # hide it from earth
 
 --- earth annex ---
 ga whereis venus1   # cannot find
@@ -310,7 +339,7 @@ git commit -m "add 10 new files"
 ga status   # all clean
 ```
 
-Let's add our original repo as a remote for this repo:
+At this point we still have an isolated annex. Let's add our original repo as a remote for this repo:
 
 ```sh
 git remote add earth ~/tmp/earth/annex
@@ -321,19 +350,22 @@ ga sync --allow-unrelated-histories   # should work if no file conflicts
 If there is a conflict, you may want to either (1) create a new repository via `git clone` like in the
 previous section, and then add new files by hand, or (2) try to rename the conflicting file.
 
-### Branches
+Finally, let's do this:
 
-```output
-in earth ---
-  git-annex
-* main
-  synced/git-annex
-  synced/main
+```sh
+--- earth annex ---
+ga sync
+git remote               # mars is not its remote yet
+ga whereis | grep mars   # but we can see the 10 files on mars!
+```
 
-in venus ---
-  git-annex
-* main
-  synced/main
+Here we see another example of offline communication: mars pushed into earth's inbox earlier, and the last `ga
+sync` received those updates, even though we cannot connect to mars directly (no such remote). Let's correct
+this by adding the remote:
+
+```sh
+--- earth annex ---
+git remote add mars ~/tmp/mars/annex
 ```
 
 ### Create multiple copies
@@ -343,20 +375,24 @@ This is easily one of my favourite git-annex features!
 ```sh
 --- earth annex ---
 populate 2
-ga add test03985 test69314
+export coupleOfFiles="test03985 test69314"
+ga add $coupleOfFiles
 git commit -m "add 2 files"
+ga whereis $coupleOfFiles
+```
 
-ga whereis test03985 test69314
-ga whereis | grep -A 1 "1 copy"   # show all files with only one copy
+These files have just one copy (here). In fact, in our annexes there are many files with a single copy:
+
+```sh
+ga whereis | grep -A 1 "1 copy"   # show all files with only one copy, in earth + mars + venus
 ga whereis . | grep -A 1 "1 copy" | grep -B 2 "\[here\]"   # show local files with only one copy
 ga sync
 
 --- mars annex ---
-
 ga sync
-ga whereis test03985 test69314   # 1 copy
-ga get --auto --numcopies=2 test03985 test69314
-ga whereis test03985 test69314   # 2 copies
+ga whereis $coupleOfFiles   # 1 copy on earth
+ga get --auto --numcopies=2 $coupleOfFiles
+ga whereis $coupleOfFiles   # 2 copies
 ga sync
 ```
 
@@ -381,8 +417,10 @@ The command `ga get --auto --numcopies=2` can work with any list of files and/or
 ### Move files manually between remotes
 
 ```sh
-ga whereis   # pick a file elsewhere
-ga move <filename> --to here
+ga whereis   # pick a file on venus
+ga move <filename> --to here   # will likely fail (venus not linked)
+git remote add venus ~/tmp/venus/annex
+ga move <filename> --to here   # should work
 ```
 
 ```sh
@@ -395,37 +433,45 @@ ga move test52930 --to venus   # venus has to be online for this to work
 
 ```sh
 ga find   # list all local files => pick a file
-ga drop test97806   # delete the object; keep the link
+ga drop test97806   # delete the object; keep the link: dangerous territory!
 ```
+
+Usually, git-annex will not let you delete a single copy, but you can `--force` it to permanently delete your
+data.
+
+If you still want to keep a copy elsewhere, a safer approach would be:
 
 ```sh
 ga drop --auto --numcopies=1 <path>   # drop all local copies if there is a remote copy
 ga drop --auto --numcopies=2 <path>   # drop all local copies if there are 2 remote copies
 ```
 
-### Move the file of the annex and drop all annexed copies
+### Move a file out of the annex and drop all annexed copies
+
+<!-- details at https://git-annex.branchable.com/forum/git-annex_unused_not_dropping_deleted_files -->
 
 Lets' create a new file and put its content into two annexes:
 
 ```sh
 --- earth annex ---
 populate 1
-ga add test05873
-ga copy test05873 --to mars
+export testfile=test05873
+ga add $testfile
+ga copy $testfile --to mars
 ga sync
-ga whereis test05873   # two copies: on earth and mars
+ga whereis $testfile   # two copies: on earth and mars
 
 --- mars annex ---
 ga sync
-ga whereis test05873   # two copies: on earth and mars
-object=$(ls -l test05873 | awk '{print $11}')
+ga whereis $testfile   # two copies: on earth and mars
+object=$(ls -l $testfile | awk '{print $11}')
 ls -l $object          # actual file is stored here
 ```
 
 Let's copy the file content back to replace the link:
 
 ```sh
-ga unannex test05873
+ga unannex $testfile
 ls              # the file replaced the link
 ga unused       # shows no unlinked files
 ls -l $object   # the file is still there, and it is unlinked
@@ -442,16 +488,16 @@ ga sync
 ls -l $object   # the object is now gone locally
 
 --- earth annex ---
+ls -l $testfile   # the file is still under annex here
 ga sync
-ga whereis test05873               # this file is not under annex anywhere
-ga unused --used-refspec=+master   # but you need to delete its copy here as well
+ls -l $testfile   # and now it is not
+ga whereis $testfile               # this file is not under annex anywhere
+ga unused --used-refspec=+master   # delete its copy here as well
 ga dropunused --force 1
 
 --- mars annex ---
-ls test05873      # we have the unannexed copy in mars
+ls $testfile      # we have the unannexed copy (and only copy) in mars
 ```
-
-
 
 
 
@@ -463,18 +509,48 @@ ls test05873      # we have the unannexed copy in mars
 ga info <path>   # show local+global disk usage in a directory
 ```
 
+
+
+
+### Organize links into directories
+
+In real life you put files into folders / directories. We can do the same with git-controlled links:
+
+```sh
+--- mars annex ---
+mkdir data
+git mv test{0,1,2}* data/
+ga sync
+
+--- earth annex ---
+ga sync
+ls   # test0*,test1*,test2* should be in data/
+ga get --auto --numcopies=2 data   # get files in /data with fewer than two copies
+ga sync
+
+--- mars annex ---
+ga get --auto --numcopies=2 data   # get files in /data with fewer than two copies
+ga whereis data                    # all files will likely have two copies now
+ga sync
+```
+
+
+
+
+
+
 ## SSH remotes
 
 If you want to talk to a remote via ssh, its host server will need to have git and git-annex installed and
 available via command line when you ssh to that server. However, the Alliance clusters provide git-annex as a
-module. In this case you can add `module load git-annex` to your ~/.bashrc file:
+module. In this case, you can add `module load git-annex` to your ~/.bashrc file:
 
 ```sh
 user01@vis.vastcloud.org
 echo module load git-annex >> .bashrc
 echo alias ga=git-annex >> .bashrc
 source .bashrc
-git config --global init.defaultBranch main
+git config --global init.defaultBranch main   # sometimes remote git can be old
 ```
 
 <!-- ```sh -->
@@ -489,20 +565,21 @@ git config --global init.defaultBranch main
 user01@vis.vastcloud.org
 mkdir annex && cd annex
 git init       # --bare
-ga init "vis"
+ga init "cluster"
 git commit --allow-empty -m "first commit"   # otherwise local "ga sync" will fail to merge
 
 --- earth annex ---
-git remote remove vis
-git remote add vis user01@vis.vastcloud.org:annex
+git remote remove cluster
+git remote add cluster user01@vis.vastcloud.org:annex
 ga sync --allow-unrelated-histories
 
---- vis annex ---
+--- cluster annex ---
 ga sync
-ls   # all files from earth should be there
+ls        # all aliases from earth should be there
+du -s .   # but there are no object files
 ```
 
-With the two repositories linked, any new change on earth can be sync'ed with the ssh remote:
+With the two repositories linked, any new change on earth can be sync'ed with the SSH remote:
 
 ```sh
 --- earth annex ---
@@ -511,7 +588,7 @@ ga add earth3
 ga unannex earth1
 ga sync
 
---- vis annex ---
+--- cluster annex ---
 ga sync
 ls   # recent updates from earth should be here
 ga whereis earth3   # only one copy on earth
@@ -521,15 +598,16 @@ ga whereis earth1   # no copies under git-annex control
 How about going the other way, i.e. syncing a change from the ssh remote?
 
 ```sh
---- vis annex ---
-dd if=/dev/urandom of=vis1 bs=1024 count=$(( RANDOM + 1024 ));
-ga add vis1
+--- cluster annex ---
+dd if=/dev/urandom of=cluster1 bs=1024 count=$(( RANDOM + 1024 ));
+ga add cluster1
 ga sync   # cannot update the repos on my computer: they are behind the firewall;
           # plus we have not even set up the remotes!
 
 --- earth annex ---
 ga sync   # not to worry, this will sync the recent changes in the ssh remote
-ls        # vis1 is now here
+ls        # cluster1 is now here
+ga whereis cluster1
 ```
 
 Note that having SSH remotes will slow down your `ga sync` commands, so personally -- even when I have them --
@@ -589,28 +667,6 @@ git remote remove <bad annex>   # do this in each annex
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-<!-- ga whereis soloCamping/ | grep -B 2 "\-\- laptop"   # show local files in a directory -->
-<!-- ga find movies/sf/   # show local files in a directory -->
-<!-- ga find   # show all local files (might be a long list) -->
-
-
-
-<!-- cd /Volumes/t7red/annex/movies/sf -->
-<!-- ga add caprica1 theExpansegrep -B 2 "\-\- laptop" -->
-<!-- git commit -m "added movies/sf on t7red" -->
-<!-- ga sync -->
-<!-- ``` -->
 
 
 
