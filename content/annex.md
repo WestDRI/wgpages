@@ -63,10 +63,10 @@ simply run a `git-annex drop` command to free some disk space. In addition, git-
    repositories on external drives. In addition, each repository knows about the location of all files in all
    other repositories, without having to mount the drives.
 
-I typically buy my drives when I need more storage. Eventually I end up with a heterogeneous collection of
-standalone HDDs and SSDs. git-annex helps me automate storage of a large number of files across these drives
-sitting on a shelf and ensures that all my storage is redundant, i.e. I have at least two copies of *all
-important* files. I can even throw into the mix a remote server with extra storage, if I want.
+In short, git-annex helps me automate storage of a large number of files across a heterogeneous collection of
+standalone HDDs and SSDs sitting on a shelf and ensures that all my storage is redundant, i.e. I have at least
+two copies of *all important* files. If I ever run out of space, I can add another annex on a new drive, or
+even throw into the mix a remote server with extra storage.
 
 You can read about the history of git-annex on [Wikipedia](https://en.wikipedia.org/wiki/Git-annex).
 
@@ -641,7 +641,7 @@ ga whereis . | grep -A 1 "1 copy" | grep -B 2 <bad annex>    # congratulations, 
 ga whereis . | grep -A 2 "2 copies" | grep -B 3 <bad annex>  # 1 copy left elsewhere
 ```
 
-Back up those single copies on a third annex with something like:
+Back up those single copies to a third annex with one of these commands:
 
 ```sh
 --- third annex ---
