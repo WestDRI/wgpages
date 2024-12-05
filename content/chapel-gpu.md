@@ -49,13 +49,13 @@ might take a while.
 
 ## Running GPU Chapel on your computer
 
-If you have an NVIDIA GPU on your computer and run *Linux*, and have all the right GPU drivers and CUDA
+If you have an NVIDIA GPU on your computer and run **Linux**, and have all the right GPU drivers and CUDA
 installed, it should be fairly straightforward to compile Chapel with GPU support. Here is [what worked for me
 in AlmaLinux 9.4](https://gist.github.com/razoumov/03cfc54cc388675389bb4343beb8a6b1). Please let me know if
 these steps do not work for you.
 
-In *Windows*, Chapel with GPU support works under the Windows Subsystem for Linux (WSL) as explained in [this
-post](https://chapel-lang.org/blog/posts/nvidia-gpu-wsl). You *could* also run Chapel inside a [Docker
+In **Windows**, Chapel with GPU support works under the Windows Subsystem for Linux (WSL) as explained in
+[this post](https://chapel-lang.org/blog/posts/nvidia-gpu-wsl). You *could* also run Chapel inside a [Docker
 container](https://chapel-lang.org/install-docker.html), although you need to find a GPU-enabled Docker image.
 
 
@@ -73,7 +73,8 @@ There are two Chapel configurations we will use today.
 
 1. **Chapel with GPU support compiled for NVIDIA cards**. We have 1 virtual GPU on the training cluster to
    share among all participants and the instructor, so we won't be able to use it all at the same time. The
-   idea is to try your final production code on this GPU allocating it only for a couple of minutes at a time:
+   idea is to try your final production code on this GPU allocating it only for a couple of minutes at a time
+   per user:
 
 ```sh
 #!/bin/bash
@@ -105,10 +106,10 @@ chpl --fast test.chpl
 ```
 
 In this mode there are some restrictions, e.g. data movement between the device and the host will not be
-captured (as there are no data moved!), and some parallel reductions might not be available in this mode
-(reportedly, to be confirmed). All GPU kernels will be launched on the CPU, and you can even use some of the
-Chapel's diagnostic features in this mode, e.g. the `@assertOnGpu` attribute will fail at compile time for
-ineligible loops.
+captured (as there are no data moved!), some parallel reductions might not be available in this mode (to be
+confirmed), and the GPU kernel breakdown might be different. Still, all GPU kernels will be launched on the
+CPU, and you can even use some of the Chapel's diagnostic features in this mode, e.g. `@assertOnGpu` and
+`@gpu.assertEligible` attributes will fail at compile time for ineligible loops.
 
 <!-- ```sh -->
 <!-- cedar -->
