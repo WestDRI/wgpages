@@ -4,7 +4,7 @@ slug = "chapel-gpu"
 katex = true
 +++
 
-{{<cor>}}December 5<sup>th</sup>{{</cor>}}\
+{{<cor>}}December 5<sup>th</sup> (Part 1) and 12<sup>th</sup> (Part 2){{</cor>}}\
 {{<cgr>}}10:00am–noon Pacific Time{{</cgr>}}
 
 Chapel was designed as a parallel-first programming language targeting any hardware that supports parallel
@@ -587,6 +587,8 @@ In both cases we should see the same output:
 ```output
 A = 4561 1428578 5000001 4894 49
 ```
+
+{{< figure src="/img/pause.png" title="" width="400px" >}}
 
 Let's add timing to both codes:
 
