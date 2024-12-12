@@ -720,25 +720,28 @@ writeln("last few A elements: ", A_on_host[lastFewDigits]);
 
 ### Running multi-GPU code on Cedar
 
-When we run this code with 2 GPUs on one Cedar node:
+When we run this code on 2 Cedar nodes with 2 GPUs per node:
 
 ```sh
 source /home/razoumov/startMultiLocaleGPU.sh
 cd ~/scratch
-salloc --time=2:0:0 --nodes=1 --cpus-per-task=1 --mem-per-cpu=3600 --gpus-per-node=v100l:2 \
-	   --account=cc-debug --reservation=asasfu_756
-git clone ~/chapelBare/ $SLURM_TMPDIR
-cd $SLURM_TMPDIR/primeFactorization
+salloc --time=0:15:0 --nodes=2 --cpus-per-task=1 --mem-per-cpu=3600 --gpus-per-node=v100l:2 \
+	   --account=cc-debug
 chpl --fast primesGPU-distributed.chpl
-./primesGPU-distributed -nl 1
+./primesGPU-distributed -nl 2
 ```
+
+<!-- `--reservation=asasfu_756` -->
 
 we get the following output:
 
 ```output
-loc = LOCALE0   chunk = 2..1000
-loc = LOCALE0   gpu = LOCALE0-GPU0   chunk = 2..501
-loc = LOCALE0   gpu = LOCALE0-GPU1   chunk = 502..1000
+loc = LOCALE0   chunk = 2..501
+loc = LOCALE0   gpu = LOCALE0-GPU0   chunk = 2..251
+loc = LOCALE0   gpu = LOCALE0-GPU1   chunk = 252..501
+loc = LOCALE1   chunk = 502..1000
+loc = LOCALE1   gpu = LOCALE1-GPU0   chunk = 502..751
+loc = LOCALE1   gpu = LOCALE1-GPU1   chunk = 752..1000
 last few A elements: 90 997 501 46 21
 ```
 
@@ -863,8 +866,6 @@ writeln('It took ', watch.elapsed(), ' seconds');
 ```
 
 ```sh
-source ~/startMultiLocaleGPU.sh
-module load netcdf/4.9.2
 chpl  --fast juliaSetSerial.chpl
 ./juliaSetSerial
 ```
