@@ -588,7 +588,7 @@ In both cases we should see the same output:
 A = 4561 1428578 5000001 4894 49
 ```
 
-{{< figure src="/img/pause.png" title="" width="400px" >}}
+<!-- {{< figure src="/img/pause.png" title="" width="400px" >}} -->
 
 Let's add timing to both codes:
 
