@@ -44,11 +44,11 @@ their own computers. We will cover, among other things, aliases, scripts, functi
 bat, color setup for your shell, zsh plugins, and autojump. We will provide a training cluster and guest
 accounts to try all these tools and will explain how to install them on production clusters.
 
-## Intro: what we do and do not cover here and why (A)
+<!-- ## Intro: what we do and do not cover here -->
 
-## Aliases and scripts (M)
+## Aliases and scripts (external page)
 
-## Functions (A)
+## Functions
 
 Functions are similar to scripts, but there are some differences. A **bash script** is an executable file
 sitting at a given path. A **bash function** is defined in your shell environment. Therefore, when running a
@@ -128,6 +128,10 @@ fi
 ```
 {{< /question >}}
 
+<!-- Here is a fun function: -->
+<!-- ```sh -->
+<!-- ``` -->
+
 You can also use functions to expand existing bash commands. Here is a function I wrote recently that adds
 some functionality to `git-annex <verb>` command:
 
@@ -154,11 +158,11 @@ function ga() {
 }
 ```
 
-## Make (A)
+## Make
 
 Originally, `make` command (first released in 1975) was created for automating compilations. Consider a large
 software project with hundreds of dependencies. When you compile it, each source file is converted into an
-object file, and then all of them are linked together to the libraries to form the final executable(s) or the
+object file, and then all of them are linked together to the libraries to form a final executable(s) or a
 final library.
 
 Day-to-day, you typically work on a small section of the program, e.g. debug a single function, with much of
@@ -176,7 +180,7 @@ Makefiles can be used for any project (not just compilation) with multiple steps
 results, when some of these steps are compute-heavy. Let's look at an example! We will store the following
 text in the file `text.md`:
 
-```txt
+```md
 ## Part 1
 
 In this part we cover:
@@ -285,7 +289,7 @@ The next simplification makes use of `make` wildcards to specify patterns:
 > 	magick $^ $@
 ```
 
-## Process control with terminal UI (A)
+## Process control with terminal UI
 
 Linux features commands to pause/resume processes, send them into background, and bring them back into
 foreground. We think that a better alternative to these controls is tmux, a terminal multiplexer that can
@@ -310,11 +314,11 @@ coupled with the following inside my `~/.emacs` file:
 (global-set-key (kbd "\C-xe") 'suspend-frame)
 ```
 
-## Pointers on regular expressions (M)
+## Pointers on regular expressions (external page)
 
 Not teaching them here!
 
-## Fuzzy finder `fzf` (A)
+## Fuzzy finder `fzf`
 
 fzf -- stands for "fuzzy finder" -- is an interactive filter for files or for standard input. You can type
 with errors and omitted characters and still get the correct results.
@@ -335,23 +339,48 @@ You can control fzf appearance / real estate:
 
 ```sh
 fzf                # by default take the entire screen
-fzf --height 40%   # start below the cursor with the 40% height
+fzf --height 10%   # start below the cursor with the 10% height
 fzf --tmux         # this flag is not available on clusters
 ```
 
-A more interesting use is to process standard output of other commands:
+There are many other options for formatting `fzf`'s output -- you can find them in the
+[documentation](https://github.com/junegunn/fzf), so I won't cover them here.
+
+Here is a useful function to find a file and open it in `nano`:
+
+```sh
+function nn() {
+    nano $(fzf)
+}
+```
+
+Here is a more sophisticated version of this function, with a couple of improvements:
+
+1. won't open `nano` if you have an empty result (Esc or Ctrl-C)
+1. can handle spaces in file names
+
+```sh
+function nn() {
+	fzf --bind 'enter:become(nano {+})'
+}
+```
+
+- `--bind` binds Enter key to running `nano`
+
+A more interesting use of `fzf` is to process standard output of other commands:
 
 ```sh
 history | fzf
 
 find ~/projects/def-sponsor00/shared/ -type f | fzf
 find ~/projects/def-sponsor00/shared/ -type f | fzf --preview 'more {}'
+find ~/projects/def-sponsor00/shared/ -type f | fzf --preview 'head -5 {}'
 
 git show $(git rev-list --all) | fzf   # search through file changes in all previous commits
 
-cat ~/Documents/notes/*.md | wc -l    # 91k lines of text
-cat ~/Documents/notes/*.md | fzf      # just the content (no file names)
-grep . ~/Documents/notes/*.md | fzf   # if you want to see the file names as well
+cat ~/Documents/notes/*.md | wc -l     # 91k lines of text
+cat ~/Documents/notes/*.md | fzf       # just the content (no file names)
+grep . ~/Documents/notes/*.md | fzf    # if you want to see the file names as well
 ```
 
 You can act on the results of search:
@@ -374,7 +403,6 @@ function kk() {
 
 ### Auto-completion
 
-<!-- https://www.google.com/search?client=firefox-b-d&q=open-youtube+fzf#fpstate=ive&vld=cid:11c25224,vid:A6gpYeE5rw8,st:0 -->
 <!-- https://thevaluable.dev/fzf-shell-integration -->
 
 In bash, you can complete commands by pressing <TAB> once or twice. If you want to replace that with `fzf`,
@@ -421,13 +449,13 @@ unalias **<TAB>
 
 
 
-## bat (M)
+## bat (external page)
 
-## LS_COLORS, zsh plugins to expand commands, syntax highlighting (M)
+## LS_COLORS, zsh plugins to expand commands, syntax highlighting (external page)
 
 <!-- `zsh-autosuggestions.zsh` -->
 
-## autojump (M)
+## autojump (external page)
 
 <!-- git clone https://github.com/wting/autojump.git ~/autojump && -->
 <!--     cd autojump && -->
