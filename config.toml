@@ -8,6 +8,7 @@ pagination.pagerSize = 20
 canonifyurls = true
 
 ignoreFiles = [ "\\.qmd$", "\\.ipynb$", "\\.py$" ]
+ignoreLogs = ['warning-goldmark-raw-html']
 
 [markup]
   [markup.highlight]
