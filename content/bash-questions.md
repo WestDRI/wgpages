@@ -85,7 +85,7 @@ greetings() {
 }
 ```
 
-Let's write a function `combine()` that takes all the files we pass to it, copies them into a randomly-named
+Let's write a function `combine()` that takes all the files we pass to it, moves them into a randomly-named
 directory and prints that directory to the screen:
 
 ```sh
@@ -96,7 +96,7 @@ combine() {
   fi
   dir=$RANDOM$RANDOM
   mkdir $dir
-  cp $@ $dir
+  mv $@ $dir
   echo look in the directory $dir
 }
 ```
