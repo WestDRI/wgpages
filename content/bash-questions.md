@@ -46,7 +46,10 @@ accounts to try all these tools and will explain how to install them on producti
 
 <!-- ## Intro: what we do and do not cover here -->
 
-## Aliases and scripts (external page)
+## Aliases and scripts (external links)
+
+- https://mint.westdri.ca/bash/intro_aliases
+- https://mint.westdri.ca/bash/molecules/intro_script
 
 ## Functions
 
@@ -314,9 +317,9 @@ coupled with the following inside my `~/.emacs` file:
 (global-set-key (kbd "\C-xe") 'suspend-frame)
 ```
 
-## Pointers on regular expressions (external page)
+## Pointers on regular expressions (external link)
 
-Not teaching them here!
+- https://mint.westdri.ca/bash/intro_regexp (not teaching them here!)
 
 ## Fuzzy finder `fzf`
 
@@ -439,25 +442,7 @@ unset **<TAB>
 unalias **<TAB>
 ```
 
+## Other tools (external links)
 
-
-
-
-
-
-
-
-
-
-## bat (external page)
-
-## LS_COLORS, zsh plugins to expand commands, syntax highlighting (external page)
-
-<!-- `zsh-autosuggestions.zsh` -->
-
-## autojump (external page)
-
-<!-- git clone https://github.com/wting/autojump.git ~/autojump && -->
-<!--     cd autojump && -->
-<!--     python install.py -->
-<!-- cd -->
+- https://mint.westdri.ca/bash/intro_modern (eza, bat, ripgrep, fd, autojump)
+- https://mint.westdri.ca/bash/intro_zsh (useful plugins, auto-suggestions, syntax highlighting)
