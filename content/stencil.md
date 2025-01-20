@@ -4,7 +4,7 @@ slug = "stencil"
 katex = true
 +++
 
-"High-level parallel stencil computations on CPUs and GPUs in Julia"
+# ... on CPUs and GPUs in Julia
 
 <!-- ## JuliaCon'24 selected topics -->
 
@@ -66,8 +66,8 @@ dimensionality, with Data.Number, Data.Array, Data.CellArray inside.
 
 - 1st argument specifies your parallel package: Threads, Polyester, CUDA, AMDGPU, or Metal
 - 2nd argument specifies precision: Float16, Float32, Float64, ComplexF16, ComplexF32, or ComplexF64
-  - Int not supported by design, as we are solving PDEs
-  - for demos I'll be using ...f0 and Float32 to enforce single precision, as double precision is not
+  - *Int* not supported by design, as we are solving PDEs
+  - for demos I'll be using `...f0` and Float32 to enforce single precision, as double precision is not
     supported in Metal.jl
 - 3rd argument specifies dimensionality for the stencil computations: 1, 2, or 3
 
@@ -404,11 +404,12 @@ save("laplacian.png", fig)
 
 ## 2D and 3D heat diffusion solver
 
-First, we'll be solving the equation $\partial T/\partial t = \nabla^2 T$ on a 2D grid.
+In this demo we'll be solving the equation $\partial T/\partial t = \nabla^2 T$ on a 2D grid.
 
 Let's study the code `heatDiffusionSolver2D.jl`:
 
 - two explicit switch variables USE_GPU and ANIMATION
+- dual Gaussian initial state
 - zero boundary at the sides
 - non-zero boundary at the top and bottom
 
@@ -490,7 +491,7 @@ julia heatDiffusionSolver2D.jl
 
 The animation `gaussian.mp4` with 501 frames.
 
-### Benchmarking in 2D
+### 2D benchmarking
 
 This 2D problem runs very fast. Let's increase the resolution to $8192^2$ and run on CPU without animation:
 
@@ -528,7 +529,7 @@ const USE_GPU = true
 If we add `cpuArray = Array(T); println(cpuArray[2,2]);` line right after calling the two GPU functions, the
 runtime grows to 5.72 seconds reflecting data transfer from GPU to CPU (and printing).
 
-### Benchmarking in 3D
+### 3D benchmarking
 
 Copy the 2D code `heatDiffusionSolver2D`.jl to `heatDiffusionSolver3D.jl` and make the following changes:
 
@@ -619,7 +620,7 @@ On my laptop, at $512^3$ I get the following runtimes:
 <!-- - 80.71 seconds on 8 CPU cores -->
 <!-- - 51.57 seconds on the GPU -->
 
-### Benchmarking in 3D on a cluster
+### 3D benchmarking on a cluster
 
 Setting up Julia with CUDA may require some work -- you can find more information at
 https://docs.alliancecan.ca/wiki/Julia#Using_GPUs_with_Julia
@@ -627,7 +628,6 @@ https://docs.alliancecan.ca/wiki/Julia#Using_GPUs_with_Julia
 Here is what worked for me on the training cluster on Arbutus:
 
 ```sh
-cd ~/webinar
 sed -i -e 's|Metal|CUDA|' heatDiffusionSolver3D.jl
 
 module load gcc/13.3
@@ -761,51 +761,52 @@ Let's study the code `globalGridDemo.jl`:
   - `[y_g(j, dy, A) for j in 1:ny]` gives the global y-coordinates of all elements in the local array `A`
   - `[z_g(k, dz, A) for k in 1:nz]` gives the global z-coordinates of all elements in the local array `A`
 - on each rank we compute only the internal array elements `[2:end-1]` in each dimension
-- the inner ghost zones are updated via MPI, by calling `update_halo!`
-- the outer ghost zones are not updated in this example at all; in a real problem they will be used for outer
+- the inner boundary zones are updated via MPI, by calling `update_halo!`
+- the outer boundary zones are not updated in this example at all; in a real problem they will be used for outer
   boundary conditions
+
+{{< figure src="/img/arrays.png" >}}
 
 ```jl
 using ImplicitGlobalGrid
 using MPI
 using Printf
 
-MPI.Init()
+MPI.Init()   # finalize by hand, as we want to run test() many times,
+             # and MPI can be initialized only once
 
 function test()
-    nx, ny, nz = 10, 10, 10;
-
-    # initialize a Cartesian grid of MPI processes, each holding one (nx, ny, nz) array
+    nx, ny, nz= 5, 5, 1;   # must be 3D
+    # initialize a Cartesian grid of MPI processes, each computing an (nx, ny, nz) array
     me, dims, nprocs, coords, comm_cart = init_global_grid(nx, ny, nz, init_MPI=false);
-    @printf("me=%d  nrpocs=%d  dims=%s  coords=%s\n", me, nprocs, string(dims), string(coords))
+    @printf("me=%d  nprocs=%d  dims=%s  coords=%s\n", me, nprocs, string(dims), string(coords))
 
-    if me == 0
-        @printf("global grid size = %d %d %d\n", nx_g(), ny_g(), nz_g())
-    end
+    me == 0 && @printf("global grid size = %d %d %d\n", nx_g(), ny_g(), nz_g())
 
     dx = 1/(nx_g()-1);
     dy = 1/(ny_g()-1);
-    dz = 1/(nz_g()-1);
 
-    A = fill(-1f0, nx, ny, nz);
-	# x,y,z-coordinates of the first and last loResearch Solutions Leadcal elements
-    @printf("me=%d >> from %f %f %f to %f %f %f\n", me,
-            x_g(1,dx,A), y_g(1,dy,A), z_g(1,dz,A),
-            x_g(nx,dx,A), y_g(ny,dy,A), z_g(nz,dz,A));
+    A = fill(-1f0, nx, ny);
+    # x,y,z-coordinates of the first and last local elements
+    @printf("me=%d >> from %f %f to %f %f\n", me,
+            x_g(1,dx,A), y_g(1,dy,A),
+            x_g(nx,dx,A), y_g(ny,dy,A));
 
-    A[2:end-1,2:end-1,2:end-1] = [
-        exp(-10*((x_g(i,dx,A)-0.4)^2+(y_g(j,dy,A)-0.4)^2+(z_g(k,dz,A)-0.4)^2))
-        for i=2:nx-1, j=2:ny-1, k=2:nz-1];
+    A[2:end-1,2:end-1] = [
+        exp(-10*((x_g(i,dx,A)-0.4)^2+(y_g(j,dy,A)-0.4)^2))
+        for i=2:nx-1, j=2:ny-1];
 
-    if me == 0 || me == 1
-        @printf("me=%d - %s\n", me, string(A[2,:,2]))
+    sleep(0.25*me)
+    if me == 1 || me ==3
+        print("     ");
     end
+    display(A);
 
     update_halo!(A);
 
-    if me == 0 || me == 1
-        @printf("me=%d - %s\n", me, string(A[2,:,2]))
-    end
+    me == 0 && println("----------");
+    sleep(0.25*me)
+    display(A);
 
     finalize_global_grid(finalize_MPI=false);
 end
@@ -829,10 +830,10 @@ will produce the following output (inserted line breaks for better readability):
 ```output
 Global grid: 18x18x10 (nprocs: 4, dims: 2x2x1; device support: none)
 
-me=3  nrpocs=4  dims=[2, 2, 1]  coords=[1, 1, 0]
-me=2  nrpocs=4  dims=[2, 2, 1]  coords=[1, 0, 0]
-me=0  nrpocs=4  dims=[2, 2, 1]  coords=[0, 0, 0]
-me=1  nrpocs=4  dims=[2, 2, 1]  coords=[0, 1, 0]
+me=3  nprocs=4  dims=[2, 2, 1]  coords=[1, 1, 0]
+me=2  nprocs=4  dims=[2, 2, 1]  coords=[1, 0, 0]
+me=0  nprocs=4  dims=[2, 2, 1]  coords=[0, 0, 0]
+me=1  nprocs=4  dims=[2, 2, 1]  coords=[0, 1, 0]
 
 global grid size = 18 18 10
 
@@ -853,8 +854,11 @@ In each subdivided dimension we have two overlapping elements, one on each side 
 
 ### Extending the 2D heat diffusion solver to multiple MPI ranks
 
-1. remove animation to keep the code compact (requires extra work to animate multiple local arrays)
-2. we are solving the equation on the same physical domain (unit square); assuming fixed local array size, the
+Copy the 2D code `heatDiffusionSolver2D`.jl to `distrubuted2D.jl` and make the following changes:
+
+1. set `USE_GPU = false` (we'll be solving on multiple MPI ranks, each with one CPU -- no GPUs for now)
+2. remove animation to keep the code compact (some extra work needed to animate multiple local arrays)
+3. we are solving the equation on the same physical domain (unit square); assuming fixed local array size, the
    global grid resolution depends on the number of ranks stacked in each dimension, so now we have variables
    grid steps `dx` and `dy`
 
@@ -877,7 +881,7 @@ In each subdivided dimension we have two overlapping elements, one on each side 
 >         @parallel computeNewTemperature!(Tnew, T, dt, dx, dy);
 ```
 
-3. few other small changes:
+4. few other small changes:
 
 ```txt
 > using ImplicitGlobalGrid
@@ -887,7 +891,7 @@ In each subdivided dimension we have two overlapping elements, one on each side 
 <     n, nt, nout = 8192, 100, 10;   # resolution, max time steps, plotting frequency
 ---
 >     n, nt, nout = 256, 100_000, 1000;   # resolution, max time steps, plotting frequency
->     me, dims, nprocs, coords, comm_cart = init_global_grid(n, n, n);
+>     me, dims, nprocs, coords, comm_cart = init_global_grid(n, n, 1);
 
 
 replace (i-1)*h with x_g(i,dx,T)
@@ -900,7 +904,7 @@ replace (j-1)*h with y_g(j,dy,T)
 <     T[:,n] .= 80f0;   # non-zero boundary at the top
 <     T[:,1] .= 80f0;   # non-zero boundary at the bottom
 ---
->     # set domain's outer boundary
+>     # domain's outer boundary
 >     coords[2] == 0         ? T[1,:] .= 0f0 : nothing    # if 1st rank in y => left boundary
 >     coords[2] == dims[2]-1 ? T[n,:] .= 0f0 : nothing    # if last rank in y => right boundary
 >     coords[1] == dims[1]-1 ? T[:,n] .= 80f0 : nothing   # if last rank in x => non-zero boundary at the top
@@ -932,6 +936,16 @@ unalias julia
 export PATH=$PATH:/Applications/Julia-1.11.app/Contents/Resources/julia/bin
 mpiexecjl -n 4 julia distributed2D.jl
 ```
+
+To run this code on the cluster, you need to configure Julia's MPI to use system's MPI libraries as described
+in https://docs.alliancecan.ca/wiki/Julia#Running_Julia_with_MPI.
+
+
+
+
+
+
+
 
 ### Further parallelization with multiple threads on each MPI rank
 
