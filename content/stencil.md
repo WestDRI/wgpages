@@ -82,7 +82,7 @@ typeof(A)   # Metal.MtlArray{Float32, 3, Metal.PrivateStorage}, or Array{Float32
 or by converting from Julia's usual arrays:
 
 ```jl
-B = [i+j for i=1:5, j=1:5, k=1:n]
+B = [i+j for i=1:5, j=1:5, k=1:n]   # array comprehension
 typeof(B)   # usual Julia's 2D Matrix{Int64} = Array{Int64, 2}
 size(B)     # (5, 5, 5)
 A = Data.Array(B)
@@ -144,6 +144,9 @@ B
 
 Now let's assign to *all elements* of `B` with `@all(B)` by redefining a new parallel function:
 
+> **Note**: this last example works on Metal, breaks on Threads, for the reasons that will become clear in a
+> minute.
+
 ```jl
 @parallel function inner2all!(A, B)
     @all(B) = @inn(A);
@@ -154,6 +157,7 @@ B = @zeros(n, n);
 @parallel inner2all!(A, B)
 B
 ```
+
 ```output
 4×4 Metal.MtlMatrix{Float32, Metal.PrivateStorage}:
  4.0  5.0  6.0  0.0
@@ -161,9 +165,6 @@ B
  6.0  7.0  8.0  0.0
  4.0  5.0  0.0  0.0
 ```
-
-> **Note**: this last example works on Metal, breaks on Threads, for the reasons that will become clear in a
-> minute.
 
 It starts by doing the right thing (copying the inner elements A at the start of B), but then it keeps going
 past the end of `@inn(A)` in y-dimension:
@@ -191,7 +192,7 @@ better never do this!
 
 ### First-order derivatives
 
-Let's compute a 1st-order derivative in x:
+Let's compute a 1st-order derivative in x-direction:
 
 ```jl
 ?@d_xa   # compute differences between adjacent elements of A along the x-dimension
@@ -375,7 +376,7 @@ for i=2:n-1
 end
 ```
 
-### Plotting the solution
+### Plotting a 2D array
 
 Makie package can plot a 2D array:
 
@@ -410,7 +411,7 @@ Let's study the code `heatDiffusionSolver2D.jl`:
 
 - two explicit switch variables USE_GPU and ANIMATION
 - dual Gaussian initial state
-- zero boundary at the sides
+- zero boundary at the left/right sides
 - non-zero boundary at the top and bottom
 
 ```jl
@@ -706,8 +707,8 @@ At $512^3$ I get the following runtimes:
 
 ## 3D acoustic wave solver
 
-The code `acoustic3D.jl` (adapted from https://github.com/omlins/ParallelStencil.jl) solves the 3D acoustic
-wave equation for $c=1$ (speed of sound), written as a system separately for velocity and pressure:
+Our next demo code, adapted from https://github.com/omlins/ParallelStencil.jl, solves the 3D acoustic wave
+equation for $c=1$ (speed of sound), written as a system separately for velocity and pressure:
 
 $$
 \begin{cases}
@@ -716,7 +717,7 @@ $$
 \end{cases}
 $$
 
-Let's take a look at the code!
+Let's take a look at the code in `acoustic3D.jl`!
 
 To run it:
 
@@ -735,10 +736,10 @@ The movie `advection.mp4` shows the numerical solution.
 
 ## Distributed parallelization (multi-node)
 
-For distributed-memory parallelism, ParallelStencil.jl can interoperate with any 3rd-party framework to
+For distributed-memory parallelism, ParallelStencil.jl can interoperate with 3rd-party frameworks to
 parallelize array computations on many processes. While it might be possible to run ParallelStencil.jl
-alongside DistributedArrays.jl or SharedArrays.jl, these packages use specialized data structures which are
-not directly portable to ParallelStencil.jl's parallel frameworks. A better approach is combining
+alongside DistributedArrays.jl or SharedArrays.jl, these packages use specialized data structures that are not
+directly portable to ParallelStencil.jl's parallel frameworks. A better approach is combining
 ParallelStencil.jl with ImplicitGlobalGrid.jl, which provides implicit distributed arrays built out of regular
 local arrays on each MPI rank.
 
@@ -825,32 +826,76 @@ export PATH=$PATH:/Applications/Julia-1.11.app/Contents/Resources/julia/bin
 mpiexecjl -n 4 julia globalGridDemo.jl
 ```
 
-will produce the following output (inserted line breaks for better readability):
+will produce the following output:
 
 ```output
-Global grid: 18x18x10 (nprocs: 4, dims: 2x2x1; device support: none)
-
+me=1  nprocs=4  dims=[2, 2, 1]  coords=[0, 1, 0]
+me=0  nprocs=4  dims=[2, 2, 1]  coords=[0, 0, 0]
 me=3  nprocs=4  dims=[2, 2, 1]  coords=[1, 1, 0]
 me=2  nprocs=4  dims=[2, 2, 1]  coords=[1, 0, 0]
-me=0  nprocs=4  dims=[2, 2, 1]  coords=[0, 0, 0]
-me=1  nprocs=4  dims=[2, 2, 1]  coords=[0, 1, 0]
 
-global grid size = 18 18 10
+global grid size = 8 8 1
 
-me=1 >> from 0.000000 0.470588 0.000000 to 0.529412 1.000000 1.000000
-me=2 >> from 0.470588 0.000000 0.000000 to 1.000000 0.529412 1.000000
-me=3 >> from 0.470588 0.470588 0.000000 to 1.000000 1.000000 1.000000
-me=0 >> from 0.000000 0.000000 0.000000 to 0.529412 0.529412 1.000000
+me=1 >> from 0.000000 0.428571 to 0.571429 1.000000
+me=3 >> from 0.428571 0.428571 to 1.000000 1.000000
+me=2 >> from 0.428571 0.000000 to 1.000000 0.571429
+me=0 >> from 0.000000 0.000000 to 0.571429 0.571429
 
-me=0 - Float32[-1.0, 0.042315762, 0.061065175, 0.08222995, 0.10332644, 0.12115404, 0.13255905, 0.13533992, 0.12893991, -1.0]
-me=1 - Float32[-1.0, 0.114628844, 0.09509233, 0.07361089, 0.053172078, 0.035840183, 0.022542488, 0.013230569, 0.0072460305, -1.0]
+     5×5 Matrix{Float32}:
+ -1.0  -1.0       -1.0       -1.0       -1.0
+ -1.0   0.266482   0.453012   0.512022  -1.0
+ -1.0   0.453012   0.770108   0.870423  -1.0
+ -1.0   0.512022   0.870423   0.983806  -1.0
+ -1.0  -1.0       -1.0       -1.0       -1.0
+5×5 Matrix{     Float32}:
+ -1.0  -1.0       -1.0       -1.0        -1.0
+ -1.0   0.384773   0.192246   0.0638627  -1.0
+ -1.0   0.654103   0.326813   0.108565   -1.0
+ -1.0   0.739308   0.369384   0.122707   -1.0
+ -1.0  -1.0       -1.0       -1.0        -1.0
+5×5 Matrix{Float32}:
+ -1.0  -1.0        -1.0       -1.0       -1.0
+ -1.0   0.384773    0.654103   0.739308  -1.0
+ -1.0   0.192246    0.326813   0.369384  -1.0
+ -1.0   0.0638627   0.108565   0.122707  -1.0
+ -1.0  -1.0        -1.0       -1.0       -1.0
+5×5 Matrix{Float32}:
+ -1.0  -1.0        -1.0        -1.0        -1.0
+ -1.0   0.555573    0.277584    0.0922112  -1.0
+ -1.0   0.277584    0.138691    0.0460719  -1.0
+ -1.0   0.0922112   0.0460719   0.0153048  -1.0
+ -1.0  -1.0        -1.0        -1.0        -1.0
 
-me=0 - Float32[-1.0, 0.042315762, 0.061065175, 0.08222995, 0.10332644, 0.12115404, 0.13255905, 0.13533992, 0.12893991, 0.114628844]
-me=1 - Float32[0.12893991, 0.114628844, 0.09509233, 0.07361089, 0.053172078, 0.035840183, 0.022542488, 0.013230569, 0.0072460305, -1.0]
+----------
+
+5×5 Matrix{Float32}:
+ -1.0  -1.0       -1.0       -1.0       -1.0
+ -1.0   0.266482   0.453012   0.512022   0.384773
+ -1.0   0.453012   0.770108   0.870423   0.654103
+ -1.0   0.512022   0.870423   0.983806   0.739308
+ -1.0   0.384773   0.654103   0.739308   0.555573
+5×5 Matrix{Float32}:
+ -1.0       -1.0       -1.0       -1.0        -1.0
+  0.512022   0.384773   0.192246   0.0638627  -1.0
+  0.870423   0.654103   0.326813   0.108565   -1.0
+  0.983806   0.739308   0.369384   0.122707   -1.0
+  0.739308   0.555573   0.277584   0.0922112  -1.0
+5×5 Matrix{Float32}:
+ -1.0   0.512022    0.870423   0.983806   0.739308
+ -1.0   0.384773    0.654103   0.739308   0.555573
+ -1.0   0.192246    0.326813   0.369384   0.277584
+ -1.0   0.0638627   0.108565   0.122707   0.0922112
+ -1.0  -1.0        -1.0       -1.0       -1.0
+5×5 Matrix{Float32}:
+  0.983806   0.739308    0.369384    0.122707   -1.0
+  0.739308   0.555573    0.277584    0.0922112  -1.0
+  0.369384   0.277584    0.138691    0.0460719  -1.0
+  0.122707   0.0922112   0.0460719   0.0153048  -1.0
+ -1.0       -1.0        -1.0        -1.0        -1.0
 ```
 
 In each subdivided dimension we have two overlapping elements, one on each side of the boundary. Running
-`update_halo!(A);` copies (via MPI) into the ghost values across the boundary.
+`update_halo!(A)` copies the array elements (via MPI) into the ghost values across the boundary.
 
 ### Extending the 2D heat diffusion solver to multiple MPI ranks
 
@@ -953,7 +998,7 @@ Should be automatic: no change to the code.
 
 ### Further parallelization with GPUs on each MPI rank
 
-`update_halo!(T);` will fail, as it will try to update the inner ghost zones of objects of type Data.Array
+`update_halo!(T)` will fail, as it will try to update the inner ghost zones of objects of type Data.Array
 that it knows nothing about.
 
 If you have a CUDA-aware MPI (for Nvidia GPUs), then you can turn it on with the following:
