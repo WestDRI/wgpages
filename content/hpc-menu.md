@@ -3,10 +3,8 @@ title = "Intro to high-performance computing (HPC)"
 slug = "introhpc"
 +++
 
-{{<cor>}}September 12th (Part 1) and September 19th (Part 2){{</cor>}}\
-{{<cgr>}}Both days 10:00am - noon Pacific Time{{</cgr>}}
-
-<!-- Course materials will be added here shortly before the start of the course. -->
+{{<cor>}}January 30<sup>th</sup> (Part 1), February 6<sup>th</sup> (Part 2) and February 13<sup>th</sup> (Part 3){{</cor>}}\
+{{<cgr>}}All days 10:00am - noon Pacific Time{{</cgr>}}
 
 ---
 
@@ -248,7 +246,7 @@ installing [the free Home Edition of MobaXterm](https://mobaxterm.mobatek.net/do
 
 ## Videos: introduction
 
-These videos (recorded in 2020) cover the same materials we studied in the course, but you can watch these at
+These videos (recorded in 2020) cover the same materials we study in the course, but you can watch these at
 your own pace.
 
 - [Introduction](https://www.youtube.com/watch?v=dVMNSp98yRA) (3 min)
