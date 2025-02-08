@@ -129,7 +129,7 @@ print(ray.get(r))          # more compact way to do the same (single blocking ca
 
 ### Task output
 
-Consider a Dask code in which each task sleeps for 10 seconds, prints a message and returns its task ID:
+Consider a code in which each Ray task sleeps for 10 seconds, prints a message and returns its task ID:
 
 ```py
 import ray
