@@ -462,6 +462,11 @@ https://docs.alliancecan.ca/wiki/Ray.
 > rank per cluster node and then specifying `--cpus-per-task=4`.
 {.note}
 
+<!-- > This is a warning. -->
+<!-- {.warning} -->
+<!-- > This is dangerous. -->
+<!-- {.danger} -->
+
 Let's do it:
 
 ```sh
@@ -575,11 +580,8 @@ Running it multiple times, I got the following runtimes: 0.188s, 0.208s, 0.153s 
 4-core, single-node run (0.292s), but worse than an 8-core, single-node run (0.135s). Any idea why?
 
 > For longer runtimes, while your job is still running, you can ssh into individual nodes and check Ray's CPU
-> usage with:
-> ```sh
-> htop --filter "ray::"
-> ```
-
+> usage with `htop --filter "ray::"`
+{.note}
 
 
 
@@ -614,7 +616,7 @@ if edges[-1][1] < n: edges[-1] = (edges[-1][0],n)
 intervals = ray.data.from_items([{'a':w[0], 'b':w[1]} for w in edges])  # define the dataset
 
 start = time()
-partial = intervals.map(slow)     # define the calculation
+partial = intervals.map(slow)                     # define the calculation
 total = sum([p['sum'] for p in partial.take()])   # request the result => start the calculation on 2 CPU cores
 end = time()
 print("Time in seconds:", round(end-start,3))
@@ -647,12 +649,12 @@ solver. In this approach you divide the linear problem into `ncores` linear prob
 `np.linalg.solve()` on a separate Ray task. At the end of each iteration you update the first and the last
 elements of the RHS vector in each linear system with the new solutions at the interfaces.
 
-However, a naive implementation of this solver converges very slowly. There are techniques to speed it up,
-e.g. using a staggered linear solver (to accelerate the convergence rate) and pre-computing the coarser
-solution in serial (to be used as the initial iteration for the finer solution). When you implement these
-techniques, the 1D parallel solver converges in 3 iterations, which (1) defies the purpose of breaking it up
-into multiple parts to be parallelized with Ray, and (2) will take a while to explain and code in this webinar
-which is not on the theory of parallel linear solvers.
+However, a naive implementation of this solver converges very slowly. You can speed it up by using a staggered
+linear solver (to accelerate the convergence rate) and pre-computing the coarser solution in serial (to be
+used as the initial iteration for the finer solution). When you implement these techniques, the 1D parallel
+solver converges in 3 iterations, which (1) defies the purpose of breaking it up into multiple parts to be
+parallelized with Ray, and (2) will take a while to explain and code in this webinar which is not on the
+theory of parallel linear solvers.
 
 For this reason, here I will show a brute-force iterative solution to this problem. It is **much less
 efficient**, but it will work well here to demonstrate a tightly coupled parallel solver with Ray.
@@ -670,16 +672,18 @@ $$
 u_i^{n+1} = {u_{i-1}^n+u_{i+1}^n-b_i\over 2}
 $$
 
-where $b_i=\rho_ih^2$ and $n\to\infty$.
+where $b_i=\rho_ih^2$, and the solution converges as $n\to\infty$.
 
 ### Serial code
 
-To prototype a parallel solver, first we'll write a serial code. We'll do all array computations with
-NumPy. Let's consider a fairly large 1D problem (total number of grid inner points $N=2\times10^7$) and break
-it into 2 intervals.
+To prototype a parallel solver, first we'll write a serial code that solves the problem on 2 intervals, and
+later we'll parallelize it. We'll do all array computations with NumPy. Let's consider a fairly large 1D
+problem (total number of inner grid points $N=2\times10^7$) and break it into 2 intervals.
 
 We'll be updating the solution only at the inner points, as at the edges we have $u_0=u_{N-1}=0$. Let's store
 this code in `poissonSerial.py`:
+
+{{< figure src="/img/gridPartition.png" width="800px" >}}
 
 ```py
 ##### this is poissonSerial.py #####
@@ -730,8 +734,9 @@ Converged after 9961 iterations with diff = -9.999348935138563e-05
 Solution: [-2.50966143e-11 -2.50990843e-11 -2.51015743e-11] [-2.51015743e-11 -2.50990843e-11 -2.50966143e-11]
 ```
 
-Strictly speaking, we did not converge here (still very far from the exact solution $u(x)=x^2-x$) -- but this
-is not important for our parallel scaling purposes.
+> Strictly speaking, we did not converge here (still very far from the exact solution $u(x)=x^2-x$) -- but
+> this is not important for our parallel scaling purposes.
+{.danger}
 
 ### Persistent storage on Ray workers
 
