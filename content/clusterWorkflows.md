@@ -1065,6 +1065,8 @@ When launching multiple remote functions, instead of this:
 for i in range(ncores):
     ray.get(workers[i].localSolve.remote())   # this will block on each call
 ```
+> This would result in serial execution ...
+{.danger}
 
 do this:
 
@@ -1072,6 +1074,8 @@ do this:
 solve_refs = [workers[i].localSolve.remote() for i in range(ncores)]
 ray.get(solve_refs)
 ```
+> This would result in parallel execution.
+{.note}
 
 ### Running on one cluster node
 
