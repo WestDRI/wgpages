@@ -896,48 +896,10 @@ print("The solution is", u)
 
 ### Back to the Poisson solver
 
-Let's go back to our two-partition serial solver without Ray:
-
-```py
-##### this is poissonSerial.py #####
-from time import time
-import numpy as np
-
-n, relativeTolerance = 20_000_000, 1e-4
-n1 = n//2; n2 = n - n1
-h = 1/(n-1)
-
-b = np.ones(n)*2*h*h
-
-u1 = np.zeros(n1)   # the initial guess (first interval)
-u2 = np.zeros(n2)   # the initial guess (second interval)
-
-diff = 999.0   # difference between two successive values of u1[-1]
-count = 0
-start = time()
-while abs(diff) > relativeTolerance:
-    count += 1
-    ghostLeft = u1[-1]
-    ghostRight = u2[0]
-    diff = ghostLeft
-    # compute new u1
-    u1[1:n1-1] = (u1[0:n1-2] + u1[2:n1] - b[1:n1-1]) / 2   # update at inner points 1..n1-2
-    u1[n1-1] = (u1[n1-2] + ghostRight - b[n1-1]) / 2       # update at the last point
-    # compute new u2
-    u2[1:n2-1] = (u2[0:n2-2] + u2[2:n2] - b[n1+1:n-1]) / 2 # update at inner points 1..n2-2
-    u2[0] = (ghostLeft + u2[1] - b[n1]) / 2                # update at the first point
-    diff = (diff-u1[-1]) / u1[-1]
-    if count%100 == 0: print(u1[-3:], u2[:3], diff)
-
-end = time()
-print("Time in seconds:", round(end-start,3))
-print("Converged after", count, "iterations", "with diff =", diff)
-print("Solution:", u1[-3:], u2[:3])
-```
-
-Now we will store `u1` and `u2` permanently on two workers. We will need to update the left and right ghost
-values from the other processor via remote functions `getLastValue` and `getFirstValue` -- otherwise the code
-is functionally identical to the serial version. Let's store this code in `poissonDual.py``:
+In the parallel code, we'll be storing `u1` and `u2` permanently on two workers. On each interval, we will be
+updating the left and right ghost values from the other processor via remote functions `getLastValue` and
+`getFirstValue` -- otherwise the code is functionally identical to the serial version. Let's store this code
+in `poissonDual.py`:
 
 ```py
 ##### this is poissonDual.py #####
@@ -1295,6 +1257,7 @@ achieve further speedup, you need to increase the problem size per each CPU core
 - Mars is a tensor-based framework to scale NumPy, Pandas, and scikit-learn applications on top of Ray:
   - https://mars-project.readthedocs.io
   - https://docs.ray.io/en/latest/ray-more-libs/mars-on-ray.html
+  - might be worth a separate webinar?
 
 <!-- - Dask tasks can run on top of Ray -->
 
