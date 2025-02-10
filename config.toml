@@ -31,5 +31,7 @@ ignoreLogs = ['warning-goldmark-raw-html']
 [languages]
     [languages.en]
         languagename = "English"
-
         [languages.en.menu]
+
+[markup.goldmark.parser.attribute]
+block = true # default is false

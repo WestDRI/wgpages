@@ -100,23 +100,9 @@ You can specify the number of cores for Ray to use, and you can combine multiple
 ray.init(num_cpus=4, configure_logging=False)
 ```
 
-By default Ray will use all available CPU cores, e.g. on my laptop `ray.init()` will start 8 ray::IDLE
+If not specified, Ray will use all available CPU cores, e.g. on my laptop `ray.init()` will start 8 ray::IDLE
 processes (workers), and you can monitor these in a separate shell with `htop --filter "ray::IDLE"` command
 (you may want to hide threads -- typically thrown in green -- with Shift+H).
-
-> How many "ray::IDLE" processes do you see, and why? Recall that you can use `srun --jobid=<jobID> --pty
-> bash` to open an interactive shell process inside your currently running job, and run `htop --filter
-> "ray::IDLE"` there.
-
-{{< question num=11 >}}
-How would you pass the actual number of processor cores to the Ray cluster? Consider three options:
-1. Using a Slurm environment variable. How would you pass it to `ray.init()`?
-2. Launching a single-node Ray cluster as described in our
-   [Ray documentation](https://docs.alliancecan.ca/wiki/Ray).
-3. Not passing anything at all, in which case Ray will try -- unsuccessfully -- to grab all cores.
-{{< /question >}}
-
-
 
 ## Ray tasks
 
@@ -467,17 +453,19 @@ print(ray.cluster_resources().get("CPU"))   # 8 CPU "cores"
 So, we have 1 node in Ray ... Ray thinks it has access to 8 CPU cores, but that's actually the number of
 workers running on 4 physical CPU cores ...
 
-To run properly on 2 cluster nodes, we need to start a single-node Ray cluster and then add workers on other
-nodes to it outside of Python. This is described in our documentation https://docs.alliancecan.ca/wiki/Ray.
+To run properly on 2 cluster nodes, we need to (1) start a single-node Ray cluster and then (2) add workers on
+other nodes to it outside of Python. This is described in our documentation
+https://docs.alliancecan.ca/wiki/Ray.
 
-1. Ray does not play nicely with single-core MPI tasks. Internally, Ray thinks that each MPI rank should be a
-   "Ray node", inside of which you would utilize multiple CPU cores. We can do this by launching just one MPI
-   rank per cluster node and then specifying `--cpus-per-task=4`.
+> Ray does not play nicely with single-core MPI tasks. Internally, Ray thinks that each MPI rank should be a
+> "Ray node", inside of which you would utilize multiple CPU cores. We can do this by launching just one MPI
+> rank per cluster node and then specifying `--cpus-per-task=4`.
+{.note}
 
 Let's do it:
 
 ```sh
-don't forget to go back to the login node!
+>>> make sure to go back to the login node!
 salloc --time=0:60:0 --nodes=2 --ntasks-per-node=1 --cpus-per-task=4 --mem-per-cpu=3600
 
 export HEAD_NODE=$(hostname)   # store head node's address
@@ -511,6 +499,7 @@ Start Python and type:
 import ray
 import os
 
+# connect to our pre-configured Ray cluster
 ray.init(address=f"{os.environ['HEAD_NODE']}:{os.environ['RAY_PORT']}",_node_ip_address=os.environ['HEAD_NODE'])
 
 print("Nodes in the Ray cluster:")
@@ -524,6 +513,10 @@ for node in nodes:
 
 print(ray.available_resources())
 ```
+
+> <font size=+2>In this setup, each **Ray node** runs on a separate **MPI task**, one task per cluster node, and **multiple
+> CPU cores** inside that task.</font>
+{.note}
 
 Let's go back to our slow series with Numba. We'll start from scratch and run the job via `sbatch`.
 
@@ -750,9 +743,9 @@ between these function calls.
 Ray functions (remote tasks) are stateless (can run on any processor), so how do we ensure that we always
 compute `u1` on processor 1 and `u2` on processor 2, and how do we store the arrays there permanently?
 
-To do this, we need to use **Ray actors**. A Ray actor is essentially a stateful (bound to a processor) worker
-that is created via a Python class instance with its own persistent variables and methods, and it stays
-permanently on that worker until we destroy this instance.
+To do this, we need to use **Ray actors** (https://docs.ray.io/en/latest/ray-core/actors.html). A Ray actor is
+essentially a stateful (bound to a processor) worker that is created via a Python class instance with its own
+persistent variables and methods, and it stays permanently on that worker until we destroy this instance.
 
 <!-- 1. persistent storage -->
 <!-- 2. launch calculations on all processors simultaneously -->
