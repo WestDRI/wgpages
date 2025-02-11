@@ -143,40 +143,6 @@ print([ray.get(r[i]) for i in range(4)])   # retrieve the results (multiple bloc
 print(ray.get(r))          # more compact way to do the same (single blocking call)
 ```
 
-### Task output
-
-Consider a code in which each Ray task sleeps for 10 seconds, prints a message and returns its task ID:
-
-```py
-import ray
-from time import sleep, time
-ray.init(num_cpus=4, configure_logging=False)
-
-@ray.remote
-def nap():
-    sleep(10)
-    print("almost done")
-    return ray.get_runtime_context().get_task_id()
-```
-
-Let's run it with timing on:
-
-```py
-start = time()
-r = [nap.remote() for i in range(4)]
-ray.get(r)
-end = time()
-print("Time in seconds:", round(end-start,3))
-```
-
-I get 10.013 seconds since I have enough cores to run all of them in parallel. However, most likely, I see
-printout ("almost done") from only one process and a message "repeated 3x across cluster". To enable print
-messages from all tasks, you need set the bash shell environment variable `export RAY_DEDUP_LOGS=0`.
-
-Notice that Ray task IDs are not integers but 48-character hexadecimal numbers.
-
-
-
 
 
 
@@ -680,10 +646,13 @@ To prototype a parallel solver, first we'll write a serial code that solves the 
 later we'll parallelize it. We'll do all array computations with NumPy. Let's consider a fairly large 1D
 problem (total number of inner grid points $N=2\times10^7$) and break it into 2 intervals.
 
-We'll be updating the solution only at the inner points, as at the edges we have $u_0=u_{N-1}=0$. Let's store
-this code in `poissonSerial.py`:
-
 {{< figure src="/img/gridPartition.png" width="800px" >}}
+
+- update the solution only at the inner points (filled circles)
+- always have $u_0=u_{N-1}=0$ at the edges (large open circles)
+- exchange values at the inner boundary (large filled circles)
+
+Let's store this code in `poissonSerial.py`:
 
 ```py
 ##### this is poissonSerial.py #####
