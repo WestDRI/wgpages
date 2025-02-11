@@ -714,8 +714,11 @@ computing `u1` on processor 1 and `u2` on processor 2. At each iteration we'll b
 functions to do processing, but we need to store the solution `u1` on processor 1 and `u2` on processor 2 in
 between these function calls.
 
-Ray functions (remote tasks) are stateless (can run on any processor), so how do we ensure that we always
-compute `u1` on processor 1 and `u2` on processor 2, and how do we store the arrays there permanently?
+> Ray functions (remote tasks) are stateless, i.e. they can run on any processor that happens to be more idle
+> at the time. How do we ensure that we
+> always compute `u1` on processor 1 and `u2` on processor 2, and how do we store the arrays there permanently,
+> without copying them back and forth at each iteration?
+{.note}
 
 To do this, we need to use **Ray actors** (https://docs.ray.io/en/latest/ray-core/actors.html). A Ray actor is
 essentially a stateful (bound to a processor) worker that is created via a Python class instance with its own
