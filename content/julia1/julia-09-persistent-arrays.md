@@ -14,7 +14,7 @@ using Distributed
 addprocs(1)       # add a worker process
 
 @everywhere function initGrid(n)
-    a = zeros(n);
+    a = zeros(n);           # create `a` within the scope of the function
     println(typeof(a))
 end
 @fetchfrom 2 initGrid(10)   # From worker 2: Vector{Float64}
@@ -22,7 +22,7 @@ end
 @everywhere function showGrid()
     println("a = ", a)
 end
-@fetchfrom 2 showGrid()     # error: `a` not defined
+@fetchfrom 2 showGrid()     # error: `a` not defined in `Main` scope
 ```
 
 There are several ways to allocate persistent storage on workers in between the function calls:
@@ -51,14 +51,14 @@ end
 
 2. Use distributed arrays (`DArray`) for distributed storage across multiple workers -- we will look into this
    option in the next section.
-3. Use remote channels for persistent storage on a single worker.
+3. Use remote channels to access (write, read) persistent storage on a single worker.
 
-{{<note>}}
+## Tightly coupled parallel codes
+
 For tightly coupled parallel codes, you almost always want to have persistent storage on the workers, as
-allocating/deallocating/sending data from scratch will become too expensive. In this workshop we don't explore
-tightly coupled parallel codes, but these can be implemented using one of the 3 methods above. Perhaps, I
-should do a webinar on this topic.
-{{</note>}}
+allocating/deallocating/sending data from scratch at each step will become too expensive. In this workshop we
+don't explore tightly coupled parallel problems, but these can be implemented using one of the 3 methods
+above. *Perhaps, I should do a webinar on this topic.*
 
 ## Channels
 
@@ -94,10 +94,10 @@ take!(ch)   # will hang (no more items); break with Ctrl-C
 
 A channel is local to a process; in the examples above they are local to the control process, and they be
 accessed only from the control process. Similarly, if we define a channel on worker 2, the control process or
-worker 3 cannot directly refer to that channel. However, they can do this through a `RemoteChannel` that can
-put and take values across workers.
+worker 3 cannot directly refer to that channel.
 
-Consider this:
+However, they can do this through a `RemoteChannel` that can send/fetch values to/from other workers. Consider
+this example:
 
 ```jl
 using Distributed
@@ -114,9 +114,9 @@ put!(r1, [float(i^2) for i in 1:10])        # store an array inside channel r1
 put!(r1, [float(i^3) for i in 1:10])        # blocks: no space in r1
 put!(r2, [float(i^3) for i in 1:10])        # store an array inside channel r2
 
-r1   # RemoteChannel{Channel{Vector{Float64}}}(2,2,1) means worker 2, worker 2, id 1
+r1          # RemoteChannel{Channel{Vector{Float64}}}(2,2,1)
 fetch(r1)   # retrieve the array without removing it
-# take!(r1);   # fetch the array and remove it
+take!(r1)   # fetch the array and remove it
 ```
 
 To print or use a RemoteChannel's content on its host worker, you can also use `fetch()`, but now all
@@ -126,6 +126,9 @@ processing happens on worker 2:
 @spawnat 2 println(fetch(r1))
 ```
 
+{{<note>}}
+Remote channels also let you send data directly between workers, without using the control process.
+{{</note>}}
 
 
 

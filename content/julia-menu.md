@@ -80,7 +80,7 @@ our training cluster, and you would not need to install Julia on your computer i
 {{<cor>}}Part 2{{</cor>}} \
 {{<linktitle url="../summer/julia-07-distributed1" text="Distributed.jl: basics">}} \
 {{<linktitle url="../summer/julia-08-distributed2" text="Distributed.jl: three scalable versions of the slow series">}} \
-{{<linktitle url="../summer/julia-09-persistent-arrays" text="Persistent storage on workers">}} \
+{{<linktitle url="../summer/julia-09-persistent-arrays" text="Persistent storage on workers">}} (new) \
 {{<linktitle url="../summer/julia-10-distributed-arrays" text="DistributedArrays.jl">}} \
 {{<linktitle url="../summer/julia-11-distributed-julia-set" text="Parallelizing the Julia set with DistributedArrays">}} \
 {{<linktitle url="../summer/julia-12-shared-arrays" text="SharedArrays.jl">}} \
@@ -90,7 +90,8 @@ our training cluster, and you would not need to install Julia on your computer i
 
 ### Our Julia webinars
 
-- {{<a "https://training.westdri.ca/programming/#julia" "Archive with our previous Julia webinars">}}
+Since 2020, we've been teaching occasional webinars on parallel programming in Julia -- watch the recordings
+{{<a "https://training.westdri.ca/programming/#julia" "here">}}.
 
 ### External links
 
