@@ -1,7 +1,7 @@
 +++
 title = "Parallelizing Julia set"
-slug = "../summer/julia-10-distributed-julia-set"
-weight = 10
+slug = "../summer/julia-11-distributed-julia-set"
+weight = 11
 katex = true
 +++
 

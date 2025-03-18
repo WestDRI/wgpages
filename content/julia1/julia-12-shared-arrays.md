@@ -1,7 +1,7 @@
 +++
 title = "SharedArrays.jl"
-slug = "../summer/julia-11-shared-arrays"
-weight = 11
+slug = "../summer/julia-12-shared-arrays"
+weight = 12
 +++
 
 <!-- Add Baolai's materials? -->

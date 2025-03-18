@@ -1,7 +1,7 @@
 +++
 title = "DistributedArrays.jl"
-slug = "../summer/julia-09-distributed-arrays"
-weight = 9
+slug = "../summer/julia-10-distributed-arrays"
+weight = 10
 katex = true
 +++
 

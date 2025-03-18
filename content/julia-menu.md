@@ -13,10 +13,8 @@ aliases = ["julia-in-summer", "parallel_julia", "parallel_julia_oct21"]
 <!-- {{<cor>}}February 1st (Part 1) and February 8th (Part 2){{</cor>}}\ -->
 <!-- {{<cgr>}}Both days 10:00am - noon Pacific Time{{</cgr>}} -->
 
-{{<cor>}}June 10<sup>th</sup>{{</cor>}}\
-{{<cgr>}}10:00am - 1:00pm Mountain Time{{</cgr>}}
-
-<!-- Course materials will be added here shortly before the start of the course. -->
+{{<cor>}}March 20<sup>th</sup> (Part 1) and 27<sup>th</sup> (Part 2){{</cor>}}\
+{{<cgr>}}10:00am - noon Pacific Time{{</cgr>}}
 
 ---
 
@@ -37,13 +35,15 @@ slowly so you will be able to follow up even if you are new to Julia.
 
 **Software**: There are a couple of options:
 
-1. You can work on our remote training cluster through an SSH client. You will need a remote secure shell
-(SSH) client installed on your computer in order to participate in course exercises. On Windows we recommend
-[the free Home Edition of MobaXterm](https://mobaxterm.mobatek.net/download.html). On Mac and Linux computers
-SSH is usually pre-installed (try typing `ssh` in a terminal to make sure it is there). We will provide guest
-accounts on our training cluster. No need to install Julia on your computer.
+1. You can run Julia on our training cluster, in which case you will need a remote secure shell (SSH) client
+installed on your computer. On Mac and Linux computers, SSH is usually pre-installed -- try typing `ssh` in a
+terminal to make sure it is there. Many versions of Windows also provide an OpenSSH client by default –- try
+opening PowerShell and typing `ssh` to see if it is available. If not, then we recommend installing the free
+Home Edition of MobaXterm from https://mobaxterm.mobatek.net/download.html. We will provide guest accounts on
+our training cluster, and you would not need to install Julia on your computer in this setup.
 
-2. You can use Julia on your own computer (if already installed).
+2. You can run Julia on your own computer, in which case you can install it from
+   https://julialang.org/downloads -- this may take a while so please do this before the class.
 
 <!-- 3. You can work on our remote training cluster via JupyterHub | Terminal. In this case you will want to ask -->
 <!--    for 2-4 CPU cores and 3 hours. This is the easiest option (nothing to install on your computer), as you -->
@@ -80,14 +80,17 @@ accounts on our training cluster. No need to install Julia on your computer.
 {{<cor>}}Part 2{{</cor>}} \
 {{<linktitle url="../summer/julia-07-distributed1" text="Distributed.jl: basics">}} \
 {{<linktitle url="../summer/julia-08-distributed2" text="Distributed.jl: three scalable versions of the slow series">}} \
-{{<linktitle url="../summer/julia-09-distributed-arrays" text="DistributedArrays.jl">}} \
-{{<linktitle url="../summer/julia-10-distributed-julia-set" text="Parallelizing the Julia set with DistributedArrays">}} \
-{{<linktitle url="../summer/julia-11-shared-arrays" text="SharedArrays.jl">}} \
-{{<linkoptional url="../summer/julia-12-nbody" text="Parallelizing the N-body problem">}} (supplemental material) \
-{{<linkoptional url="../summer/julia-13-asm" text="Parallelizing the additive Schwarz method">}} (supplemental material)\
-{{<linkoptional url="../summer/julia-14-linear-algebra" text="Distributed linear algebra in Julia">}} (supplemental material)
+{{<linktitle url="../summer/julia-09-persistent-arrays" text="Persistent storage on workers">}} \
+{{<linktitle url="../summer/julia-10-distributed-arrays" text="DistributedArrays.jl">}} \
+{{<linktitle url="../summer/julia-11-distributed-julia-set" text="Parallelizing the Julia set with DistributedArrays">}} \
+{{<linktitle url="../summer/julia-12-shared-arrays" text="SharedArrays.jl">}} \
+{{<linkoptional url="../summer/julia-13-nbody" text="Parallelizing the N-body problem">}} (supplemental material) \
+{{<linkoptional url="../summer/julia-14-asm" text="Parallelizing the additive Schwarz method">}} (supplemental material)\
+{{<linkoptional url="../summer/julia-15-linear-algebra" text="Distributed linear algebra in Julia">}} (supplemental material)
 
+### Our Julia webinars
 
+- {{<a "https://training.westdri.ca/programming/#julia" "Archive with our previous Julia webinars">}}
 
 ### External links
 

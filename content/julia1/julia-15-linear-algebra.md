@@ -1,7 +1,7 @@
 +++
 title = "Distributed linear algebra in Julia"
-slug = "../summer/julia-14-linear-algebra"
-weight = 14
+slug = "../summer/julia-15-linear-algebra"
+weight = 15
 katex = true
 +++
 

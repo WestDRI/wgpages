@@ -52,14 +52,18 @@ multi-core PCs and distributed-memory clusters. We will cover the following topi
 - DistributedArrays.jl -- distributing large arrays across multiple processes
 - SharedArrays.jl -- shared-memory access to large arrays from multiple processes
 
-We will **not** be covering the following topics today (although we hope to cover them in our future webinars!):
+We will **not** be covering the following topics today (although we hope to cover them in our future
+webinars!):
 
-- Concurrent function calls ("lightweight threads" for suspending/resuming computations)
 - MPI.jl -- a port of the standard MPI library to Julia
 - MPIArrays.jl
+- ParallelStencil.jl -- high-level library for fast parallel stencil computations on **CPUs** (Base.Threads,
+  can also interoperate with ImplicitGlobalGrid.jl built upon MPI.jl) and **GPUs** (NVIDIA, AMD, Apple
+  Silicon)
+- Concurrent function calls ("lightweight threads" for suspending/resuming computations)
 - LoopVectorization.jl
 - FLoops.jl
 - Transducers.jl
 - Dagger.jl -- a task graph scheduler heavily inspired by Python's Dask
 - DistributedData.jl
-- GPU-related packages
+- other GPU-related packages
