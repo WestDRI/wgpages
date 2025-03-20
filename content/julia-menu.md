@@ -80,13 +80,13 @@ our training cluster, and you would not need to install Julia on your computer i
 {{<cor>}}Part 2{{</cor>}} \
 {{<linktitle url="../summer/julia-07-distributed1" text="Distributed.jl: basics">}} \
 {{<linktitle url="../summer/julia-08-distributed2" text="Distributed.jl: three scalable versions of the slow series">}} \
-{{<linktitle url="../summer/julia-09-persistent-arrays" text="Persistent storage on workers">}} (new) \
+{{<linktitle url="../summer/julia-09-persistent-arrays" text="Persistent storage on workers">}} &nbsp;&nbsp;(new) \
 {{<linktitle url="../summer/julia-10-distributed-arrays" text="DistributedArrays.jl">}} \
 {{<linktitle url="../summer/julia-11-distributed-julia-set" text="Parallelizing the Julia set with DistributedArrays">}} \
 {{<linktitle url="../summer/julia-12-shared-arrays" text="SharedArrays.jl">}} \
-{{<linkoptional url="../summer/julia-13-nbody" text="Parallelizing the N-body problem">}} (supplemental material) \
-{{<linkoptional url="../summer/julia-14-asm" text="Parallelizing the additive Schwarz method">}} (supplemental material)\
-{{<linkoptional url="../summer/julia-15-linear-algebra" text="Distributed linear algebra in Julia">}} (supplemental material)
+{{<linkoptional url="../summer/julia-13-nbody" text="Parallelizing the N-body problem">}} &nbsp;&nbsp;(supplemental material) \
+{{<linkoptional url="../summer/julia-14-asm" text="Parallelizing the additive Schwarz method">}} &nbsp;&nbsp;(supplemental material)\
+{{<linkoptional url="../summer/julia-15-linear-algebra" text="Distributed linear algebra in Julia">}} &nbsp;&nbsp;(supplemental material)
 
 ### Our Julia webinars
 
@@ -98,8 +98,6 @@ Since 2020, we've been teaching occasional webinars on parallel programming in J
 - {{<a "https://discourse.julialang.org/c/domain/parallel" "Julia at Scale">}} forum
 - {{<a "https://benlauwens.github.io/ThinkJulia.jl/latest/book.html" "Think Julia: How to Think Like a Computer Scientist">}} by Ben Lauwens and Allen Downey is a good introduction to basic Julia for beginners
 - Baolai Ge's (SHARCNET) November 2020 webinar {{<a "https://youtu.be/xTLFz-5a5Ec" "Julia: Parallel computing revisited">}}
-- WestGrid's March 2021 webinar {{<a "https://youtu.be/2SafLn0xJKY" "Parallel programming in Julia">}}
-- WestGrid's February 2022 webinar {{<a "https://bit.ly/3MSNL3J" "ThreadsX.jl: easier multithreading in Julia">}}
 - {{<a "https://docs.julialang.org/en/v1/manual/performance-tips" "Julia performance tips">}}
 - {{<a "https://viralinstruction.com/posts/optimise" "How to optimise Julia code: A practical guide">}}
 - {{<a "https://kipp.ly/blog/jits-intro" "A Deep Introduction to JIT Compilers">}}

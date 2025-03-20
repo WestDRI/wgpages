@@ -47,11 +47,18 @@ series.
 
 ## Parallelizing the slow series with ThreadsX.mapreduce
 
-In this and other examples we assume that you have already defined `digitsin()`. Save the following as
-`mapreduce.jl`:
+Save the following as `mapreduce.jl`:
 
 ```jl
 using BenchmarkTools, ThreadsX
+
+function digitsin(digitSequence::Int, num)
+    base = 10
+    while (digitSequence ÷ base > 0); base *= 10; end
+    while num > 0; (num % base) == digitSequence && return true; num ÷= 10; end
+    return false
+end
+
 function slow(n::Int64, digitSequence::Int)
     total = ThreadsX.mapreduce(+,1:n) do i
 		if !digitsin(digitSequence, i)
@@ -62,6 +69,7 @@ function slow(n::Int64, digitSequence::Int)
     end
     return total
 end
+
 total = @btime slow(Int64(1e8), 9)
 println("total = ", total)   # total = 13.277605949855294
 ```

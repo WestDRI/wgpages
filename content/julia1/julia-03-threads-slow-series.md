@@ -240,7 +240,18 @@ if !digitsin(9, i)
 end
 ```
 
-Let's now do the timing of our serial summation code with 1e8 terms:
+Let's rewrite this function in a more compact form:
+
+```jl
+function digitsin(digitSequence::Int, num)
+    base = 10
+    while (digitSequence ÷ base > 0); base *= 10; end
+    while num > 0; (num % base) == digitSequence && return true; num ÷= 10; end
+    return false
+end
+```
+
+Let's now do the timing of our serial summation code with $10^8$ terms:
 
 ```julia
 function slow(n::Int64, digitSequence::Int)
@@ -331,18 +342,10 @@ elements so that data from different threads do not end up in the same cache lin
 using Base.Threads
 using BenchmarkTools
 
-function digitsin(digitSequence::Int, num)   # decimal representation of `digitSequence` has N digits
+function digitsin(digitSequence::Int, num)
     base = 10
-    while (digitSequence ÷ base > 0)   # `digitSequence ÷ base` is same as `floor(Int, digitSequence/base)`
-        base *= 10
-    end
-    # `base` is now the first Int power of 10 above `digitSequence`, used to pick last N digits from `num`
-    while num > 0
-        if (num % base) == digitSequence     # last N digits in `num` == digitSequence
-            return true
-        end
-        num ÷= 10                     # remove the last digit from `num`
-    end
+    while (digitSequence ÷ base > 0); base *= 10; end
+    while num > 0; (num % base) == digitSequence && return true; num ÷= 10; end
     return false
 end
 
@@ -496,15 +499,8 @@ using BenchmarkTools
 
 function digitsin(digitSequence::Int, num)
     base = 10
-    while (digitSequence ÷ base > 0)
-        base *= 10
-    end
-    while num > 0
-        if (num % base) == digitSequence
-            return true
-        end
-        num ÷= 10
-    end
+    while (digitSequence ÷ base > 0); base *= 10; end
+    while num > 0; (num % base) == digitSequence && return true; num ÷= 10; end
     return false
 end
 
@@ -545,7 +541,8 @@ There are two important considerations here:
    all threads write into an output buffer and -- with many threads -- take turns doing this, with some
    waiting involved. You might want to comment out `println` to get the best performance.
 
-With these two points in mind, try to get 100% parallel efficiency.
+> ### <font style="color:blue">Exercise "Threads.4"</font>
+> With these two points in mind, try to get 100% parallel efficiency.
 
 <!-- ```sh -->
 <!-- julia> nthreads() -->

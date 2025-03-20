@@ -60,11 +60,14 @@ allocating/deallocating/sending data from scratch at each step will become too e
 don't explore tightly coupled parallel problems, but these can be implemented using one of the 3 methods
 above. *Perhaps, I should do a webinar on this topic.*
 
+Alternatively, you can go back to the basics and use **MPI.jl**, or **ParallelStencil.jl** if you need a
+parallel PDE solver.
+
 ## Channels
 
-Before we study remote channels, let's first look into Julia's Channels. A **Channel** is a data structure
-that facilitates communication between tasks; they act like pipes/channels. Consider a local channel on the
-control process:
+Before we study remote channels, let's first look into Julia's local Channels. A **Channel** is a data
+structure that facilitates communication between tasks; they act like pipes/channels. Consider a local channel
+on the control process:
 
 ```jl
 ch = Channel(2)     # buffered channel of size 2; can take objects of any type
@@ -129,32 +132,6 @@ processing happens on worker 2:
 {{<note>}}
 Remote channels also let you send data directly between workers, without using the control process.
 {{</note>}}
-
-
-
-
-<!-- const remoteArray = remotecall(createPersistentArray, 2, 10)   # create a remote channel on worker 2 -->
-
-
-
-    
-    
-
-
-
-<!-- const remoteArray = RemoteChannel(() -> Array{Float64}(undef, 10), 2) -->
-<!-- # const remoteArray = RemoteChannel(() -> zeros(10), 2) -->
-
-<!-- ... -->
-<!-- MethodError: Cannot `convert` an object of type -->
-<!-- Vector{Float64} to an object of type -->
-<!-- AbstractChannel -->
-
-
-
-
-
-
 
 
 

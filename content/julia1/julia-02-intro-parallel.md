@@ -46,24 +46,23 @@ parallelization) -- see an example below:
 The main goal of this course is to teach you the basic tools for parallel programming in Julia, targeting both
 multi-core PCs and distributed-memory clusters. We will cover the following topics:
 
-- multi-threading with Base.Threads and ThreadsX.jl
-- multi-processing with Distributed.jl
-- ClusterManagers.jl (very briefly)
-- DistributedArrays.jl -- distributing large arrays across multiple processes
-- SharedArrays.jl -- shared-memory access to large arrays from multiple processes
+- multi-threading with **Base.Threads** and **ThreadsX.jl**
+- multi-processing with **Distributed.jl**
+- **ClusterManagers.jl** (very briefly)
+- **DistributedArrays.jl** -- distributing large arrays across multiple processes
+- **SharedArrays.jl** -- shared-memory access to large arrays from multiple processes
 
-We will **not** be covering the following topics today (although we hope to cover them in our future
-webinars!):
+We will *not* be covering the following topics today (we have covered some of these in our past webinars):
 
-- MPI.jl -- a port of the standard MPI library to Julia
-- MPIArrays.jl
-- ParallelStencil.jl -- high-level library for fast parallel stencil computations on **CPUs** (Base.Threads,
-  can also interoperate with ImplicitGlobalGrid.jl built upon MPI.jl) and **GPUs** (NVIDIA, AMD, Apple
-  Silicon)
+- **MPI.jl** -- a port of the standard MPI library to Julia
+- **MPIArrays.jl**
+- **ParallelStencil.jl** -- high-level library for fast parallel stencil computations on **CPUs**
+  (Base.Threads, can also interoperate with ImplicitGlobalGrid.jl built upon MPI.jl) and **GPUs** (NVIDIA,
+  AMD, Apple Silicon)
+- **Dagger.jl** -- a task graph scheduler heavily inspired by Python's Dask
 - Concurrent function calls ("lightweight threads" for suspending/resuming computations)
-- LoopVectorization.jl
-- FLoops.jl
-- Transducers.jl
-- Dagger.jl -- a task graph scheduler heavily inspired by Python's Dask
-- DistributedData.jl
+- **LoopVectorization.jl**
+- **FLoops.jl**
+- **Transducers.jl**
+- **DistributedData.jl**
 - other GPU-related packages

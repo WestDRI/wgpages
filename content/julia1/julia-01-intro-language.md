@@ -35,6 +35,11 @@ $ module load julia     # load the default version
 
 #### Installing Julia packages on a production cluster
 
+{{<note>}}
+Don't do this on the training cluster! We already have everything installed in a central location for all guest
+accounts.
+{{</note>}}
+
 By default, all Julia packages you install from REPL will go into `$HOME/.julia`, and that we will count
 against your `/home` quota. If you want to put packages into another location, you will need to (1) install
 inside your Julia session with (from within Julia):
@@ -53,26 +58,27 @@ $ export JULIA_DEPOT_PATH=/home/\$USER/.julia:/scratch/path/to/julia/packages
 $ export JULIA_LOAD_PATH=@:@v#.#:@stdlib:/scratch/path/to/julia/packages
 ```
 
-**Don't do this on the training cluster!** We already have everything installed in a central location for all guest
-accounts.
-
 **Note**: Some Julia packages rely on precompiled bits that developers think would work on all architectures,
   but they don't. For example, `Plots` package comes with several precompiled libraries, it installs without
-  problem on the Alliance clusters, but then at runtime you will see an error about "GLIBC_2.18 not
+  problem on the Alliance clusters, but then at runtime you might see an error about "GLIBC_2.18 not
   found". The proper solution would be to recompile the package on the cluster, but it is not done correctly
   in Julia packaging, and the error persists even after "recompilation". There is a solution for this, and you
-  can always contact us at support@tech.alliancecan.ca and ask for help. Another example if Julia's `NetCDF`
-  package: it installs fine on Apple Silicon Macs, but it actually comes with a precompiled C package that was
-  compiled only for Intel Macs and does not work on M1.
+  can always contact us at support@tech.alliancecan.ca and ask for help. Another example is Julia's `NetCDF`
+  package: as of February 2022, it was installing fine on Apple Silicon Macs, but it came with a precompiled C
+  package that had been compiled only for Intel Macs and did not work on M1. This issue has been resolved
+  since then, but the point remains: successful installation of a Julia package does not mean it'll work on
+  your architecture.
 
 ### Julia on the training cluster for this workshop
 
-We have Julia on our training cluster *school.c3.ca*.
+We have Julia on our training cluster *julia.vastcloud.org*.
 
 {{<note>}}
-Our training cluster has: <br><br>
-- one fairly small login node, <br>
-- 7 compute nodes with 8 cores and 30GB of memory on each &nbsp;→&nbsp; 56 cores in total and 3.75GB/core
+Our training cluster has:
+<ul>
+<li> one fairly small login node,</li>
+<li> 6 compute nodes with 8 cores and 30GB of memory on each &nbsp;⟹&nbsp; 3.75GB/core, 48 cores in total</li>
+</ul>
 {{</note>}}
 
 Normally in our introductory Julia course we would use Julia inside a Jupyter notebook. Today we will be
@@ -151,7 +157,7 @@ shell>       Shell mode to run Bash commands. Enter it with ;
 
 ### REPL keybindings
 
-In the REPL, you can use standard command line (Emacs) keybindings:
+In the REPL, you can use standard command-line (Emacs-like) keybindings:
 
 ```
 C-c		cancel
@@ -208,7 +214,7 @@ This will launch Julia in serial. To use multiple threads, you want to pass the 
 $ julia -t 2
 ```
 
-## Running scripts
+## Running scripts as  batch jobs
 
 Now, if we want to get an even bigger speedup, we could use even more CPUs per task. The problem is that our
 training cluster only has ~60 compute cores, so if we use `--cpus-per-task=4` some of us could be left waiting

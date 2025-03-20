@@ -232,15 +232,8 @@ using BenchmarkTools
 
 @everywhere function digitsin(digitSequence::Int, num)
     base = 10
-    while (digitSequence ÷ base > 0)
-        base *= 10
-    end
-    while num > 0
-        if (num % base) == digitSequence
-            return true
-        end
-        num ÷= 10
-    end
+    while (digitSequence ÷ base > 0); base *= 10; end
+    while num > 0; (num % base) == digitSequence && return true; num ÷= 10; end
     return false
 end
 
