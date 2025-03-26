@@ -392,14 +392,14 @@ savefig("parallel.png")
 
 <!-- Below is the serial code `juliaSetSerial.jl`. First, you need to install the required packages: -->
 
-<!-- ```julia -->
+<!-- ```jl -->
 <!-- ] add ProgressMeter -->
 <!-- ] add NetCDF -->
 <!-- ``` -->
 
 <!-- Next, let's study the code: -->
 
-<!-- ```julia -->
+<!-- ```jl -->
 <!-- using ProgressMeter, NetCDF -->
 
 <!-- function pixel(i, j, width, height, c, zoomOut) -->
@@ -448,7 +448,7 @@ savefig("parallel.png")
 <!-- > ### Exercise 11 -->
 <!-- > 1. Compare the expected and actual file sizes. -->
 <!-- > 1. Try other parameter values: -->
-<!-- > ```julia -->
+<!-- > ```jl -->
 <!-- > c, zoomOut = 0.355 + 0.355im, 1.2   # the default one: spirals -->
 <!-- > c, zoomOut = 1.2exp(1.1π*im), 1     # original textbook example -->
 <!-- > c, zoomOut = -0.4 - 0.59im, 1.5     # denser spirals -->
@@ -469,12 +469,12 @@ savefig("parallel.png")
 <!--    don't know where to start in this project, begin with looking at the complete example with `fillLocalBlock()` from -->
 <!--    the previous section. -->
 <!-- 1. You can replace -->
-<!-- ```julia -->
+<!-- ```jl -->
 <!-- @showprogress for i in 1:height, j in 1:width -->
 <!--     data[i,j] = pixel(i, j, width, height, c, zoomOut) -->
 <!-- ``` -->
 <!-- with -->
-<!-- ```julia -->
+<!-- ```jl -->
 <!-- data = dzeros(Float32, height, width);   # distributed 2D array of 0's -->
 <!-- @time @sync for i in workers() -->
 <!--     @spawnat i fillLocalBlock(data, width, height, c, zoomOut) -->

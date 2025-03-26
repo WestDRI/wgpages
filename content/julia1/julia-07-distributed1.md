@@ -177,7 +177,7 @@ fetch(@spawnat 2 a+10)   # combine both in one line; the control process will pa
 
 > ### <font style="color:blue">Exercise "Distributed.1"</font>
 > Try to define and run a function on one of the workers, e.g.
-> ```julia
+> ```jl
 > function cube(x)
 >     return x*x*x
 > end

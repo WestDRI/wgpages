@@ -13,16 +13,16 @@ storage associated with the worker. Consider this example:
 using Distributed
 addprocs(1)       # add a worker process
 
-@everywhere function initGrid(n)
+@everywhere function initArray(n)
     a = zeros(n);           # create `a` within the scope of the function
     println(typeof(a))
 end
-@fetchfrom 2 initGrid(10)   # From worker 2: Vector{Float64}
+@fetchfrom 2 initArray(10)   # From worker 2: Vector{Float64}
 
-@everywhere function showGrid()
+@everywhere function showArray()
     println("a = ", a)
 end
-@fetchfrom 2 showGrid()     # error: `a` not defined in `Main` scope
+@fetchfrom 2 showArray()     # error: `a` not defined in `Main` scope
 ```
 
 There are several ways to allocate persistent storage on workers in between the function calls:
@@ -32,21 +32,25 @@ There are several ways to allocate persistent storage on workers in between the 
 
 ```jl
 using Distributed
-addprocs(1)
+addprocs(2)
 
-@everywhere function initArray()
+@everywhere function initArray(n)
     global a
-    a = [i+1 for i in 1:10]
+    a = [i+1 for i in 1:n]
 end
-@spawnat 2 initArray()
+@fetchfrom 2 initArray(5)
+@fetchfrom 3 initArray(10)
 
-@fetchfrom 2 a           # works
+@fetchfrom 2 a           # works: 5 elements
+@fetchfrom 3 a           # works: 10 elements
 
 @everywhere function showArray()
     global a
-    println(a)
+    println("a = ", a)
 end
-@spawnat 2 showArray()   # works
+@spawnat 2 showArray()   # works: 5 elements
+@spawnat 3 showArray()   # works: 10 elements
+@spawnat 2 @spawnat 3 showArray()   # interestingly, this works as well
 ```
 
 2. Use distributed arrays (`DArray`) for distributed storage across multiple workers -- we will look into this

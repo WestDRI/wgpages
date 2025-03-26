@@ -9,8 +9,9 @@ The Julia set problem was [described in one of the earlier sections](../julia-05
 
 ### Parallelizing
 
-How would we parallelize this problem with multi-processing? We have a large array, so we can use DistributedArrays and
-compute it in parallel. Here are the steps:
+How would we parallelize this problem with multi-processing? We have a large array, so we can use
+DistributedArrays and compute it in parallel. Copy `juliaSetSerial.jl` to `juliaSetDistributedArrays.jl` and
+start editing the latter:
 
 1. Load `Distributed` on the control process.
 1. Load `DistributedArrays` on all processes.
@@ -24,7 +25,7 @@ stability = dzeros(Int32, height, width);   # distributed 2D array of 0's
    section. This function will cycle through all local indices `localindices(stability)`. This function needs to be
    defined on all processes.
 4. Replace the loop
-```julia
+```jl
 @btime for i in 1:height, j in 1:width
     point = (2*(j-0.5)/width-1) + (2*(i-0.5)/height-1)im
     stability[i,j] = pixel(point)

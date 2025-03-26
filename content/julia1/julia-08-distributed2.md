@@ -10,25 +10,25 @@ katex = true
 We could create an array (using *array comprehension*) of Future references and then add up their respective
 results. An array comprehension is similar to Python's list comprehension:
 
-```julia
+```jl
 a = [i for i in 1:5];   # array comprehension in Julia
 typeof(a)               # 1D array of Int64
 ```
 We can cycle through all available workers:
 
-```julia
+```jl
 [w for w in workers()]                      # array of worker IDs
 [(i,w) for (i,w) in enumerate(workers())]   # array of tuples (counter, worker ID)
 ```
 
 > ### <font style="color:blue">Exercise "Distributed.3"</font>
 > Using this syntax, construct an array `r` of Futures, and then get their results and sum them up with
-> ```julia
+> ```jl
 > print("total = ", sum([fetch(r[i]) for i in 1:nworkers()]))
 > ```
 > You can do this exercise using either the array comprehension from above, or the good old `for` loops.
 
-<!-- ```julia -->
+<!-- ```jl -->
 <!-- r = [@spawnat w slow(Int64(1e8), 9, i, nworkers()) for (i,w) in enumerate(workers())] -->
 <!-- print("total = ", sum([fetch(r[i]) for i in 1:nworkers()])) -->
 <!-- # runtime with 2 simultaneous processes: 10.26+12.11s -->
@@ -46,7 +46,7 @@ much larger numbers of cores!
 Unlike the **Base.Threads** module, **Distributed** provides a parallel loop with reduction. This means that we can
 implement a parallel loop for computing the sum. Let's write `parallelFor.jl` with this version of the function:
 
-```julia
+```jl
 function slow(n::Int64, digitSequence::Int)
     @time total = @distributed (+) for i in 1:n
         !digitsin(digitSequence, i) ? 1.0 / i : 0
@@ -61,7 +61,7 @@ A couple of important points:
    running on the control process.
 1. The only expression inside the loop is the compact if/else statement. Consider this:
 
-```julia
+```jl
 1==2 ? println("Yes") : println("No")
 ```
 
@@ -70,7 +70,7 @@ added together.
 
 Now let's measure the times:
 
-```julia
+```jl
 # slow(10, 9)
 precompile(slow, (Int, Int))
 slow(Int64(1e8), 9)   # total = 13.277605949855722
@@ -83,7 +83,7 @@ slow(Int64(1e8), 9)   # total = 13.277605949855722
 `@time` with `@btime` inside `slow()`, you will run into weird errors, so best to combine `@distributed` with
 `@time` when doing this in the same line. However, you can use `@btime` when calling the function:
 
-```julia
+```jl
 function slow(n::Int64, digitSequence::Int)
     total = @distributed (+) for i in 1:n
         !digitsin(digitSequence, i) ? 1.0 / i : 0
@@ -128,7 +128,7 @@ julia -p $SLURM_NTASKS parallelFor.jl
 
 The `pmap()` function provides another mechanism to launch a function on all available workers:
 
-```julia
+```jl
 @everywhere function showid(message)   # define the function everywhere
     println(message, myid())           # this function returns nothing
 end
@@ -138,7 +138,7 @@ pmap(showid, ["my id = ", "and mine = ", "reporting", "here we go: "]);
 
 There are two `pmap()` syntaxes:
 
-```julia
+```jl
 pmap(slow, args)
 pmap(x->x^2, [1,2,3,4])   # anonymous/lambda function
 pmap(x->println("I am worker ", myid()), workers())
@@ -147,7 +147,7 @@ pmap(x->println("I am worker ", myid()), workers())
 Let's apply this mapping tool to our slow series. We'll start `mappingArguments.jl` with a new version of
 `slow()` that will compute partial sum on each worker:
 
-```julia
+```jl
 @everywhere function slow((n, digitSequence, taskid, ntasks))   # the argument is now a tuple
     println("running on worker ", myid())
 	total = 0.0
@@ -160,7 +160,7 @@ end
 
 and launch the function on each worker:
 
-```julia
+```jl
 slow((10, 9, 1, 1))   # package arguments in a tuple; serial run
 nw = nworkers()
 args = [(Int64(1e8), 9, j, nw) for j in 1:nw]   # array of tuples to be mapped to workers
@@ -205,15 +205,15 @@ Save this code as `hybrid.jl` and then run it specifying the number of workers w
 worker with `-t` flags:
 
 ```sh
-[~/tmp]$ julia -p 4 -t 2 hybrid.jl 
-      From worker 5:	Hello, I am thread 2 on proc 5
-      From worker 5:	Hello, I am thread 1 on proc 5
-      From worker 2:	Hello, I am thread 1 on proc 2
-      From worker 2:	Hello, I am thread 2 on proc 2
-      From worker 3:	Hello, I am thread 1 on proc 3
-      From worker 3:	Hello, I am thread 2 on proc 3
-      From worker 4:	Hello, I am thread 1 on proc 4
-      From worker 4:	Hello, I am thread 2 on proc 4
+$ julia -p 4 -t 2 hybrid.jl
+    From worker 5:	Hello, I am thread 2 on proc 5
+    From worker 5:	Hello, I am thread 1 on proc 5
+    From worker 2:	Hello, I am thread 1 on proc 2
+    From worker 2:	Hello, I am thread 2 on proc 2
+    From worker 3:	Hello, I am thread 1 on proc 3
+    From worker 3:	Hello, I am thread 2 on proc 3
+    From worker 4:	Hello, I am thread 1 on proc 4
+    From worker 4:	Hello, I am thread 2 on proc 4
 ```
 
 ### Optional integration with Slurm

@@ -34,14 +34,14 @@ fractals for different values of $c$):
 Below is the serial code `juliaSetSerial.jl`. If you are running Julia on your own computer, make sure you
 have the required packages:
 
-```julia
+```jl
 ] add BenchmarkTools
 ] add Plots
 ```
 
 Let's study the code:
 
-```julia
+```jl
 using BenchmarkTools
 
 function pixel(z)

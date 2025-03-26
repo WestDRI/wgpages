@@ -46,7 +46,7 @@ down when any two particles come close to each other.
 Below you will find the serial code `nbodySerial.jl`. I removed all parts related to plotting the results, as it's slow
 in Julia, and you would need to install `Plots` package (takes a while with many dependencies!).
 
-```julia
+```jl
 using ProgressMeter
 
 npart = 20
@@ -88,11 +88,11 @@ cluster. Obviously, the most CPU-intensive part is force evaluation -- this is w
 
 There are many small arrays in the code -- let's use SharedArrays and fill them in parallel, e.g. you would replace
 
-```julia
+```jl
 force = zeros(Float32, npart, 3);
 ```
 with
-```julia
+```jl
 force = SharedArray{Float32}(npart,3);
 ```
 

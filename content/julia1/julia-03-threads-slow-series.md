@@ -10,14 +10,14 @@ katex = true
 
 Let's start Julia by typing `julia` in bash:
 
-```julia
+```jl
 using Base.Threads   # otherwise would have to preface all functions/macros with 'Threads.'
 nthreads()           # by default, Julia starts with a single thread of execution
 ```
 
 If instead we start with `julia -t 2` (or prior to v1.5 with `JULIA_NUM_THREADS=2 julia`):
 
-```julia
+```jl
 using Base.Threads
 nthreads()           # now we have access to 2 threads
 ```
@@ -29,7 +29,7 @@ When launched from this interface, these two threads will run on two CPU cores o
 
 Let's run our first multi-threaded code:
 
-```julia
+```jl
 @threads for i=1:10   # parallel for loop using all threads
     println("iteration $i on thread $(threadid())")     # notice bash-like syntax
 end
@@ -42,7 +42,7 @@ This would split the loop between 2 threads running on two CPU cores: each core 
 
 Let's now fill an array with values in parallel:
 
-```julia
+```jl
 a = zeros(Int32, 10)    # 32-bit integer array
 @threads for i=1:10
     a[i] = threadid()   # should be no collision: each thread writes to its own part
@@ -60,7 +60,7 @@ code is **thread-safe**.
 Let's initialize a large floating array and fill it with values in serial and time the loop. We'll package the
 code into a function to get more accurate timing with/without `@threads`.
 
-```julia
+```jl
 n = Int64(1e8)     # integer number
 n = 100_000_000    # another way of doing this
 
@@ -78,7 +78,7 @@ On the training cluster in three runs I get 2.52s, 2.45s, 2.43s.
 
 The multi-threaded code performs faster:
 
-```julia
+```jl
 using Base.Threads
 nthreads()         # still running 2 threads
 
@@ -103,7 +103,7 @@ end
 
 We will compute the sum $\sum_{i=1}^{10^6}i$ with multiple threads. Consider this code:
 
-```julia
+```jl
 total = 0
 @threads for i = 1:Int(1e6)
     global total += i          # use `total` from global scope
@@ -121,7 +121,7 @@ Let's make it thread-safe (one of many possible solutions) using an **atomic var
 thread can update an atomic variable at a time; all other threads have to wait for this variable to be
 released before they can write into it.
 
-```julia
+```jl
 total = Atomic{Int64}(0)
 @threads for i in 1:Int(1e6)
     atomic_add!(total, i)
@@ -138,7 +138,7 @@ to finish updating the variable, so with let's say 4 threads and one variable th
 We already know that we can use `@time` macro for timing our code. Let's do summation of integers from 1 to
 `Int64(1e8)` using a serial code:
 
-```julia
+```jl
 n = Int64(1e8)
 total = Int128(0)   # 128-bit for the result!
 @time for i in 1:n
@@ -152,7 +152,7 @@ On the training cluster I get 10.87s, 10.36s, 11.07s. Here `@time` also includes
 shortest time, and prints the result only once. Therefore, with `@btime` you don't need to precompile the
 code.
 
-```julia
+```jl
 using BenchmarkTools
 n = Int64(1e8)
 @btime begin
@@ -169,7 +169,7 @@ println("total = ", total)
 
 Next we'll package this code into a function:
 
-```julia
+```jl
 function quick(n)
     total = Int128(0)   # 128-bit for the result!
     for i in 1:n
@@ -178,7 +178,7 @@ function quick(n)
     return(total)
 end
 ```
-```julia
+```jl
 @btime quick(Int64(1e8))    # correct result, 1.826 ns runtime
 @btime quick(Int64(1e9))    # correct result, 1.825 ns runtime
 @btime quick(Int64(1e15))   # correct result, 1.827 ns runtime
@@ -211,7 +211,7 @@ the upper side. We will sum all the terms whose denominators do not contain the 
 We will have to check if "9" appears in each term's index `i`. One way to do this would be checking for a substring in a
 string:
 
-```julia
+```jl
 if !occursin("9", string(i))
     <add the term>
 end
@@ -220,7 +220,7 @@ end
 It turns out that integer exclusion is ∼4X faster (thanks to Paul Schrimpf from the Vancouver School of Economics @UBC
 for this code!):
 
-```julia
+```jl
 function digitsin(digitSequence::Int, num)   # decimal representation of `digitSequence` has N digits
     base = 10
     while (digitSequence ÷ base > 0)   # `digitSequence ÷ base` is same as `floor(Int, digitSequence/base)`
@@ -253,7 +253,7 @@ end
 
 Let's now do the timing of our serial summation code with $10^8$ terms:
 
-```julia
+```jl
 function slow(n::Int64, digitSequence::Int)
     total = Float64(0)    # this time 64-bit is sufficient!
     for i in 1:n

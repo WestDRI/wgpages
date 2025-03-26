@@ -19,20 +19,20 @@ to achieve parallelism for large problems.
 DistributedArrays is not part of the standard library, so -- if running on your own computer -- you would
 usually need to install it yourself:
 
-```julia
+```jl
 ] add DistributedArrays   # typically installs into `~/.julia/environments/versionNumber`
 ```
 
 We have DistributedArrays already installed on our training cluster. To use it, we need to load this package
 on every worker:
 
-```julia
+```jl
 using Distributed
 addprocs(4)
 @everywhere using DistributedArrays
 ```
 
-```julia
+```jl
 n = 10
 data = dzeros(Float32, n, n);          # distributed 2D array of 0's
 data                                   # can access the entire array
@@ -45,7 +45,7 @@ data
 
 Let's check `data` distribution across workers:
 
-```julia
+```jl
 for i in workers()
     @spawnat i println(localindices(data))
 end
@@ -53,18 +53,22 @@ end
 
 You can assign `localindices()` output to variables:
 
-```julia
+```jl
 rows, cols = @fetchfrom 3 localindices(data)
 println(rows)     # the rows owned by worker 3
 ```
 
 If we try to write into our distributed array on the control process, e.g. `data[6,1] = 1`, we'll get an
-error! We can only write into `data` from its "owner" workers using local indices on these workers:
+error! If we try `@fetchfrom 3 data[6,1] = 1`, most likely we get an error as well! The reason is that we can
+only write into:
 
+1. `data.localpart` on
+1. its "owner" worker using
+1. local indices on this worker:
 
-```julia
+```jl
 @everywhere function fillLocalBlock(data)
-    h, w = localindices(data)   # indices of locally stored elements in global units
+    h, w = localindices(data)        # global indices of locally stored elements
     for iGlobal in h                       # or collect(h) to iterate through a vector
         iLoc = iGlobal - h.start + 1       # convert to local units; always start from 1
         for jGlobal in w                   # or collect(w) to iterate through a vector
@@ -75,7 +79,17 @@ error! We can only write into `data` from its "owner" workers using local indice
 end
 ```
 
-```julia
+Running on one worker:
+
+```jl
+data
+@spawnat 2 fillLocalBlock(data)
+data   # filled the first block owned by worker 2
+```
+
+Running on all workers:
+
+```jl
 for i in workers()
     @spawnat i fillLocalBlock(data)
 end
@@ -86,7 +100,7 @@ minimum(data), maximum(data)   # parallel reduction
 
 One-liners to generate distributed arrays:
 
-```julia
+```jl
 a = dzeros(100,100,100);      # 100^3 distributed array of 0's
 b = dones(100,100,100);       # 100^3 distributed array of 1's
 c = drand(100,100,100);       # 100^3 uniform [0,1]
@@ -99,30 +113,30 @@ You can find more information about the arguments by typing `?DArray`. For examp
 DArray's distribution across workers. Before I show the examples, let's define a convenient function to show the array's
 distribution:
 
-```julia
+```jl
 function showDistribution(x::DArray)
     for i in workers()
         @spawnat i println(localindices(x))
     end
 end
 ```
-```julia
+```jl
 nworkers()                                  # 4
 data = dzeros((100,100), workers()[1:2]);   # define only on the first two workers
 showDistribution(data)
 ```
-```julia
+```jl
 square = dzeros((100,100), workers()[1:4], [2,2]);   # 2x2 decomposition
 showDistribution(square)
 ```
-```julia
+```jl
 slab = dzeros((100,100), workers()[1:4], [1,4]);   # 1x4 decomposition
 showDistribution(slab)
 ```
 
 You can take a local array and distribute it across workers:
 
-```julia
+```jl
 e = fill(1.5, (10,10))   # local array
 de = distribute(e)       # distribute `e` across all workers
 showDistribution(de)
@@ -131,8 +145,7 @@ showDistribution(de)
 > ### <font style="color:blue">Exercise "DistributedArrays.1"</font>
 > Using either `top` or `htop` command on the training cluster, study memory usage with DistributedArrays. Are
 > these arrays really distributed across processes? Use a _largish_ array for this: large enough to spot
-> memory usage, but not too large not to exceed physical memory and not to affect other participants
-> (especially if you do this on the login node - which you should not).
+> memory usage, but not too large not to exceed physical memory and not to affect other participants.
 
 ### Building a distributed array from local pieces [^1]
 
@@ -140,7 +153,7 @@ showDistribution(de)
 
 Let's restart Julia with `julia` (single control process) and load the packages:
 
-```julia
+```jl
 using Distributed
 addprocs(4)
 using DistributedArrays       # important to load this after addprocs()
@@ -155,7 +168,7 @@ matrix distribution across workers:
 Notice that with the 2x2 decomposition two of the 4 blocks are also tridiagonal matrices. We'll define a function to
 initiate them:
 
-```julia
+```jl
 @everywhere function tridiagonal(n)
     la = zeros(n,n)
     la[diagind(la,0)] .= 2.   # diagind(la,k) provides indices of the kth diagonal of a matrix
@@ -167,7 +180,7 @@ end
 
 We also need functions to define the other two blocks:
 
-```julia
+```jl
 @everywhere function upperRight(n)
     la = zeros(n,n)
     la[n,1] = -1.
@@ -183,7 +196,7 @@ end
 We use these functions to define local pieces on each block and then create a distributed 8x8 matrix on a 2x2 process
 grid:
 
-```julia
+```jl
 d11 = @spawnat 2 tridiagonal(4)
 d12 = @spawnat 3 lowerLeft(4)
 d21 = @spawnat 4 upperRight(4)
