@@ -95,8 +95,8 @@ Since 2020, we've been teaching occasional webinars on parallel programming in J
 
 ### External links
 
+- {{<a "https://benlauwens.github.io/ThinkJulia.jl/latest/book.html" "Think Julia: How to Think Like a Computer Scientist">}} by Ben Lauwens and Allen Downey is a very thorough introduction to non-parallel Julia for beginners
 - {{<a "https://discourse.julialang.org/c/domain/parallel" "Julia at Scale">}} forum
-- {{<a "https://benlauwens.github.io/ThinkJulia.jl/latest/book.html" "Think Julia: How to Think Like a Computer Scientist">}} by Ben Lauwens and Allen Downey is a good introduction to basic Julia for beginners
 - Baolai Ge's (SHARCNET) November 2020 webinar {{<a "https://youtu.be/xTLFz-5a5Ec" "Julia: Parallel computing revisited">}}
 - {{<a "https://docs.julialang.org/en/v1/manual/performance-tips" "Julia performance tips">}}
 - {{<a "https://viralinstruction.com/posts/optimise" "How to optimise Julia code: A practical guide">}}

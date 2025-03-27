@@ -61,9 +61,10 @@ c = SharedArray{Int64}((20), init = x -> x .= myid())   # indeterminate outcome!
 Each worker updates every element, but the order in which they do this varies from one run to another, producing
 indeterminate outcome.
 
-### Avoiding race condition: use `localindices`
+### Avoiding a race condition: use `localindices`
 
-With a SharedArray, there is implicit partitioning between workers (although it is stored on the control process):
+With a SharedArray, there is an implicit partitioning for processing on workers (although the array itself is
+stored on the control process):
 
 ```jl
 @everywhere using SharedArrays   # otherwise `localindices` won't be found on workers
@@ -78,7 +79,7 @@ What we really want is for each worker to fill only its assigned block (parallel
 c = SharedArray{Int64}((20), init = x -> x[localindices(x)] .= myid())
 ```
 
-### Another way to avoid a race condition: use parallel `for` loop
+### Another way to avoid a race condition: use the parallel `for` loop
 
 Let's initialize a 2D SharedArray:
 
