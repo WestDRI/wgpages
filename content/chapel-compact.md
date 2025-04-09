@@ -1,10 +1,10 @@
 +++
 title = "Parallel programming in Chapel"
-slug = "chapel-original"
+slug = "chapel-compact"
 aliases = ["chapel"]
 +++
 
-{{<cor>}}November 9th and 16th, 2023{{</cor>}}\
+{{<cor>}}May 15th and 22nd, 2025{{</cor>}}\
 {{<cgr>}}10:00am - noon Pacific Time{{</cgr>}}
 
 This course is a general introduction to the main principles of parallel coding using the Chapel programming
@@ -55,49 +55,31 @@ participants. No need to install Chapel on your computer.
 
 
 
-<!-- {{<nolinktitle>}}Introduction to Chapel{{</nolinktitle>}} \ -->
-<!-- {{<nolinktitle>}}Basic syntax and variables{{</nolinktitle>}} \ -->
-<!-- {{<nolinktitle>}}Ranges and arrays{{</nolinktitle>}} \ -->
-<!-- {{<nolinktitle>}}Conditional statements{{</nolinktitle>}} \ -->
-<!-- {{<nolinktitle>}}Getting started with loops{{</nolinktitle>}} \ -->
-<!-- {{<nolinktitle>}}Using command-line arguments{{</nolinktitle>}} \ -->
-<!-- {{<nolinktitle>}}Measuring code performance{{</nolinktitle>}} \ -->
-<!-- {{<nolinktitle>}}Intro to parallel computing{{</nolinktitle>}} \ -->
-<!-- {{<nolinktitle>}}Fire-and-forget tasks{{</nolinktitle>}} \ -->
-<!-- {{<nolinktitle>}}Synchronization of threads{{</nolinktitle>}} -->
-<!-- {{<nolinktitle>}}Task-parallelizing the heat transfer solver{{</nolinktitle>}} \ -->
-<!-- {{<nolinktitle>}}Single-locale data parallelism{{</nolinktitle>}} \ -->
-<!-- {{<nolinktitle>}}Parallelizing the Julia set problem{{</nolinktitle>}} \ -->
-<!-- {{<nolinktitle>}}Multi-locale Chapel{{</nolinktitle>}} \ -->
-<!-- {{<nolinktitle>}}Domains and data parallelism{{</nolinktitle>}} -->
-<!-- {{<nolinktitle>}}Heat transfer solver on distributed domains{{</nolinktitle>}} -->
-
-
-
 {{<cor>}}Part 1: basic language features{{</cor>}} {{<s>}} {{<cgr>}}{{</cgr>}} \
-{{<linktitle url="../chapel1/chapel-01-intro" text="Introduction to Chapel">}} \
-{{<linktitle url="../chapel1/chapel-02-variables" text="Basic syntax and variables">}} \
-{{<linktitle url="../chapel1/chapel-03-ranges-and-arrays" text="Ranges and arrays">}} \
-{{<linktitle url="../chapel1/chapel-04-conditions" text="Conditional statements">}} \
-{{<linktitle url="../chapel1/chapel-05-loops" text="Getting started with loops">}} \
-{{<linktitle url="../chapel1/chapel-06-command-line-arguments" text="Using command-line arguments">}} \
-{{<linktitle url="../chapel1/chapel-07-timing" text="Measuring code performance">}}
+{{<linktitle url="../chapel2/chapel-01-intro" text="Introduction to Chapel">}} \
+{{<linktitle url="../chapel2/chapel-02-variables" text="Basic syntax and variables">}} \
+{{<linktitle url="../chapel2/chapel-03-ranges-and-arrays" text="Ranges and arrays">}} \
+{{<linktitle url="../chapel2/chapel-04-conditions" text="Conditional statements">}} \
+{{<linktitle url="../chapel2/chapel-05-loops" text="Getting started with loops">}} \
+{{<linktitle url="../chapel2/chapel-06-command-line-arguments" text="Using command-line arguments">}} \
+{{<linktitle url="../chapel2/chapel-07-timing" text="Measuring code performance">}}
 
 
 {{<cor>}}Part 2: task parallelism{{</cor>}} {{<s>}} {{<cgr>}}{{</cgr>}} \
-{{<linktitle url="../chapel1/chapel-08-intro-parallel" text="Intro to parallel computing">}} \
-{{<linktitle url="../chapel1/chapel-09-fire-and-forget-tasks" text="Fire-and-forget tasks">}} \
-{{<linktitle url="../chapel1/chapel-10-synchronising-threads" text="Synchronization of threads">}} \
-{{<linktitle url="../chapel1/chapel-11-task-parallel-heat-transfer" text="Task-parallelizing the heat transfer solver">}}
+{{<linktitle url="../chapel2/chapel-08-intro-parallel" text="Intro to parallel computing">}} \
+{{<linktitle url="../chapel2/chapel-09-fire-and-forget-tasks" text="Fire-and-forget tasks">}} \
+{{<linktitle url="../chapel2/chapel-10-synchronising-threads" text="Synchronization of threads">}} \
+{{<linktitle url="../chapel2/chapel-11-task-parallel-heat-transfer" text="Task-parallelizing the heat transfer solver">}}
 
 
 {{<cor>}}Part 3: data parallelism{{</cor>}} {{<s>}} {{<cgr>}}{{</cgr>}} \
-{{<linktitle url="../chapel1/chapel-12-single-locale-data-parallel" text="Single-locale data parallelism">}} \
-{{<linktitle url="../chapel1/chapel-13-julia-set" text="Parallelizing the Julia set problem">}} \
-{{<linktitle url="../chapel1/chapel-14-multi-locale-chapel" text="Multi-locale Chapel">}} \
-{{<linktitle url="../chapel1/chapel-15-domains-and-data-parallel" text="Domains and data parallelism">}} \
-{{<linktitle url="../chapel1/chapel-16-distributed-heat-transfer" text="Heat transfer solver on distributed domains">}}
+{{<linktitle url="../chapel2/chapel-12-single-locale-data-parallel" text="Single-locale data parallelism">}} \
+{{<linktitle url="../chapel2/chapel-13-julia-set" text="Parallelizing the Julia set problem">}} \
+{{<linktitle url="../chapel2/chapel-14-multi-locale-chapel" text="Multi-locale Chapel">}} \
+{{<linktitle url="../chapel2/chapel-15-domains-and-data-parallel" text="Domains and data parallelism">}} \
+{{<linktitle url="../chapel2/chapel-16-distributed-heat-transfer" text="Heat transfer solver on distributed domains">}}
 
+{{<cor>}}Part 4: GPU computing with Chapel{{</cor>}} {{<s>}} {{<cgr>}}{{</cgr>}}
 
 
 
