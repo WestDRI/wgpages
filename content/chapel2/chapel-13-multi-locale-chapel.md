@@ -1,7 +1,7 @@
 +++
 title = "Multi-locale Chapel"
-slug = "chapel-14-multi-locale-chapel"
-weight = 14
+slug = "chapel-13-multi-locale-chapel"
+weight = 13
 katex = true
 +++
 

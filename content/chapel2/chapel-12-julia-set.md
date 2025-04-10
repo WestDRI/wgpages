@@ -1,7 +1,7 @@
 +++
 title = "Parallelizing the Julia set problem"
-slug = "chapel-13-julia-set"
-weight = 13
+slug = "chapel-12-julia-set"
+weight = 12
 katex = true
 +++
 

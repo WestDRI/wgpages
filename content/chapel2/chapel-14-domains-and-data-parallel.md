@@ -1,7 +1,7 @@
 +++
 title = "Domains and data parallelism"
-slug = "chapel-15-domains-and-data-parallel"
-weight = 15
+slug = "chapel-14-domains-and-data-parallel"
+weight = 14
 katex = true
 +++
 

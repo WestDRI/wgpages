@@ -7,14 +7,21 @@ aliases = ["chapel"]
 {{<cor>}}May 15th and 22nd, 2025{{</cor>}}\
 {{<cgr>}}10:00am - noon Pacific Time{{</cgr>}}
 
-This course is a general introduction to the main principles of parallel coding using the Chapel programming
-language to illustrate the basic concepts and ideas. Chapel is a relatively new language for both shared and
-distributed memory programming, with easy-to-use, high-level abstractions for both task and data parallelism,
-making it ideal for a novice HPC user to learn parallel programming. Chapel is incredibly intuitive, striving
-to merge the ease-of-use of Python and the performance of traditional compiled languages such as C and
-Fortran. Parallel constructs that typically take tens of lines of MPI code can be expressed in only a few
-lines of Chapel code. Chapel is open source and can run on any Unix-like operating system, with hardware
-support from laptops to large HPC systems.
+Chapel is a modern programming language designed for both shared and distributed memory systems, offering
+high-level, easy-to-use abstractions for task and data parallelism. Its intuitive syntax makes it an excellent
+choice for novice HPC users learning parallel programming. Chapel supports a wide range of parallel hardware
+-- from multicore processors and multi-node clusters to GPUs -- using consistent syntax and concepts across
+all levels of hardware parallelism.
+
+Chapel dramatically reduces the complexity of parallel coding by combining the simplicity of Python-style
+programming with the performance of compiled languages like C and Fortran. Parallel operations that might
+require dozens of lines in MPI can often be written in just a few lines of Chapel. As an open-source language,
+it runs on most Unix-like operating systems and scales from laptops to large HPC systems.
+
+This course begins with Chapel fundamentals, then focuses on data parallelism through two numerical examples:
+one embarrassingly parallel and one tightly coupled. We'll also briefly explore task parallelism (a more
+complex topic, and not the primary focus in this course). Finally, we'll introduce GPU programming with
+Chapel.
 
 <!-- 1. Instructor / helpers / course introduction -->
 <!-- 1. Introduction to Chapel (download the [PDF slides](http://bit.ly/chapeltop)) -->
@@ -39,7 +46,7 @@ support from laptops to large HPC systems.
 <!-- 1. Review the program for the afternoon: data parallelism -->
 <!-- 1. Let's try loading multi-locale Chapel and compiling a simple multi-locale code -->
 
-**Instructors**: Alex Razoumov (SFU)
+**Instructor**: Alex Razoumov (SFU)
 
 **Prerequisites:** basic understanding of HPC at the introductory level (how to submit jobs with Slurm scheduler) and
   basic knowledge of the Linux command line.
@@ -56,6 +63,8 @@ participants. No need to install Chapel on your computer.
 
 
 {{<cor>}}Part 1: basic language features{{</cor>}} {{<s>}} {{<cgr>}}{{</cgr>}} \
+ACTION: talk about the 2 problems (embarrassingly parallel and tightly coupled) \
+ACTION: use Julia set for the basic language features \
 {{<linktitle url="../chapel2/chapel-01-intro" text="Introduction to Chapel">}} \
 {{<linktitle url="../chapel2/chapel-02-variables" text="Basic syntax and variables">}} \
 {{<linktitle url="../chapel2/chapel-03-ranges-and-arrays" text="Ranges and arrays">}} \
@@ -64,22 +73,25 @@ participants. No need to install Chapel on your computer.
 {{<linktitle url="../chapel2/chapel-06-command-line-arguments" text="Using command-line arguments">}} \
 {{<linktitle url="../chapel2/chapel-07-timing" text="Measuring code performance">}}
 
+{{<cor>}}Part 2: data parallelism{{</cor>}} {{<s>}} {{<cgr>}}{{</cgr>}} \
+ACTION: in 16 introduce the heat diffusion problem for the first time \
+ACTION: in 15 (now missing) add juliaSetDistributed.chpl \
+ACTION: rewrite intro 10 \
+{{<linktitle url="../chapel2/chapel-10-intro-parallel" text="Intro to parallel computing">}} \
+{{<linktitle url="../chapel2/chapel-11-single-locale-data-parallel" text="Single-locale data parallelism">}} \
+{{<linktitle url="../chapel2/chapel-12-julia-set" text="Parallelizing the Julia set problem">}} \
+{{<linktitle url="../chapel2/chapel-13-multi-locale-chapel" text="Multi-locale Chapel">}} \
+{{<linktitle url="../chapel2/chapel-14-domains-and-data-parallel" text="Domains and data parallelism">}} \
+{{<linktitle url="../chapel2/chapel-15-distributed-heat-transfer" text="Heat transfer solver on distributed domains">}}
 
-{{<cor>}}Part 2: task parallelism{{</cor>}} {{<s>}} {{<cgr>}}{{</cgr>}} \
-{{<linktitle url="../chapel2/chapel-08-intro-parallel" text="Intro to parallel computing">}} \
-{{<linktitle url="../chapel2/chapel-09-fire-and-forget-tasks" text="Fire-and-forget tasks">}} \
-{{<linktitle url="../chapel2/chapel-10-synchronising-threads" text="Synchronization of threads">}} \
-{{<linktitle url="../chapel2/chapel-11-task-parallel-heat-transfer" text="Task-parallelizing the heat transfer solver">}}
+{{<cor>}}Part 3: task parallelism (briefly){{</cor>}} {{<s>}} {{<cgr>}}{{</cgr>}} \
+ACTION: shorten this chapter by 90% \
+{{<linktitle url="../chapel2/chapel-20-fire-and-forget-tasks" text="Fire-and-forget tasks">}} \
+{{<linktitle url="../chapel2/chapel-21-synchronising-threads" text="Synchronization of threads">}} \
+{{<linktitle url="../chapel2/chapel-22-task-parallel-heat-transfer" text="Task-parallelizing the heat transfer solver">}}
 
-
-{{<cor>}}Part 3: data parallelism{{</cor>}} {{<s>}} {{<cgr>}}{{</cgr>}} \
-{{<linktitle url="../chapel2/chapel-12-single-locale-data-parallel" text="Single-locale data parallelism">}} \
-{{<linktitle url="../chapel2/chapel-13-julia-set" text="Parallelizing the Julia set problem">}} \
-{{<linktitle url="../chapel2/chapel-14-multi-locale-chapel" text="Multi-locale Chapel">}} \
-{{<linktitle url="../chapel2/chapel-15-domains-and-data-parallel" text="Domains and data parallelism">}} \
-{{<linktitle url="../chapel2/chapel-16-distributed-heat-transfer" text="Heat transfer solver on distributed domains">}}
-
-{{<cor>}}Part 4: GPU computing with Chapel{{</cor>}} {{<s>}} {{<cgr>}}{{</cgr>}}
+{{<cor>}}Part 4: GPU computing with Chapel{{</cor>}} {{<s>}} {{<cgr>}}{{</cgr>}} \
+ACTION: add and shorten material from chapel-gpu.md
 
 
 

@@ -1,7 +1,7 @@
 +++
 title = "Fire-and-forget tasks"
-slug = "chapel-09-fire-and-forget-tasks"
-weight = 9
+slug = "chapel-20-fire-and-forget-tasks"
+weight = 20
 katex = true
 +++
 

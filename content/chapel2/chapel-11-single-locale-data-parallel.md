@@ -1,7 +1,7 @@
 +++
 title = "Single-locale data parallelism"
-slug = "chapel-12-single-locale-data-parallel"
-weight = 12
+slug = "chapel-11-single-locale-data-parallel"
+weight = 11
 katex = true
 +++
 

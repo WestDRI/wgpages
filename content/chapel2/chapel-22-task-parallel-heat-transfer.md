@@ -1,7 +1,7 @@
 +++
 title = "Task-parallelizing the heat transfer solver"
-slug = "chapel-11-task-parallel-heat-transfer"
-weight = 11
+slug = "chapel-22-task-parallel-heat-transfer"
+weight = 22
 katex = true
 +++
 

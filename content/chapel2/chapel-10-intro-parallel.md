@@ -1,7 +1,7 @@
 +++
 title = "Intro to parallel computing"
-slug = "chapel-08-intro-parallel"
-weight = 8
+slug = "chapel-10-intro-parallel"
+weight = 10
 katex = true
 +++
 

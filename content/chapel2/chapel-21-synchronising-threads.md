@@ -1,7 +1,7 @@
 +++
 title = "Synchronization of threads"
-slug = "chapel-10-synchronising-threads"
-weight = 10
+slug = "chapel-21-synchronising-threads"
+weight = 21
 katex = true
 +++
 
