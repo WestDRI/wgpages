@@ -4,7 +4,7 @@ slug = "ray"
 katex = true
 +++
 
-{{<cor>}}November 7<sup>th</sup> (Part 2){{</cor>}}\
+{{<cor>}}Part 2: May 1<sup>st</sup> and May 8<sup>th</sup>{{</cor>}}\
 {{<cgr>}}10am–noon Pacific Time{{</cgr>}}
 
 There is a number of high-level open-source parallel frameworks for Python that are quite popular in data
@@ -605,6 +605,172 @@ first task has finished.
 
 
 
+### Persistent storage on Ray workers
+
+<!-- abc -->
+<!-- from https://wgpages.netlify.app/clusterworkflows/#persistent-storage-on-ray-workers -->
+
+You might have noticed that Ray functions (remote tasks) are stateless, i.e. they can run on any processor
+that happens to be more idle at the time, and they do not store any data on that processor in between the
+function calls.
+
+If you are trying to parallelize a tightly-coupled problem, you might want to store arrays on the workers
+permanently, and then repeatedly call quick functions to do some computations on these arrays, without copying
+the arrays back and forth at each step.
+
+To do this in Ray, we can use **Ray actors** (https://docs.ray.io/en/latest/ray-core/actors.html). A Ray actor
+is essentially a stateful (bound to a processor) worker that is created via a Python class instance with its
+own persistent variables and methods, and it stays permanently on that worker until we destroy this instance.
+
+<!-- 1. persistent storage -->
+<!-- 2. launch calculations on all processors simultaneously -->
+
+<!-- In Ray, you can store an array on a worker between two function calls using actor-based state -->
+<!-- management. Since Ray functions (remote tasks) are stateless by default, you need an actor to persist the -->
+<!-- array across calls. -->
+
+```py
+import ray
+import numpy as np
+
+ray.init()
+
+@ray.remote
+class ArrayStorage:         # define an actor (ArrayStorage class) with a persistent array
+    def __init__(self):
+        self.array = None   # persistent array variable
+    def store_array(self, arr):
+        self.array = arr    # store an array in the actor's state
+    def get_array(self):
+        return self.array   # retrieve the stored array
+
+storage_actor = ArrayStorage.remote()   # create an instance of the actor
+
+arr = np.array([1, 2, 3, 4, 5])
+ray.get(storage_actor.store_array.remote(arr))   # store an array
+
+r = ray.get(storage_actor.get_array.remote())    # retrieve the stored array
+print(r)  # Output: [1 2 3 4 5]
+```
+
+<!-- ```py -->
+<!-- print(f"Actor {worker1_actor_id} on Node {worker1_node_id} stored array: {retrieved_arr1}") -->
+<!-- print(f"Actor {worker2_actor_id} on Node {worker2_node_id} stored array: {retrieved_arr2}") -->
+<!-- ``` -->
+
+To scale this to multiple workers, we can do the same with an array of workers:
+
+```py
+workers = [ArrayStorage.remote() for i in range(2)]   # create two instances of the actor
+
+r = [workers[i].store_array.remote(np.ones(5)*(i+1)) for i in range(2)]
+print(ray.get(r))
+
+print(ray.get(workers[0].get_array.remote()))   # [1. 1. 1. 1. 1.]
+print(ray.get(workers[1].get_array.remote()))   # [2. 2. 2. 2. 2.]
+
+r = [workers[i].get_array.remote() for i in range(2)]
+print(ray.get(r))   # both arrays in one go
+```
+
+If we want to make sure that these arrays stay on the same workers, we can retrieve and print their IDs and
+the node IDs by adding these two functions to the actor class:
+
+```py
+...
+    def get_actor_id(self):
+        return self.actor_id
+    def get_node_id(self):
+        return self.node_id   # the node ID where this actor is running
+...
+```
+```py
+print([ray.get(workers[i].get_actor_id.remote()) for i in range(2)])   # actor IDs
+print([ray.get(workers[i].get_node_id.remote()) for i in range(2)])    # node IDs
+```
+
+<!-- Full class example: -->
+<!-- ```py -->
+<!-- @ray.remote -->
+<!-- class ArrayStorage: -->
+<!--     def __init__(self): -->
+<!--         self.a = None   # persistent state -->
+<!--         self.b = None   # persistent state -->
+<!--         self.u = None   # persistent state -->
+<!--         self.actor_id = ray.get_runtime_context().get_actor_id()  # get actor's unique ID -->
+<!--         self.node_id = ray.get_runtime_context().get_node_id()    # get node ID -->
+<!--     def init_a(self, n): -->
+<!--         initial = np.identity(n).reshape([n*n]) -->
+<!--         a = -2.0*initial -->
+<!--         a[1:n*n-1] = a[1:n*n-1] + initial[:n*n-2] + initial[2:] -->
+<!--         self.a = a.reshape([n,n]) -->
+<!--     def store_b(self, arr):   # store an array in the actor's state -->
+<!--         self.b = arr -->
+<!--     def get_a(self): -->
+<!--         return self.a -->
+<!--     def get_u(self): -->
+<!--         return self.u -->
+<!--     def get_actor_id(self): -->
+<!--         return self.actor_id -->
+<!--     def get_node_id(self): -->
+<!--         return self.node_id   # the node ID where this actor is running -->
+<!--     def localSolve(self): -->
+<!--         self.u = np.linalg.solve(self.a,self.b) -->
+<!--     def getLastValue(self): -->
+<!--         return self.u[-1] -->
+<!--     def getFirstValue(self): -->
+<!--         return self.u[0] -->
+<!--     def updateLastB(self, ghostValue): -->
+<!--         # self.b[-1] += ghostValue -->
+<!--         self.b = np.concatenate([self.b[:-1], [self.b[-1]+ghostValue]]) -->
+<!--     def updateFirstB(self, ghostValue): -->
+<!--         # self.b[0] += ghostValue -->
+<!--         self.b = np.concatenate([[self.b[0]+ghostValue], self.b[1:]]) -->
+<!-- ``` -->
+
+You can even use NumPy on workers. For example, if we were to implement a linear algebra solver on a worker
+and *wanted to have the solution array stored there permanently*, we could do it this way:
+
+```py
+import numpy as np
+import ray
+
+ray.init(num_cpus=2, configure_logging=False)
+
+n = 500
+h = 1/(n+1)
+b = np.exp(-(100*(np.linspace(0,1,n)-0.45))**2)*h*h
+
+@ray.remote
+class ArrayStorage:
+    def __init__(self, n):
+        self.b = None   # persistent variable
+        self.u = None   # persistent variable
+        flatIdentity = np.identity(n).reshape([n*n])
+        a = -2.0*flatIdentity
+        a[1:n*n-1] = a[1:n*n-1] + flatIdentity[:n*n-2] + flatIdentity[2:]
+        self.a = a.reshape([n,n])   # persistent variable
+    def store_b(self, arr):
+        self.b = arr                # store an array in the actor's state
+    def get_u(self):
+        return self.u
+    def localSolve(self):
+        self.u = np.linalg.solve(self.a,self.b)
+
+worker = ArrayStorage.remote(n)
+worker.store_b.remote(b)
+worker.localSolve.remote()
+u = ray.get(worker.get_u.remote())
+print("The solution is", u)
+```
+
+
+
+
+
+
+
+
 
 
 
@@ -1064,8 +1230,8 @@ python rayPartialMap.py $SLURM_CPUS_PER_TASK
 <!-- #SBATCH --time=0:15:0 -->
 <!-- # #SBATCH --account=... -->
 <!-- cd ~/scratch/ray -->
-<!-- module load StdEnv/2023 arrow/14.0.1 -->
-<!-- source pythonhpc-env/bin/activate -->
+<!-- module load python/3.12.4 arrow/19.0.1 -->
+<!-- source hpc-env/bin/activate -->
 <!-- python rayPartialMap.py $SLURM_CPUS_PER_TASK -->
 <!-- ``` -->
 <!-- ```sh -->
@@ -1126,15 +1292,15 @@ https://docs.alliancecan.ca/wiki/Ray#Multiple_Nodes. I made several changes in t
 
 1. made it interactive,
 2. not creating virtual environments in `$SLURM_TMPDIR` inside the job, but using the already existing one in
-   `/project/def-sponsor00/shared/pythonhpc-env`,
+   `/project/def-sponsor00/shared/hpc-env`,
 3. removed GPUs.
 
 Let's quit our current Slurm job (if any), back on the login node start the following interactive job, and
 then run the following commands:
 
 ```sh
-module load StdEnv/2023 python/3.12.4 arrow/17.0.0 scipy-stack/2024a netcdf/4.9.2
-source /project/def-sponsor00/shared/pythonhpc-env/bin/activate
+module load python/3.12.4 arrow/19.0.1 scipy-stack/2025a netcdf/4.9.2
+source /project/def-sponsor00/shared/hpc-env/bin/activate
 
 salloc --nodes 2 --ntasks-per-node=1 --cpus-per-task=2 --mem-per-cpu=3600 --time=0:60:0
 
@@ -1156,8 +1322,8 @@ Then on each node inside our Slurm job, except the head node, we launch the work
 ```sh
 cat << EOF > launchRay.sh
 #!/bin/bash
-module load StdEnv/2023 python/3.12.4 arrow/17.0.0 scipy-stack/2024a netcdf/4.9.2
-source /project/def-sponsor00/shared/pythonhpc-env/bin/activate
+module load python/3.12.4 arrow/19.0.1 scipy-stack/2025a netcdf/4.9.2
+source /project/def-sponsor00/shared/hpc-env/bin/activate
 if [[ "\$SLURM_PROCID" -eq "0" ]]; then   # if MPI rank is 0
         echo "Ray head node already started..."
         sleep 10

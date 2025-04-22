@@ -4,16 +4,28 @@ slug = "pythonhpc"
 katex = true
 +++
 
-{{<cor>}}October 31<sup>st</sup> (Part 1){{</cor>}}\
+{{<cor>}}Part 1: April 24<sup>th</sup> and May 1<sup>st</sup>{{</cor>}}\
 {{<cgr>}}10am–noon Pacific Time{{</cgr>}}
 
-**Abstract**: In scientific computing, Python is the most popular programming language. While known for its high-level features, hundreds of fantastic libraries and ease of use, Python is slow compared to traditional (C, C++, Fortran) and new (Julia, Chapel) compiled languages. In this course we'll focus on speeding up your Python workflows using a number of different approaches.
+**Abstract**: Python has become the dominant language in scientific computing thanks to its high-level syntax,
+extensive ecosystem, and ease of use. However, its performance often lags behind traditional compiled
+languages like C, C++, and Fortran, as well as newer contenders like Julia and Chapel. This course is designed
+to help you speed up your Python workflows using a variety of tools and techniques.
 
-In Part 1, we will start with traditional vectorization with NumPy, talk about Python compilers (Numba) and profiling, and cover parallelization. We will do a little bit of multithreading (possible via NumExpr, despite the global interpreter lock prior to 3.13, and as *free threading* starting with 3.13), but will focus primarily on multiprocessing.
+We'll begin with classic optimization methods such as NumPy-based vectorization, and explore just-in-time
+compilation using Numba, along with performance profiling techniques. From there, we'll delve into
+parallelization -- starting with multithreading using external libraries like NumExpr and Python 3.13's new
+free-threading capabilities -- but placing greater emphasis on multiprocessing.
 
-In Part 2, we will study Ray, a unified framework for scaling AI and Python applications. Since this is not a machine learning workshop, we will not touch Ray's AI capabilities, but will focus on its core distributed runtime and data libraries. We will learn several different approaches to parallelizing purely numerical (and therefore CPU-bound) workflows, both with and without reduction. If your code is I/O-bound, you will also benefit from this course, as I/O-bound workflows can be easily processed with Ray.
+Next, we'll dive into Ray, a powerful and flexible framework for scaling Python applications. While Ray is
+widely used in AI, our focus will be on its core capabilities for distributed computing and data
+processing. You'll learn how to parallelize CPU-bound numerical workflows -- with and without reduction -- as
+well as optimize I/O-bound tasks. We'll also explore combining Ray with Numba and will discuss coding tightly
+coupled parallel problems.
 
-We will not cover GPU-accelerated computing in Python in this course (worth its own course), nor will we cover mpi4py (most popular MPI implementation for Python).
+Please note: this course does not cover GPU computing (which merits its own course), nor will we dive into
+mpi4py, the standard MPI library for Python.
+
 
 
 
@@ -35,10 +47,10 @@ how you typically install Python, and whether/how you use Python virtual environ
 my computer (with `pyenv` installed earlier):
 
 ```sh
-pyenv install 3.12.7
-unlink ~/.pyenv/versions/hpc-env
-pyenv virtualenv 3.12.7 hpc-env   # goes into ~/.pyenv/versions/<version>/envs/hpc-env
+pyenv install 3.12.9
+pyenv virtualenv 3.12.9 hpc-env   # goes into ~/.pyenv/versions/<version>/envs/hpc-env
 pyenv activate hpc-env
+pip install --upgrade pip
 pip install numpy
 pip install --upgrade "ray[default]"
 pip install --upgrade "ray[data]"
@@ -53,9 +65,9 @@ pyenv deactivate
 On a production HPC cluster:
 
 ```sh
-module load StdEnv/2023 python/3.12.4 arrow/17.0.0 scipy-stack/2024a netcdf/4.9.2
-virtualenv --no-download pythonhpc-env
-source pythonhpc-env/bin/activate
+module load python/3.12.4 arrow/19.0.1 scipy-stack/2025a netcdf/4.9.2
+virtualenv --no-download hpc-env
+source hpc-env/bin/activate
 pip install --no-index --upgrade pip
 pip install --no-index numba multiprocess numexpr
 avail_wheels "ray"
@@ -108,17 +120,17 @@ performance out of it.
 
 ## Python setup in our course
 
-Today we'll be running Python inside a shell on our training cluster `cass.vastcloud.org`. Let's log in now!
+Today we'll be running Python inside a shell on our training cluster `python.vastcloud.org`. Let's log in now!
 
 We have pre-installed all the required libraries for you in a virtual Python environment in
-`/project/def-sponsor00/shared/pythonhpc-env` that everyone on the system can read.
+`/project/def-sponsor00/shared/hpc-env` that everyone on the system can read.
 
 Once on the system, our workflow is going to be:
 
 ```sh
 mkdir -p ~/tmp && cd ~/tmp
-module load StdEnv/2023 python/3.12.4 arrow/17.0.0 scipy-stack/2024a netcdf/4.9.2
-source /project/def-sponsor00/shared/pythonhpc-env/bin/activate
+module load python/3.12.4 arrow/19.0.1 scipy-stack/2025a netcdf/4.9.2
+source /project/def-sponsor00/shared/hpc-env/bin/activate
 
 salloc --time=2:00:0 --mem-per-cpu=3600
 ...
