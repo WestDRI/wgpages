@@ -132,7 +132,7 @@ mkdir -p ~/tmp && cd ~/tmp
 module load python/3.12.4 arrow/19.0.1 scipy-stack/2025a netcdf/4.9.2
 source /project/def-sponsor00/shared/hpc-env/bin/activate
 
-salloc --time=2:00:0 --mem-per-cpu=3600
+salloc --time=2:00:0 --mem-per-cpu=12000   # memory needed for several serial examples
 ...
 exit
 
@@ -165,7 +165,14 @@ htop                     # monitor all your processes
 htop --filter "python"   # filter processes by name
 ```
 
-Inside `htop` you can press "Shift+H" to hide/show individual threads (group them inside their parent processes).
+or you can use a one-liner from the login node:
+
+```sh
+srun --jobid=<jobID> --pty htop -u $USER -s PERCENT_CPU
+```
+
+Inside `htop` you can repeatedly press "Shift+H" to show individual threads or group them inside their parent
+processes.
 
 
 
@@ -394,6 +401,15 @@ Cartesian equivalents.
 <!-- broadcast rules I made it work, with the correct solution at the end -- while the total compute time went down -->
 <!-- to a couple seconds! -->
 
+> To run all code fragments in this example at full $500\times 800\times 300$ resolution, you will need to
+> increase your memory ask to 7200M, or otherwise your Python session will be killed mid-way. Alternatively,
+> you can reduce the problem size by 8X (yielding much less impressive runtime difference) and continue
+> running with 3600M memory:
+> ```py
+> nlat, nlon, nr = nlat//2, nlon//2, nr//2   # if short on memory
+> ```
+{.note}
+
 Let's initialize our problem:
 
 ```py
@@ -402,7 +418,6 @@ from scipy.special import lpmv
 import time
 
 nlat, nlon, nr = 500, 800, 300   # 120e6 grid points
-# nlat, nlon, nr = nlat//2, nlon//2, nr//2   # reduce the problem size by 8X
 
 latitude = np.linspace(-90, 90, nlat)
 longitude = np.linspace(0, 360, nlon)
@@ -422,9 +437,8 @@ vz = np.zeros((nlat,nr,nlon))
 We need to go through all grid points, and at each point perform a matrix-vector multiplication. Here is our
 first attempt:
 
-> Notes:
-> 1. you might want to use Python's `tqdm` library to provide a progress bar for better runtime estimate.
-> 1. if running the full $500\times 800\times 300$ problem, consider using 7200M memory.
+> You might want to use Python's `tqdm` library to provide a progress bar for real-time runtime estimate.
+{.note}
 
 ```py
 from tqdm import tqdm
@@ -472,20 +486,29 @@ print("Time in seconds:", round(end-start,3))
 brings the runtime down to 192s.
 
 {{< question num=1 >}}
-Does using NumPy's matrix-vector multiplication function `np.dot` speed this calculation? In this workflow, at
-each point you would define a rotation matrix and a spherical velocity vector to find their dot product:
+Does using NumPy's matrix-vector multiplication function `np.dot` speed this calculation? In this workflow, *at
+each latitude-longitude* you would define a rotation matrix and *at each point* a spherical velocity vector to
+compute their dot product, i.e. you would replace this fragment:
 ```py
-rot = np.array([[-sinlon, -sinlat*coslon, coslat*coslon],
-               [coslon, -sinlat*sinlon, coslat*sinlon],
-               [0, coslat, sinlat]])
-vspherical = np.array([vlon[i,j,k], vlat[i,j,k], vrad[i,j,k]])
-vx[i,j,k], vy[i,j,k], vz[i,j,k] = np.dot(rot, vspherical)
+        for j in range(nr):
+            vx[i,j,k] = - sinlon*vlon[i,j,k] - sinlat*coslon*vlat[i,j,k] + coslat*coslon*vrad[i,j,k]
+            vy[i,j,k] = coslon*vlon[i,j,k] - sinlat*sinlon*vlat[i,j,k] + coslat*sinlon*vrad[i,j,k]
+            vz[i,j,k] = coslat*vlat[i,j,k] + sinlat*vrad[i,j,k]
+```
+with this one:
+```py
+        rot = np.array([[-sinlon, -sinlat*coslon, coslat*coslon],
+                        [coslon, -sinlat*sinlon, coslat*sinlon],
+                        [0, coslat, sinlat]])
+        for j in range(nr):
+            vspherical = np.array([vlon[i,j,k], vlat[i,j,k], vrad[i,j,k]])
+            vx[i,j,k], vy[i,j,k], vz[i,j,k] = np.dot(rot, vspherical)
 ```
 {{< /question >}}
 
 <!-- Answer: nope, the computation time goes up to 293s. -->
 
-To speed up our computation, we should vectorize over one of the dimensions, e.g. longitudes:
+To speed up our computation, we should vectorize over one of the dimensions, e.g. **longitudes**:
 
 ```py
 from tqdm import tqdm
@@ -523,7 +546,7 @@ Now all variables have the same dimensions, and all operations will be element-w
 now 3.503s, which is a huge improvement!
 
 
-Vectorizing over two dimensions, e.g. over radii and longitudes leaves us with a single loop:
+Vectorizing over two dimensions, e.g. over **radii** and **longitudes** leaves us with a single loop:
 
 ```py
 from tqdm import tqdm
@@ -555,7 +578,7 @@ Now all variables have the same dimensions, and all operations will be element-w
 down to 1.487s.
 
 You can also vectorize in all three dimensions (latitudes, radii and longitudes), resulting in no explicit
-Python loops in your calculation at all, but requires a little bit of extra work, and the computation time
+Python loops in your calculation at all, but this requires a little bit of extra work, and the computation time
 will actually slightly go up -- **any idea why**?
 
 In the end, with NumPy's element-wise vectorized operations, we improved our time from 1280s to 1.5s! The
@@ -592,13 +615,14 @@ print("Time in seconds:", round(end-start,3))
 print(total)
 ```
 
-> Note: this particular code uses a lot of memory, so you might want to change your request to
+> This particular code uses a lot of memory, so you might want to change your memory request to at least
 > `--mem-per-cpu=11000` (and single core).
+{.note}
 
-The vectorized function is supposed to speed up calculating the terms, but our time becomes worse (14.72s)
-than the original calculation (6.625s). **The reason**: we are no longer replacing multiple Python lines with a
-single line. The code inside `combined()` is still native Python code that is being interpreted on the fly,
-and we applying all its lines to each element of array `i`.
+The vectorized function is supposed to speed up calculating the terms, but our time becomes significantly
+worse (14.72s) than the original calculation (6.625s). **The reason**: we are no longer replacing multiple
+Python lines with a single line. The code inside `combined()` is still native Python code that is being
+interpreted on the fly, and we applying all its lines to each element of array `i`.
 
 The function `np.vectorize` does not compile `combined()` -- it simply adapts it to work with arrays, but
 underneath you are still running Python loops. If, instead, our vectorization could produce a *compiled
@@ -757,7 +781,7 @@ pyenv install --list | grep 3.13   # list all available versions, with "t" stand
 PYTHON_CONFIGURE_OPTS='--enable-experimental-jit' pyenv install 3.13.0t # build free-threaded Python with JIT
                                                                         # support in ~/.pyenv/versions/3.13.0t
 pyenv versions        # show installed versions
-pyenv shell 3.13.0t   # switch to the new build in this shell only
+pyenv shell 3.13.2t   # switch to the new build in this shell only
 python
 ```
 
@@ -771,7 +795,8 @@ python
 
 
 Python has several threading libraries. For example, `threading` library provides a function `Thread()` to
-launch new threads. Here is a [full example](/files/sum.py) that instead uses `ThreadPoolExecutor()` function
+launch new threads. Here is a [full example of the slow series calculation](/files/sum.py) that instead uses
+`ThreadPoolExecutor()` function
 from `concurrent` library. If you run it with v3.12 or earlier, you will get about the same runtime
 independently of the number of threads, as -- due to the GIL -- these threads will be taking turns
 running. With a free-threaded Python 3.13 build, you will see better runtimes with additional threads,
@@ -980,7 +1005,7 @@ If running on your computer, this will open the result in a browser:
 
 {{< figure src="/img/scalene.png" >}}
 
-As you can see, our actual computing is quite fast! 67% of the time is taken by the line initializing an array
+As you can see, our actual computing is quite fast! ~65% of the time is taken by the line initializing an array
 of byte strings `j = i.astype(np.bytes_)`, and the second biggest offender is initializing an array of
 integers.
 
@@ -1009,9 +1034,9 @@ With multiprocessing you can launch multiple processes and allocate each process
 in parallel. Each process will have its own interpreter with its own GIL and memory space, and -- unlike with
 multithreading -- they can all run at the same time in parallel.
 
-Python has the `multiprocessing` module (part of the Standard Library). Unfortunately, it has some
-limitations: it only accepts certain Python functions, and it cannot handle a lot of different types of Python
-objects. This is due to the way Python serializes (packs) data and sends it to the other processes.
+Python has the `multiprocessing` module as part of its Standard Library. Unfortunately, it has some
+limitations: (1) it only accepts certain Python functions, and (2) it cannot handle a lot of different types
+of Python objects. This is due to the way Python serializes (packs) data and sends it to the other processes.
 
 Fortunately, there is a fork of the `multiprocessing` module called `multiprocess`
 (https://pypi.org/project/multiprocess) that solves most of these problems by using a different serialization
@@ -1082,10 +1107,11 @@ print("Time in seconds:", round(end-start,3))
 1. On 8 cores this takes 2.007 seconds: running batches of 8+2 calls.
 1. On 1 core it takes 10.013 seconds.
 
-> Note: we are not doing real calculations here, just waiting for 1 wallclock time second in each call. If you
+> We are not doing real calculations here, just waiting for 1 wallclock time second in each call. If you
 > attempt to run multiple processes (e.g. `ncores = 4` in the code above) on 1 physical core, they will take
-> turns running at the same time, but they will compare their time against the wallclock time, and all of them
-> will finish running as if you had 4 physical cores.
+> turns running at the same time, but they will compare their time against the wallclock time (not  CPU time),
+> and all of them will finish running as if you had 4 physical cores.
+{.note}
 
 How do we parallelize the slow series with parallel `map()`? One idea is to create a function to process each
 of the $10^8$ terms and use `map()` to apply it to each term. Here is the **serial version** of this code:
@@ -1154,8 +1180,8 @@ Complete and run this code on two cores. Add timing.
 <!-- ``` -->
 
 {{< question num=3 >}}
-Write a scalable version of this code and run it on an arbitrary number of cores (up to the physical number of
-cores on your computer). Use the following to divide the workload:
+Write a scalable version of this code and run it on an arbitrary number of cores (up to the maximum number of
+cores you can use). Use the following strategy to divide the workload:
 ```py
 ncores = ...
 pool = Pool(ncores)
@@ -1282,6 +1308,9 @@ from numba import jit
 The first time you use Numba in a code, it might be slow, but all subsequent uses will be fast: needs time to
 compile the code. Our runtime went down to 0.693 seconds -- that's more than a 10X speedup!
 
+> On the training cluster I see ~5X speedup.
+{.note}
+
 There are two compilation modes in Numba:
 1. **object mode**: generates a more stable, slower code
 1. **nopython mode**: generates much faster code that requires knowledge of all types, has limitations that
@@ -1291,12 +1320,12 @@ There are two compilation modes in Numba:
 ### Parallelizing
 
 Let's add `parallel=True` to our decorator and change `range(1,n+1)` to `prange(1,n+1)` - it'll be subdividing
-loops into pieces to pass them to multiple CPU cores via *multithreading*. On my 8-core laptop the runtime
-goes down to 0.341 seconds -- a further ~2X improvement ... This is not so impressive ...
+loops into pieces to pass them to *all available* CPU cores via *multithreading*. On my 8-core laptop the
+runtime goes down to 0.341 seconds -- a further ~2X improvement ... This is not so impressive ...
 
 It turns out there is quite a bit of overhead with subdividing loops, starting/stopping threads and
 orchestrating everything. If instead of $10^8$ we consider $10^{10}$ terms, a single thread processes this in
-57.890 seconds, whereas 8 threads take 10.125 seconds -- factor of 5.7X better!
+57.890 seconds, whereas 8 threads take 10.125 seconds -- factor of 5.7X speedup!
 
 <!-- still not as good as compiled languages -->
 
@@ -1321,7 +1350,7 @@ print(total)
 ```
 
 and add `from numba import jit` and `@jit(nopython=True)` to it. Turns out, when run in serial, our time
-improves only by ~5-10%. There is some compilation overhead, so for bigger problems you could gain few
+improves only by ~10-20%. There is some compilation overhead, so for bigger problems you could gain few
 additional %.
 
 As you can see, Numba is not a silver bullet when it comes to speeding up Python. It works great for many
@@ -1371,8 +1400,8 @@ somewhat) Let's fill this table together:
 | wallclock runtime (sec) | &emsp;&emsp;&emsp; | &emsp;&emsp;&emsp; | &emsp;&emsp;&emsp; |
 {{< /question >}}
 
-In Part 2 (next week) we will combine Numba with multiprocessing via Ray tasks -- this approach can scale
-beyond a single node.
+In Part 2 we will combine Numba with multiprocessing via Ray tasks -- this approach can scale beyond a single
+node.
 
 {{< question num=5 >}}
 We covered a lot of material in this section! Let's summarize the most important points. Which tool would you
