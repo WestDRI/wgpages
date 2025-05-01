@@ -770,9 +770,9 @@ Finally, you can delete a Ray actor with:
 ray.kill(worker)
 ```
 
-> Is it possible to use JIT-compiled functions inside a Ray actor? The answer is probably yes: in Numba there
+> Is it possible to use JIT-compiled functions inside a Ray actor? The answer is "probably yes": in Numba there
 > is an [experimental feature](https://numba.pydata.org/numba-doc/dev/user/jitclass.html) to compile Python
-> classes with `@jitclass`. Whether you can use to compile Ray classes is an open question -- I'll be very
+> classes with `@jitclass`. Whether you can use it to compile Ray classes is an open question -- I'd be very
 > interested to hear your findings on this.
 {.note}
 
