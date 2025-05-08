@@ -462,12 +462,12 @@ from time import sleep
 import ray, random
 
 @ray.remote
-def increment():
+def longSleep():
     duration = random.randint(1,100) # random integer from [1,100]
     sleep(duration)   # sleep for this number of seconds
-    return duration
+    return f"I slept for {duration} seconds"
 
-refs = [increment.remote() for x in range(1,21)]   # start 20 tasks
+refs = [longSleep.remote() for x in range(1,21)]   # start 20 tasks
 ```
 
 If we now call `ray.get(refs)`, that would block until all of these remote tasks finish. If we want to, let's
@@ -478,6 +478,8 @@ ready_refs, remaining_refs = ray.wait(refs, num_returns=1, timeout=None) # wait 
 print(ready_refs, remaining_refs)   # print the IDs of the finished task, and the other 19 IDs
 ray.get(ready_refs)                 # get finished results
 ```
+
+Let's wait for the first 5 answers:
 
 ```py
 ready_refs, remaining_refs = ray.wait(refs, num_returns=5, timeout=None) # wait for 5 of them to finish
@@ -523,8 +525,8 @@ You can also create a remote generator that will return only one number at a tim
 ```py
 @ray.remote(num_returns=3)
 def threeNumbers():
-    for i in range(3):
-        yield i
+    for i in range(3):   # should return 10,20,30
+        yield (i+1)*10
 
 r1, r2, r3 = threeNumbers.remote()
 ray.get(r1)   # get the first number only
@@ -611,7 +613,7 @@ first task has finished.
 <!-- from https://wgpages.netlify.app/clusterworkflows/#persistent-storage-on-ray-workers -->
 
 You might have noticed that Ray functions (remote tasks) are stateless, i.e. they can run on any processor
-that happens to be more idle at the time, and they do not store any data on that processor in between the
+that happens to be more idle at the time, and they *do not store any data on that processor* in between the
 function calls.
 
 If you are trying to parallelize a tightly-coupled problem, you might want to store arrays on the workers
@@ -791,20 +793,22 @@ ray.kill(worker)
 
 Ray Data is a parallel data processing library for ML workflows. As you will see in this section, Ray Data can
 be easily used for non-ML workflows. To process large datasets, Ray Data uses **streaming/lazy execution**,
-i.e. processing does not happen until you try to access (*consume* in Ray's language) the result.
+i.e. processing does not happen until you try to access (*"consume"* in Ray's language) the result.
 
 <!-- https://www.anyscale.com/blog/streaming-distributed-execution-across-cpus-and-gpus -->
 
 The core object in Ray Data is a **dataset** which is a distributed data collection. Ray datasets can store
-general multidimensional array data that are too large to fit into a single machine's memory. Instead, they
-will be (1) distributed in memory across a number of Ray tasks and (2) saved to disk once they are no longer
-in use.
+general multidimensional array data that are too large to fit into a single machine's memory. In Ray, these
+large arrays will be:
+1. distributed in memory across a number of Ray tasks and
+2. saved to disk once they are no longer in use.
 
 Ray's dataset operates over a sequence of Ray object references to blocks. Each block contains a disjoint
 subset of rows, and Ray Data loads and transforms these blocks in parallel. Each row in Ray's datasets is a
 dictionary.
 
 > Recall: a Python dictionary is a collection of key-value pairs.
+{.note}
 
 
 
@@ -841,6 +845,9 @@ ray.data.from_items([10,20,30]).take()   # [{'item': 10}, {'item': 20}, {'item':
 
 Rows can have multiple key-value pairs:
 
+> Recall: each row is a dictionary, and dictionaries can have multiple entries.
+{.note}
+
 ```py
 listOfDict = [{"col1": i, "col2": i ** 2} for i in range(1000)] # each dict contains 2 pairs
 ds = ray.data.from_items(listOfDict)
@@ -850,7 +857,7 @@ ds.show(5)
 A dataset can also be loaded from a file:
 
 > Note: this example works on my computer (`pyenv activate hpc-env`), but not on the training cluster where
-> `arrow/14.0.1` was compiled without S3 support.
+> `arrow/19.0.1` was compiled without S3 support.
 
 ```py
 dd = ray.data.read_csv("s3://anonymous@air-example-data/iris.csv")   # load a predefined dataset
@@ -909,7 +916,7 @@ def squares(row):
 ds.map(squares).show(5)
 ```
 
-Your function can also add to existing rows, instead of returning new ones:
+Your function can also add new key-value pairs to the existing rows, instead of returning brand new rows:
 
 ```py
 ds = ray.data.range(1000)
@@ -948,8 +955,8 @@ c = b.take(10_000_000)   # takes a couple of minutes, runs in parallel
 ```
 
 This is not very efficient ... certainly, computing 10,000,000 squares should not take a couple of minutes in
-parallel! The problem is that we have too many rows, and -- similar to Python lists -- Ray datasets perform
-poorly with too many rows. Think about subdividing your large computation into a number of chunks where each
+parallel! The problem is that we have too many rows, and -- similar to Python lists -- **Ray datasets perform
+poorly with too many rows**. Think about subdividing your large computation into a number of chunks where each
 chunk comes with its own computational and communication overhead -- you want to keep their number small.
 
 Let's rewrite this problem:
@@ -1215,7 +1222,7 @@ With the same code on the training cluster I get better scaling:
 <!-- Launching a single-node ray cluster -->
 
 {{< question num=15 >}}
-Let's try running the last (without Numba-compiled functions) problem on the training cluster as a batch job.
+Let's try running the slow series without Numba-compiled functions on the training cluster as a batch job.
 1. Save the entire Python code for the slow series problem into `rayPartialMap.py`
 2. Modify the code to take <ncores> as a command-line argument:
 ```py
