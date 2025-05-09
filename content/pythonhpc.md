@@ -4,8 +4,8 @@ slug = "pythonhpc"
 katex = true
 +++
 
-{{<cor>}}Part 1: April 24<sup>th</sup> and May 1<sup>st</sup>{{</cor>}}\
-{{<cgr>}}10am–noon Pacific Time{{</cgr>}}
+<!-- {{<cor>}}Part 1: April 24<sup>th</sup> and May 1<sup>st</sup>{{</cor>}}\ -->
+<!-- {{<cgr>}}10am–noon Pacific Time{{</cgr>}} -->
 
 **Abstract**: Python has become the dominant language in scientific computing thanks to its high-level syntax,
 extensive ecosystem, and ease of use. However, its performance often lags behind traditional compiled
