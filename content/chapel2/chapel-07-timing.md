@@ -5,38 +5,28 @@ weight = 7
 katex = true
 +++
 
-## Timing the execution of your code in Chapel
+## Timing the execution of your Chapel code
 
-The code generated after Exercise "Basic.4" is the full implementation of our simulation. We will be using it
+The code generated after Exercise "Basic.4" is the full implementation of our calculation. We will be using it
 as a benchmark, to see how much we can improve the performance with Chapel's parallel programming features in
 the following lessons.
 
-But first, we need a quantitative way to measure the performance of our code. Maybe the easiest way to do it,
-is to see how much it takes to finish a simulation. The UNIX command `time` could be used to this effect
+But first, we need a quantitative way to measure the performance of our code. Perhaps the easiest way to do
+this is to use the UNIX command `time`:
 
 ```sh
-$ time ./baseSolver --rows=650 --iout=200 --niter=10_000 --tolerance=0.002 --nout=1000
+$ time ./juliaSetSerial --n=500
 ```
 ```chpl
-Temperature at iteration 0: 25.0
-Temperature at iteration 1000: 25.0
-Temperature at iteration 2000: 25.0
-Temperature at iteration 3000: 25.0
-Temperature at iteration 4000: 24.9996
-Temperature at iteration 5000: 24.9968
-Temperature at iteration 6000: 24.987
-Temperature at iteration 7000: 24.9639
-Final temperature at the desired position [200,200] after 7750 iterations is: 24.9343
-The largest temperature difference was 0.00199985
-real	0m3.931s
-user	0m7.354s
-sys	0m9.952s
+real ...
+user ...
+sys	 ...
 ```
 
-The real time is what interest us. Our code is taking around 9.2 seconds from the moment it is called at
-the command line until it returns. Sometimes, however, it could be useful to take the execution time of
-specific parts of the code. This can be achieved by modifying the code to output the information that we
-need. This process is called **_instrumentation of the code_**.
+The real time is what interest us. Our code is taking ... seconds from the moment it is called at the command
+line until it returns. Sometimes, however, it could be useful to take the execution time of specific parts of
+the code. This can be achieved by modifying the code to output the information that we need. This process is
+called **_instrumentation of the code_**.
 
 An easy way to instrument our code with Chapel is by using the module `Time`. **_Modules_** in Chapel are
 libraries of useful functions and methods that can be used in our code once the module is loaded. To load
@@ -48,30 +38,59 @@ our code.
 use Time;
 var watch: stopwatch;
 watch.start();
-while (count < niter && delta >= tolerance) do {
-  ...
+for i in 1..n do {
+  y = 2*(i-0.5)/n - 1;
+  for j in 1..n do {
+    point = 2*(j-0.5)/n - 1 + y*1i;   // rescale to -1:1 in the complex plane
+    stability[i,j] = pixel(point);
+  }
 }
 watch.stop();
-writeln('The simulation took ', watch.elapsed(), ' seconds');
+writeln('It took ', watch.elapsed(), ' seconds');
 ```
 ```sh
-$ chpl --fast baseSolver.chpl -o baseSolver
-$ ./baseSolver --rows=650 --iout=200 --niter=10_000 --tolerance=0.002 --nout=1000
+$ chpl --fast juliaSetSerial.chpl
+$ ./juliaSetSerial --n=500
 ```
 ```chpl
-Temperature at iteration 0: 25.0
-Temperature at iteration 1000: 25.0
-Temperature at iteration 2000: 25.0
-Temperature at iteration 3000: 25.0
-Temperature at iteration 4000: 24.9996
-Temperature at iteration 5000: 24.9968
-Temperature at iteration 6000: 24.987
-Temperature at iteration 7000: 24.9639
-Final temperature at the desired position [200,200] after 7750 iterations is: 24.9343
-The largest temperature difference was 0.00199985
-The simulation took 3.9187 seconds
 ```
 
-> ### <font style="color:blue">Exercise "Basic.5"</font>
-> Try recompiling without `--fast` and see how it affects the execution time. If it becomes too slow, try
-> reducing the problem size. What is the speedup factor with `--fast`?
+{{< question num="Basic.5" >}}
+Try recompiling without `--fast` and see how it affects the execution time. If it becomes too slow, try
+reducing the problem size. What is the speedup factor with `--fast`?
+{{< /question >}}
+
+Here is our complete serial code `juliaSetSerial.chpl`:
+
+```chpl
+use Time;
+
+proc pixel(z0) {
+  config const c = 0.355 + 0.355i;
+  var z = z0*1.2;   // zoom out
+  for i in 1..255 do {
+    z = z*z + c;
+    if abs(z) >= 4 then
+      return i;
+  }
+  return 255;
+}
+
+config const n = 2_000;   // vertical and horizontal size of our image
+var y: real;
+var point: complex;
+var watch: stopwatch;
+
+writeln("Computing Julia set ...");
+var stability: [1..n,1..n] int;
+watch.start();
+for i in 1..n do {
+  y = 2*(i-0.5)/n - 1;
+  for j in 1..n do {
+    point = 2*(j-0.5)/n - 1 + y*1i;   // rescale to -1:1 in the complex plane
+    stability[i,j] = pixel(point);
+  }
+}
+watch.stop();
+writeln('It took ', watch.elapsed(), ' seconds');
+```

@@ -159,7 +159,8 @@ Let's write the job script `serial.sh`:
 ```sh
 #!/bin/bash
 #SBATCH --time=0:5:0         # walltime in d-hh:mm or hh:mm:ss format
-#SBATCH --mem-per-cpu=1000   # in MB
+#SBATCH --mem-per-cpu=3600   # in MB
+#SBATCH --output=solution.out
 ./test
 ```
 
@@ -175,7 +176,7 @@ $ cat slurm-jobID.out
 Alternatively, today we could work inside a serial interactive job:
 
 ```sh
-$ salloc --time=3:0:0 --mem-per-cpu=1000
+$ salloc --time=2:0:0 --mem-per-cpu=3600
 ```
 
 <!-- Note that on the training cluster we have: -->

@@ -63,15 +63,14 @@ participants. No need to install Chapel on your computer.
 
 
 {{<cor>}}Part 1: basic language features{{</cor>}} {{<s>}} {{<cgr>}}{{</cgr>}} \
-ACTION: talk about the 2 problems (embarrassingly parallel and tightly coupled) \
 ACTION: use Julia set for the basic language features \
 {{<linktitle url="../chapel2/chapel-01-intro" text="Introduction to Chapel">}} \
-{{<linktitle url="../chapel2/chapel-02-variables" text="Basic syntax and variables">}} \
+{{<linktitle url="../chapel2/chapel-02-variables" text="Basic syntax and variables">}} -- Julia set description \
 {{<linktitle url="../chapel2/chapel-03-ranges-and-arrays" text="Ranges and arrays">}} \
-{{<linktitle url="../chapel2/chapel-04-conditions" text="Conditional statements">}} \
-{{<linktitle url="../chapel2/chapel-05-loops" text="Getting started with loops">}} \
+{{<linktitle url="../chapel2/chapel-04-control-flow" text="Control flow">}} \
 {{<linktitle url="../chapel2/chapel-06-command-line-arguments" text="Using command-line arguments">}} \
-{{<linktitle url="../chapel2/chapel-07-timing" text="Measuring code performance">}}
+{{<linktitle url="../chapel2/chapel-07-timing" text="Measuring code performance">}} \
+{{<linktitle url="../chapel2/chapel-08-output" text="Writing output">}}
 
 {{<cor>}}Part 2: data parallelism{{</cor>}} {{<s>}} {{<cgr>}}{{</cgr>}} \
 ACTION: in 16 introduce the heat diffusion problem for the first time \
@@ -79,10 +78,10 @@ ACTION: in 15 (now missing) add juliaSetDistributed.chpl \
 ACTION: rewrite intro 10 \
 {{<linktitle url="../chapel2/chapel-10-intro-parallel" text="Intro to parallel computing">}} \
 {{<linktitle url="../chapel2/chapel-11-single-locale-data-parallel" text="Single-locale data parallelism">}} \
-{{<linktitle url="../chapel2/chapel-12-julia-set" text="Parallelizing the Julia set problem">}} \
 {{<linktitle url="../chapel2/chapel-13-multi-locale-chapel" text="Multi-locale Chapel">}} \
 {{<linktitle url="../chapel2/chapel-14-domains-and-data-parallel" text="Domains and data parallelism">}} \
-{{<linktitle url="../chapel2/chapel-15-distributed-heat-transfer" text="Heat transfer solver on distributed domains">}}
+{{<linktitle url="../chapel2/chapel-15-distributed-julia-set" text="Julia set on distributed domains">}} \
+{{<linktitle url="../chapel2/chapel-16-distributed-heat-transfer" text="Heat transfer solver on distributed domains">}} -- heat transfer description
 
 {{<cor>}}Part 3: task parallelism (briefly){{</cor>}} {{<s>}} {{<cgr>}}{{</cgr>}} \
 ACTION: shorten this chapter by 90% \

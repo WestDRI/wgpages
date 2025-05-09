@@ -7,8 +7,42 @@ katex = true
 
 <!-- ACTION: talk about the 2 problems () \ -->
 
-In the non-GPU part of this course we'll be solving two numerical problems: one is embarrassingly parallel
-(**Julia set**), and one is tightly coupled (**heat diffusion**).
+## Types of parallel problems
+
+The basic concept of parallel computing is simple to understand: we **divide our job into tasks that can be
+executed at the same time**, so that we finish the job in a fraction of the time that it would have taken if
+the tasks are executed one by one.
+
+> **Task** is a unit of computation that can run in parallel with other tasks. In this course, we'll be using
+> a more general term "task" that -- depending on the context -- could mean either a Unix process (MPI task or
+> rank) or a Unix thread. Consequently, parallel execution in Chapel could mean either multiprocessing and
+> multithreading, or both (hybrid parallelism). In Chapel in many cases this distinction is hidden from the
+> programmer.
+{.note}
+
+Implementing parallel computations is not always easy. How easy it is to parallelize a code really depends on
+the underlying problem you are trying to solve. This can result in:
+
+- a **_fine-grained_**, or **_tightly coupled_** parallel code that needs a lot of communication /
+  synchronization between tasks, or
+- a **_coarse-grained_** code that requires little communication between tasks.
+
+In this sense **_grain size_** refers to the amount of independent computing in between communication
+events. An extreme case of a coarse-grained problem would be an **_embarrassing parallel_** problem where all
+tasks can be executed completely independent from each other (no communications required).
+
+In the non-GPU part of this course we'll be solving two numerical problems:
+
+1. **Julia set** is an embarrassingly parallel problem (no communication between tasks), and
+1. **heat diffusion** is a tightly coupled problem that requires communication between tasks at each step of
+   the iteration.
+
+We'll start with a serial of the Julia set and will use it to learn the basics of Chapel.
+
+
+
+
+
 
 ## Case study 1: computing the Julia set
 
@@ -37,70 +71,6 @@ different fractals for different values of $c$):
 - $c = 1.34-0.45i$ and 1.8X zoom-out $~\Rightarrow~$ beans
 - $c = 0.34-0.05i$ and 1.2X zoom-out $~\Rightarrow~$ connected spiral boots
 
-Below is the serial code `juliaSetSerial.chpl`:
-
-```chpl
-use Time;
-use NetCDF.C_NetCDF;
-
-proc pixel(z0) {
-  const c = 0.355 + 0.355i;
-  var z = z0*1.2;   // zoom out
-  for i in 1..255 do {
-    z = z*z + c;
-    if abs(z) >= 4 then
-      return i:c_int;
-  }
-  return 255:c_int;
-}
-
-const height, width = 2_000;   // 2000^2 image
-var point: complex, y: real, watch: stopwatch;
-
-writeln("Computing Julia set ...");
-var stability: [1..height,1..width] c_int;
-watch.start();
-for i in 1..height do {
-  y = 2*(i-0.5)/height - 1;
-  for j in 1..width do {
-    point = 2*(j-0.5)/width - 1 + y*1i;   // rescale to -1:1 in the complex plane
-    stability[i,j] = pixel(point);
-  }
-}
-watch.stop();
-writeln('It took ', watch.elapsed(), ' seconds');
-```
-
-The reason we are using C types (`c_int`) here -- and not Chapel's own int(32) or int(64) -- is that we can
-save the resulting array `stability` into a compressed netCDF file. To the best of my knowledge, this can only
-be done using `NetCDF.C_NetCDF` library that relies on C types. You can add this to your code:
-
-```chpl
-writeln("Writing NetCDF ...");
-use NetCDF.C_NetCDF;
-proc cdfError(e) {
-  if e != NC_NOERR {
-    writeln("Error: ", nc_strerror(e): string);
-    exit(2);
-  }
-}
-var ncid, xDimID, yDimID, varID: c_int;
-var dimIDs: [0..1] c_int;   // two elements
-cdfError(nc_create("test.nc", NC_NETCDF4, ncid));       // const NC_NETCDF4 => file in netCDF-4 standard
-cdfError(nc_def_dim(ncid, "x", width, xDimID)); // define the dimensions
-cdfError(nc_def_dim(ncid, "y", height, yDimID));
-dimIDs = [xDimID, yDimID];                              // set up dimension IDs array
-cdfError(nc_def_var(ncid, "stability", NC_INT, 2, dimIDs[0], varID));   // define the 2D data variable
-cdfError(nc_def_var_deflate(ncid, varID, NC_SHUFFLE, deflate=1, deflate_level=9)); // compress 0=no 9=max
-cdfError(nc_enddef(ncid));                              // done defining metadata
-cdfError(nc_put_var_int(ncid, varID, stability[1,1]));  // write data to file
-cdfError(nc_close(ncid));
-```
-
-Testing on my laptop, it took the code 0.471 seconds to compute a $2000^2$ fractal.
-
-Try running it yourself! It will produce a file `test.nc` that you can download to your computer and render
-with ParaView or other visualization tool. Does the size of `test.nc` make sense?
 
 
 
@@ -110,96 +80,65 @@ with ParaView or other visualization tool. Does the size of `test.nc` make sense
 
 
 
-## Case study 2: solving the **_Heat transfer_** problem
-
-- have a square metallic plate with some initial temperature distribution (**_initial conditions_**)
-- its border is in contact with a different temperature distribution (**_boundary conditions_**)
-- want to simulate the evolution of the temperature across the plate
-
-To solve the 2nd-order heat diffusion equation, we need to **_discretize_** it, i.e., to consider the
-plate as a grid of points, and to evaluate the temperature on each point at each iteration, according to
-the following **_finite difference equation_**:
-
-```chpl
-Tnew[i,j] = 0.25 * (T[i-1,j] + T[i+1,j] + T[i,j-1] + T[i,j+1])
-```
-
-- `Tnew` = new temperature computed at the current iteration
-- `T` = temperature calculated at the past iteration (or the initial conditions at the first iteration)
-- the indices (i,j) indicate the grid point located at the i-th row and the j-th column
-
-So, our objective is to:
-
-1. Write a code to implement the difference equation above. The code should:
-   - work for any given number of rows and columns in the grid,
-   - run for a given number of iterations, or until the difference between `Tnew` and `T` is smaller than a given tolerance value, and
-   - output the temperature at a desired position on the grid every given number of iterations.
-1. Use task parallelism to improve the performance of the code and run it on a single cluster node.
-1. Use data parallelism to improve the performance of the code and run it on multiple cluster nodes using
-   hybrid parallelism.
 
 ## Variables
 
-A variable has three elements: a **_name_**, a **_type_**, and a **_value_**. When we store a value in a
-variable for the first time, we say that we **_initialized_** it. Further changes to the value of a
-variable are called **_assignments_**, in general, `x=a` means that we assign the value *a* to the
-variable *x*.
+Chapel is a statically typed language, i.e. the type of every variable is known at compile time.
 
-Variables in Chapel are declared with the `var` or `const` keywords. When a variable declared as const is
+<!-- A variable has three elements: a **_name_**, a **_type_**, and a **_value_**. When we store a value in a -->
+<!-- variable for the first time, we say that we **_initialized_** it. Further changes to the value of a -->
+<!-- variable are called **_assignments_**, in general, `x=a` means that we assign the value *a* to the -->
+<!-- variable *x*. -->
+
+Variables in Chapel are declared with the `var` or `const` keywords. When a variable declared as `const` is
 initialized, its value cannot be modified anymore during the execution of the program.
 
-In Chapel, to declare a variable we must specify the type of the variable, or initialize it in place with
-some value. The common variable types in Chapel are:
+In Chapel, to declare a variable we must either (1) specify its type, or (2) initialize it in place with some
+value from which the compiler will infer its type. The common variable types in Chapel are:
 
-* integer `int`, 
-* floating point number `real`, 
-* boolean `bool`, or 
-* string `string`
+- integer `int` (defaults to `int(64)`, or you can explicitly specify `int(32)`),
+- floating point number `real` (defaults to `real(64)`, or you can explicitly specify `real(32)`),
+- boolean `bool`, or 
+- string `string`
 
 If a variable is declared without a type, Chapel will infer it from the given initial value, for example
-(let's store this in file `baseSolver.chpl`)
+(let's store this in `juliaSetSerial.chpl`):
+
+<!-- `baseSolver.chpl` -->
 
 ```chpl
-const rows, cols = 100;      // number of rows and columns in a matrix
-const niter = 500;           // number of iterations
-const iout, jout = 50;       // row and column to print
+const n = 2_000;   // vertical and horizontal size of our image
 ```
 
 All these constant variables will be created as integers, and no other values can be assigned to these
 variables during the execution of the program.
 
 On the other hand, if a variable is declared without an initial value, Chapel will initialize it with a
-default value depending on the declared type. The following variables will be created as real floating
-point numbers equal to 0.0.
+default value depending on the declared type:
 
 ```chpl
-var delta: real;    // the greatest temperature difference from one iteration to next
-var tmp: real;      // for temporary results when computing the temperatures
+var y: real;        // vertical coordinate in our plot; real(64) variable set to 0.0
+var point: complex; // current point in our image; complex(64) variable set to 0.0+0.0*1i
 ```
 
 Of course, we can use both, the initial value and the type, when declaring a varible as follows:
 
 ```chpl
-const tolerance: real = 0.0001;   // temperature difference tolerance
-var count: int = 0;               // the iteration counter
-const nout: int = 20;             // the temperature at (iout,jout) will be printed every nout interations
+const c: complex = 0.355 + 0.355i;   // Julia set constant
 ```
 
 > Note that these two notations are different, but produce the same result in the end:
->
 > ```chpl
 > var a: real = 10;   // we specify both the type and the value
 > var a = 10: real;   // we specify only the value (10 converted to real)
 > ```
+{.note}
 
-Let's print out our configuration after we set all parameters:
+Let's print our configuration after we set all parameters:
 
 ```chpl
-writeln('Working with a matrix ', rows, 'x', cols, ' to ', niter, ' iterations or dT below ', tolerance);
+writeln('Computing ', n, 'x', n, ' Julia set ...');
 ```
-
-<!-- {{<note>}} -->
-<!-- {{</note>}} -->
 
 ### Checking variable's type
 

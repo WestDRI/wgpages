@@ -5,39 +5,26 @@ weight = 10
 katex = true
 +++
 
-## Quick review of the previous sessions
+<!-- ## Quick review of the previous sessions -->
 
-- we wrote the serial version of the 2D heat transfer solver in Chapel `baseSolver.chpl`: initial T=25, zero
-  boundary conditions on the left/upper sides, and linearly increasing temperature on the boundary for the
-  right/bottom sides; the temperature should converge to a steady state
-- it optionally took the following `config` variables from the command line: _rows_, _cols_, _niter_, _iout_,
-  _jout_, _tolerance_, _nout_
-- we ran the benchmark solution to convergence after 7750 iterations
+<!-- - we wrote the serial version of the 2D heat transfer solver in Chapel `baseSolver.chpl`: initial T=25, zero -->
+<!--   boundary conditions on the left/upper sides, and linearly increasing temperature on the boundary for the -->
+<!--   right/bottom sides; the temperature should converge to a steady state -->
+<!-- - it optionally took the following `config` variables from the command line: _rows_, _cols_, _niter_, _iout_, -->
+<!--   _jout_, _tolerance_, _nout_ -->
+<!-- - we ran the benchmark solution to convergence after 7750 iterations -->
 
-```sh
-$ ./baseSolver --rows=650 --iout=200 --niter=10_000 --tolerance=0.002 --nout=1000
-```
+<!-- ```sh -->
+<!-- $ ./baseSolver --rows=650 --iout=200 --niter=10_000 --tolerance=0.002 --nout=1000 -->
+<!-- ``` -->
 
-- we learned how to time individual sections of the code
-- we saw that `--fast` flag sped up calculation by ~100X
+<!-- - we learned how to time individual sections of the code -->
+<!-- - we saw that `--fast` flag sped up calculation by ~100X -->
 
-## Task Parallelism with Chapel
 
-The basic concept of parallel computing is simple to understand: we **divide our job into tasks that can be
-executed at the same time**, so that we finish the job in a fraction of the time that it would have taken if
-the tasks are executed one by one.
 
-> ## Key idea
-> **Task** is a unit of computation that can run in parallel with other tasks.
+abc
 
-Implementing parallel computations, however, is not always easy. How easy it is to parallelize a code
-really depends on the underlying problem you are trying to solve. This can result in:
-
-- a **_fine-grained_** parallel code that needs lots of communication/synchronization between tasks, or
-- a **_coarse-grained_** code that requires little communication between tasks.
-- in this sense **_grain size_** refers to the amount of independent computing in between communication
-- an **_embarrassing parallel_** problem is one where all tasks can be executed completely independent
-  from each other (no communications required)
 
 ## Parallel programming in Chapel
 

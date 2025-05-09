@@ -1,5 +1,5 @@
 +++
-title = "Parallelizing the Julia set problem"
+title = "Julia set on distributed domains"
 slug = "chapel-15-distributed-julia-set"
 weight = 15
 katex = true

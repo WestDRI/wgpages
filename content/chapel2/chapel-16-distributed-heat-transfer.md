@@ -5,6 +5,46 @@ weight = 16
 katex = true
 +++
 
+
+
+
+
+
+
+## Case study 2: solving the **_Heat transfer_** problem
+
+- have a square metallic plate with some initial temperature distribution (**_initial conditions_**)
+- its border is in contact with a different temperature distribution (**_boundary conditions_**)
+- want to simulate the evolution of the temperature across the plate
+
+To solve the 2nd-order heat diffusion equation, we need to **_discretize_** it, i.e., to consider the
+plate as a grid of points, and to evaluate the temperature on each point at each iteration, according to
+the following **_finite difference equation_**:
+
+```chpl
+Tnew[i,j] = 0.25 * (T[i-1,j] + T[i+1,j] + T[i,j-1] + T[i,j+1])
+```
+
+- `Tnew` = new temperature computed at the current iteration
+- `T` = temperature calculated at the past iteration (or the initial conditions at the first iteration)
+- the indices (i,j) indicate the grid point located at the i-th row and the j-th column
+
+So, our objective is to:
+
+1. Write a code to implement the difference equation above. The code should:
+   - work for any given number of rows and columns in the grid,
+   - run for a given number of iterations, or until the difference between `Tnew` and `T` is smaller than a given tolerance value, and
+   - output the temperature at a desired position on the grid every given number of iterations.
+1. Use task parallelism to improve the performance of the code and run it on a single cluster node.
+1. Use data parallelism to improve the performance of the code and run it on multiple cluster nodes using
+   hybrid parallelism.
+
+
+
+
+
+## kjshdaskjdhkahdkasjhdaksjdhkasjdhakjdhka
+
 Now let us use distributed domains to write a parallel version of our original heat transfer solver
 code. We'll start by copying `baseSolver.chpl` into `parallel.chpl` and making the following
 modifications to the latter:
