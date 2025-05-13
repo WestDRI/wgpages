@@ -42,36 +42,40 @@ katex = true
 The Chapel community is fairly small: relatively few people know/use Chapel &nbsp;⇄&nbsp; too few
 libraries. However, you can use functions/libraries written in other languages:
 
-1. Direct calls will always be serial.
-1. High-level Chapel parallel libraries can use C/F90/etc libraries underneath.
-1. A slowly growing base of parallel Chapel libraries.
+<!-- 1. Direct calls will always be serial. -->
+<!-- 1. High-level Chapel parallel libraries can use C/F90/etc libraries underneath. -->
+<!-- 1. A slowly growing base of parallel Chapel libraries. -->
 
-{{< figure src="/img/threeParts.png" width=800px >}}
+<!-- {{< figure src="/img/threeParts.png" width=800px >}} -->
 
-You can find the slides [here](../../files/chapel.pdf).
+<!-- You can find the slides [here](../../files/chapel.pdf). -->
 
-{{<note>}} In "Task parallelism" we will try to go as far as we can today, and we will resume on Day 2 where
-we left off. {{</note>}}
+<!-- {{<note>}} In "Task parallelism" we will try to go as far as we can today, and we will resume on Day 2 where -->
+<!-- we left off. {{</note>}} -->
 
-{{<note>}} Try to do all exercises in the lessons. The solutions are linked from the course's front page:
-please try not to look at them while working on the problems. {{</note>}}
+<!-- {{<note>}} Try to do all exercises in the lessons. The solutions are linked from the course's front page: -->
+<!-- please try not to look at them while working on the problems. {{</note>}} -->
 
 ## Running Chapel codes on Cedar / Graham / Béluga / Narval
 
-On Compute Canada clusters Cedar / Graham / Béluga / Narval we have two versions of Chapel: a single-locale
-(single-node) Chapel and a multi-locale (multi-node) Chapel. You can find the documentation on running Chapel
+On Alliance's production clusters Cedar / Graham / Béluga / Narval we have three versions of Chapel:
+
+1. single-locale (single-node) `chapel-multicore`
+2. multi-locale `chapel-ucx` for InfiniBand clusters (all newer clusters)
+3. older multi-locale `chapel-ofi` for OmniPath clusters (Cedar)
+
+You can find the documentation on running Chapel
 in {{<a "https://docs.alliancecan.ca/wiki/Chapel" "our wiki">}}.
 
 If you want to start single-locale Chapel, you will need to load `chapel-multicore` module, e.g.
 
 ```sh
-$ module spider chapel  # list all Chapel modules
-$ module load gcc/9.3.0 chapel-multicore
+$ module spider chapel-multicore   # list all versions
+$ module load chapel-multicore/2.4.0
 ```
 
-Multi-locale is provided by `chapel-ofi` module on OmniPath clusters such as Cedar, and by `chapel-ucx` module
-on InfiniBand clusters such as Graham, Béluga, Narval. Since multi-locale Chapel includes a parallel launcher
-for the right interconnect type, there is no single Chapel module for all cluster architectures.
+<!-- Since multi-locale Chapel includes a parallel launcher for the right interconnect type, there is no single -->
+<!-- Chapel module for all cluster architectures. -->
 
 ## Running Chapel codes inside a Docker container
 
@@ -90,7 +94,7 @@ $ chpl test.chpl -o test
 $ ./test -nl 8
 ```
 
-You can find more information at https://chapel-lang.org/install-docker.html
+You can find more information at https://hub.docker.com/r/chapel/chapel
 
 ## Running single-locale Chapel in MacOS
 
@@ -103,27 +107,30 @@ brew install chapel
 
 ## Running Chapel codes on the training cluster
 
-{{<note>}} Now we will distribute the usernames and passwords. Once you have these, log in to the training
-cluster and (1) try loading single-locale Chapel and compiling a simple code, (2) write a makefile for
-compiling Chapel codes, and (3) submit a serial job script to run Chapel on a compute node. {{</note>}}
+> Now we will distribute the usernames and passwords. Once you have these, log in to the training
+> cluster and do the following:
+> 1. load single-locale Chapel and compile a simple code,
+> 2. write a makefile for compiling Chapel codes, and
+> 3. submit a serial job script to run Chapel on a compute node.
+{.note}
 
-Depending on where our training cluster is deployed, its Chapel setup might (or not) be different from the
-production clusters. On the training cluster, you can start single-locale Chapel with either
+<!-- Depending on where our training cluster is deployed, its Chapel setup might (or not) be different from the -->
+<!-- production clusters. -->
+
+On the training cluster, you can start single-locale Chapel with:
 
 <!-- ```sh -->
 <!-- $ module load arch/avx2 gcc/9.3.0 chapel-multicore -->
 <!-- ``` -->
 
 ```sh
-$ module load arch/avx2   # not necessary, unless you land on an avx512 node
-$ module load gcc/9.3.0 chapel-multicore
+$ module load chapel-multicore/2.4.0
 ```
 
-or
-
-```sh
-source /project/def-sponsor00/shared/syncHPC/startSingleLocale.sh
-```
+<!-- or -->
+<!-- ```sh -->
+<!-- source /project/def-sponsor00/shared/syncHPC/startSingleLocale.sh -->
+<!-- ``` -->
 
 Let's write a simple Chapel code, compile and run it:
 
@@ -131,7 +138,7 @@ Let's write a simple Chapel code, compile and run it:
 $ cd ~/tmp
 $ nano test.chpl
 $     writeln('If you can see this, everything works!');
-$ chpl test.chpl -o test
+$ chpl test.chpl
 $ ./test
 ```
 
@@ -173,7 +180,7 @@ $ sq                         # same as `squeue -u $USER`
 $ cat slurm-jobID.out
 ```
 
-Alternatively, today we could work inside a serial interactive job:
+Alternatively, we could work inside a serial interactive job:
 
 ```sh
 $ salloc --time=2:0:0 --mem-per-cpu=3600
@@ -184,14 +191,14 @@ $ salloc --time=2:0:0 --mem-per-cpu=3600
 <!-- - the login node with 16 "p"-type cores and 32GB memory, -->
 <!-- - 8 compute nodes with 16 "c"-type cores and 60GB memory each, for the total of 128 cores. -->
 
-{{<note>}}
-Even though each node effectively has 3GB of memory, we highly recommend to use `--mem-per-cpu=1000` (and
-not more) throughout this workshop. Some memory is being used for the operating system, drivers, system
-utilities, MPI buffers and the like. Unfortunately, unlike the production clusters, the training cluster does
-not have safeguards when its nodes run out of memory, shutting down some system utilities and leading to
-inability to run parallel jobs. The cluster will rebuild itself within few hours, but unfortunately asking for
-too much memory might leave it unable to run parallel jobs during the workshop.
-{{</note>}}
+<!-- {{<note>}} -->
+<!-- Even though each node effectively has 3GB of memory, we highly recommend to use `--mem-per-cpu=1000` (and -->
+<!-- not more) throughout this workshop. Some memory is being used for the operating system, drivers, system -->
+<!-- utilities, MPI buffers and the like. Unfortunately, unlike the production clusters, the training cluster does -->
+<!-- not have safeguards when its nodes run out of memory, shutting down some system utilities and leading to -->
+<!-- inability to run parallel jobs. The cluster will rebuild itself within few hours, but unfortunately asking for -->
+<!-- too much memory might leave it unable to run parallel jobs during the workshop. -->
+<!-- {{</note>}} -->
 
 ## Makefiles
 
@@ -208,10 +215,10 @@ clean:
 
 Note that the 2nd and the 4th lines start with TAB and not with multiple spaces -- this is **very important**!
 
-With this makefile, to compile any Chapel code, e.g. `baseSolver.chpl`, you would type:
+With this makefile, to compile any Chapel code, e.g. `test.chpl`, you would type:
 
 ```sh
-$ make baseSolver
+$ make test
 ```
 
 Add `--fast` flag to the makefile to optimize your code. And you can type `make clean` to delete all

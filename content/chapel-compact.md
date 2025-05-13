@@ -63,7 +63,6 @@ participants. No need to install Chapel on your computer.
 
 
 {{<cor>}}Part 1: basic language features{{</cor>}} {{<s>}} {{<cgr>}}{{</cgr>}} \
-ACTION: use Julia set for the basic language features \
 {{<linktitle url="../chapel2/chapel-01-intro" text="Introduction to Chapel">}} \
 {{<linktitle url="../chapel2/chapel-02-variables" text="Basic syntax and variables">}} -- Julia set description \
 {{<linktitle url="../chapel2/chapel-03-ranges-and-arrays" text="Ranges and arrays">}} \
@@ -73,20 +72,17 @@ ACTION: use Julia set for the basic language features \
 {{<linktitle url="../chapel2/chapel-08-output" text="Writing output">}}
 
 {{<cor>}}Part 2: data parallelism{{</cor>}} {{<s>}} {{<cgr>}}{{</cgr>}} \
-ACTION: in 16 introduce the heat diffusion problem for the first time \
-ACTION: in 15 (now missing) add juliaSetDistributed.chpl \
-ACTION: rewrite intro 10 \
 {{<linktitle url="../chapel2/chapel-10-intro-parallel" text="Intro to parallel computing">}} \
 {{<linktitle url="../chapel2/chapel-11-single-locale-data-parallel" text="Single-locale data parallelism">}} \
 {{<linktitle url="../chapel2/chapel-13-multi-locale-chapel" text="Multi-locale Chapel">}} \
 {{<linktitle url="../chapel2/chapel-14-domains-and-data-parallel" text="Domains and data parallelism">}} \
-{{<linktitle url="../chapel2/chapel-15-distributed-julia-set" text="Julia set on distributed domains">}} \
+{{<linktitle url="../chapel2/chapel-15-distributed-julia-set" text="Parallel Julia set">}} \
 {{<linktitle url="../chapel2/chapel-16-distributed-heat-transfer" text="Heat transfer solver on distributed domains">}} -- heat transfer description
 
 {{<cor>}}Part 3: task parallelism (briefly){{</cor>}} {{<s>}} {{<cgr>}}{{</cgr>}} \
 ACTION: shorten this chapter by 90% \
 {{<linktitle url="../chapel2/chapel-20-fire-and-forget-tasks" text="Fire-and-forget tasks">}} \
-{{<linktitle url="../chapel2/chapel-21-synchronising-threads" text="Synchronization of threads">}} \
+{{<linktitle url="../chapel2/chapel-21-synchronising-tasks" text="Synchronization of tasks">}} \
 {{<linktitle url="../chapel2/chapel-22-task-parallel-heat-transfer" text="Task-parallelizing the heat transfer solver">}}
 
 {{<cor>}}Part 4: GPU computing with Chapel{{</cor>}} {{<s>}} {{<cgr>}}{{</cgr>}} \
@@ -111,11 +107,8 @@ You can find the solutions [here](../../solutions-chapel).
 - {{<a "https://learnxinyminutes.com/docs/chapel" "Learn X=Chapel in Y minutes">}}
 - {{<a "https://stackoverflow.com/questions/tagged/chapel" "Chapel on StackOverflow">}}
 - Watch {{<a "https://youtu.be/0DjIdRJIqRY" "Chapel: Productive, Multiresolution Parallel Programming talk">}} by Brad Chamberlain
-- WestGrid's April 2019 webinar {{<a "https://bit.ly/39iRSbx" "Working with distributed unstructured data in Chapel">}}
-- WestGrid's March 2020 webinar {{<a "https://bit.ly/3QnP1Pd" "Working with data files and external C libraries in Chapel">}} discusses writing arrays to NetCDF and HDF5 files from Chapel
-
-&nbsp;
-
+- WestGrid's April 2019 webinar {{<a "https://training.westdri.ca/programming#chapel" "Working with distributed unstructured data in Chapel">}}
+- WestGrid's March 2020 webinar {{<a "https://training.westdri.ca/programming#chapel" "Working with data files and external C libraries in Chapel">}} discusses writing arrays to NetCDF and HDF5 files from Chapel
 
 
 

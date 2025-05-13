@@ -21,11 +21,6 @@ katex = true
 <!-- - we learned how to time individual sections of the code -->
 <!-- - we saw that `--fast` flag sped up calculation by ~100X -->
 
-
-
-abc
-
-
 ## Parallel programming in Chapel
 
 Chapel provides high-level abstractions for parallel programming no matter the grain size of your tasks,
@@ -36,41 +31,53 @@ be sure that the high-level implementation will run on any hardware configuratio
 consider the specificities of the particular system you are going to use (whether is shared or
 distributed, the number of cores, etc.) and tune your code/algorithm to obtain a better performance.
 
-To this effect, **_concurrency_** (the creation and execution of multiple tasks), and **_locality_** (on
-which set of resources these tasks are executed) are orthogonal (separate) concepts in Chapel. For
-example, we can have a set of several tasks; these tasks could be running, e.g.,
+To this effect, **_concurrency_** (the creation and execution of multiple tasks), and **_locality_** (on which
+set of resources these tasks are executed) are orthogonal (separate) concepts in Chapel. For example, we could
+have a set of several tasks that would be running as shown below:
 
-```
-a. concurrently by the same processor in a single compute node (**serial local** code),
-b. in parallel by several processors in a single compute node (**parallel local** code),
-c. in parallel by several processors distributed in different compute nodes (**parallel distributed**
-   code), or
-d. serially (one by one) by several processors distributed in different compute nodes (**serial
-   distributed** code -- yes, this is possible in Chapel)
-```
-Similarly, each of these tasks could be using variables located in:
-```
-a. the local memory on the compute node where it is running, or
-b. on distributed memory located in other compute nodes.
-```
+{{< figure src="/img/orthogonal.png" width="800px" >}}
+
+<!-- ``` -->
+<!-- a. concurrently by the same processor in a single compute node (**serial local** code), -->
+<!-- b. in parallel by several processors in a single compute node (**parallel local** code), -->
+<!-- c. in parallel by several processors distributed in different compute nodes (**parallel distributed** -->
+<!--    code), or -->
+<!-- d. serially (one by one) by several processors distributed in different compute nodes (**serial -->
+<!--    distributed** code -- yes, this is possible in Chapel) -->
+<!-- ``` -->
+<!-- Similarly, each of these tasks could be using variables located in: -->
+<!-- ``` -->
+<!-- a. the local memory on the compute node where it is running, or -->
+<!-- b. on distributed memory located in other compute nodes. -->
+<!-- ``` -->
 
 And again, Chapel could take care of all the stuff required to run our algorithm in most of the
 scenarios, but we can always add more specific detail to gain performance when targeting a particular
 scenario.
 
-> ## Key idea
 > **Task parallelism** is a style of parallel programming in which parallelism is driven by
-> *programmer-specified tasks*. This is in contrast with **Data Parallelism** which is a style of
+> *programmer-specified tasks*. This is in contrast with **data parallelism** which is a style of
 > parallel programming in which parallelism is driven by *computations over collections of data elements
 > or their indices*.
+{.note}
+
+Chapel provides functionality for both task- and data-parallel programming. Since task parallelism is lower
+level (*you* tell the computer how to divide your computation into tasks) than data parallelism, it is
+considerably more difficult. In this course we will focus mostly on data parallelism, but we will briefly
+cover task parallelism towards the end of the course.
+
+
+
+
+
+
 
 ## Running single-local parallel Chapel
 
 Make sure you have loaded the single-locale Chapel environment:
 
 ```sh
-$ module load arch/avx2   # not necessary, unless you land on an avx512 node
-$ module load gcc/9.3.0 chapel-multicore
+$ module load chapel-multicore/2.4.0
 ```
 
 <!-- ```sh -->
@@ -82,9 +89,9 @@ In this lesson, we'll be running on several cores on one node with a script `sha
 ```sh
 #!/bin/bash
 #SBATCH --time=0:5:0         # walltime in d-hh:mm or hh:mm:ss format
-#SBATCH --mem-per-cpu=1000   # in MB
+#SBATCH --mem-per-cpu=3600   # in MB
 #SBATCH --ntasks=1
-#SBATCH --cpus-per-task=2
+#SBATCH --cpus-per-task=4
 #SBATCH --output=solution.out
-./begin
+./test
 ```

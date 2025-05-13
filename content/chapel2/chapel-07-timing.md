@@ -65,8 +65,9 @@ Here is our complete serial code `juliaSetSerial.chpl`:
 ```chpl
 use Time;
 
+config const c = 0.355 + 0.355i;
+
 proc pixel(z0) {
-  config const c = 0.355 + 0.355i;
   var z = z0*1.2;   // zoom out
   for i in 1..255 do {
     z = z*z + c;
@@ -81,7 +82,7 @@ var y: real;
 var point: complex;
 var watch: stopwatch;
 
-writeln("Computing Julia set ...");
+writeln("Computing ", n, "x", n, " Julia set ...");
 var stability: [1..n,1..n] int;
 watch.start();
 for i in 1..n do {

@@ -26,10 +26,11 @@ is referred to as **multi-locale** execution.
 > Inside the Docker container on multiple locales your code will not run any faster than on a single
 > locale, since you are emulating a virtual cluster, and all tasks run on the same physical node. To
 > achieve actual speedup, you need to run your parallel multi-locale Chapel code on a real HPC cluster.
+{.note}
 
-On an HPC cluster you would need to submit either an interactive or a batch job asking for several nodes
-and then run a multi-locale Chapel code inside that job. In practice, the exact commands to run
-multi-locale Chapel codes depend on how Chapel was built on the cluster.
+On an HPC cluster you would need to submit either an interactive or a batch job asking for several nodes and
+then run a multi-locale Chapel code inside that job. In practice, the exact commands to run multi-locale
+Chapel codes depend on how Chapel was configured on the cluster.
 
 When you compile a Chapel code with the multi-locale Chapel compiler, two binaries will be produced. One
 is called `mybinary` and is a launcher binary used to submit the real executable `mybinary_real`. If the
@@ -38,7 +39,7 @@ you would simply compile the code and use the launcher binary `mybinary` to run 
 
 For the rest of this class we assume that you have a working multi-locale Chapel environment, whether
 provided by a Docker container or by multi-locale Chapel on a physical HPC cluster. We will run all
-examples on four nodes with two cores per node.
+examples on 3 nodes with 2 cores per node.
 
 <!-- ```sh -->
 <!-- $ chpl mycode.chpl -o mybinary -->
@@ -102,12 +103,14 @@ Let's write a job submission script `distributed.sh`:
 
 Let us test our multi-locale Chapel environment by launching the following code:
 
+<!-- $ module load arch/avx2   # not necessary, unless you land on an avx512 node -->
+<!-- $ module load gcc/9.3.0 chapel-ofi/1.31.0 -->
+
 ```chpl
 writeln(Locales);
 ```
 ```sh
-$ module load arch/avx2   # not necessary, unless you land on an avx512 node
-$ module load gcc/9.3.0 chapel-ofi/1.31.0
+$ source /project/def-sponsor00/shared/syncHPC/startMultiLocale.sh
 $ chpl test.chpl -o test
 $ sbatch distributed.sh
 $ cat solution.out
@@ -124,7 +127,7 @@ We want to run some code on each locale (node). For that, we can cycle through l
 ```chpl
 for loc in Locales do   // this is still a serial program
   on loc do             // run the next line on locale `loc`
-	writeln("this locale is named ", here.name[0..4]);   // `here` is the locale on which the code is running
+    writeln("this locale is named ", here.name[0..4]);   // `here` is the locale on which the code is running
 ```
 
 This will produce
@@ -165,11 +168,11 @@ We can print few other attributes of each locale. Here it is actually useful to 
 use MemDiagnostics;
 for loc in Locales do
   on loc {
-	writeln("locale #", here.id, "...");
-	writeln("  ...is named: ", here.name);
-	writeln("  ...has ", here.numPUs(), " processor cores");
-	writeln("  ...has ", here.physicalMemory(unit=MemUnits.GB, retType=real), " GB of memory");
-	writeln("  ...has ", here.maxTaskPar, " maximum parallelism to expect");
+    writeln("locale #", here.id, "...");
+    writeln("  ...is named: ", here.name);
+    writeln("  ...has ", here.numPUs(), " processor cores");
+    writeln("  ...has ", here.physicalMemory(unit=MemUnits.GB, retType=real), " GB of memory");
+    writeln("  ...has ", here.maxTaskPar, " maximum parallelism to expect");
   }
 ```
 ```sh
@@ -177,24 +180,24 @@ $ chpl test.chpl -o test
 $ sbatch distributed.sh
 $ cat solution.out
 ```
-```
+```output
 locale #0...
-  ...is named: node1
+  ...is named: node1.int.cass.vastcloud.org
   ...has 2 processor cores
-  ...has 2.77974 GB of memory
-  ...has 2 maximum parallelism
+  ...has 29.124 GB of memory
+  ...has 2 maximum parallelism to expect
 locale #1...
-  ...is named: node2
+  ...is named: node2.int.cass.vastcloud.org
   ...has 2 processor cores
-  ...has 2.77974 GB of memory
-  ...has 2 maximum parallelism
+  ...has 29.124 GB of memory
+  ...has 2 maximum parallelism to expect
 locale #2...
-  ...is named: node3
+  ...is named: node3.int.cass.vastcloud.org
   ...has 2 processor cores
-  ...has 2.77974 GB of memory
-  ...has 2 maximum parallelism
+  ...has 29.124 GB of memory
+  ...has 2 maximum parallelism to expect
 ```
 
-Note that while Chapel correctly determines the number of physical cores on each node and the number of cores
-available inside our job on each node (maximum parallelism), it lists the total physical memory on each node
-available to all running jobs which is not the same as the total memory per node allocated to our job.
+Note that while Chapel correctly determines the number of cores available inside our job on each node (maximum
+parallelism) but lists the total physical memory on each node available to all running jobs which *is not the
+same* as the total memory per node allocated to our job.
