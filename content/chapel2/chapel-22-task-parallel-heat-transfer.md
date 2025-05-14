@@ -208,30 +208,6 @@ inside the `coforall` loop.
 <!-- 1. We need to be sure that all tasks have finished with the computations of their part of the grid `temp`, before updating `delta` and `past_temp` safely. -->
 <!-- 2. We need to be sure that all tasks use the updated value of `delta` to evaluate the condition of the while loop for the next iteration. -->
 
-> ### <font style="color:blue">Exercise "Task.4"</font>
-> Recall our earlier code `atomic.chpl`:
-> ```chpl
-> var lock: atomic int;
-> const numtasks = 5;
-> lock.write(0);                // the main task set lock to zero
-> coforall id in 1..numtasks {
->   writeln('greetings form task ', id, '... I am waiting for all tasks to say hello');
->   lock.add(1);               // task id says hello and atomically adds 1 to lock
->   lock.waitFor(numtasks);  // then it waits for lock to be equal numtasks (which will happen when all tasks say hello)
->   writeln('task ', id, ' is done ...');
-> }
-> ```
-> Suppose we want to add another synchronization point right after the last `writeln()` command. What is
-> wrong with adding the following at the end of the `coforall` loop?
-> ```chpl
->   lock.sub(1);      // task id says hello and atomically subtracts 1 from lock
->   lock.waitFor(0);  // then it waits for lock to be equal 0 (which will happen when all tasks say hello)
->   writeln('task ', id, ' is really done ...');
-> ```
-
-> ### <font style="color:blue">Exercise "Task.5"</font>
-> Ok, then what is the solution if we want two synchronization points?
-
 (3) Define two atomic variables that we'll use for synchronization
 
 ```chpl

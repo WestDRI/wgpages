@@ -108,9 +108,9 @@ var stability: [distributedMesh] int;
 3. Look into the loop variables: currently we have
 
 ```chpl
-forall i in 1..n do {
+forall i in 1..n {
   var y = 2*(i-0.5)/n - 1;
-  for j in 1..n do {
+  for j in 1..n {
     var point = 2*(j-0.5)/n - 1 + y*1i;   // rescale to -1:1 in the complex plane
     stability[i,j] = pixel(point);
   }

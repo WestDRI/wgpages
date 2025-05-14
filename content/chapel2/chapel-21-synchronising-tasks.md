@@ -204,9 +204,34 @@ task 3 is done...
 task 4 is done...
 ```
 
-> ## Try this...
-> Comment out the line `lock.waitfor(numtasks)` in the code above to clearly observe the effect of the task
+> Comment out the line `lock.waitfor(numtasks)` in the code above to clearly observe the effect of task
 > synchronization.
+{.note}
 
-Finally, with all the material studied so far, we should be ready to parallelize our code for the simulation
-of the heat transfer equation.
+
+
+
+
+
+
+> ### <font style="color:blue">Exercise "Task.4"</font>
+> Suppose we want to add another synchronization point right after the last `writeln()` command. What is
+> wrong with adding the following at the end of the `coforall` loop?
+> ```chpl
+>   lock.sub(1);      // task id says hello and atomically subtracts 1 from lock
+>   lock.waitFor(0);  // then it waits for lock to be equal 0 (which will happen when all tasks say hello)
+>   writeln('task ', id, ' is really done ...');
+> ```
+
+{{< figure src="/img/raceCondition.png" width=450px >}}
+
+> ### <font style="color:blue">Exercise "Task.5"</font>
+> Ok, then what is the solution if we want two synchronization points?
+
+
+
+
+
+
+Finally, with everything learned so far, we should be ready to parallelize our code for the simulation of the
+heat transfer equation.

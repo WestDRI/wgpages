@@ -80,13 +80,12 @@ participants. No need to install Chapel on your computer.
 {{<linktitle url="../chapel2/chapel-16-distributed-heat-transfer" text="Heat transfer solver on distributed domains">}} -- heat transfer description
 
 {{<cor>}}Part 3: task parallelism (briefly){{</cor>}} {{<s>}} {{<cgr>}}{{</cgr>}} \
-ACTION: shorten this chapter by 90% \
 {{<linktitle url="../chapel2/chapel-20-fire-and-forget-tasks" text="Fire-and-forget tasks">}} \
 {{<linktitle url="../chapel2/chapel-21-synchronising-tasks" text="Synchronization of tasks">}} \
 {{<linktitle url="../chapel2/chapel-22-task-parallel-heat-transfer" text="Task-parallelizing the heat transfer solver">}}
 
-{{<cor>}}Part 4: GPU computing with Chapel{{</cor>}} {{<s>}} {{<cgr>}}{{</cgr>}} \
-ACTION: add and shorten material from chapel-gpu.md
+{{<cor>}}Part 4: GPU computing with Chapel{{</cor>}} {{<s>}} {{<cgr>}}{{</cgr>}}
+<!-- ACTION: add and shorten material from chapel-gpu.md -->
 
 
 

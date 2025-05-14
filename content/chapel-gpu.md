@@ -699,18 +699,18 @@ coforall (loc, locChunk) in zip(Locales, chunks(2..n, numLocales)) {
   /* loc=LOCALE2, locChunk=668..1000 */
   on loc {
     writeln("loc = ", loc, "   chunk = ", locChunk);
-	const numGpus = here.gpus.size;
-	coforall (gpu, gpuChunk) in zip(here.gpus, chunks(locChunk, numGpus)) {
-	  /* on LOCALE0 will see gpu=LOCALE0-GPU0, gpuChunk=2..168 */
-	  /*                     gpu=LOCALE0-GPU1, gpuChunk=169..334 */
-	  on gpu {
-		writeln("loc = ", loc, "   gpu = ", gpu, "   chunk = ", gpuChunk);
-		var A_on_device: [gpuChunk] int;
-		foreach i in gpuChunk do
-		  A_on_device[i] = primeFactorizationSum(i);
-		A_on_host[gpuChunk] = A_on_device; // copy the chunk from the GPU via the host to LOCALE0
-	  }
-	}
+    const numGpus = here.gpus.size;
+    coforall (gpu, gpuChunk) in zip(here.gpus, chunks(locChunk, numGpus)) {
+      /* on LOCALE0 will see gpu=LOCALE0-GPU0, gpuChunk=2..168 */
+      /*                     gpu=LOCALE0-GPU1, gpuChunk=169..334 */
+      on gpu {
+        writeln("loc = ", loc, "   gpu = ", gpu, "   chunk = ", gpuChunk);
+        var A_on_device: [gpuChunk] int;
+        foreach i in gpuChunk do
+          A_on_device[i] = primeFactorizationSum(i);
+        A_on_host[gpuChunk] = A_on_device; // copy the chunk from the GPU via the host to LOCALE0
+      }
+    }
   }
 }
 
