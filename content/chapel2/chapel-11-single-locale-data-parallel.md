@@ -154,10 +154,10 @@ writef('pi is %3.10r\n', total*h);    // C-style formatted write, r stands for r
 <!-- ```chpl -->
 <!-- config const rows = 100, cols = 100; -->
 <!-- const rowStride = 34, colStride = 25;    // each block has 34 rows and 25 columns => 3x4 blocks -->
-<!-- forall (r,c) in {1..rows,1..cols} by (rowStride,colStride) do {   // nested c-loop inside r-loop -->
+<!-- forall (r,c) in {1..rows,1..cols} by (rowStride,colStride) {   // nested c-loop inside r-loop -->
 <!-- 																  // 12 iterations, up to 12 threads -->
-<!--   for i in r..min(r+rowStride-1,rows) do {     // serial i-loop inside each block -->
-<!-- 	for j in c..min(c+colStride-1,cols) do {   // serial j-loop inside each block -->
+<!--   for i in r..min(r+rowStride-1,rows) {     // serial i-loop inside each block -->
+<!-- 	for j in c..min(c+colStride-1,cols) {   // serial j-loop inside each block -->
 <!-- 	  Tnew[i,j] = 0.25 * (T[i-1,j] + T[i+1,j] + T[i,j-1] + T[i,j+1]); -->
 <!-- 	} -->
 <!--   } -->

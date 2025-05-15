@@ -35,7 +35,7 @@ const rr = rows % rowtasks;   // remainder rows (did not fit into the last row o
 const nc = cols / coltasks;   // number of columns per task
 const rc = cols % coltasks;   // remainder columns (did not fit into the last column of tasks)
 
-coforall taskid in 0..coltasks*rowtasks-1 do {
+coforall taskid in 0..coltasks*rowtasks-1 {
   var row1, row2, col1, col2: int;
   row1 = taskid/coltasks*nr + 1;
   row2 = taskid/coltasks*nr + nr;
@@ -85,13 +85,13 @@ diff baseSolver.chpl parallel1.chpl
 > const rc = cols - nc*coltasks; // remainder columns (did not fit into the last task)
 >
 31,32c37,46
-<   for i in 1..rows do {    // do smth for row i
-<     for j in 1..cols do {  // do smth for row i and column j
+<   for i in 1..rows {    // do smth for row i
+<     for j in 1..cols {  // do smth for row i and column j
 <       Tnew[i,j] = 0.25 * (T[i-1,j] + T[i+1,j] + T[i,j-1] + T[i,j+1]);
 <     }
 <   }
 ---
->   coforall taskid in 0..coltasks*rowtasks-1 do { // each iteration processed by a separate task
+>   coforall taskid in 0..coltasks*rowtasks-1 { // each iteration processed by a separate task
 >     var row1, row2, col1, col2: int;
 >     row1 = taskid/coltasks*nr + 1;
 >     row2 = taskid/coltasks*nr + nr;
@@ -99,8 +99,8 @@ diff baseSolver.chpl parallel1.chpl
 >     col1 = taskid%coltasks*nc + 1;
 >     col2 = taskid%coltasks*nc + nc;
 >     if col2 == coltasks*nc then col2 += rc; // add rc columns to the last column of tasks
->     for i in row1..row2 do {
->       for j in col1..col2 do {
+>     for i in row1..row2 {
+>       for j in col1..col2 {
 >         Tnew[i,j] = 0.25 * (T[i-1,j] + T[i+1,j] + T[i,j-1] + T[i,j+1]);
 >       }
 >     }
@@ -108,8 +108,8 @@ diff baseSolver.chpl parallel1.chpl
 >
 36,42d49
 <   delta = 0;
-<   for i in 1..rows do {
-<     for j in 1..cols do {
+<   for i in 1..rows {
+<     for j in 1..cols {
 <       tmp = abs(Tnew[i,j]-T[i,j]);
 <       if tmp > delta then delta = tmp;
 <     }
@@ -179,7 +179,7 @@ following changes:
 (1) Move the rows
 
 ```chpl
-  coforall taskid in 0..coltasks*rowtasks-1 do { // each iteration processed by a separate task
+  coforall taskid in 0..coltasks*rowtasks-1 { // each iteration processed by a separate task
 	var row1, row2, col1, col2: int;
 	row1 = taskid/coltasks*nr + 1;
 	row2 = taskid/coltasks*nr + nr;
@@ -241,7 +241,7 @@ var delta: atomic real;    // the greatest temperature difference between Tnew a
 ...
 delta.write(tolerance*10); // some safe initial large value
 ...
-while (count < niter && delta.read() >= tolerance) do {
+while (count < niter && delta.read() >= tolerance) {
 ```
 
 (6) Define an array of local delta's for each task and use it to compute delta:

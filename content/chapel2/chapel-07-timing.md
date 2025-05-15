@@ -38,9 +38,9 @@ our code.
 use Time;
 var watch: stopwatch;
 watch.start();
-for i in 1..n do {
+for i in 1..n {
   y = 2*(i-0.5)/n - 1;
-  for j in 1..n do {
+  for j in 1..n {
     point = 2*(j-0.5)/n - 1 + y*1i;   // rescale to -1:1 in the complex plane
     stability[i,j] = pixel(point);
   }
@@ -69,7 +69,7 @@ config const c = 0.355 + 0.355i;
 
 proc pixel(z0) {
   var z = z0*1.2;   // zoom out
-  for i in 1..255 do {
+  for i in 1..255 {
     z = z*z + c;
     if abs(z) >= 4 then
       return i;
@@ -85,9 +85,9 @@ var watch: stopwatch;
 writeln("Computing ", n, "x", n, " Julia set ...");
 var stability: [1..n,1..n] int;
 watch.start();
-for i in 1..n do {
+for i in 1..n {
   y = 2*(i-0.5)/n - 1;
-  for j in 1..n do {
+  for j in 1..n {
     point = 2*(j-0.5)/n - 1 + y*1i;   // rescale to -1:1 in the complex plane
     stability[i,j] = pixel(point);
   }

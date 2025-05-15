@@ -166,8 +166,8 @@ var T, Tnew: [largerMesh] real;   // block-distributed arrays of temperatures
 (5) Replace the loop for computing *inner* `Tnew`:
 
 ```chpl
-for i in 1..rows do {  // do smth for row i
-  for j in 1..cols do {   // do smth for row i and column j
+for i in 1..rows {  // do smth for row i
+  for j in 1..cols {   // do smth for row i and column j
 	Tnew[i,j] = 0.25 * (T[i-1,j] + T[i+1,j] + T[i,j-1] + T[i,j+1]);
   }
 }
@@ -188,8 +188,8 @@ Can anyone spot a mistake in this loop?
 
 ```chpl
 delta = 0;
-for i in 1..rows do {
-  for j in 1..cols do {
+for i in 1..rows {
+  for j in 1..cols {
 	tmp = abs(Tnew[i,j]-T[i,j]);
 	if tmp > delta then delta = tmp;
   }

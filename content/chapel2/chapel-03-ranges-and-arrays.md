@@ -86,9 +86,9 @@ In our case we iterate both over all rows and all columns in the image to comput
 done with nested _for_ loops like this:
 
 ```chpl
-for i in 1..n do { // process row i
+for i in 1..n { // process row i
   y = 2*(i-0.5)/n - 1;
-  for j in 1..n do { // process column j, row i
+  for j in 1..n { // process column j, row i
     point = 2*(j-0.5)/n - 1 + y*1i;   // rescale to -1:1 in the complex plane
     stability[i,j] = pixel(point);
   }
