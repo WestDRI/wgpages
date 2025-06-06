@@ -4,8 +4,8 @@ slug = "chapel-compact"
 aliases = ["chapel"]
 +++
 
-{{<cor>}}May 15th and 22nd, 2025{{</cor>}}\
-{{<cgr>}}10:00am - noon Pacific Time{{</cgr>}}
+{{<cor>}}June 12<sup>th</sup>{{</cor>}}\
+{{<cgr>}}1:30pm-4:30pm Pacific Time{{</cgr>}}
 
 Chapel is a modern programming language designed for both shared and distributed memory systems, offering
 high-level, easy-to-use abstractions for task and data parallelism. Its intuitive syntax makes it an excellent

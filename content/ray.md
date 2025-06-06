@@ -4,8 +4,8 @@ slug = "ray"
 katex = true
 +++
 
-<!-- {{<cor>}}Part 2: May 1<sup>st</sup> and May 8<sup>th</sup>{{</cor>}}\ -->
-<!-- {{<cgr>}}10am–noon Pacific Time{{</cgr>}} -->
+{{<cor>}}June 13<sup>th</sup>{{</cor>}}\
+{{<cgr>}}9:30am–12:30pm and 1:30pm-4:30pm Pacific Time{{</cgr>}}
 
 There is a number of high-level open-source parallel frameworks for Python that are quite popular in data
 science and beyond:

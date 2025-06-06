@@ -76,7 +76,7 @@ same variable at the same time.
 * if we replace `forall` with `for`, we'll get a serial loop on a sigle core
 * if we replace `forall` with `coforall` (we'll study it later), we'll create $10^6$ threads -- likely an overkill!
 
-### Reduction
+## Reduction
 
 Consider a simple code `forall.chpl` that we'll run inside a 4-core interactive job. We have a range of
 indices 1..1000, and they get broken into 4 groups that are processed by individual threads:
@@ -113,6 +113,8 @@ $ cat solution.out
 count = 500500
 ```
 
+### Number of cores at runtime
+
 We computed the sum of integers from 1 to 1000 in parallel. How many cores did the code run on? Looking at the
 code or its output, **we don't know**. Most likely, on all 4 cores available to us inside the job. But we can
 actually check that! Do this:
@@ -131,10 +133,42 @@ actual number of threads = 4
 
 If you see one thread, try running this code as a batch multi-core job.
 
+### Alternative syntax
+
+We can also do parallel reduction over a loop in this way:
+
+```chpl
+var count = (+ reduce forall i in 1..1000 do i**2);
+writeln('count = ', count);
+```
+
+We can also initialize in array and do parallel reduction over all array elements:
+
+```chpl
+var A = (for i in 1..1000 do i);
+var count = (+ reduce A);   // multiple threads
+writeln('count = ', count);
+```
+
+Or we could do it this way if we want to do some processing on individual elements:
+
+```chpl
+var A = (for i in 1..1000 do i);
+var count = (+ reduce forall a in A do a**2);
+writeln('count = ', count);
+```
+
+
+
+
+
+
+&nbsp;
+
 {{< question num="Parallel $\pi$" >}}<!-- Data.1 -->
-Using the first version of `forall.chpl` (where we computed the sum of integers 1..1000) as a template,
-write a Chapel code to compute $\pi$ by calculating the integral (see slides) numerically through
-summation using `forall` parallelism. Implement the number of intervals as `config` variable.
+Using the first version of `forall.chpl` (where we computed the sum of integers 1..1000) as a template, write
+a Chapel code to compute $\pi$ by calculating the integral numerically via summation using `forall`
+parallelism. Implement the number of intervals as `config` variable.
 
 To get you started, here is a serial version of this code `pi.chpl`:
 ```chpl

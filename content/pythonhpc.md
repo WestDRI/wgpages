@@ -4,8 +4,8 @@ slug = "pythonhpc"
 katex = true
 +++
 
-<!-- {{<cor>}}Part 1: April 24<sup>th</sup> and May 1<sup>st</sup>{{</cor>}}\ -->
-<!-- {{<cgr>}}10am–noon Pacific Time{{</cgr>}} -->
+{{<cor>}}June 13<sup>th</sup>{{</cor>}}\
+{{<cgr>}}9:30am–12:30pm and 1:30pm-4:30pm Pacific Time{{</cgr>}}
 
 **Abstract**: Python has become the dominant language in scientific computing thanks to its high-level syntax,
 extensive ecosystem, and ease of use. However, its performance often lags behind traditional compiled
@@ -630,8 +630,13 @@ function* that takes an array of integers and computes the slow series sum all i
 C/C++/Fortran/Rust function, it would run ~20X faster than the original calculation. This is what a JIT
 compiler can do -- we will study it later.
 
-As it turns out, there is no easy way to speed this problem with NumPy. For interested parties I could share
-several other NumPy implementations of this problem, but none of them speed it up.
+As it turns out, to speed up this problem with NumPy, you really need to perform the check for digit "9" via
+low-level custom NumPy code with a combination of vectorizable integer and floating operations, and this is
+very difficult -- but not impossible -- to do.
+
+
+
+
 
 <!-- Here are a couple other implementations: -->
 
