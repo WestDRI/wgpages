@@ -1,7 +1,6 @@
 +++
 title = "Parallel programming in Chapel"
 slug = "chapel-original"
-aliases = ["chapel"]
 +++
 
 {{<cor>}}November 9th and 16th, 2023{{</cor>}}\

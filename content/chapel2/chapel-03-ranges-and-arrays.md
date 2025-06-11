@@ -36,8 +36,7 @@ We are now ready to start coding our computation ... here is what we are going t
 1. write a function to compute a single pixel of the image: takes a complex point, returns its stability number
 1. iterate over all points in the image, calling `pixel()` for each
 1. time the computation
-1. learn how to write the result to a NetCDF file
-1. learn how to write the result to a PNG image
+1. learn how to write the resulting 2D array to a NetCDF file and/or a PNG image
 1. parallelize this code, first on a single node, and then across multiple nodes
 
 
@@ -75,12 +74,12 @@ for index in iterand {
   }
 ``` 
 
-The *iterand* is a statement that expresses an iteration; it could be a range `1..15`, for example. *index* is
-a variable that exists only in the context of the for-loop, and that will be taking the different values
-yielded by the iterand. The code flows as follows: index takes the first value yielded by the iterand, and
-keeps it until all the instructions inside the curly brackets are executed one by one; then, index takes the
-second value yielded by the iterand, and keeps it until all the instructions are executed again. This pattern
-is repeated until index takes all the different values exressed by the iterand.
+The `iterand` is a statement that expresses an iteration, e.g. it could be a range `1..15`. `index` is a
+variable that exists only in the context of the for-loop, and that will be taking the different values yielded
+by the iterand. The code flows as follows: index takes the first value yielded by the iterand, and keeps it
+until all the instructions inside the curly brackets are executed one by one; then, index takes the second
+value yielded by the iterand, and keeps it until all the instructions are executed again. This pattern is
+repeated until index takes all the different values exressed by the iterand.
 
 In our case we iterate both over all rows and all columns in the image to compute every pixel. This can be
 done with nested _for_ loops like this:

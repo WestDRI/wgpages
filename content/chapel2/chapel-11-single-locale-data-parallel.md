@@ -50,7 +50,7 @@ this in Chapel is a `forall` loop -- it'll create an *appropriate* number of thr
 dividing the loop's iterations between them.
 
 ```chpl
-forall index in iterand   \\ iterating over all elements of an array or over a range of indices
+forall index in iterand   // iterating over all elements of an array or over a range of indices
 {instructions}
 ```
 
@@ -74,7 +74,9 @@ threads as the number of available cores. It is thread-safe, meaning that no two
 same variable at the same time.
 
 * if we replace `forall` with `for`, we'll get a serial loop on a sigle core
-* if we replace `forall` with `coforall` (we'll study it later), we'll create $10^6$ threads -- likely an overkill!
+* if we replace `forall` with `coforall` (we'll study it later), we'll create $10^6$ threads -- likely an
+  overkill!
+* there is also `foreach` that is specifically for multi-threaded parallelism and that we'll use later on a GPU
 
 ## Reduction
 

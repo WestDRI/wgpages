@@ -12,7 +12,7 @@ as a benchmark, to see how much we can improve the performance with Chapel's par
 the following lessons.
 
 But first, we need a quantitative way to measure the performance of our code. Perhaps the easiest way to do
-this is to use the UNIX command `time`:
+this is to use the Unix command `time`:
 
 ```sh
 $ time ./juliaSetSerial --n=500
@@ -51,8 +51,6 @@ writeln('It took ', watch.elapsed(), ' seconds');
 ```sh
 $ chpl --fast juliaSetSerial.chpl
 $ ./juliaSetSerial --n=500
-```
-```chpl
 ```
 
 {{< question num="Basic.5" >}}

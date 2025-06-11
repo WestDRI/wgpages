@@ -14,7 +14,7 @@ is referred to as **multi-locale** execution.
 
 > ## Docker side note
 >
-> If you work inside a Chapel Docker container, e.g., chapel/chapel-gasnet, the container environment
+> If you work inside a Chapel Docker container, e.g., `chapel/chapel`, the container environment
 > simulates a multi-locale cluster, so you would compile and launch multi-locale Chapel codes directly by
 > specifying the number of locales with `-nl` flag:
 >
@@ -182,17 +182,17 @@ $ cat solution.out
 ```
 ```output
 locale #0...
-  ...is named: node1.int.cass.vastcloud.org
+  ...is named: node1.int.school.vastcloud.org
   ...has 2 processor cores
   ...has 29.124 GB of memory
   ...has 2 maximum parallelism to expect
 locale #1...
-  ...is named: node2.int.cass.vastcloud.org
+  ...is named: node2.int.school.vastcloud.org
   ...has 2 processor cores
   ...has 29.124 GB of memory
   ...has 2 maximum parallelism to expect
 locale #2...
-  ...is named: node3.int.cass.vastcloud.org
+  ...is named: node3.int.school.vastcloud.org
   ...has 2 processor cores
   ...has 29.124 GB of memory
   ...has 2 maximum parallelism to expect

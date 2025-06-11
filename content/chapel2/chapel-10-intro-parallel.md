@@ -25,13 +25,13 @@ katex = true
 
 Chapel provides high-level abstractions for parallel programming no matter the grain size of your tasks,
 whether they run in a shared memory or a distributed memory environment, or whether they are executed
-"concurrently" (frequently switching between tasks) or truly in parallel. As a programmer you can focus
-on the algorithm: how to divide the problem into tasks that make sense in the context of the problem, and
-be sure that the high-level implementation will run on any hardware configuration. Then you could
-consider the specificities of the particular system you are going to use (whether is shared or
-distributed, the number of cores, etc.) and tune your code/algorithm to obtain a better performance.
+"concurrently" (frequently switching between tasks) or truly in parallel. As a programmer you can focus on the
+algorithm: how to divide the problem into tasks that make sense in the context of the problem, and be sure
+that the high-level implementation will run on any hardware configuration. Then you could consider the
+specificities of the particular system you are going to use (whether is shared or distributed, the number of
+cores, etc.) and tune your code/algorithm to obtain a better performance.
 
-To this effect, **_concurrency_** (the creation and execution of multiple tasks), and **_locality_** (on which
+To this effect, **_concurrency_** (the creation and execution of multiple tasks) and **_locality_** (on which
 set of resources these tasks are executed) are orthogonal (separate) concepts in Chapel. For example, we could
 have a set of several tasks that would be running as shown below:
 

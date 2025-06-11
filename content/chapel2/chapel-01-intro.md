@@ -83,9 +83,9 @@ If you are familiar with Docker and have it installed, you can run multi-locale 
 container (e.g., on your laptop, or inside an Ubuntu VM on Arbutus):
 
 ```sh
-$ docker pull chapel/chapel-gasnet  # will emulate a cluster with 4 cores/node
+$ docker pull chapel/chapel  # will emulate a cluster with 4 cores/node
 $ mkdir -p ~/tmp
-$ docker run -v /home/ubuntu/tmp:/mnt -it -h chapel chapel/chapel-gasnet  # map host's ~/tmp to container's /mnt
+$ docker run -v /home/ubuntu/tmp:/mnt -it -h chapel chapel/chapel  # map host's ~/tmp to container's /mnt
 $ cd /mnt
 $ apt-get update
 $ apt-get install nano  # install nano inside the Docker container

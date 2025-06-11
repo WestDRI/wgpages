@@ -83,7 +83,7 @@ different fractals for different values of $c$):
 
 ## Variables
 
-Chapel is a statically typed language, i.e. the type of every variable is known at compile time.
+Chapel is a statically typed language, i.e. the type of every variable must be known at compile time.
 
 <!-- A variable has three elements: a **_name_**, a **_type_**, and a **_value_**. When we store a value in a -->
 <!-- variable for the first time, we say that we **_initialized_** it. Further changes to the value of a -->
@@ -93,12 +93,12 @@ Chapel is a statically typed language, i.e. the type of every variable is known 
 Variables in Chapel are declared with the `var` or `const` keywords. When a variable declared as `const` is
 initialized, its value cannot be modified anymore during the execution of the program.
 
-In Chapel, to declare a variable we must either (1) specify its type, or (2) initialize it in place with some
-value from which the compiler will infer its type. The common variable types in Chapel are:
+To declare a variable, we must either (1) specify its type or (2) initialize it in place with some value from
+which the compiler will infer its type. The common variable types in Chapel are:
 
-- integer `int` (defaults to `int(64)`, or you can explicitly specify `int(32)`),
-- floating point number `real` (defaults to `real(64)`, or you can explicitly specify `real(32)`),
-- boolean `bool`, or 
+- integer `int` -- defaults to `int(64)`, or you can explicitly specify `int(32)`,
+- floating point number `real` -- defaults to `real(64)`, or you can explicitly specify `real(32)`,
+- boolean `bool`,
 - string `string`
 
 If a variable is declared without a type, Chapel will infer it from the given initial value, for example
@@ -130,7 +130,7 @@ const c: complex = 0.355 + 0.355i;   // Julia set constant
 > Note that these two notations are different, but produce the same result in the end:
 > ```chpl
 > var a: real = 10;   // we specify both the type and the value
-> var a = 10: real;   // we specify only the value (10 converted to real)
+> var a = 10: real;   // we specify only the value (integer 10 converted to real)
 > ```
 {.note}
 
@@ -140,7 +140,15 @@ Let's print our configuration after we set all parameters:
 writeln('Computing ', n, 'x', n, ' Julia set ...');
 ```
 
-### Checking variable's type
+Alternatively, you can use formatted output:
+
+```chpl
+writef("Computing %ix%i Julia set\n", n, n);
+```
+
+For other format specifiers, check the table at https://chapel-lang.org/docs/modules/standard/IO/FormattedIO.html
+
+### Printing variable's type
 
 To check a variable's type, use `.type` query:
 
