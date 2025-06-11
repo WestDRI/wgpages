@@ -4,8 +4,8 @@ slug = "chapel-gpu"
 katex = true
 +++
 
-{{<cor>}}December 5<sup>th</sup> (Part 1) and 12<sup>th</sup> (Part 2){{</cor>}}\
-{{<cgr>}}10:00am–noon Pacific Time{{</cgr>}}
+{{<cor>}}June 12<sup>th</sup>{{</cor>}}\
+{{<cgr>}}1:30pm-4:30pm Pacific Time{{</cgr>}}
 
 Chapel was designed as a parallel-first programming language targeting any hardware that supports parallel
 execution: *multicore processors*, *multiple nodes* in an HPC cluster, and now also *GPUs* on HPC
