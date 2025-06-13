@@ -513,14 +513,14 @@ To speed up our computation, we should vectorize over one of the dimensions, e.g
 ```py
 from tqdm import tqdm
 start = time.time()
+lon = np.radians(longitude[0:nlon])
+sinlon = np.sin(lon)
+coslon = np.cos(lon)
 for i in tqdm(range(nlat)):
     lat = np.radians(latitude[i])
     sinlat = np.sin(lat)
     coslat = np.cos(lat)
     for j in range(nr):
-        lon = np.radians(longitude[0:nlon])
-        sinlon = np.sin(lon)
-        coslon = np.cos(lon)
         vx[i,j,0:nlon] = - sinlon*vlon[i,j,0:nlon] - sinlat*coslon*vlat[i,j,0:nlon] + coslat*coslon*vrad[i,j,0:nlon]
         vy[i,j,0:nlon] = coslon*vlon[i,j,0:nlon] - sinlat*sinlon*vlat[i,j,0:nlon] + coslat*sinlon*vrad[i,j,0:nlon]
         vz[i,j,0:nlon] = coslat*vlat[i,j,0:nlon] + sinlat*vrad[i,j,0:nlon]
@@ -551,13 +551,13 @@ Vectorizing over two dimensions, e.g. over **radii** and **longitudes** leaves u
 ```py
 from tqdm import tqdm
 start = time.time()
+lon = np.radians(longitude[0:nlon])
+sinlon = np.sin(lon)
+coslon = np.cos(lon)
 for i in tqdm(range(nlat)):
     lat = np.radians(latitude[i])
     sinlat = np.sin(lat)
     coslat = np.cos(lat)
-    lon = np.radians(longitude[0:nlon])
-    sinlon = np.sin(lon)
-    coslon = np.cos(lon)
     vx[i,0:nr,0:nlon] = - sinlon*vlon[i,0:nr,0:nlon] - sinlat*coslon*vlat[i,0:nr,0:nlon] + coslat*coslon*vrad[i,0:nr,0:nlon]
     vy[i,0:nr,0:nlon] = coslon*vlon[i,0:nr,0:nlon] - sinlat*sinlon*vlat[i,0:nr,0:nlon] + coslat*sinlon*vrad[i,0:nr,0:nlon]
     vz[i,0:nr,0:nlon] = coslat*vlat[i,0:nr,0:nlon] + sinlat*vrad[i,0:nr,0:nlon]
