@@ -120,7 +120,7 @@ performance out of it.
 
 ## Python setup in our course
 
-Today we'll be running Python inside a shell on our training cluster `python.vastcloud.org`. Let's log in now!
+Today we'll be running Python inside a shell on our training cluster `thu.vastcloud.org`. Let's log in now!
 
 We have pre-installed all the required libraries for you in a virtual Python environment in
 `/project/def-sponsor00/shared/hpc-env` that everyone on the system can read.
@@ -615,8 +615,8 @@ print("Time in seconds:", round(end-start,3))
 print(total)
 ```
 
-> This particular code uses a lot of memory, so you might want to change your memory request to at least
-> `--mem-per-cpu=11000` (and single core).
+> This particular code uses a lot of memory, so you might want to request `--mem-per-cpu=14400` (and
+> single core).
 {.note}
 
 The vectorized function is supposed to speed up calculating the terms, but our time becomes significantly
