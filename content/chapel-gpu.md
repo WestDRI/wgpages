@@ -604,11 +604,11 @@ watch.stop(); writeln('It took ', watch.elapsed(), ' seconds');
 Note that this problem does not scale linearly with `n`, as with larger numbers you will get more primes. Here
 are my timings on Cedar's V100 GPU:
 
-| n | CPU time in sec | GPU time in sec |
---- | --- | ---
-| 1_000_000 | 3.04051 | 0.001649 |
-| 10_000_000 | 92.8213 | 0.042215 |
-| 100_000_000 | 2857.04 | 1.13168 |
+| n | CPU time in sec | GPU time in sec | speedup factor |
+--- | --- | --- | ---
+| 1_000_000 | 3.04051 | 0.001649 | 1844 |
+| 10_000_000 | 92.8213 | 0.042215 | 2199 |
+| 100_000_000 | 2857.04 | 1.13168 | 2525 |
 
 <!-- A = 6673 78398 310591 328 56 -->
 
@@ -1014,12 +1014,12 @@ writeln('It took ', watch.elapsed(), ' seconds');
 
 It took 0.017364 seconds on the GPU.
 
-| Problem size | CPU time in sec | GPU time in sec |
---- | --- | ---
-| $2000\times 2000$ | 1.64477 | 0.017372 |
-| $4000\times 4000$ | 6.5732 | 0.035302 |
-| $8000\times 8000$ | 26.1678 | 0.067307 |
-| $16000\times 16000$ | 104.212 | 0.131301 |
+| Problem size | CPU time in sec | GPU time in sec | speedup factor |
+--- | --- | --- | ---
+| $2000\times 2000$ | 1.64477 | 0.017372 | 95 |
+| $4000\times 4000$ | 6.5732 | 0.035302 | 186 |
+| $8000\times 8000$ | 26.1678 | 0.067307 | 389 |
+| $16000\times 16000$ | 104.212 | 0.131301 | 794 |
 
 ### Adding plotting to run on a GPU
 
@@ -1086,9 +1086,9 @@ Plotting ...
 It took 0.192508 seconds
 ```
 
-This plotting snippet won't work with the GPU version as there the array `stability` is defined on the GPU
-only. You can move the definition of `stability` to the host, and then the code with plotting on the CPU will
-work. However, plotting a large heatmap can really benefit from GPU acceleration.
+This plotting snippet won't work with the GPU version, as in that version the array `stability` is defined on
+the GPU only. You can move the definition of `stability` to the host, and then the code with plotting on the
+CPU will work. However, plotting a large heatmap can really benefit from GPU acceleration.
 
 {{< question num="`port plotting to a GPU`" >}}
 This is a take-home exercise: try porting this plotting block to a GPU. On my side, I am running into an issue

@@ -90,7 +90,7 @@ $ cd /mnt
 $ apt-get update
 $ apt-get install nano  # install nano inside the Docker container
 $ nano test.chpl        # file is /mnt/test.chpl inside the container and ~ubuntu/tmp/test.chpl on the host VM
-$ chpl test.chpl -o test
+$ chpl test.chpl
 $ ./test -nl 8
 ```
 
@@ -174,7 +174,7 @@ Let's write the job script `serial.sh`:
 and then submit it:
 
 ```sh
-$ chpl test.chpl -o test
+$ chpl test.chpl
 $ sbatch serial.sh
 $ sq                         # same as `squeue -u $USER`
 $ cat slurm-jobID.out
