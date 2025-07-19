@@ -947,3 +947,5 @@ and as a 3D graph:
 
 <!-- ## Other possible topics -->
 <!-- - working with text files -->
+
+2024 HSS Winter Series playlist https://www.youtube.com/playlist?list=PL2jE_DQZemnU6WqEpqWaYQsjhyheDsVsc
