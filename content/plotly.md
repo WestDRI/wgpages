@@ -55,7 +55,8 @@ $ uv pip install plotly
 $ conda install -c conda-forge plotly
 ```
 
-- Other recommended installs: jupyter, numpy, pandas, networkx, scikit-image, kaleido
+- Other recommended libraries to install for today's session: `jupyter`, `numpy`, `pandas`, `networkx`,
+  `scikit-image`, `kaleido`
 
 ## Displaying Plotly figures
 
@@ -63,11 +64,13 @@ $ conda install -c conda-forge plotly
 <!-- uv pip install kaleido   # to save PNG -->
 <!-- ``` -->
 
-With Plotly, you can work inside a Python shell, write into a script (and then run it), or run code inside a
-Jupyter Notebook (start with `jupyter notebook`).
+With Plotly, you can:
+1. work inside a Python shell,
+2. save your script into a *.py file and then run it, or
+3. run code inside a Jupyter Notebook (start a notebook with `jupyter notebook` or even better `jupyter lab`).
 
-Plotly supports a number of renderers. It will attempt to choose an appropriate renderer automatically. You
-can examine the selected default renderer with:
+Plotly supports a number of renderers, and it will attempt to choose an appropriate renderer automatically (in
+my experience, not very successfully). You can examine the selected default renderer with:
 
 ```py
 import plotly.io as pio
@@ -81,9 +84,19 @@ pio.renderers.default = 'browser'    # open each plot in a new browser tab
 pio.renderers.default = 'notebook'   # plot inside a Jupyter notebook
 ```
 
-If you want to have this setting persistent across sessions (and not set it in the code), you need to create a
-file `~/.plotly_startup.py` (containing the Python code above) and set `export
-PYTHONSTARTUP=~/.plotly_startup.py` (perhaps, in your `~/.bashrc` file).
+If you want to have this setting persistent across sessions (and not set it manually or in the code), you can
+create a file `~/.plotly_startup.py` with the following:
+
+```py
+try:
+    import plotly.io as pio
+    pio.renderers.default = "browser"
+except ImportError:
+    pass
+
+```
+
+and set `export PYTHONSTARTUP=~/.plotly_startup.py` in your `~/.bashrc` file.
 
 <!-- 'iframe'               Shows plot inline (only in Jupyter) -->
 <!-- 'notebook_connected'   Full interactivity in Jupyter -->
@@ -183,30 +196,38 @@ that contains one row per country per year.
 import plotly.express as px
 df = px.data.gapminder().query("year==2007")
 
-px.strip(df, x="lifeExp")
-# add hover_name="country"
-# add color="continent"
+px.line(df, x="gdpPercap", y="lifeExp", markers=True)   # this should be familiar
+# 1. replace df with df.sort_values(by='gdpPercap')
+# 2. add log_x=True
+# 3. change line to scatter, remove markers=True
+# 4. don't actually need to sort now, with no markers
+# 5. add hover_name="country"
+# 6. add size="pop"
+# 7. add size_max=60
+# 8. add color="continent" - can now turn continents off/on
 
-# change strip to histogram
-# can turn continents off/on in the legend
-
-# add marginal="rug" to show countries in a rug plot
-# add y="pop" to switch from country count to population along the vertical axis
-# add facet_col="continent" to break continents into facet columns
+px.strip(df, x="lifeExp")   # single-axis scatter plot
+# 1. add hover_name="country"
+# 2. add color="continent"
+# 3. change strip to histogram
+# 4. can turn continents off/on in the legend
+# 5. add marginal="rug" to show countries in a rug plot
+# 6. add y="pop" to switch from country count to population along the vertical axis
+# 7. add facet_col="continent" to break continents into facet columns
 
 px.bar(df, color="lifeExp", x="pop", y="continent", hover_name="country")
 
-px.scatter(df, x="gdpPercap", y="lifeExp", size="pop", color="continent",
-           hover_name="country", log_x=True, size_max=60)
-
 px.sunburst(df, color="lifeExp", values="pop", path=["continent", "country"],
-            hover_name="country")
+            hover_name="country", height=800)
 
 px.treemap(df, color="lifeExp", values="pop", path=["continent", "country"],
            hover_name="country", height=500)
 
 px.choropleth(df, color="lifeExp", locations="iso_alpha", hover_name="country", height=580)
 ```
+
+
+
 
 
 <!-- - gridded data => heatmaps -->
@@ -236,15 +257,12 @@ px.scatter_ternary(df, a="Joly", b="Coderre", c="Bergeron", color="winner",
 
 
 
-
-
-
-
 ## Plotting via Graph Objects
 
-Whereas Plotly Express is great for quick data exploration, it has some limitations. E.g. Plotly Express can't
-combine different plot types directly in a single figure, whereas Graph Objects -- being a lower-level library
--- can. In this section we'll play with Graph Objects, starting with 2D plots.
+While Plotly Express is excellent for quick data exploration, it has some limitations: it supports fewer plot
+types and does not allow combining different plot types directly in a single figure. Plotly Graph Objects, on
+the other hand, is a lower-level library that offers greater functionality and customization with layouts. In
+this section, we'll explore Graph Objects, starting with 2D plots.
 
 Graph Objects supports many plot types:
 
